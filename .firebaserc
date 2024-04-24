@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "dabubble-180": {
+      "hosting": {
+        "dabubble": [
+          "dabubble-180"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "dabubble-180"
+  }
+}
