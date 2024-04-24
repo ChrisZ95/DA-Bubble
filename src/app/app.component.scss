@@ -1,0 +1,71 @@
+$wct-height: calc(100vh - 20vh);
+div {
+  border: 1px solid black;
+}
+.main {
+  position: relative;
+}
+
+.container {
+  position: relative;
+}
+
+.header {
+  height: 15vh;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.workspace-chat-thread {
+  height: $wct-height;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.workspace {
+  height: $wct-height;
+  width: calc(15vw - 2px);
+}
+
+.workspace-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  img {
+    height: 42px;
+    width: 21px;
+  }
+}
+
+.workspace-channels {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.channels {
+  display: flex;
+}
+
+.workspace-direct-messages {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.direct-messages {
+  display: flex;
+}
+
+.chat {
+  height: $wct-height;
+  width: calc(60vw - 2px);
+}
+
+.thread {
+  height: $wct-height;
+  width: calc(20vw - 2px);
+}
