@@ -17,6 +17,7 @@
     <div class="workspace-chat-thread">
 
       <div class="workspace">
+        <!-- Wollt ihr die Sachen in die <app-workspace>, oder soll es hier bleiben? -->
         <div class="workspace-header">
           <img src="../assets/images/workspaceLogo.svg" alt="">
           <div>Devspace</div>
@@ -28,27 +29,54 @@
           <img src="../assets/images/arrowDropDown.svg" alt="" class="channels-dropdown">
           <div class="channels">
             <img src="../assets/images/workspaces.svg" alt="">
-            <h6>channels</h6>
+            <div>channels</div>
           </div>
           <img (click)="openCreateChannelDialog()" src="../assets/images/add.svg" alt="" class="channels-add">
         </div>
 
-        <div class="workspace-direct-messages">
-          <img src="../assets/images/arrowDropDown.svg" alt="" class="channels-dropdown">
-
+        <div class="">
           <div class="direct-messages">
+            <img src="../assets/images/arrowDropDown.svg" alt="" class="channels-dropdown">
             <img src="../assets/images/accountCircle.svg" alt="">
-            <h6>Direktnachrichten</h6>
+            <div>Direktnachrichten</div>
+          </div>
+          <div class="users">
+            <div class="user">
+              <img src="../../../assets/images/avatar.png" alt="">
+              <div>Name1</div>
+            </div>
+            <div class="user">
+              <img src="../../../assets/images/avatar.png" alt="">
+              <div>Name2</div>
+            </div>
+            <div class="user">
+              <img src="../../../assets/images/avatar.png" alt="">
+              <div>Name3</div>
+            </div>
           </div>
         </div>
       </div>
 
 
-      <div class="chat"></div>
+      <div class="chat">
+        <!-- Sollen die Komponenten "emptychat"/"channelchat" usw. in einen Ordner, oder soll jede ihren eigenen Ordner erhalten? -->
+        <div class="chat-header">
+          <div># Entwicklerteam</div>
+          <div>
+            <div class="chat-images">
+              <img src="../../../assets/images/avatar.png" alt="">
+              <img src="../../../assets/images/avatar.png" alt="">
+              <img src="../../../assets/images/avatar.png" alt="">
+            </div>
+            <img src="../../../assets/images/addMemberButton.png" alt="">
+          </div>
+        </div>
+      </div>
 
-      <div class="thread"></div>
+      <div class="thread">
+        <!-- Wie beim chat: Alle Komponnten in einen Ordner, oder nicht? -->
+      </div>
     </div>
 
   </div>
 </div>
-

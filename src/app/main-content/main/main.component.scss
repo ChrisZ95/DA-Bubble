@@ -1,7 +1,5 @@
 $wct-height: calc(100vh - 20vh);
-div {
-  border: 1px solid black;
-}
+
 .main {
   position: relative;
 }
@@ -30,11 +28,12 @@ div {
 .workspace {
   height: $wct-height;
   width: calc(15vw - 2px);
+  border: 1px solid black;
 }
 
 .workspace-header {
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;
   align-items: center;
   img {
     height: 42px;
@@ -52,19 +51,57 @@ div {
   display: flex;
 }
 
-.workspace-direct-messages {
+.direct-messages {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.direct-messages {
+.users {
   display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.user {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  img {
+    height: 42px;
+  }
 }
 
 .chat {
   height: $wct-height;
   width: calc(60vw - 2px);
+  border: 1px solid black;
+}
+
+.chat-header {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  height: 100px;
+}
+
+.chat-images {
+  position: relative;
+  img {
+    height: 42px;
+    position: absolute;
+  }
+  img:nth-child(1) {
+    right: 60px;
+  }
+  img:nth-child(2) {
+    right: 30px;
+  }
+  img:nth-child(3) {
+    right: 0;
+    top: 0;
+  }
 }
 
 .thread {
@@ -72,30 +109,30 @@ div {
   width: calc(20vw - 2px);
 }
 
-.search-input{
+.search-input {
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 50%;
   border-radius: 42px;
   height: 68px;
-  input{
+  input {
     height: 66px;
     width: 100%;
     border: none;
     border-radius: 42px;
   }
-  img{
+  img {
     height: 35px;
     width: 35px;
   }
 }
 
-.profile{
+.profile {
   display: flex;
   align-items: center;
   gap: 20px;
-  img{
+  img {
     cursor: pointer;
   }
 }
