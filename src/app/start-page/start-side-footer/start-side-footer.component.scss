@@ -4,8 +4,20 @@ footer {
   gap: 16px;
   padding-top: 30px;
 
-  a {
-    text-decoration: none;
+  button {
     color: #797EF3;
+    border: none;
+    font-size: 18px;
+    border: 1px solid transparent;
+    height: 42px;
+    width: 121px;
+
+
+
+    &:hover {
+      cursor: pointer;
+      border: 1px solid #ADB0D9;
+      border-radius: 20px;
+    }
   }
 }
