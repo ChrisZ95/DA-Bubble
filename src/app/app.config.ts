@@ -8,7 +8,8 @@ import { getAuth, provideAuth } from '@angular/fire/auth';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { getDatabase, provideDatabase } from '@angular/fire/database';
 import { getStorage, provideStorage } from '@angular/fire/storage';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideRouter(routes), provideClientHydration(), importProvidersFrom(provideFirebaseApp(() => initializeApp({"projectId":"dabubble-180","appId":"1:1063885758156:web:55d61b46dbc48905ac6c69","storageBucket":"dabubble-180.appspot.com","apiKey":"AIzaSyD1QIosifbrMmf2Cis-tPblgDMk1JJmgGE","authDomain":"dabubble-180.firebaseapp.com","messagingSenderId":"1063885758156"}))), importProvidersFrom(provideAuth(() => getAuth())), importProvidersFrom(provideFirestore(() => getFirestore())), importProvidersFrom(provideDatabase(() => getDatabase())), importProvidersFrom(provideStorage(() => getStorage()))]
+  providers: [provideRouter(routes), provideClientHydration(), importProvidersFrom(provideFirebaseApp(() => initializeApp({"projectId":"dabubble-180","appId":"1:1063885758156:web:55d61b46dbc48905ac6c69","storageBucket":"dabubble-180.appspot.com","apiKey":"AIzaSyD1QIosifbrMmf2Cis-tPblgDMk1JJmgGE","authDomain":"dabubble-180.firebaseapp.com","messagingSenderId":"1063885758156"}))), importProvidersFrom(provideAuth(() => getAuth())), importProvidersFrom(provideFirestore(() => getFirestore())), importProvidersFrom(provideDatabase(() => getDatabase())), importProvidersFrom(provideStorage(() => getStorage())), provideAnimationsAsync('noop')]
 };
