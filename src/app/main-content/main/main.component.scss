@@ -1,0 +1,101 @@
+$wct-height: calc(100vh - 20vh);
+div {
+  border: 1px solid black;
+}
+.main {
+  position: relative;
+}
+
+.container {
+  position: relative;
+}
+
+.header {
+  height: 15vh;
+  width: calc(100vw - 90px);
+  overflow: hidden;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 45px;
+  padding-right: 45px;
+}
+
+.workspace-chat-thread {
+  height: $wct-height;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.workspace {
+  height: $wct-height;
+  width: calc(15vw - 2px);
+}
+
+.workspace-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  img {
+    height: 42px;
+    width: 21px;
+  }
+}
+
+.workspace-channels {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.channels {
+  display: flex;
+}
+
+.workspace-direct-messages {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.direct-messages {
+  display: flex;
+}
+
+.chat {
+  height: $wct-height;
+  width: calc(60vw - 2px);
+}
+
+.thread {
+  height: $wct-height;
+  width: calc(20vw - 2px);
+}
+
+.search-input{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 50%;
+  border-radius: 42px;
+  height: 68px;
+  input{
+    height: 66px;
+    width: 100%;
+    border: none;
+    border-radius: 42px;
+  }
+  img{
+    height: 35px;
+    width: 35px;
+  }
+}
+
+.profile{
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  img{
+    cursor: pointer;
+  }
+}

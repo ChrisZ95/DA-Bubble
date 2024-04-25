@@ -1,53 +1,5 @@
-<div class="main">
-  <div class="container">
-    <div class="header">
-      <div><img src="./../assets/images/dabubble-logo.png" alt=""></div>
-      <div class="search-input"><input type="text" name="" id=""><img src="./../assets/images/search.png" alt=""></div>
-      <div class="profile">
-        <span>Frederik Beck</span>
-        <img src="./../assets/images/avatar.png" alt="">
-        <img [matMenuTriggerFor]="profilMenu" src="./../assets/images/arrow_down.png" alt="">
-        <mat-menu #profilMenu="matMenu" class="profile-menu">
-          <button mat-menu-item>Profil</button>
-          <button mat-menu-item>Log out</button>
-        </mat-menu>
-      </div>
-    </div>
+<app-log-in></app-log-in>
 
-    <div class="workspace-chat-thread">
+<!-- <app-root></app-root> -->
 
-      <div class="workspace">
-        <div class="workspace-header">
-          <img src="../assets/images/workspaceLogo.svg" alt="">
-          <div>Devspace</div>
-          <img src="../assets/images/editSquare.svg" alt="">
-        </div>
-
-
-        <div class="workspace-channels">
-          <img src="../assets/images/arrowDropDown.svg" alt="" class="channels-dropdown">
-          <div class="channels">
-            <img src="../assets/images/workspaces.svg" alt="">
-            <h6>channels</h6>
-          </div>
-          <img (click)="openCreateChannelDialog()" src="../assets/images/add.svg" alt="" class="channels-add">
-        </div>
-
-        <div class="workspace-direct-messages">
-          <img src="../assets/images/arrowDropDown.svg" alt="" class="channels-dropdown">
-
-          <div class="direct-messages">
-            <img src="../assets/images/accountCircle.svg" alt="">
-            <h6>Direktnachrichten</h6>
-          </div>
-        </div>
-      </div>
-
-
-      <div class="chat"></div>
-
-      <div class="thread"></div>
-    </div>
-
-  </div>
-</div>
+<router-outlet></router-outlet>
