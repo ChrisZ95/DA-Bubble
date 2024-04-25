@@ -44,6 +44,11 @@
         border-radius: 30px;
         background-color: #ECEEFE;
         margin: 20px;
+        border: 1px solid transparent;
+
+        &:hover {
+          border: 1px solid black;
+        }
 
         img {
           padding-left: 20px;
@@ -65,11 +70,25 @@
 
       .card-link {
         margin-top: 30px;
+        width: 240px;
+        height: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
 
         a {
           text-decoration: none;
           color: #797EF3;
           font-size: 18px;
+        }
+
+        &:hover {
+          background-color: #ECEEFE;
+          border-radius: 25px;
+
+          a {
+            font-family: 'nunito-bold';
+          }
         }
       }
     }
