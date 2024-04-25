@@ -12,11 +12,13 @@ div {
 
 .header {
   height: 15vh;
-  width: 100%;
+  width: calc(100vw - 90px);
   overflow: hidden;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
+  padding-left: 45px;
+  padding-right: 45px;
 }
 
 .workspace-chat-thread {
@@ -68,4 +70,32 @@ div {
 .thread {
   height: $wct-height;
   width: calc(20vw - 2px);
+}
+
+.search-input{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 50%;
+  border-radius: 42px;
+  height: 68px;
+  input{
+    height: 66px;
+    width: 100%;
+    border: none;
+    border-radius: 42px;
+  }
+  img{
+    height: 35px;
+    width: 35px;
+  }
+}
+
+.profile{
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  img{
+    cursor: pointer;
+  }
 }
