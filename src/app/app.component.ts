@@ -10,13 +10,13 @@ import { MatButtonModule } from '@angular/material/button';
   standalone: true,
   imports: [RouterOutlet, MatButtonModule, MatMenuModule],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'dabubble';
+  title = 'DABubble';
 
   constructor(public dialog: MatDialog) {
-    
+
   }
 
   openCreateChannelDialog(){
