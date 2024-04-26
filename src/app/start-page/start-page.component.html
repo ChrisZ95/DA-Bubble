@@ -9,7 +9,7 @@
     <app-sign-up (backToLoginClicked)="backToLoginClicked()"></app-sign-up>
   </ng-template>
 
-  <ng-template [ngIf]="showChooseAvatarComponent && !showLoginComponent && !showSignUpComponent">
+  <ng-template>
     <app-sign-up-choose-avatar (continueToChooseAvatar)="continueToChooseAvatar()"></app-sign-up-choose-avatar>
   </ng-template>
 

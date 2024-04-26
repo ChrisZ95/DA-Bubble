@@ -22,6 +22,5 @@ export class SignUpComponent {
   toChooseAvatar() {
    this.continueToChooseAvatar.emit();
    console.log('button continue')
-
   }
 }
