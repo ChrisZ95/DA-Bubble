@@ -1,19 +1,20 @@
 <div class="dialog-channel-info-container">
     <div class="channel-info-title">
         <span># Entwicklerteam</span>
-        <img src="./../../assets/images/close.png" alt="">
+        <img src="./../../assets/images/close.png" alt="" (click)="closeChannelInfoDialog()">
     </div>
     <div class="channel-name-container">
         <div class="channel-name">Channel-Name <span>Bearbeiten</span></div>
-        <div># Entwicklerteam</div>
+        <span class="channel-name-small"># Entwicklerteam</span>
     </div>
     <div class="description-container">
-        <div class="description">Beschreibung <span>Bearbeiten</span></div>
+        <div class="description-title">Beschreibung <span>Bearbeiten</span></div>
+        <span class="description-text">Dieser Channel ist für alles rund um #dfsdf vorgesehen. Hier kannst du zusammen mit deinem Team Meetings abhalten, Dokumente teilen und Entscheidungen treffen.</span>
         <div class="description-line-container"><div class="description-line"></div></div>
-        <div>
-            <span>Erstellt von</span>
-            <span>Noah Braun</span>
+        <div class="created-by">
+            <span class="created-by-title">Erstellt von</span>
+            <span class="created-by-name">Noah Braun</span>
         </div>
     </div>
-    <button>Channel verlassen</button>
+    <div class="leave-channel-button"><button>Channel verlassen</button></div>
 </div>

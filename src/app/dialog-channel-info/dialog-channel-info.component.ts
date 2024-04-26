@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-dialog-channel-info',
@@ -8,5 +9,9 @@ import { Component } from '@angular/core';
   styleUrl: './dialog-channel-info.component.scss'
 })
 export class DialogChannelInfoComponent {
+  constructor(private dialogRef: MatDialogRef<DialogChannelInfoComponent>) {}
 
+  closeChannelInfoDialog(): void {
+    this.dialogRef.close();
+  }
 }
