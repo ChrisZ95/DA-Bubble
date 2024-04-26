@@ -6,18 +6,18 @@ footer {
 
   button {
     color: #797EF3;
+    background-color: #ECEEFE;
     border: none;
     font-size: 18px;
     border: 1px solid transparent;
     height: 42px;
     width: 121px;
-
-
+    border-radius: 20px;
 
     &:hover {
       cursor: pointer;
       border: 1px solid #ADB0D9;
-      border-radius: 20px;
+      filter: brightness(1.05);
     }
   }
 }

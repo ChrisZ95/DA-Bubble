@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
+
 
 @Component({
   selector: 'app-start-side-header',
@@ -8,5 +9,13 @@ import { Component } from '@angular/core';
   styleUrl: './start-side-header.component.scss'
 })
 export class StartSideHeaderComponent {
+
+  @Output() signUpClicked = new EventEmitter<void>();
+
+  constructor() { }
+
+  emitSignUpClicked() {
+    this.signUpClicked.emit();
+  }
 
 }

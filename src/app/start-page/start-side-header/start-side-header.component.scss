@@ -10,9 +10,22 @@
     align-items: center;
 
 
-    a {
+    button {
       text-decoration: none;
       color: #797EF3;
+      background-color: transparent;
+      font-size: 18px;
+      border: 1px solid transparent;
+      border-radius: 25px;
+      width: 160px;
+      height: 40px;
+
+      &:hover {
+        cursor: pointer;
+        border: 1px solid #797EF3;
+        filter: brightness(1.3);
+      }
+
     }
   }
 }
