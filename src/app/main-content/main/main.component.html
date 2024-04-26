@@ -8,7 +8,7 @@
         <img src="./../assets/images/avatar.png" alt="">
         <img [matMenuTriggerFor]="profilMenu" src="./../assets/images/arrow_down.png" alt="">
         <mat-menu #profilMenu="matMenu" class="profile-menu">
-          <button mat-menu-item>Profil</button>
+          <button mat-menu-item (click)="openProfileDialog()">Profil</button>
           <button mat-menu-item>Log out</button>
         </mat-menu>
       </div>

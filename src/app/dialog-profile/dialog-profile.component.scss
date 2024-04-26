@@ -1,0 +1,50 @@
+.profile-dialog-container{
+    width: 500px;
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+    padding: 45px 40px 45px 40px;
+    a{
+        margin-top: 30px;
+    }
+}
+
+.profile-title{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    img{
+        height: 24px;
+        width: 24px;
+        cursor: pointer;
+    }
+}
+
+.profile-name{
+    display: flex;
+    justify-content: space-between;
+}
+
+.avatar-big{
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    img{
+        height: 200px;
+        width: 200px;
+        border-radius: 500px; 
+    }
+}
+
+.status{
+    height: 27px;
+    width: 88px;
+}
+
+.email{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-top: 30px;
+}
