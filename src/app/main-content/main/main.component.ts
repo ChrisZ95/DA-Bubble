@@ -6,6 +6,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { WorkspaceComponent } from '../../workspace/workspace/workspace.component';
 import { DialogProfileComponent } from '../../dialog-profile/dialog-profile.component';
+import { DialogChannelInfoComponent } from '../../dialog-channel-info/dialog-channel-info.component';
 
 @Component({
   selector: 'app-main',
@@ -23,5 +24,9 @@ export class MainComponent {
 
   openProfileDialog(){
     this.dialog.open(DialogProfileComponent);
+  }
+
+  openChannelInfoDialog(){
+    this.dialog.open(DialogChannelInfoComponent);
   }
 }

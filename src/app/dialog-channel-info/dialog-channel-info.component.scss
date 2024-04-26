@@ -1,0 +1,45 @@
+.dialog-channel-info-container{
+    display: flex;
+    gap: 20px;
+    flex-direction: column;
+    width: 700px;
+    height: 539px;
+    padding: 45px 40px 45px 40px;
+}
+
+.channel-info-title{
+    display: flex;
+    justify-content: space-between;
+}
+
+.channel-name-container{
+    border: 1px solid black;
+    height: 114px;
+}
+
+.channel-name{
+    display: flex;
+    justify-content: space-between;
+}
+
+.description-container{
+    border: 1px solid black;
+    height: 273px;
+}
+
+.description{
+    display: flex;
+    justify-content: space-between;
+}
+
+.description-line-container{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.description-line{
+    width: 90%;
+    height: 1px;
+    background-color: black;
+}
