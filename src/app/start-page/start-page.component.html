@@ -1,11 +1,16 @@
 <div class="background start-page">
-  <app-start-side-header [showLogin]="showLoginComponent"  (signUpClicked)="signUpClicked()"></app-start-side-header>
+  <app-start-side-header [showSignUp]="showSignUpComponent"  (signUpClicked)="signUpClicked()"></app-start-side-header>
 
-  <ng-template [ngIf]="showLoginComponent">
+  <ng-template [ngIf]="showLoginComponent && !showSignUpComponent && !showChooseAvatarComponent">
     <app-log-in></app-log-in>
   </ng-template>
-  <ng-template [ngIf]="!showLoginComponent">
+
+  <ng-template [ngIf]="showSignUpComponent && !showLoginComponent && !showChooseAvatarComponent">
     <app-sign-up (backToLoginClicked)="backToLoginClicked()"></app-sign-up>
+  </ng-template>
+
+  <ng-template [ngIf]="showChooseAvatarComponent && !showLoginComponent && !showSignUpComponent">
+    <app-sign-up-choose-avatar (continueToChooseAvatar)="continueToChooseAvatar()"></app-sign-up-choose-avatar>
   </ng-template>
 
   <app-start-side-footer>

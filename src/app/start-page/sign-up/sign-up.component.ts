@@ -12,9 +12,16 @@ import { Router } from '@angular/router';
 })
 export class SignUpComponent {
   @Output() backToLoginClicked: EventEmitter<any> = new EventEmitter();
+  @Output() continueToChooseAvatar: EventEmitter<any> = new EventEmitter();
 
   backToLogIn() {
     this.backToLoginClicked.emit();
     console.log('back to login')
+  }
+
+  toChooseAvatar() {
+   this.continueToChooseAvatar.emit();
+   console.log('button continue')
+
   }
 }
