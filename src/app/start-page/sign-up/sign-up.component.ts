@@ -1,6 +1,7 @@
-import { Component, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Component, Output,Input, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sign-up',
@@ -10,9 +11,10 @@ import { CommonModule } from '@angular/common';
   styleUrl: './sign-up.component.scss'
 })
 export class SignUpComponent {
+  @Output() backToLoginClicked: EventEmitter<any> = new EventEmitter();
 
-  submitForm(any:any) {
-
+  backToLogIn() {
+    this.backToLoginClicked.emit();
+    console.log('back to login')
   }
-
 }

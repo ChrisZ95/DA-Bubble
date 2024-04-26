@@ -1,13 +1,13 @@
 <div class="background start-page">
-  <app-start-side-header (signUpClicked)="signUpClicked()"></app-start-side-header>
+  <app-start-side-header [showLogin]="showLoginComponent"  (signUpClicked)="signUpClicked()"></app-start-side-header>
 
   <ng-template [ngIf]="showLoginComponent">
     <app-log-in></app-log-in>
   </ng-template>
   <ng-template [ngIf]="!showLoginComponent">
-    <app-sign-up></app-sign-up>
+    <app-sign-up (backToLoginClicked)="backToLoginClicked()"></app-sign-up>
   </ng-template>
 
-
-  <app-start-side-footer></app-start-side-footer>
+  <app-start-side-footer>
+  </app-start-side-footer>
 </div>

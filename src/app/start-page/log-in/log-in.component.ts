@@ -13,7 +13,7 @@ export class LogInComponent {
   constructor(private router: Router) { }
 
   guestLogIn() {
-    this.router.navigate(['/main']);
+    this.router.navigate(['/generalView']);
   }
 
 }

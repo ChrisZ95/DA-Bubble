@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, Input, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -9,15 +9,10 @@ import { CommonModule } from '@angular/common';
   styleUrl: './start-side-header.component.scss'
 })
 export class StartSideHeaderComponent {
-  showLoginComponent = true;
-
-  @Output() signUpClicked = new EventEmitter<void>();
-
-  constructor() { }
+  @Input() showLogin: boolean = true;
+  @Output() signUpClicked: EventEmitter<any> = new EventEmitter();
 
   emitSignUpClicked() {
     this.signUpClicked.emit();
-    this.showLoginComponent = false;
   }
-
 }
