@@ -2,7 +2,7 @@
   <div>
     <img src="./../../../assets/images/dabubble-logo.png">
   </div>
-  <div class="header-right">
+  <div class="header-right" *ngIf="showLoginComponent" >
     <h4>Neu bei DABubble?</h4>
     <button (click)="emitSignUpClicked()">Konto erstellen</button>
   </div>
