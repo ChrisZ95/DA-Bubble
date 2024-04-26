@@ -19,34 +19,6 @@ $wct-height: calc(100vh - 20vh);
   padding-right: 45px;
 }
 
-.workspace-chat-thread {
-  height: $wct-height;
-  display: flex;
-  justify-content: space-evenly;
-}
-
-.workspace {
-  height: $wct-height;
-  width: calc(15vw - 2px);
-  border: 1px solid black;
-}
-
-.workspace-header {
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  img {
-    height: 42px;
-    width: 21px;
-  }
-}
-
-.workspace-channels {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 .channels {
   display: flex;
 }

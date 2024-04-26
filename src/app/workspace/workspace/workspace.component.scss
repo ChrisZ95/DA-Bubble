@@ -1,0 +1,27 @@
+.workspace-chat-thread {
+    height: 100%;
+    display: flex;
+    justify-content: space-evenly;
+  }
+  
+  .workspace {
+    height: 100%;
+    width: calc(15vw - 2px);
+    border: 1px solid black;
+  }
+  
+  .workspace-header {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    img {
+      height: 42px;
+      width: 21px;
+    }
+  }
+  
+  .workspace-channels {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
