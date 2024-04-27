@@ -84,5 +84,7 @@ export class MainComponent {
   openMemberDialog() {
     this.dialog.open(DialogMembersComponent);
   }
-  openChannelInfoDialog() {}
+  openChannelInfoDialog() {
+    this.dialog.open(DialogChannelInfoComponent);
+  }
 }
