@@ -21,7 +21,7 @@ export class MainComponent {
     this.dialog.open(DialogCreateChannelComponent);
   }
 
-  openProfileDialog(){
+  openProfileDialog() {
     this.dialog.open(DialogProfileComponent);
   }
 }

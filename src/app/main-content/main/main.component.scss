@@ -19,30 +19,18 @@ $wct-height: calc(100vh - 20vh);
   padding-right: 45px;
 }
 
-.channels {
+.workspace-chat-thread {
+  height: 100%;
   display: flex;
+  justify-content: space-evenly;
 }
 
-.direct-messages {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.users {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.user {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  img {
-    height: 42px;
-  }
+.workspace {
+  height: 100%;
+  width: calc(15vw - 2px);
+  border: 1px solid black;
+  border-radius: 30px;
+  padding: 10px;
 }
 
 .chat {

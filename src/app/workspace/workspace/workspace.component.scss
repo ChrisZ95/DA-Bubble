@@ -1,27 +1,65 @@
-.workspace-chat-thread {
-    height: 100%;
-    display: flex;
-    justify-content: space-evenly;
+.container {
+  min-height: 100%;
+}
+
+.header {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 90%;
+}
+
+.workspace-logo {
+  height: 60px;
+  width: 60px;
+}
+
+.channels-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 90%;
+}
+
+.channels-overview {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.active-channel {
+  background-color: rgba(236, 238, 254, 1);
+  padding: 4px 20px 4px 20px;
+  border-radius: 20px;
+}
+
+.direct-messages {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 90%;
+}
+
+.users {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: height 1s ease;
+  overflow: hidden;
+}
+
+.open {
+  height: 250px;
+}
+
+.user {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  img {
+    height: 42px;
   }
-  
-  .workspace {
-    height: 100%;
-    width: calc(15vw - 2px);
-    border: 1px solid black;
-  }
-  
-  .workspace-header {
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    img {
-      height: 42px;
-      width: 21px;
-    }
-  }
-  
-  .workspace-channels {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+}
