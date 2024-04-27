@@ -16,13 +16,11 @@
 
     <div class="workspace-chat-thread">
 
-      <div class="workspace">
+      <div class="workspace" [@displayWorkspaceTrigger]="displayWorkspace">
         <app-workspace></app-workspace>
       </div>
 
-
       <div class="chat">
-        <!-- Sollen die Komponenten "emptychat"/"channelchat" usw. in einen Ordner, oder soll jede ihren eigenen Ordner erhalten? -->
         <div class="chat-header">
           <div># Entwicklerteam</div>
           <div>
@@ -37,9 +35,13 @@
       </div>
 
       <div class="thread">
-        <!-- Wie beim chat: Alle Komponnten in einen Ordner, oder nicht? -->
       </div>
     </div>
 
+  </div>
+  <div class="workspace-menu" (click)="showHideWorkspace()">
+    <div class="workspace-menu-text"></div>
+    <p>Workspace-Menü schließen</p>
+    <img src="../../../assets/images/displayWorkspace.png" alt="">
   </div>
 </div>
