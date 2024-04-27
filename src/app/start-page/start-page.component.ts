@@ -48,4 +48,10 @@ export class StartPageComponent implements OnInit {
     console.log('1', this.showLoginComponent, '2', this.showSignUpComponent, '3', this.showChooseAvatarComponent)
   }
 
+  backToSignUpClicked() {
+    console.log("Back to signUp clicked!");
+    this.showSignUpComponent = true;
+    this.showLoginComponent = false;
+    this.showChooseAvatarComponent = false;
+  }
 }

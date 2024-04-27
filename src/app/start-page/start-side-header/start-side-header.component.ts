@@ -10,6 +10,7 @@ import { CommonModule } from '@angular/common';
 })
 export class StartSideHeaderComponent {
   @Input() showSignUp: boolean = true;
+  @Input() showChooseAvatar: boolean = true;
   @Output() signUpClicked: EventEmitter<any> = new EventEmitter();
 
   emitSignUpClicked() {
