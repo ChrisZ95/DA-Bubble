@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-dialog-members',
@@ -8,5 +9,9 @@ import { Component } from '@angular/core';
   styleUrl: './dialog-members.component.scss'
 })
 export class DialogMembersComponent {
+  constructor(private dialogRef: MatDialogRef<DialogMembersComponent>) {}
 
+  closeDialogMember(): void {
+    this.dialogRef.close();
+  }
 }

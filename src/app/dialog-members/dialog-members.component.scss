@@ -1,0 +1,48 @@
+.dialog-member-container{
+    width: 300px;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.dialog-member-title{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 24px;
+    font-weight: 700;
+    img{
+        cursor: pointer;
+    }
+}
+
+.dialog-member-avatar-name{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.dialog-member-avatar{
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding-left: 20px;
+    font-size: 18px;
+    font-weight: 400;
+    img{
+        height: 50px;
+        width: 50px;
+    }
+}
+
+.add-member-container{
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding-left: 20px;
+    img{
+        height: 32px;
+        width: 32px;
+    }
+}
