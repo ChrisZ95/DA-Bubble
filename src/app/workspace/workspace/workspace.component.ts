@@ -1,19 +1,38 @@
-import { Component } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { DialogCreateChannelComponent } from '../../dialog-create-channel/dialog-create-channel.component';
-
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-workspace',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './workspace.component.html',
-  styleUrl: './workspace.component.scss'
+  styleUrl: './workspace.component.scss',
 })
-export class WorkspaceComponent {
-  constructor(public dialog: MatDialog) {}
+export class WorkspaceComponent implements OnInit {
+  constructor() {}
+  displayUsers: boolean = true;
 
-  openCreateChannelDialog() {
-    this.dialog.open(DialogCreateChannelComponent);
+  openCreateChannelDialog(){}
+
+  dropDownMessages() {
+    this.displayUsers = !this.displayUsers;
   }
+  ngOnInit(): void {}
+
+  testUsers: any = [
+    {
+      fullName: 'qwe',
+      avatar: '../../../assets/images/avatar.png',
+    },
+    {
+      fullName: 'asd',
+      avatar: '../../../assets/images/avatar.png',
+    },
+    {
+      fullName: 'yxc',
+      avatar: '../../../assets/images/avatar.png',
+    },
+  ];
 }
+
+

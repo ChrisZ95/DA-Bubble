@@ -19,29 +19,38 @@ $wct-height: calc(100vh - 20vh);
   padding-right: 45px;
 }
 
-.channels {
+.workspace-chat-thread {
+  height: 100%;
   display: flex;
+  justify-content: space-evenly;
 }
 
-.direct-messages {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.workspace {
+  height: 100%;
+  border: 1px solid black;
+  border-radius: 30px;
+  padding: 10px;
 }
 
-.users {
+.workspace-menu {
+  position: absolute;
+  width: max-content;
+  left: 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-}
-
-.user {
-  display: flex;
-  justify-content: center;
   align-items: center;
-  gap: 10px;
+  background-color: rgba(255, 255, 255, 1);
+  bottom: 10%;
+  transform: rotate(180deg);
+  padding: 1% 0.5%;
+  box-shadow: -6px -6px 6px grey;
+  border-top-left-radius: 30px;
+  border-bottom-left-radius: 30px;
+  p {
+    writing-mode: vertical-lr;
+  }
   img {
-    height: 42px;
+    transform: rotate(180deg);
   }
 }
 

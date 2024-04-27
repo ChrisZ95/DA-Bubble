@@ -6,28 +6,83 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { WorkspaceComponent } from '../../workspace/workspace/workspace.component';
 import { DialogProfileComponent } from '../../dialog-profile/dialog-profile.component';
+import { CommonModule } from '@angular/common';
+import {
+  trigger,
+  state,
+  style,
+  transition,
+  animate,
+} from '@angular/animations';
 import { DialogChannelInfoComponent } from '../../dialog-channel-info/dialog-channel-info.component';
 import { DialogMembersComponent } from '../../dialog-members/dialog-members.component';
 
 @Component({
   selector: 'app-main',
   standalone: true,
-  imports: [MatMenuModule, MatButtonModule, RouterOutlet, WorkspaceComponent],
+  imports: [
+    MatMenuModule,
+    MatButtonModule,
+    RouterOutlet,
+    WorkspaceComponent,
+    CommonModule,
+  ],
   templateUrl: './main.component.html',
   styleUrl: './main.component.scss',
+  animations: [
+    trigger('displayWorkspaceTrigger', [
+      state(
+        'true',
+        style({
+          width: '30%',
+          opacity: 1,
+        })
+      ),
+      state(
+        'false',
+        style({
+          width: '0%',
+          opacity: 0,
+        })
+      ),
+      transition('false <=> true', animate('1s linear')),
+    ]),
+    trigger('isThreadOpenTrigger', [
+      state(
+        'true',
+        style({
+          width: '40%',
+          opacity: 1,
+        })
+      ),
+      state(
+        'false',
+        style({
+          width: '0%',
+          opacity: 0,
+        })
+      ),
+      transition('false <=> true', animate('1s linear')),
+    ]),
+  ],
 })
 export class MainComponent {
   constructor(public dialog: MatDialog) {}
+  displayWorkspace: boolean = true;
 
-  openProfileDialog(){
+  openCreateChannelDialog() {
+    this.dialog.open(DialogCreateChannelComponent);
+  }
+
+  openProfileDialog() {
     this.dialog.open(DialogProfileComponent);
   }
-
-  openChannelInfoDialog(){
-    this.dialog.open(DialogChannelInfoComponent);
+  showHideWorkspace() {
+    this.displayWorkspace = !this.displayWorkspace;
   }
 
-  openMemberDialog(){
+  openMemberDialog() {
     this.dialog.open(DialogMembersComponent);
   }
+  openChannelInfoDialog() {}
 }
