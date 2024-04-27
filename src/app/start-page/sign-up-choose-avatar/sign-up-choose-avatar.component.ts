@@ -9,6 +9,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './sign-up-choose-avatar.component.scss'
 })
 export class SignUpChooseAvatarComponent {
+  selectedAvatar: string | null = null;
 
   @Output() backToSignUpClicked: EventEmitter<any> = new EventEmitter();
 
@@ -23,5 +24,10 @@ export class SignUpChooseAvatarComponent {
   backToSignUp() {
     this.backToSignUpClicked.emit();
     console.log('back to sign up button continue')
+  }
+
+  chooseAvatar(index: number) {
+    console.log('Avatar ausgewählt:', index);
+    this.selectedAvatar = this.avatar[index];
   }
 }
