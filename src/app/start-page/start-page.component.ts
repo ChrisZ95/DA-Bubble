@@ -15,13 +15,14 @@ import { SignUpChooseAvatarComponent } from './sign-up-choose-avatar/sign-up-cho
   styleUrl: './start-page.component.scss'
 })
 export class StartPageComponent implements OnInit {
-  showLoginComponent = true;
+  showLoginComponent = false;
   showSignUpComponent = false;
   showChooseAvatarComponent = false;
 
   constructor() { }
 
   ngOnInit(): void {
+    this.showLoginComponent = true;
     console.log('1', this.showLoginComponent, '2', this.showSignUpComponent, '3', this.showChooseAvatarComponent)
   }
 
