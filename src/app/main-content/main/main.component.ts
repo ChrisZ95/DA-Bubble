@@ -5,6 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { WorkspaceComponent } from '../../workspace/workspace/workspace.component';
+import { ChannelchatComponent } from '../../chats/channelchat/channelchat.component';
 import { DialogProfileComponent } from '../../dialog-profile/dialog-profile.component';
 import { CommonModule } from '@angular/common';
 import {
@@ -24,8 +25,9 @@ import { DialogMembersComponent } from '../../dialog-members/dialog-members.comp
     MatMenuModule,
     MatButtonModule,
     RouterOutlet,
-    WorkspaceComponent,
     CommonModule,
+    WorkspaceComponent,
+    ChannelchatComponent,
   ],
   templateUrl: './main.component.html',
   styleUrl: './main.component.scss',

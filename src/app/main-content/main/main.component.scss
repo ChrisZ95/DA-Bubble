@@ -55,34 +55,13 @@ $wct-height: calc(100vh - 20vh);
 }
 
 .chat {
-  height: $wct-height;
-  width: calc(60vw - 2px);
-  border: 1px solid black;
-}
-
-.chat-header {
+  background-color: rgba(255, 255, 255, 1);
   display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  height: 100px;
-}
-
-.chat-images {
-  position: relative;
-  img {
-    height: 42px;
-    position: absolute;
-  }
-  img:nth-child(1) {
-    right: 60px;
-  }
-  img:nth-child(2) {
-    right: 30px;
-  }
-  img:nth-child(3) {
-    right: 0;
-    top: 0;
-  }
+  flex-direction: column;
+  width: auto;
+  height: $wct-height;
+  border: 1px solid black;
+  border-radius: 30px;
 }
 
 .thread {
@@ -118,11 +97,11 @@ $wct-height: calc(100vh - 20vh);
   }
 }
 
-::ng-deep.cdk-overlay-pane{
+::ng-deep.cdk-overlay-pane {
   margin-top: 30px !important;
 }
 
-::ng-deep.mat-mdc-menu-panel{
+::ng-deep.mat-mdc-menu-panel {
   border-top-left-radius: 30px !important;
   border-bottom-left-radius: 30px !important;
   border-top-right-radius: 0px !important;
@@ -132,19 +111,19 @@ $wct-height: calc(100vh - 20vh);
   justify-content: center;
 }
 
-::ng-deep.mat-mdc-menu-item-text{
+::ng-deep.mat-mdc-menu-item-text {
   text-align: center !important;
 }
 
-::ng-deep.mat-mdc-menu-item{
+::ng-deep.mat-mdc-menu-item {
   width: calc(100% - 40px) !important;
   border-radius: 40px !important;
   margin-left: 20px !important;
   margin-right: 20px !important;
   padding-left: 0 !important;
   padding-right: 0 !important;
-  &:hover{
-    background-color: rgb(236,238,254) !important;
-    color: rgb(83,90,241) !important;
+  &:hover {
+    background-color: rgb(236, 238, 254) !important;
+    color: rgb(83, 90, 241) !important;
   }
 }
