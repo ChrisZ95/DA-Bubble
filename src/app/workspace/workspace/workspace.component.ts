@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogCreateChannelComponent } from '../../dialog-create-channel/dialog-create-channel.component';
 
 
 @Component({
@@ -9,5 +11,9 @@ import { Component } from '@angular/core';
   styleUrl: './workspace.component.scss'
 })
 export class WorkspaceComponent {
+  constructor(public dialog: MatDialog) {}
 
+  openCreateChannelDialog() {
+    this.dialog.open(DialogCreateChannelComponent);
+  }
 }

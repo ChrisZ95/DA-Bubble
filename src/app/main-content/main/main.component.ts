@@ -18,10 +18,6 @@ import { DialogChannelInfoComponent } from '../../dialog-channel-info/dialog-cha
 export class MainComponent {
   constructor(public dialog: MatDialog) {}
 
-  openCreateChannelDialog() {
-    this.dialog.open(DialogCreateChannelComponent);
-  }
-
   openProfileDialog(){
     this.dialog.open(DialogProfileComponent);
   }
