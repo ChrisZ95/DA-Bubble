@@ -12,6 +12,8 @@ export class WorkspaceComponent implements OnInit {
   constructor() {}
   displayUsers: boolean = true;
 
+  openCreateChannelDialog(){}
+
   dropDownMessages() {
     this.displayUsers = !this.displayUsers;
   }

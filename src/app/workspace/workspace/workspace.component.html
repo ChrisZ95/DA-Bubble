@@ -16,22 +16,23 @@
         <!-- (click)="openCreateChannelDialog()" -->
         <span class="active-channel"># Entwicklerteam</span>
     </div>
+    <img (click)="openCreateChannelDialog()" src="../assets/images/add.svg" alt="" class="channels-add">
+</div>
 
-    <div class="">
-        <div class="direct-messages">
-            <img src="../assets/images/arrowDropDown.svg" alt="" class="channels-dropdown" (click)="dropDownMessages()">
-            <img src="../assets/images/accountCircle.svg" alt="">
-            <div>Direktnachrichten</div>
+<div class="">
+    <div class="direct-messages">
+        <img src="../assets/images/arrowDropDown.svg" alt="" class="channels-dropdown" (click)="dropDownMessages()">
+        <img src="../assets/images/accountCircle.svg" alt="">
+        <div>Direktnachrichten</div>
+    </div>
+    <!-- 250px muss noch angepasst werden -->
+    <div class="users"
+        [ngStyle]="{'height': displayUsers ? '250px' : '0', 'overflow': 'hidden', 'transition': 'height 0.5s ease'}">
+
+        <div class="user" *ngFor="let user of testUsers, let i = index">
+            <img [src]="user.avatar" alt="Avatar">
+            <div>{{ user.fullName }}</div>
         </div>
-        <!-- 250px muss noch angepasst werden -->
-        <div class="users"
-            [ngStyle]="{'height': displayUsers ? '250px' : '0', 'overflow': 'hidden', 'transition': 'height 0.5s ease'}">
 
-            <div class="user" *ngFor="let user of testUsers, let i = index">
-                <img [src]="user.avatar" alt="Avatar">
-                <div>{{ user.fullName }}</div>
-            </div>
-
-        </div>
     </div>
 </div>

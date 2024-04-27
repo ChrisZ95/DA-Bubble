@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './start-side-header.component.scss'
 })
 export class StartSideHeaderComponent {
-  @Input() showLogin: boolean = true;
+  @Input() showSignUp: boolean = true;
   @Output() signUpClicked: EventEmitter<any> = new EventEmitter();
 
   emitSignUpClicked() {

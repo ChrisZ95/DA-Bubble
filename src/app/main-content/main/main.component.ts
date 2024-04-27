@@ -8,6 +8,7 @@ import { WorkspaceComponent } from '../../workspace/workspace/workspace.componen
 import { DialogProfileComponent } from '../../dialog-profile/dialog-profile.component';
 import { CommonModule } from '@angular/common';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { DialogChannelInfoComponent } from '../../dialog-channel-info/dialog-channel-info.component';
 
 @Component({
   selector: 'app-main',
