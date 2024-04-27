@@ -108,3 +108,34 @@ $wct-height: calc(100vh - 20vh);
     cursor: pointer;
   }
 }
+
+::ng-deep.cdk-overlay-pane{
+  margin-top: 30px !important;
+}
+
+::ng-deep.mat-mdc-menu-panel{
+  border-top-left-radius: 30px !important;
+  border-bottom-left-radius: 30px !important;
+  border-top-right-radius: 0px !important;
+  border-bottom-right-radius: 30px !important;
+  width: 200px;
+  display: flex;
+  justify-content: center;
+}
+
+::ng-deep.mat-mdc-menu-item-text{
+  text-align: center !important;
+}
+
+::ng-deep.mat-mdc-menu-item{
+  width: calc(100% - 40px) !important;
+  border-radius: 40px !important;
+  margin-left: 20px !important;
+  margin-right: 20px !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  &:hover{
+    background-color: rgb(236,238,254) !important;
+    color: rgb(83,90,241) !important;
+  }
+}
