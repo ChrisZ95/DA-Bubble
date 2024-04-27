@@ -7,8 +7,15 @@ import { MatButtonModule } from '@angular/material/button';
 import { WorkspaceComponent } from '../../workspace/workspace/workspace.component';
 import { DialogProfileComponent } from '../../dialog-profile/dialog-profile.component';
 import { CommonModule } from '@angular/common';
-import { trigger, state, style, transition, animate } from '@angular/animations';
+import {
+  trigger,
+  state,
+  style,
+  transition,
+  animate,
+} from '@angular/animations';
 import { DialogChannelInfoComponent } from '../../dialog-channel-info/dialog-channel-info.component';
+import { DialogMembersComponent } from '../../dialog-members/dialog-members.component';
 
 @Component({
   selector: 'app-main',
@@ -73,4 +80,9 @@ export class MainComponent {
   showHideWorkspace() {
     this.displayWorkspace = !this.displayWorkspace;
   }
+
+  openMemberDialog() {
+    this.dialog.open(DialogMembersComponent);
+  }
+  openChannelInfoDialog() {}
 }
