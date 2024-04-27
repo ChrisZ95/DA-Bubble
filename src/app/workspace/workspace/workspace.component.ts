@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { DialogCreateChannelComponent } from '../../dialog-create-channel/dialog-create-channel.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-workspace',
@@ -9,10 +11,12 @@ import { CommonModule } from '@angular/common';
   styleUrl: './workspace.component.scss',
 })
 export class WorkspaceComponent implements OnInit {
-  constructor() {}
+  constructor(public dialog: MatDialog) {}
   displayUsers: boolean = true;
 
-  openCreateChannelDialog(){}
+  openCreateChannelDialog() {
+    this.dialog.open(DialogCreateChannelComponent);
+  }
 
   dropDownMessages() {
     this.displayUsers = !this.displayUsers;

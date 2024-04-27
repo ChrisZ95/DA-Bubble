@@ -70,10 +70,6 @@ export class MainComponent {
   constructor(public dialog: MatDialog) {}
   displayWorkspace: boolean = true;
 
-  openCreateChannelDialog() {
-    this.dialog.open(DialogCreateChannelComponent);
-  }
-
   openProfileDialog() {
     this.dialog.open(DialogProfileComponent);
   }
