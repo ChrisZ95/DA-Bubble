@@ -56,3 +56,8 @@
     justify-content: end !important;
     align-items: start !important;
 }
+
+::ng-deep.mat-mdc-dialog-panel{
+    margin-top: 110px !important;
+    margin-right: 45px !important;
+}
