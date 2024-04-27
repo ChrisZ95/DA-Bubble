@@ -6,11 +6,11 @@
   </ng-template>
 
   <ng-template [ngIf]="showSignUpComponent && !showLoginComponent && !showChooseAvatarComponent">
-    <app-sign-up (backToLoginClicked)="backToLoginClicked()"></app-sign-up>
+    <app-sign-up (backToLoginClicked)="backToLoginClicked()" (continueToChooseAvatar)="continueToChooseAvatar()"></app-sign-up>
   </ng-template>
 
   <ng-template [ngIf]="showChooseAvatarComponent && !showLoginComponent && !showSignUpComponent">
-    <app-sign-up-choose-avatar (continueToChooseAvatar)="continueToChooseAvatar()"></app-sign-up-choose-avatar>
+    <app-sign-up-choose-avatar></app-sign-up-choose-avatar>
   </ng-template>
 
   <app-start-side-footer>

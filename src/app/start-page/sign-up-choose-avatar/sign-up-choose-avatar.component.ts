@@ -10,4 +10,11 @@ import { CommonModule } from '@angular/common';
 })
 export class SignUpChooseAvatarComponent {
 
+  avatar = ['./../../../assets/images/80. avatar interaction (1).png',
+   './../../../assets/images/80. avatar interaction (2).png',
+   './../../../assets/images/80. avatar interaction (3).png',
+   './../../../assets/images/80. avatar interaction (4).png',
+   './../../../assets/images/80. avatar interaction (5).png',
+  ]
+
 }

@@ -1,3 +1,40 @@
-<div class="a">
-HAllO Welt
+<div class="log-in-card-container">
+
+  <div class="log-in-card">
+
+    <div class="card-header-section">
+      <button class="back-to-log-in-button" >
+        <img src="./../../../assets/images/arrow_back.png">
+      </button>
+      <h1>Wähle deinen Avatar</h1>
+    </div>
+
+    <div class="chosen-avatar">
+      <img src="./../../../assets/images/Property 1=Default (8).png">
+      <h1>Max Mustermann</h1>
+    </div>
+
+    <div class="choose-avatar-list">
+      <span>Aus der Liste wählen</span>
+      <div class="avatar-list" >
+          <div *ngFor="let img of avatar">
+            <img class="avatar-item" [src]="img">
+          </div>
+      </div>
+
+     <div class="upload-own-img-container">
+      <span>eigenes Bild verwenden</span>
+      <button class="upload-img-button">Datei hochladen</button>
+     </div>
+
+    </div>
+
+    <div class="continue-button-container">
+     <div>
+      <button  class="continue-button">Weiter</button>
+     </div>
+    </div>
+
+  </div>
+
 </div>

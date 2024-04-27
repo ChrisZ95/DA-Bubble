@@ -20,7 +20,7 @@ export class SignUpComponent {
   }
 
   toChooseAvatar() {
-   this.continueToChooseAvatar.emit();
-   console.log('button continue')
+    this.continueToChooseAvatar.emit();
+    console.log('button continue')
   }
 }
