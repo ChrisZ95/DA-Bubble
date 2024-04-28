@@ -1,7 +1,18 @@
 .start-page {
   max-height: 100vh;
 
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.5);
+    z-index: 1000;
+  }
+  .email-send-container,
   .account-created-container {
+    gap: 10px;
     position: absolute;
     right: 20px;
     bottom: 20px;
@@ -22,17 +33,12 @@
     span {
       font-size: 18px;
     }
-  }
-}
 
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(255, 255, 255, 0.5); /* Hier kannst du die Farbe und Transparenz anpassen */
-  z-index: 1000; /* Stelle sicher, dass die Schicht über anderen Elementen liegt */
+    img {
+      height: 28px;
+      width: 28px;
+    }
+  }
 }
 
 @keyframes notification-slide-in {

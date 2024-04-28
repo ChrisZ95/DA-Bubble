@@ -1,9 +1,9 @@
-<div class="background start-page" [class.account-created]="accountCreate">
-  <div class="overlay" *ngIf="accountCreate"></div>
+<div class="background start-page" [class.account-created]="accountCreate" [class.account-created]="emailSend">
+  <div class="overlay" *ngIf="accountCreate || emailSend"></div>
   <app-start-side-header [showSignUp]="showSignUpComponent"  [showChooseAvatar]="showChooseAvatarComponent"  (signUpClicked)="signUpClicked()"></app-start-side-header>
 
   <ng-template [ngIf]="showLoginComponent && !showSignUpComponent && !showChooseAvatarComponent">
-    <app-log-in></app-log-in>
+    <app-log-in (forgotPassword)="forgotPassword()"></app-log-in>
   </ng-template>
 
   <ng-template [ngIf]="showSignUpComponent && !showLoginComponent && !showChooseAvatarComponent">
@@ -14,8 +14,18 @@
     <app-sign-up-choose-avatar (accountCreated)="accountCreated()" (backToSignUpClicked)="backToSignUpClicked()"></app-sign-up-choose-avatar>
   </ng-template>
 
+  <ng-template [ngIf]="showForgetPasswordComponent && !showLoginComponent && !showSignUpComponent && !showChooseAvatarComponent">
+    <app-forget-password (emailSended)="emailSended()" (backToLoginClicked)="backToLoginClicked()"></app-forget-password>
+  </ng-template>
+
+
   <div *ngIf="accountCreate" class="account-created-container">
     <span>Konto erfolgreich erstellt</span>
+  </div>
+
+  <div *ngIf="emailSend" class="email-send-container">
+    <img src="./../../assets/images/send.png">
+    <span>E-Mail gesendet</span>
   </div>
 
   <app-start-side-footer>

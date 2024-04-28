@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
   styleUrl: './log-in.component.scss'
 })
 export class LogInComponent {
+  @Output() forgotPassword: EventEmitter<any> = new EventEmitter();
 
   constructor(private router: Router) { }
 
@@ -16,4 +17,7 @@ export class LogInComponent {
     this.router.navigate(['/generalView']);
   }
 
+  openForgetPasswordComponent() {
+    this.forgotPassword.emit();
+  }
 }
