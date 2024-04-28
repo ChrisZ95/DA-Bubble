@@ -17,6 +17,7 @@ import {
 } from '@angular/animations';
 import { DialogChannelInfoComponent } from '../../dialog-channel-info/dialog-channel-info.component';
 import { DialogMembersComponent } from '../../dialog-members/dialog-members.component';
+import { ChannelthreadComponent } from '../../threads/channelthread/channelthread.component';
 
 @Component({
   selector: 'app-main',
@@ -28,6 +29,7 @@ import { DialogMembersComponent } from '../../dialog-members/dialog-members.comp
     CommonModule,
     WorkspaceComponent,
     ChannelchatComponent,
+    ChannelthreadComponent,
   ],
   templateUrl: './main.component.html',
   styleUrl: './main.component.scss',
