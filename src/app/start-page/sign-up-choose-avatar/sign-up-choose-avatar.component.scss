@@ -26,6 +26,10 @@
         cursor: pointer;
         filter: brightness(1.6);
       }
+
+      &:active {
+        background-color: #565bf4;
+      }
     }
 
     .card-header-section {

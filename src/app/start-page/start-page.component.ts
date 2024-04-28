@@ -18,6 +18,7 @@ export class StartPageComponent implements OnInit {
   showLoginComponent = false;
   showSignUpComponent = false;
   showChooseAvatarComponent = false;
+  accountCreate = false;
 
   constructor() { }
 
@@ -53,5 +54,15 @@ export class StartPageComponent implements OnInit {
     this.showSignUpComponent = true;
     this.showLoginComponent = false;
     this.showChooseAvatarComponent = false;
+  }
+
+  accountCreated() {
+    this.accountCreate = true;
+    setTimeout(() => {
+      this.showLoginComponent = true;
+      this.showSignUpComponent = false;
+      this.showChooseAvatarComponent = false;
+      this.accountCreate = false;
+    }, 2000);
   }
 }

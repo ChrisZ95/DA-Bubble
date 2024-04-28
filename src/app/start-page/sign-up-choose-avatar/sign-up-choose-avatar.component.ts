@@ -12,6 +12,7 @@ export class SignUpChooseAvatarComponent {
   selectedAvatar: string | null = null;
 
   @Output() backToSignUpClicked: EventEmitter<any> = new EventEmitter();
+  @Output() accountCreated: EventEmitter<any> = new EventEmitter();
 
   avatar = ['./../../../assets/images/80. avatar interaction (1).png',
    './../../../assets/images/80. avatar interaction (2).png',
@@ -29,5 +30,10 @@ export class SignUpChooseAvatarComponent {
   chooseAvatar(index: number) {
     console.log('Avatar ausgewählt:', index);
     this.selectedAvatar = this.avatar[index];
+  }
+
+  createAccount() {
+    this.accountCreated.emit();
+    console.log('account wurde erstellt')
   }
 }

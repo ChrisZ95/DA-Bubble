@@ -1,4 +1,5 @@
-<div class="background start-page">
+<div class="background start-page" [class.account-created]="accountCreate">
+  <div class="overlay" *ngIf="accountCreate"></div>
   <app-start-side-header [showSignUp]="showSignUpComponent"  [showChooseAvatar]="showChooseAvatarComponent"  (signUpClicked)="signUpClicked()"></app-start-side-header>
 
   <ng-template [ngIf]="showLoginComponent && !showSignUpComponent && !showChooseAvatarComponent">
@@ -10,8 +11,12 @@
   </ng-template>
 
   <ng-template [ngIf]="showChooseAvatarComponent && !showLoginComponent && !showSignUpComponent">
-    <app-sign-up-choose-avatar (backToSignUpClicked)="backToSignUpClicked()"></app-sign-up-choose-avatar>
+    <app-sign-up-choose-avatar (accountCreated)="accountCreated()" (backToSignUpClicked)="backToSignUpClicked()"></app-sign-up-choose-avatar>
   </ng-template>
+
+  <div *ngIf="accountCreate" class="account-created-container">
+    <span>Konto erfolgreich erstellt</span>
+  </div>
 
   <app-start-side-footer>
   </app-start-side-footer>
