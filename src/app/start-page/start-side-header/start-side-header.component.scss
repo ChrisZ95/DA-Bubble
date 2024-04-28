@@ -4,6 +4,15 @@
   justify-content: space-between;
   padding: 45px;
 
+  .header-left {
+
+    img {
+       &:hover {
+        cursor: pointer;
+       }
+    }
+  }
+
   .header-right {
     display: flex;
     flex-direction: column;

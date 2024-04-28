@@ -1,22 +1,27 @@
-<div class="background start-page" [class.account-created]="accountCreate" [class.account-created]="emailSend">
-  <div class="overlay" *ngIf="accountCreate || emailSend"></div>
-  <app-start-side-header [showSignUp]="showSignUpComponent"  [showChooseAvatar]="showChooseAvatarComponent"  (signUpClicked)="signUpClicked()"></app-start-side-header>
+<div class="background start-page" [class.account-created]="accountCreate" [class.account-created]="emailSend" [class.account-created]="changedPassword">
+  <div class="overlay" *ngIf="accountCreate || emailSend || changedPassword"></div>
+  <app-start-side-header [showSignUp]="showSignUpComponent"  [showChooseAvatar]="showChooseAvatarComponent"  (signUpClicked)="signUpClicked()" (backToLoginClicked)="backToLoginClicked()"></app-start-side-header>
 
-  <ng-template [ngIf]="showLoginComponent && !showSignUpComponent && !showChooseAvatarComponent">
+  <ng-template [ngIf]="showLoginComponent && !showSignUpComponent && !showChooseAvatarComponent && !showForgetPasswordComponent && !showChangePasswordComponent">
     <app-log-in (forgotPassword)="forgotPassword()"></app-log-in>
   </ng-template>
 
-  <ng-template [ngIf]="showSignUpComponent && !showLoginComponent && !showChooseAvatarComponent">
+  <ng-template [ngIf]="showSignUpComponent && !showLoginComponent && !showChooseAvatarComponent  && !showForgetPasswordComponent && !showChangePasswordComponent">
     <app-sign-up (backToLoginClicked)="backToLoginClicked()" (continueToChooseAvatar)="continueToChooseAvatar()"></app-sign-up>
   </ng-template>
 
-  <ng-template [ngIf]="showChooseAvatarComponent && !showLoginComponent && !showSignUpComponent">
+  <ng-template [ngIf]="showChooseAvatarComponent && !showLoginComponent && !showSignUpComponent  && !showForgetPasswordComponent && !showChangePasswordComponent">
     <app-sign-up-choose-avatar (accountCreated)="accountCreated()" (backToSignUpClicked)="backToSignUpClicked()"></app-sign-up-choose-avatar>
   </ng-template>
 
-  <ng-template [ngIf]="showForgetPasswordComponent && !showLoginComponent && !showSignUpComponent && !showChooseAvatarComponent">
+  <ng-template [ngIf]="showForgetPasswordComponent && !showLoginComponent && !showSignUpComponent && !showChooseAvatarComponent && !showChangePasswordComponent">
     <app-forget-password (emailSended)="emailSended()" (backToLoginClicked)="backToLoginClicked()"></app-forget-password>
   </ng-template>
+
+  <ng-template [ngIf]="showChangePasswordComponent && !showForgetPasswordComponent && !showLoginComponent && !showSignUpComponent && !showChooseAvatarComponent">
+    <app-change-passwort (forgotPassword)="forgotPassword()" (PasswordSuccesfullyChanged)="PasswordSuccesfullyChanged()"></app-change-passwort>
+  </ng-template>
+
 
 
   <div *ngIf="accountCreate" class="account-created-container">
@@ -26,6 +31,10 @@
   <div *ngIf="emailSend" class="email-send-container">
     <img src="./../../assets/images/send.png">
     <span>E-Mail gesendet</span>
+  </div>
+
+  <div *ngIf="changedPassword" class="email-send-container">
+    <span>Anmelden</span>
   </div>
 
   <app-start-side-footer>

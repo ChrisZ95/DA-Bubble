@@ -12,8 +12,14 @@ export class StartSideHeaderComponent {
   @Input() showSignUp: boolean = true;
   @Input() showChooseAvatar: boolean = true;
   @Output() signUpClicked: EventEmitter<any> = new EventEmitter();
+  @Output() backToLoginClicked: EventEmitter<any> = new EventEmitter();
 
   emitSignUpClicked() {
     this.signUpClicked.emit();
+  }
+
+  backToLogIn() {
+    this.backToLoginClicked.emit();
+    console.log('back to login')
   }
 }
