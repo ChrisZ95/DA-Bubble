@@ -31,6 +31,8 @@ export class StartPageComponent implements OnInit {
 
   backToSignUpFromPrivacyPolice = false;
 
+  startScreen = false;
+
   accountCreate = false;
   emailSend = false;
   changedPassword = false;
@@ -38,8 +40,16 @@ export class StartPageComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    this.showStartScreen();
     this.showLoginComponent = true;
+    this.startScreen = true;
     console.log('1', this.showLoginComponent, '2', this.showSignUpComponent, '3', this.showChooseAvatarComponent)
+  }
+
+  showStartScreen() {
+    setTimeout(() => {
+      this.startScreen = false;
+    }, 3200);
   }
 
   signUpClicked() {
