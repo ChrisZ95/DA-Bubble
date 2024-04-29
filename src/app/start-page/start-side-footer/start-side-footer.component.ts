@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Output,EventEmitter  } from '@angular/core';
 
 @Component({
   selector: 'app-start-side-footer',
@@ -8,5 +8,14 @@ import { Component } from '@angular/core';
   styleUrl: './start-side-footer.component.scss'
 })
 export class StartSideFooterComponent {
+  @Output() openImpressum: EventEmitter<any> = new EventEmitter();
+  @Output() openPrivacyPolice: EventEmitter<any> = new EventEmitter();
 
+  openImpressumComponent() {
+    this.openImpressum.emit();
+  }
+
+  openPrivacyPoliceComponent() {
+    this.openPrivacyPolice.emit();
+  }
 }

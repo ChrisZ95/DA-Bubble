@@ -8,12 +8,15 @@ import { RouterModule } from '@angular/router';
 import { SignUpChooseAvatarComponent } from './sign-up-choose-avatar/sign-up-choose-avatar.component';
 import { ForgetPasswordComponent } from './forget-password/forget-password.component';
 import { ChangePasswortComponent } from './change-passwort/change-passwort.component';
+import { ImprintComponent } from './imprint/imprint.component';
+import { PrivacyPoliceComponent } from './privacy-police/privacy-police.component';
 
 @Component({
   selector: 'app-start-page',
   standalone: true,
   imports: [StartSideHeaderComponent, StartSideFooterComponent, LogInComponent, SignUpComponent,
-     CommonModule, RouterModule, SignUpChooseAvatarComponent, ForgetPasswordComponent, ChangePasswortComponent],
+     CommonModule, RouterModule, SignUpChooseAvatarComponent, ForgetPasswordComponent,
+     ChangePasswortComponent, ImprintComponent, PrivacyPoliceComponent],
   templateUrl: './start-page.component.html',
   styleUrl: './start-page.component.scss'
 })
@@ -23,6 +26,8 @@ export class StartPageComponent implements OnInit {
   showChooseAvatarComponent = false;
   showForgetPasswordComponent = false;
   showChangePasswordComponent = false;
+  showImpressumComponent = false;
+  showPrivacyPoliceComponent = false;
 
   accountCreate = false;
   emailSend = false;
@@ -42,6 +47,8 @@ export class StartPageComponent implements OnInit {
     this.showChooseAvatarComponent = false;
     this.showForgetPasswordComponent = false;
     this.showChangePasswordComponent = false;
+    this.showImpressumComponent = false;
+    this.showPrivacyPoliceComponent = false;
   }
 
   backToLoginClicked() {
@@ -51,6 +58,8 @@ export class StartPageComponent implements OnInit {
     this.showSignUpComponent = false;
     this.showForgetPasswordComponent = false;
     this.showChangePasswordComponent = false;
+    this.showImpressumComponent = false;
+    this.showPrivacyPoliceComponent = false;
   }
 
   continueToChooseAvatar() {
@@ -60,6 +69,8 @@ export class StartPageComponent implements OnInit {
     this.showSignUpComponent = false;
     this.showForgetPasswordComponent = false;
     this.showChangePasswordComponent = false;
+    this.showImpressumComponent = false;
+    this.showPrivacyPoliceComponent = false;
     console.log('1', this.showLoginComponent, '2', this.showSignUpComponent, '3', this.showChooseAvatarComponent)
   }
 
@@ -70,6 +81,8 @@ export class StartPageComponent implements OnInit {
     this.showChooseAvatarComponent = false;
     this.showForgetPasswordComponent = false;
     this.showChangePasswordComponent = false;
+    this.showImpressumComponent = false;
+    this.showPrivacyPoliceComponent = false;
   }
 
   accountCreated() {
@@ -80,6 +93,8 @@ export class StartPageComponent implements OnInit {
       this.showChooseAvatarComponent = false;
       this.accountCreate = false;
       this.showChangePasswordComponent = false;
+      this.showImpressumComponent = false;
+      this.showPrivacyPoliceComponent = false;
     }, 2000);
   }
 
@@ -92,6 +107,8 @@ export class StartPageComponent implements OnInit {
       this.showForgetPasswordComponent = false;
       this.showChooseAvatarComponent = false;
       this.emailSend = false;
+      this.showImpressumComponent = false;
+      this.showPrivacyPoliceComponent = false;
     }, 2000);
   }
 
@@ -105,11 +122,35 @@ export class StartPageComponent implements OnInit {
     this.showForgetPasswordComponent = false;
     this.showChangePasswordComponent = false;
     this.changedPassword = false;
+    this.showImpressumComponent = false;
+    this.showPrivacyPoliceComponent = false;
    }, 2000);
   }
 
   forgotPassword() {
     this.showForgetPasswordComponent = true;
+    this.showLoginComponent = false;
+    this.showSignUpComponent = false;
+    this.showChooseAvatarComponent = false;
+    this.showChangePasswordComponent = false;
+    this.showImpressumComponent = false;
+    this.showPrivacyPoliceComponent = false;
+  }
+
+  openImpressum() {
+    this.showImpressumComponent = true;
+    this.showForgetPasswordComponent = false;
+    this.showLoginComponent = false;
+    this.showSignUpComponent = false;
+    this.showChooseAvatarComponent = false;
+    this.showChangePasswordComponent = false;
+    this.showPrivacyPoliceComponent = false;
+  }
+
+  openPrivacyPolice() {
+    this.showPrivacyPoliceComponent = true;
+    this.showImpressumComponent = false;
+    this.showForgetPasswordComponent = false;
     this.showLoginComponent = false;
     this.showSignUpComponent = false;
     this.showChooseAvatarComponent = false;

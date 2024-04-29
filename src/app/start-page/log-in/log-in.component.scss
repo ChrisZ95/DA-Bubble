@@ -91,6 +91,15 @@
             font-family: 'nunito-bold';
           }
         }
+
+        &:active {
+          background-color: #565bf4;
+
+          a {
+            font-family: 'nunito-bold';
+            color: white;
+          }
+        }
       }
     }
 

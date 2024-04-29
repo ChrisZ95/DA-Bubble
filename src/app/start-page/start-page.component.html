@@ -2,27 +2,33 @@
   <div class="overlay" *ngIf="accountCreate || emailSend || changedPassword"></div>
   <app-start-side-header [showSignUp]="showSignUpComponent"  [showChooseAvatar]="showChooseAvatarComponent"  (signUpClicked)="signUpClicked()" (backToLoginClicked)="backToLoginClicked()"></app-start-side-header>
 
-  <ng-template [ngIf]="showLoginComponent && !showSignUpComponent && !showChooseAvatarComponent && !showForgetPasswordComponent && !showChangePasswordComponent">
+  <ng-template [ngIf]="showLoginComponent && !showSignUpComponent && !showChooseAvatarComponent && !showForgetPasswordComponent && !showChangePasswordComponent&& !showImpressumComponent && !showPrivacyPoliceComponent">
     <app-log-in (forgotPassword)="forgotPassword()"></app-log-in>
   </ng-template>
 
-  <ng-template [ngIf]="showSignUpComponent && !showLoginComponent && !showChooseAvatarComponent  && !showForgetPasswordComponent && !showChangePasswordComponent">
+  <ng-template [ngIf]="showSignUpComponent && !showLoginComponent && !showChooseAvatarComponent  && !showForgetPasswordComponent && !showChangePasswordComponent && !showImpressumComponent && !showPrivacyPoliceComponent">
     <app-sign-up (backToLoginClicked)="backToLoginClicked()" (continueToChooseAvatar)="continueToChooseAvatar()"></app-sign-up>
   </ng-template>
 
-  <ng-template [ngIf]="showChooseAvatarComponent && !showLoginComponent && !showSignUpComponent  && !showForgetPasswordComponent && !showChangePasswordComponent">
+  <ng-template [ngIf]="showChooseAvatarComponent && !showLoginComponent && !showSignUpComponent  && !showForgetPasswordComponent && !showChangePasswordComponent && !showImpressumComponent && !showPrivacyPoliceComponent">
     <app-sign-up-choose-avatar (accountCreated)="accountCreated()" (backToSignUpClicked)="backToSignUpClicked()"></app-sign-up-choose-avatar>
   </ng-template>
 
-  <ng-template [ngIf]="showForgetPasswordComponent && !showLoginComponent && !showSignUpComponent && !showChooseAvatarComponent && !showChangePasswordComponent">
+  <ng-template [ngIf]="showForgetPasswordComponent && !showLoginComponent && !showSignUpComponent && !showChooseAvatarComponent && !showChangePasswordComponent && !showImpressumComponent && !showPrivacyPoliceComponent">
     <app-forget-password (emailSended)="emailSended()" (backToLoginClicked)="backToLoginClicked()"></app-forget-password>
   </ng-template>
 
-  <ng-template [ngIf]="showChangePasswordComponent && !showForgetPasswordComponent && !showLoginComponent && !showSignUpComponent && !showChooseAvatarComponent">
+  <ng-template [ngIf]="showChangePasswordComponent && !showForgetPasswordComponent && !showLoginComponent && !showSignUpComponent && !showChooseAvatarComponent && !showImpressumComponent && !showPrivacyPoliceComponent">
     <app-change-passwort (forgotPassword)="forgotPassword()" (PasswordSuccesfullyChanged)="PasswordSuccesfullyChanged()"></app-change-passwort>
   </ng-template>
 
+  <ng-template [ngIf]="showImpressumComponent && !showChangePasswordComponent && !showForgetPasswordComponent && !showLoginComponent && !showSignUpComponent && !showChooseAvatarComponent && !showPrivacyPoliceComponent">
+    <app-imprint (backToLoginClicked)="backToLoginClicked()"></app-imprint>
+  </ng-template>
 
+  <ng-template [ngIf]="showPrivacyPoliceComponent && !showImpressumComponent && !showChangePasswordComponent && !showForgetPasswordComponent && !showLoginComponent && !showSignUpComponent && !showChooseAvatarComponent">
+    <app-privacy-police  (backToLoginClicked)="backToLoginClicked()"></app-privacy-police>
+  </ng-template>
 
   <div *ngIf="accountCreate" class="account-created-container">
     <span>Konto erfolgreich erstellt</span>
@@ -37,6 +43,8 @@
     <span>Anmelden</span>
   </div>
 
-  <app-start-side-footer>
-  </app-start-side-footer>
+  <ng-template [ngIf]="showLoginComponent || showSignUpComponent || showChooseAvatarComponent || showForgetPasswordComponent || showChangePasswordComponent || showImpressumComponent">
+    <app-start-side-footer (openImpressum)="openImpressum()" (openPrivacyPolice)="openPrivacyPolice()"></app-start-side-footer>
+  </ng-template>
+
 </div>
