@@ -29,6 +29,8 @@ export class StartPageComponent implements OnInit {
   showImpressumComponent = false;
   showPrivacyPoliceComponent = false;
 
+  backToSignUpFromPrivacyPolice = false;
+
   accountCreate = false;
   emailSend = false;
   changedPassword = false;
@@ -43,6 +45,7 @@ export class StartPageComponent implements OnInit {
   signUpClicked() {
     console.log("Sign-up clicked!");
     this.showSignUpComponent = true;
+    this.backToSignUpFromPrivacyPolice = true;
     this.showLoginComponent = false;
     this.showChooseAvatarComponent = false;
     this.showForgetPasswordComponent = false;
@@ -60,6 +63,7 @@ export class StartPageComponent implements OnInit {
     this.showChangePasswordComponent = false;
     this.showImpressumComponent = false;
     this.showPrivacyPoliceComponent = false;
+    this.backToSignUpFromPrivacyPolice = false;
   }
 
   continueToChooseAvatar() {

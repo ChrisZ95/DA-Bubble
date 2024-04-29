@@ -13,6 +13,7 @@ import { Router } from '@angular/router';
 export class SignUpComponent {
   @Output() backToLoginClicked: EventEmitter<any> = new EventEmitter();
   @Output() continueToChooseAvatar: EventEmitter<any> = new EventEmitter();
+  @Output() openPrivacyPolice: EventEmitter<any> = new EventEmitter();
 
   backToLogIn() {
     this.backToLoginClicked.emit();
@@ -22,5 +23,9 @@ export class SignUpComponent {
   toChooseAvatar() {
     this.continueToChooseAvatar.emit();
     console.log('button continue')
+  }
+
+  openPrivacyPoliceComponent() {
+    this.openPrivacyPolice.emit();
   }
 }

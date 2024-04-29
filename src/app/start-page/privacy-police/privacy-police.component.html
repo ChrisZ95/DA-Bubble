@@ -3,7 +3,10 @@
   <div class="imprint-card">
 
     <div class="card-header-section">
-      <button (click)="backToLogIn()" class="back-to-log-in-button" >
+      <button  *ngIf="showPrivacyPolice" (click)="backToSignUp()" class="back-to-log-in-button" >
+        <img src="./../../../assets/images/arrow_back.png">
+      </button>
+      <button  *ngIf="!showPrivacyPolice" (click)="backToLogIn()" class="back-to-log-in-button" >
         <img src="./../../../assets/images/arrow_back.png">
       </button>
     </div>
