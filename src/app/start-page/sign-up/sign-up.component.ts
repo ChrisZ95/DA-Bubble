@@ -19,11 +19,16 @@ export class SignUpComponent {
   @Output() openPrivacyPolice: EventEmitter<any> = new EventEmitter();
 
   constructor(private firestoreService: FirestoreService) { }
+  showInputInformation: boolean = false;
 
   user = new User();
 
+  async userSignUp() {
+    if (!this.user.name || !this.user.email || !this.user.password || !this.user.privacyPolice) {
+      this.showInputInformation = true;
+      return;
+    }
 
-  async performSignUp() {
     await this.firestoreService.signUpNewUser(this.user);
     this.toChooseAvatar();
   }
