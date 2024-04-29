@@ -11,10 +11,8 @@
     width: 100%;
     height: 100%;
     background: linear-gradient(to bottom, #797EF3 0%, #797EF3 50%, #313AE5 100%);
-    z-index: 1000;
-    animation: start-screen-opacity 2.5s ease-in-out ;
-    animation-delay: 1s;
-
+    animation: start-screen-opacity 4.5s ease-in-out ;
+    opacity: 0;
 
     .start-screen-content {
       display: flex;
@@ -79,11 +77,14 @@
 }
 
 @keyframes start-screen-opacity {
-  from {
+  0% {
    opacity: 1;
   }
+  60% {
+    opacity: 1;
+  }
 
-  to {
+  80% {
     opacity: 0;
   }
 }

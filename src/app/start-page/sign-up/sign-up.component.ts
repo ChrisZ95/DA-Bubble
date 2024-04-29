@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FirestoreService } from '../../firestore.service';
 import { NgForm } from '@angular/forms';
+import { User } from '../../../models/user.class';
 
 @Component({
   selector: 'app-sign-up',
@@ -19,20 +20,12 @@ export class SignUpComponent {
 
   constructor(private firestoreService: FirestoreService) { }
 
-  // @ViewChild('signupForm', { static: false }) signupForm?: NgForm;
-
-  newUser = {
-    name: "",
-    email: "",
-    password: "",
-    privacyPolice: false,
-  };
+  user = new User();
 
 
   async performSignUp() {
-      await this.firestoreService.signUpNewUser(this.newUser);
-      this.toChooseAvatar();
-
+    await this.firestoreService.signUpNewUser(this.user);
+    this.toChooseAvatar();
   }
 
   backToLogIn() {

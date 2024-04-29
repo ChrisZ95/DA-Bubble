@@ -4,7 +4,8 @@ import { getAuth, provideAuth } from '@angular/fire/auth';
 import { Firestore, getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { getDatabase, provideDatabase } from '@angular/fire/database';
 import { getStorage, provideStorage } from '@angular/fire/storage';
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, addDoc , collection } from "firebase/firestore";
+import { User } from '../models/user.class';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +26,7 @@ export class FirestoreService {
 
    myFirebaseApp = initializeApp(this.firebaseConfig, "myApp");
 
-  async signUpNewUser(userData: any) {
-    await setDoc(doc(this.firestore, "users", userData.id), userData);
+   async signUpNewUser(userData: User) {
+      addDoc(collection(this.firestore, 'users'), userData.toJson())
   }
 }

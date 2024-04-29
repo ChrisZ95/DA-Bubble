@@ -49,7 +49,7 @@ export class StartPageComponent implements OnInit {
   showStartScreen() {
     setTimeout(() => {
       this.startScreen = false;
-    }, 3200);
+    }, 4000);
   }
 
   signUpClicked() {
