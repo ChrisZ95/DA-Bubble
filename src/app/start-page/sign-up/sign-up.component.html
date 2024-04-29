@@ -17,21 +17,23 @@
           <input required placeholder="Name und Nachname" name="name" [(ngModel)]="user.name">
         </div>
         <div class="pseudo">
-          <span class="input-information"  *ngIf="showInputInformation && !user.name">Bitte geben Sie einen Namen an.</span>
+          <span class="input-information" *ngIf="showInputInformation && (!user.name || user.name.length < 10)">Der Name muss 10 Zeichen lang sein.</span>
+
         </div>
         <div class="input-container">
           <img src="./../../../assets/images/mail.svg">
           <input required placeholder="MaxMustermann@gmail.com" name="email" [(ngModel)]="user.email">
         </div>
         <div class="pseudo">
-          <span class="input-information" *ngIf="showInputInformation && !user.email">Bitte geben Sie eine Email an.</span>
+          <span class="input-information" *ngIf="showInputInformation && (!user.email || !isValidEmail(user.email))">Bitte geben Sie eine gültige E-Mail-Adresse ein.</span>
+
         </div>
         <div class="input-container">
           <img src="./../../../assets/images/lock.svg">
           <input required type="password" placeholder="Passwort" name="password" [(ngModel)]="user.password">
         </div>
        <div class="pseudo">
-        <span class="input-information" *ngIf="showInputInformation && !user.password">Bitte geben Sie ein Passwort an.</span>
+        <span class="input-information" *ngIf="showInputInformation && (!user.password || user.password.length < 6)">Das Passwort muss 6 Zeichen lang sein.</span>
        </div>
 
         <div class="input-checkbox-container">

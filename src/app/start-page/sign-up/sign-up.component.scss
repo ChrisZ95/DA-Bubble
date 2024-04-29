@@ -87,15 +87,12 @@
           outline: none;
         }
       }
-
+      .input-information-checkbox,
       .input-information {
         color: red;
-        margin-right: 250px;
-      }
-
-      .input-information-checkbox {
-        color: red;
-        margin-right: 160px;
+        display: flex;
+        justify-content: flex-start;
+        width: 450px;
       }
 
       .input-checkbox-container {
@@ -120,6 +117,11 @@
 
         }
       }
+
+      .pseudo {
+        height: 20px;
+      }
+
     }
 
     .continue-button-container {
@@ -146,8 +148,4 @@
       }
     }
   }
-}
-
-.pseudo {
-  height: 20px;
 }
