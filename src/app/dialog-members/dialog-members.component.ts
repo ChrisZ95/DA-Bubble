@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { DialogAddPeopleComponent } from '../dialog-add-people/dialog-add-people.component';
 
 @Component({
   selector: 'app-dialog-members',
@@ -9,9 +10,14 @@ import { MatDialogRef } from '@angular/material/dialog';
   styleUrl: './dialog-members.component.scss'
 })
 export class DialogMembersComponent {
-  constructor(private dialogRef: MatDialogRef<DialogMembersComponent>) {}
+  constructor(private dialogRef: MatDialogRef<DialogMembersComponent>, public dialog: MatDialog) {}
 
   closeDialogMember(): void {
+    this.dialogRef.close();
+  }
+
+  openAddPeopleDialog() {
+    this.dialog.open(DialogAddPeopleComponent);
     this.dialogRef.close();
   }
 }

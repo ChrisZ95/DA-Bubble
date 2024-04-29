@@ -80,11 +80,4 @@ export class MainComponent {
   showHideWorkspace() {
     this.displayWorkspace = !this.displayWorkspace;
   }
-
-  openMemberDialog() {
-    this.dialog.open(DialogMembersComponent);
-  }
-  openChannelInfoDialog() {
-    this.dialog.open(DialogChannelInfoComponent);
-  }
 }

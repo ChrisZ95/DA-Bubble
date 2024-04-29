@@ -7,8 +7,7 @@
       <img src="../../../assets/images/avatar.png" alt="">
     </div>
     <div class="add-participants">
-      <img src="../../../assets/images/addMemberButton.png" alt="">
-      asd
+      <img (click)="openAddPeopleDialog()" src="../../../assets/images/addMemberButton.png" alt="">
     </div>
   </div>
 </div>
@@ -26,7 +25,7 @@
     <img src="../../../assets/images/avatar.png" alt="">
     <div class="conversation">
       <div class="name-timestamp">
-        <h5><strong>FullName</strong></h5>
+        <h5 (click)="openContactInfoDialog()"><strong>FullName</strong></h5>
         <p>00:00Uhr</p>
       </div>
 

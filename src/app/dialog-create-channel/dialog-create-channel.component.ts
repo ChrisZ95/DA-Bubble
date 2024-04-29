@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog'; 
+import { MatDialog, MatDialogRef } from '@angular/material/dialog'; 
+import { DialogAddPeopleToNewChannelComponent } from '../dialog-add-people-to-new-channel/dialog-add-people-to-new-channel.component';
 
 
 @Component({
@@ -11,9 +12,14 @@ import { MatDialogRef } from '@angular/material/dialog';
   styleUrl: './dialog-create-channel.component.scss'
 })
 export class DialogCreateChannelComponent {
-  constructor(private dialogRef: MatDialogRef<DialogCreateChannelComponent>) {}
+  constructor(private dialogRef: MatDialogRef<DialogCreateChannelComponent>, public dialog: MatDialog) {}
 
   closeCreateChannelDialog(): void {
+    this.dialogRef.close();
+  }
+
+  openAddPeopleToNewChannelDialog() {
+    this.dialog.open(DialogAddPeopleToNewChannelComponent);
     this.dialogRef.close();
   }
 }

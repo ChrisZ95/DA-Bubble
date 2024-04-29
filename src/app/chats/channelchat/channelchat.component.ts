@@ -1,4 +1,9 @@
 import { Component } from '@angular/core';
+import { DialogMembersComponent } from '../../dialog-members/dialog-members.component';
+import { DialogChannelInfoComponent } from '../../dialog-channel-info/dialog-channel-info.component';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogAddPeopleComponent } from '../../dialog-add-people/dialog-add-people.component';
+import { DialogContactInfoComponent } from '../../dialog-contact-info/dialog-contact-info.component';
 
 @Component({
   selector: 'app-channelchat',
@@ -8,6 +13,21 @@ import { Component } from '@angular/core';
   styleUrls: ['./channelchat.component.scss', '../chats.component.scss'],
 })
 export class ChannelchatComponent {
-  openChannelInfoDialog() {}
-  openMemberDialog() {}
+  constructor(public dialog: MatDialog) {}
+
+  openMemberDialog() {
+    this.dialog.open(DialogMembersComponent);
+  }
+
+  openChannelInfoDialog() {
+    this.dialog.open(DialogChannelInfoComponent);
+  }
+
+  openAddPeopleDialog() {
+    this.dialog.open(DialogAddPeopleComponent);
+  }
+
+  openContactInfoDialog() {
+    this.dialog.open(DialogContactInfoComponent);
+  }
 }
