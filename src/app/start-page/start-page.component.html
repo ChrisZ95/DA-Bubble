@@ -1,11 +1,11 @@
 <div class="background start-page" [class.account-created]="accountCreate" [class.account-created]="emailSend" [class.account-created]="changedPassword">
   <div class="overlay" *ngIf="accountCreate || emailSend || changedPassword"></div>
-  <!-- <div *ngIf="startScreen" class="start-screen">
+  <div *ngIf="startScreen" class="start-screen">
     <div class="start-screen-content">
       <img src="./../../assets/images/Logo (3).png">
       <h1>DABubble</h1>
     </div>
-  </div> -->
+  </div>
   <app-start-side-header [showSignUp]="showSignUpComponent"  [showChooseAvatar]="showChooseAvatarComponent"  (signUpClicked)="signUpClicked()" (backToLoginClicked)="backToLoginClicked()"></app-start-side-header>
 
   <ng-template [ngIf]="showLoginComponent && !showSignUpComponent && !showChooseAvatarComponent && !showForgetPasswordComponent && !showChangePasswordComponent&& !showImpressumComponent && !showPrivacyPoliceComponent">
