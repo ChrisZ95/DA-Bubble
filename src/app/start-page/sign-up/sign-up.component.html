@@ -10,31 +10,33 @@
       <span>Mit deinem Namen und deiner E-Mail-adresse hast<br> du ein neues DABubble-Konto.</span>
     </div>
 
-    <div class="card-input-section">
-      <div class="input-container">
-        <img src="./../../../assets/images/unisex-user-icon.svg">
-        <input placeholder="Name und Nachname">
-      </div>
-      <div class="input-container">
-        <img src="./../../../assets/images/mail.svg">
-        <input placeholder="MaxMustermann@gmail.com">
-      </div>
-      <div class="input-container">
-        <img src="./../../../assets/images/lock.svg">
-        <input type="password" placeholder="Passwort">
+    <form id="signUpForm" (ngSubmit)="performSignUp()" #signUpForm="ngForm">
+      <div class="card-input-section">
+        <div class="input-container">
+          <img src="./../../../assets/images/unisex-user-icon.svg">
+          <input required placeholder="Name und Nachname" name="name" [(ngModel)]="newUser.name">
+        </div>
+        <div class="input-container">
+          <img src="./../../../assets/images/mail.svg">
+          <input required placeholder="MaxMustermann@gmail.com" name="email" [(ngModel)]="newUser.email">
+        </div>
+        <div class="input-container">
+          <img src="./../../../assets/images/lock.svg">
+          <input required type="password" placeholder="Passwort" name="password" [(ngModel)]="newUser.password">
+        </div>
+
+        <div class="input-checkbox-container">
+          <input required type="checkbox" name="privacyPolice"  [(ngModel)]="newUser.privacyPolice">
+          <span>Ich stimme der <a (click)="openPrivacyPoliceComponent()">Datenschutzerklärung</a> zu</span>
+        </div>
       </div>
 
-      <div class="input-checkbox-container">
-        <input type="checkbox">
-        <span>Ich stimme der <a (click)="openPrivacyPoliceComponent()">Datenschutzerklärung</a> zu</span>
+      <div class="continue-button-container">
+       <div>
+        <button  [disabled]="!signUpForm.valid" type="submit" (click)="performSignUp()" class="continue-button">Weiter</button>
+       </div>
       </div>
-    </div>
-
-    <div class="continue-button-container">
-     <div>
-      <button (click)="toChooseAvatar()" class="continue-button">Weiter</button>
-     </div>
-    </div>
+    </form>
 
   </div>
 
