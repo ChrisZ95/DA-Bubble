@@ -1,7 +1,7 @@
 <div class="profile-dialog-container">
-    <div class="profile-title"><h3>Profil</h3><img src="./../../assets/images/close.png" alt="" (click)="closeProfileDialog()"></div>
+    <div class="profile-title"><span class="profile-title-left">Profil</span><img src="./../../assets/images/close.png" alt="" (click)="closeProfileDialog()"></div>
     <div class="avatar-big"><img src="./../../assets/images/avatar-big.png" alt=""></div>
-    <div class="profile-name"><h2>Frederick Beck</h2><div>Bearbeiten</div></div>
+    <div class="profile-name"><h2>Frederick Beck</h2><div (click)="openDialogEditProfile()" class="edit-button">Bearbeiten</div></div>
     <img class="status" src="./../../assets/images/active.png" alt="">
     <div class="email">
         <img src="./../../assets/images/mail.png" alt="">

@@ -1,6 +1,7 @@
 import { DialogRef } from '@angular/cdk/dialog';
 import { Component } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { DialogEditProfileComponent } from '../dialog-edit-profile/dialog-edit-profile.component';
 
 @Component({
   selector: 'app-dialog-profile',
@@ -10,11 +11,16 @@ import { MatDialogRef } from '@angular/material/dialog';
   styleUrl: './dialog-profile.component.scss'
 })
 export class DialogProfileComponent {
-  constructor(private dialogRef: MatDialogRef<DialogProfileComponent>) {
+  constructor(private dialogRef: MatDialogRef<DialogProfileComponent>, public dialog: MatDialog) {
     
   }
 
   closeProfileDialog(): void {
+    this.dialogRef.close();
+  }
+
+  openDialogEditProfile(){
+    this.dialog.open(DialogEditProfileComponent);
     this.dialogRef.close();
   }
 }
