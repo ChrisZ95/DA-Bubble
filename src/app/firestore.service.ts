@@ -26,25 +26,29 @@ export class FirestoreService {
 
    myFirebaseApp = initializeApp(this.firebaseConfig, "myApp");
 
-   async signUpNewUser(userData: User): Promise<any> {
-    try {
-      let docRef = await addDoc(collection(this.firestore, 'users'), userData.toJson());
-      let docId = docRef.id;
-      console.log('Dokumenten ID vom registrierten Benutzer', docId);
+   async signUpNewUser(userData: User) {
+    let docRef = await addDoc(collection(this.firestore, 'users'), userData.toJson());
+    let docId = docRef.id;
+    console.log('Dokumenten ID vom registrierten Benutzer', docId);
 
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        console.log("Document data:", docSnap.data());
-        return docSnap.data();
-      } else {
-        console.log("No such document!");
-        return null;
-      }
-    } catch (error) {
-      console.error("Fehler beim Erstellen des Benutzers:", error);
-      return null;
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      console.log("Document data:", docSnap.data());
+      this.getUserByDocId(docId);
+    } else {
+      console.log("Kein Dokument gefunden");
     }
   }
 
-
+  async getUserByDocId(docId: string): Promise<User | undefined> {
+    const docSnap = await getDoc(doc(this.firestore, 'users', docId));
+    if (docSnap.exists()) {
+      const userData = docSnap.data();
+      console.log('user dokument mit id gefunden',userData)
+      return new User({ ...userData, docId });
+    } else {
+      console.log("Dokument nicht gefunden");
+      return undefined;
+    }
+  }
 }

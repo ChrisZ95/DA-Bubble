@@ -17,7 +17,7 @@
           <input required placeholder="Name und Nachname" name="name" [(ngModel)]="user.name">
         </div>
         <div class="pseudo">
-          <span class="input-information" *ngIf="showInputInformation && (!user.name && user.name.length < 10)">Der Name muss 10 Zeichen lang sein.</span>
+          <span class="input-information" *ngIf="showInputInformation && !user.name">Bitte gebe deinen Namen an</span>
 
         </div>
         <div class="input-container">
@@ -47,7 +47,7 @@
 
       <div class="continue-button-container">
        <div>
-        <button type="submit" (click)="userSignUp()" class="continue-button">Weiter</button>
+        <button type="submit"  class="continue-button">Weiter</button>
        </div>
       </div>
     </form>
