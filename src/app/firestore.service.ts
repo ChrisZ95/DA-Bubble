@@ -40,6 +40,7 @@ export class FirestoreService {
     }
   }
 
+
   async getUserByDocId(docId: string): Promise<User | undefined> {
     const docSnap = await getDoc(doc(this.firestore, 'users', docId));
     if (docSnap.exists()) {
