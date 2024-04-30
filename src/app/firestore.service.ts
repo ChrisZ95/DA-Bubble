@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { Firestore, getFirestore, provideFirestore } from '@angular/fire/firestore';
@@ -11,6 +11,7 @@ import { User } from '../models/user.class';
   providedIn: 'root'
 })
 export class FirestoreService {
+  onUserRegistered: EventEmitter<string> = new EventEmitter<string>();
 
   constructor(private firestore: Firestore) { }
 
@@ -30,11 +31,11 @@ export class FirestoreService {
     let docRef = await addDoc(collection(this.firestore, 'users'), userData.toJson());
     let docId = docRef.id;
     console.log('Dokumenten ID vom registrierten Benutzer', docId);
+    this.onUserRegistered.emit(docId);
 
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
       console.log("Document data:", docSnap.data());
-      this.getUserByDocId(docId);
     } else {
       console.log("Kein Dokument gefunden");
     }

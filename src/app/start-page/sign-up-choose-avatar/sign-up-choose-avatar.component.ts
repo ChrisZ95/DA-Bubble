@@ -27,7 +27,11 @@ export class SignUpChooseAvatarComponent implements OnInit {
   ]
 
   ngOnInit(): void {
-    this.getUserDocument();
+    console.log('choose avatar started')
+    this.firestoreService.onUserRegistered.subscribe(docId => {
+      this.getUserDocument(docId);
+      console.log(docId)
+    });
   }
 
 
@@ -46,19 +50,12 @@ export class SignUpChooseAvatarComponent implements OnInit {
     console.log('account wurde erstellt')
   }
 
-  // getUserDokument() {
-  //   // const createdUserDoc = await this.firestoreService.signUpNewUser(this.user);
-  //   // if (createdUserDoc) {
-  //   //   // Hier können Sie das erstellte Dokument verwenden, z.B. speichern oder anzeigen
-  //   //   console.log("Erstelltes Benutzerdokument:", createdUserDoc);
-  //   // } else {
-  //   //   console.error("Benutzerdokument konnte nicht erstellt werden.");
-  //   // }
-
+  // async getUserDocument() {
+  //   const docId = 'hUI1Rirdb1PBnNAYOl1X';
+  //   this.userData = await this.firestoreService.getUserByDocId(docId);
+  //   console.log('Benutzerdaten erhalten:', this.userData);
   // }
-
-  async getUserDocument() {
-    const docId = 'hUI1Rirdb1PBnNAYOl1X'; // Die Dokumenten-ID des Benutzers, die Sie abrufen möchten
+  async getUserDocument(docId: string) {
     this.userData = await this.firestoreService.getUserByDocId(docId);
     console.log('Benutzerdaten erhalten:', this.userData);
   }
