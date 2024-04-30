@@ -1,7 +1,6 @@
 .create-channel-container{
     display: flex;
     flex-direction: column;
-    height: 475px;
     padding: 32px;
     gap: 20px;
     input{
@@ -10,6 +9,9 @@
         border: 1px solid;
         border-color: #ADB0D9;
         padding: 16px;
+        &:focus{
+            border: 1px solid #A8ACF7 !important;
+        }
     }
     h2{
         margin-block-start: 0;
@@ -39,7 +41,12 @@
     img{
         height: 24px;
         width: 24px;
+        padding: 5px;
         cursor: pointer;
+        &:hover{
+            border-radius: 100%;
+            background-color: #ECEEFE;
+        }
     }
 }
 
@@ -61,4 +68,8 @@
 
 ::ng-deep.mat-mdc-dialog-container{
     --mdc-dialog-container-shape: 30px;
+}
+
+::ng-deep.cdk-overlay-pane{
+    --mat-dialog-container-max-width: 872px;
 }

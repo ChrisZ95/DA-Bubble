@@ -4,7 +4,10 @@
     flex-direction: column;
     padding: 45px 40px 45px 40px;
     a{
-        margin-top: 30px;
+        margin-top: 10px;
+        margin-left: 50px;
+        color: #1381FF;
+        text-decoration: none;
     }
 }
 
@@ -24,6 +27,11 @@
     justify-content: space-between;
 }
 
+.profile-full-name{
+    font-size: 32px;
+    font-weight: 700;
+}
+
 .avatar-big{
     display: flex;
     justify-content: center;
@@ -39,6 +47,7 @@
 .status{
     height: 27px;
     width: 88px;
+    margin-top: 20px;
 }
 
 .email{

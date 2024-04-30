@@ -47,3 +47,7 @@
         font-weight: 700;
     }
 }
+
+::ng-deep.mat-mdc-dialog-container{
+    --mdc-dialog-container-shape: 30px !important;
+}

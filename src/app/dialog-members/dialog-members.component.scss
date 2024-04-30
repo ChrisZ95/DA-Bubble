@@ -47,3 +47,7 @@
         width: 32px;
     }
 }
+
+::ng-deep.mat-mdc-dialog-container{
+    --mdc-dialog-container-shape: 30px 0px 30px 30px !important;
+}

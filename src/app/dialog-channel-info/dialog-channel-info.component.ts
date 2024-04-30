@@ -17,7 +17,7 @@ export class DialogChannelInfoComponent {
     this.dialogRef.close();
   }
 
-  channelName = "# Entwicklerteam";
+    channelName = "# Entwicklerteam";
     description = "Dieser Channel ist für alles rund um #dfsdf vorgesehen. Hier kannst du zusammen mit deinem Team Meetings abhalten, Dokumente teilen und Entscheidungen treffen.";
     editedChannelName: string = '';
     editedDescription: string = '';
@@ -27,20 +27,28 @@ export class DialogChannelInfoComponent {
 
     toggleEditing(field: string) {
         if (field === 'name') {
+            if (!this.editingName) {
+                this.editedChannelName = this.channelName;
+            } else {
+                this.saveChanges('name');
+            }
             this.editingName = !this.editingName;
         } else if (field === 'description') {
+            if (!this.editingDescription) {
+                this.editedDescription = this.description; 
+            } else {
+                this.saveChanges('description');
+            }
             this.editingDescription = !this.editingDescription;
         }
         this.isEditing = this.editingName || this.editingDescription;
     }
-
-    saveChanges() {
-        if (this.editingName) {
+    
+    saveChanges(field: string) {
+        if (field === 'name') {
             this.channelName = this.editedChannelName;
-        }
-        if (this.editingDescription) {
+        } else if (field === 'description') {
             this.description = this.editedDescription;
         }
-        this.toggleEditing('');
     }
 }

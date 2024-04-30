@@ -6,7 +6,7 @@
     <div class="channel-name-container" [ngClass]="{'editing': editingName}">
         <div class="channel-name">
             <span>Channel-Name</span>
-            <span class="purple-color" (click)="toggleEditing('name')">Bearbeiten</span>
+            <span class="purple-color" (click)="toggleEditing('name')">{{ editingName ? 'Speichern' : 'Bearbeiten' }}</span>
         </div>
         <input type="text" [(ngModel)]="editedChannelName" *ngIf="editingName"/>
         <span class="channel-name-small" *ngIf="!editingName">{{ channelName }}</span>
@@ -14,7 +14,7 @@
     <div class="description-container" [ngClass]="{'editing': editingDescription}">
         <div class="description-title">
             <span>Beschreibung</span>
-            <span class="purple-color" (click)="toggleEditing('description')">Bearbeiten</span>
+            <span class="purple-color" (click)="toggleEditing('description')">{{ editingDescription ? 'Speichern' : 'Bearbeiten' }}</span>
         </div>
         <input type="text" [(ngModel)]="editedDescription" *ngIf="editingDescription"/>
         <span class="description-text" *ngIf="!editingDescription">{{ description }}</span>
