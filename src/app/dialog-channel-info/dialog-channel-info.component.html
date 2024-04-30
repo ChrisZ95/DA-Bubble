@@ -3,13 +3,21 @@
         <span># Entwicklerteam</span>
         <img src="./../../assets/images/close.png" alt="" (click)="closeChannelInfoDialog()">
     </div>
-    <div class="channel-name-container">
-        <div class="channel-name">Channel-Name <span>Bearbeiten</span></div>
-        <span class="channel-name-small"># Entwicklerteam</span>
+    <div class="channel-name-container" [ngClass]="{'editing': editingName}">
+        <div class="channel-name">
+            <span>Channel-Name</span>
+            <span class="purple-color" (click)="toggleEditing('name')">Bearbeiten</span>
+        </div>
+        <input type="text" [(ngModel)]="editedChannelName" *ngIf="editingName"/>
+        <span class="channel-name-small" *ngIf="!editingName">{{ channelName }}</span>
     </div>
-    <div class="description-container">
-        <div class="description-title">Beschreibung <span>Bearbeiten</span></div>
-        <span class="description-text">Dieser Channel ist für alles rund um #dfsdf vorgesehen. Hier kannst du zusammen mit deinem Team Meetings abhalten, Dokumente teilen und Entscheidungen treffen.</span>
+    <div class="description-container" [ngClass]="{'editing': editingDescription}">
+        <div class="description-title">
+            <span>Beschreibung</span>
+            <span class="purple-color" (click)="toggleEditing('description')">Bearbeiten</span>
+        </div>
+        <input type="text" [(ngModel)]="editedDescription" *ngIf="editingDescription"/>
+        <span class="description-text" *ngIf="!editingDescription">{{ description }}</span>
         <div class="description-line-container"><div class="description-line"></div></div>
         <div class="created-by">
             <span class="created-by-title">Erstellt von</span>

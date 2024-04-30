@@ -18,10 +18,16 @@
 }
 
 .channel-name-container{
-    border: 1px solid #ADB0D9;
     height: 72px;
     border-radius: 20px;
     padding: 20px;
+    input{
+        height: 11px;
+        width: calc(100% - 40px);
+        border-radius: 40px;
+        border: 1px solid #ADB0D9;
+        padding: 18px 20px 18px 20px;
+    }
 }
 
 .channel-name-small{
@@ -36,16 +42,23 @@
     font-size: 18px;
     font-weight: 700;
     margin-bottom: 20px;
-    span{
-        color: #535AF1;
-    }
+}
+
+.purple-color{
+    color: #535AF1;
 }
 
 .description-container{
-    border: 1px solid #ADB0D9;
     height: 231px;
     border-radius: 20px;
     padding: 20px;
+    input{
+        height: 11px;
+        width: calc(100% - 40px);
+        border-radius: 40px;
+        border: 1px solid #ADB0D9;
+        padding: 18px 20px 18px 20px;
+    }
 }
 
 .description-title{
@@ -54,9 +67,6 @@
     font-size: 18px;
     font-weight: 700;
     margin-bottom: 20px;
-    span{
-        color: #535AF1;
-    }
 }
 
 .description-text{
@@ -109,5 +119,46 @@
         font-weight: 700;
         border-radius: 25px;
         cursor: pointer;
+    }
+}
+
+.channel-name {
+    position: relative;
+
+    input[type="text"] {
+        width: 100%;
+        padding: 4px;
+        font-size: 1em;
+    }
+
+    span:last-child {
+        position: absolute;
+        right: 0;
+        cursor: pointer;
+        color: blue;
+    }
+}
+
+.description-title {
+    position: relative;
+
+    input[type="text"] {
+        width: 100%;
+        padding: 4px;
+        font-size: 1em;
+    }
+
+    span:last-child {
+        position: absolute;
+        right: 0;
+        cursor: pointer;
+        color: blue;
+    }
+}
+
+.channel-name-container, .description-container {
+    border: 1px solid #ADB0D9;
+    &.editing {
+        border: none;
     }
 }
