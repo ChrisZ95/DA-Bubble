@@ -28,7 +28,7 @@ export class SignUpComponent {
       this.showInputInformation = true;
       return;
     }
-
+    console.log('userSignUp wurde aufgerufen');
     await this.firestoreService.signUpNewUser(this.user);
     this.toChooseAvatar();
   }

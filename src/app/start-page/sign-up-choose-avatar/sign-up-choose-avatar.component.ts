@@ -1,7 +1,6 @@
 import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FirestoreService } from '../../firestore.service';
-import { User } from '../../../models/user.class';
 
 @Component({
   selector: 'app-sign-up-choose-avatar',
@@ -15,8 +14,6 @@ export class SignUpChooseAvatarComponent implements OnInit {
 
   @Output() backToSignUpClicked: EventEmitter<any> = new EventEmitter();
   @Output() accountCreated: EventEmitter<any> = new EventEmitter();
-
-  user = new User();
 
   constructor(private firestoreService: FirestoreService) { }
 
@@ -48,12 +45,6 @@ export class SignUpChooseAvatarComponent implements OnInit {
   }
 
   async getUserDokument() {
-    const createdUserDoc = await this.firestoreService.signUpNewUser(this.user);
-    if (createdUserDoc) {
-      console.log("Erstelltes Benutzerdokument:", createdUserDoc);
-    } else {
-      console.error("Benutzerdokument konnte nicht erstellt werden.");
-    }
 
   }
 }
