@@ -1,0 +1,21 @@
+<form (ngSubmit)="sendMessage()" class="container">
+    <div class="chat-input-container">
+        <textarea name="" id="" cols="3" rows="3" placeholder="Nachricht an #Entwicklerteam" [(ngModel)]="message"
+            name="message"></textarea>
+        <div class="img-container">
+            <div class="images">
+                <div class="img">
+                    <img src="../../../assets/images/add.png" alt="">
+                </div>
+                <div class="chat-input-line"></div>
+                <div class="img">
+                    <img src="../../../assets/images/smiley.png" alt="">
+                </div>
+                <div class="img">
+                    <img src="../../../assets/images/atsign.png" alt="">
+                </div>
+            </div>
+            <button type="submit"><img src="../../../assets/images/send.png" alt=""></button>
+        </div>
+    </div>
+</form>

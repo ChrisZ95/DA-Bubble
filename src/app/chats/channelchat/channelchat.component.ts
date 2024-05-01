@@ -4,11 +4,12 @@ import { DialogChannelInfoComponent } from '../../dialog-channel-info/dialog-cha
 import { MatDialog } from '@angular/material/dialog';
 import { DialogAddPeopleComponent } from '../../dialog-add-people/dialog-add-people.component';
 import { DialogContactInfoComponent } from '../../dialog-contact-info/dialog-contact-info.component';
+import { TextEditorComponent } from '../../shared/text-editor/text-editor.component';
 
 @Component({
   selector: 'app-channelchat',
   standalone: true,
-  imports: [],
+  imports: [TextEditorComponent],
   templateUrl: './channelchat.component.html',
   styleUrls: ['./channelchat.component.scss', '../chats.component.scss'],
 })
