@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../services/chat.service';
 import { log } from 'console';
+import { GenerateIdsService } from '../../services/generate-ids.service';
 
 @Component({
   selector: 'app-text-editor',
@@ -11,18 +12,15 @@ import { log } from 'console';
   styleUrl: './text-editor.component.scss',
 })
 export class TextEditorComponent implements OnInit {
-  constructor(private chatService: ChatService) {}
+  constructor(
+    private chatService: ChatService,
+    private generateId: GenerateIdsService
+  ) {}
   message: any = '';
-  generadeId() {
-    const timestamp = new Date().getTime();
-    const random = Math.floor(Math.random() * 10000000);
-    let uniququeId = `${timestamp}-${random}`;
-    uniququeId = uniququeId.toString();
-    return uniququeId;
-  }
+
   sendMessage() {
     let text = {
-      id: this.generadeId(),
+      id: this.generateId.generateId(),
       message: this.message,
       createdAt: 'timestamp',
     };
