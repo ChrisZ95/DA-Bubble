@@ -7,14 +7,21 @@
       <span>Wir empfehlen dir, die E-Mail-Adresse zu nutzen, die <br> du bei der Arbeit verwendest.</span>
     </div>
 
+    <form id="signUpForm" (ngSubmit)="userLogIn()" #signUpForm="ngForm">
     <div class="card-input-section">
       <div class="input-container">
         <img src="./../../../assets/images/mail.svg">
         <input placeholder="MaxMustermann@gmail.com">
       </div>
+      <div class="pseudo">
+        <span class="input-information">Diese E-Mail-Adresse ist leider ungultig</span>
+      </div>
       <div class="input-container">
         <img src="./../../../assets/images/lock.svg">
         <input type="password" placeholder="Passwort">
+      </div>
+      <div class="pseudo">
+        <span class="input-information">Dieses Passwort ist leider ungultig</span>
       </div>
       <div class="card-link">
         <a (click)="openForgetPasswordComponent()">Passwort vergessen ?</a>
@@ -40,7 +47,7 @@
         <button (click)="guestLogIn()" class="guest-login">Gäste-Login</button>
       </div>
     </div>
-
+  </form>
   </div>
 
 </div>
