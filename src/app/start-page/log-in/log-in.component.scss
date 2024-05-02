@@ -68,6 +68,17 @@
         }
       }
 
+      .pseudo {
+        height: 20px;
+
+        .input-information {
+          color: red;
+          display: flex;
+          justify-content: flex-start;
+          width: 450px;
+        }
+      }
+
       .card-link {
         margin-top: 30px;
         width: 240px;
@@ -156,6 +167,7 @@
       margin-top: 30px;
       display: flex;
       flex-direction: row;
+      justify-content: center;
 
       .user-login {
         border: none;

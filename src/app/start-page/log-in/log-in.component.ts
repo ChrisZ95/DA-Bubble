@@ -1,10 +1,12 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
+import { NgForm } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-log-in',
   standalone: true,
-  imports: [],
+  imports: [FormsModule],
   templateUrl: './log-in.component.html',
   styleUrl: './log-in.component.scss'
 })
@@ -19,5 +21,9 @@ export class LogInComponent {
 
   openForgetPasswordComponent() {
     this.forgotPassword.emit();
+  }
+
+  userLogIn() {
+
   }
 }
