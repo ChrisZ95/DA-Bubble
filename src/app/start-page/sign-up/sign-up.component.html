@@ -10,38 +10,38 @@
       <span>Mit deinem Namen und deiner E-Mail-adresse hast<br> du ein neues DABubble-Konto.</span>
     </div>
 
-    <form id="signUpForm" (ngSubmit)="userSignUp()" #signUpForm="ngForm">
+    <form id="signUpForm" (ngSubmit)="userSignUp(signUpForm)" #signUpForm="ngForm">
       <div class="card-input-section">
         <div class="input-container">
           <img src="./../../../assets/images/unisex-user-icon.svg">
-          <input required placeholder="Name und Nachname" name="name" [(ngModel)]="user.name">
+          <input required placeholder="Name und Nachname" name="name" >
         </div>
         <div class="pseudo">
-          <span class="input-information" *ngIf="showInputInformation && !user.name">Bitte gebe deinen Namen an.</span>
+          <span class="input-information" *ngIf="showInputInformation">Bitte gebe deinen Namen an.</span>
 
         </div>
         <div class="input-container">
           <img src="./../../../assets/images/mail.svg">
-          <input required placeholder="MaxMustermann@gmail.com" name="email" [(ngModel)]="user.email">
+          <input required placeholder="MaxMustermann@gmail.com" name="email">
         </div>
         <div class="pseudo">
-          <span class="input-information" *ngIf="showInputInformation && (!user.email || !isValidEmail(user.email))">Bitte geben Sie eine gültige E-Mail-Adresse ein.</span>
+          <span class="input-information" *ngIf="showInputInformation ">Bitte geben Sie eine gültige E-Mail-Adresse ein.</span>
 
         </div>
         <div class="input-container">
           <img src="./../../../assets/images/lock.svg">
-          <input required type="password" placeholder="Passwort" name="password" [(ngModel)]="user.password">
+          <input required type="password" placeholder="Passwort" name="password" >
         </div>
        <div class="pseudo">
-        <span class="input-information" *ngIf="showInputInformation && (!user.password || user.password.length < 6)">Das Passwort muss 6 Zeichen lang sein.</span>
+        <span class="input-information" *ngIf="showInputInformation ">Das Passwort muss 6 Zeichen lang sein.</span>
        </div>
 
         <div class="input-checkbox-container">
-          <input required type="checkbox" name="privacyPolice" [(ngModel)]="user.privacyPolice">
+          <input required type="checkbox" name="privacyPolice">
           <span>Ich stimme der <a (click)="openPrivacyPoliceComponent()">Datenschutzerklärung</a> zu</span>
         </div>
         <div class="pseudo">
-          <span class="input-information-checkbox"  *ngIf="showInputInformation && !user.privacyPolice">Bitte bestätigen Sie die Datenschutzerklärung.</span>
+          <span class="input-information-checkbox"  *ngIf="showInputInformation ">Bitte bestätigen Sie die Datenschutzerklärung.</span>
         </div>
       </div>
 

@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FirestoreService } from '../../firestore.service';
 import { NgForm } from '@angular/forms';
-import { User } from '../../../models/user.class';
 
 @Component({
   selector: 'app-sign-up',
@@ -21,15 +20,10 @@ export class SignUpComponent {
   constructor(private firestoreService: FirestoreService) { }
   showInputInformation: boolean = false;
 
-  user = new User();
-
-  async userSignUp() {
-    if (!this.user.name || !this.user.email || !this.user.password || !this.user.privacyPolice) {
-      this.showInputInformation = true;
-      return;
-    }
+  userSignUp(formData: any): void {
+    const { email, password } = formData.value;
+    this.firestoreService.createUserWithEmailAndPassword( email, password);
     console.log('userSignUp wurde aufgerufen');
-    await this.firestoreService.signUpNewUser(this.user);
     this.toChooseAvatar();
   }
 
