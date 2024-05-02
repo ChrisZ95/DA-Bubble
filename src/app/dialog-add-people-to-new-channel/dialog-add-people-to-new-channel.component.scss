@@ -4,6 +4,12 @@
     flex-direction: column;
     padding: 40px;
     gap: 20px;
+    input{
+        height: 17px;
+        padding: 15px 20px 15px 20px;
+        border-radius: 30px;
+        border: 1px solid #ADB0D9;
+    }
 }
 
 .dialog-add-people-to-new-channel-title{
@@ -40,12 +46,21 @@
         padding: 12px 25px 12px 25px;
         height: 49px;
         color: white;
-        background-color: #686868;
         border: none;
         border-radius: 25px;
         font-size: 18px;
         font-weight: 700;
+        cursor: pointer;
     }
+}
+
+.office-team{
+    color: #535AF1;
+}
+
+.input-certain-peolpe{
+    display: flex;
+    flex-direction: column;
 }
 
 ::ng-deep.mat-mdc-dialog-container{
