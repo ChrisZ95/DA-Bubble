@@ -35,6 +35,8 @@ export class ChannelchatComponent implements OnInit {
   openContactInfoDialog() {
     this.dialog.open(DialogContactInfoComponent);
   }
+
+  // wird noch verschoben
   async loadMessages() {
     const chatsRef = collection(this.chats.db, 'chats');
     const querySnapshot = await getDocs(chatsRef);
