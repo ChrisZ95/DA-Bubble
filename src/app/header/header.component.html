@@ -1,0 +1,13 @@
+<div class="header">
+    <div><img src="./../assets/images/dabubble-logo.png" alt=""></div>
+    <div class="search-input"><input type="text" name="" id=""><img src="./../assets/images/search.png" alt=""></div>
+    <div class="profile">
+      <span>Frederik Beck</span>
+      <img src="./../assets/images/avatar.png" alt="">
+      <img [matMenuTriggerFor]="profilMenu" src="./../assets/images/arrow_down.png" alt="">
+      <mat-menu #profilMenu="matMenu" class="profile-menu">
+        <button mat-menu-item (click)="openProfileDialog()">Profil</button>
+        <button mat-menu-item>Log out</button>
+      </mat-menu>
+    </div>
+</div>

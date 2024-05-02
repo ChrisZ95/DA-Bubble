@@ -18,6 +18,7 @@ import {
 import { DialogChannelInfoComponent } from '../../dialog-channel-info/dialog-channel-info.component';
 import { DialogMembersComponent } from '../../dialog-members/dialog-members.component';
 import { ChannelthreadComponent } from '../../threads/channelthread/channelthread.component';
+import { HeaderComponent } from '../../header/header.component';
 
 @Component({
   selector: 'app-main',
@@ -30,6 +31,7 @@ import { ChannelthreadComponent } from '../../threads/channelthread/channelthrea
     WorkspaceComponent,
     ChannelchatComponent,
     ChannelthreadComponent,
+    HeaderComponent
   ],
   templateUrl: './main.component.html',
   styleUrl: './main.component.scss',
@@ -71,12 +73,10 @@ import { ChannelthreadComponent } from '../../threads/channelthread/channelthrea
   ],
 })
 export class MainComponent {
-  constructor(public dialog: MatDialog) {}
+  constructor() {}
   displayWorkspace: boolean = true;
 
-  openProfileDialog() {
-    this.dialog.open(DialogProfileComponent);
-  }
+  
   showHideWorkspace() {
     this.displayWorkspace = !this.displayWorkspace;
   }

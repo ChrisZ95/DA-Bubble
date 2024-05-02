@@ -1,0 +1,69 @@
+.header {
+    height: 15vh;
+    width: calc(100vw - 90px);
+    overflow: hidden;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 45px;
+    padding-right: 45px;
+}
+
+.search-input {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 50%;
+    border-radius: 42px;
+    height: 68px;
+    input {
+      height: 66px;
+      width: 100%;
+      border: none;
+      border-radius: 42px;
+    }
+    img {
+      height: 35px;
+      width: 35px;
+    }
+  }
+  
+  .profile {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    img {
+      cursor: pointer;
+    }
+}
+
+::ng-deep.cdk-overlay-pane {
+    margin-top: 30px !important;
+  }
+  
+  ::ng-deep.mat-mdc-menu-panel {
+    border-top-left-radius: 30px !important;
+    border-bottom-left-radius: 30px !important;
+    border-top-right-radius: 0px !important;
+    border-bottom-right-radius: 30px !important;
+    width: 200px;
+    display: flex;
+    justify-content: center;
+  }
+  
+::ng-deep.mat-mdc-menu-item-text {
+    text-align: center !important;
+}
+  
+::ng-deep.mat-mdc-menu-item {
+    width: calc(100% - 40px) !important;
+    border-radius: 40px !important;
+    margin-left: 20px !important;
+    margin-right: 20px !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    &:hover {
+      background-color: rgb(236, 238, 254) !important;
+      color: rgb(83, 90, 241) !important;
+    }
+}
