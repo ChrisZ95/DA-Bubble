@@ -21,8 +21,8 @@ export class SignUpComponent {
   showInputInformation: boolean = false;
 
   userSignUp(formData: any): void {
-    const { email, password } = formData.value;
-    this.firestoreService.createUserWithEmailAndPassword( email, password);
+    const { email, password, username } = formData.value;
+    this.firestoreService.createUserWithEmailAndPassword( email, password, username);
     console.log('userSignUp wurde aufgerufen');
     this.toChooseAvatar();
   }
