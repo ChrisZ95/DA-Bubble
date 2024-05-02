@@ -11,7 +11,7 @@ import { User } from '../models/user.class';
   providedIn: 'root'
 })
 export class FirestoreService {
-  onUserRegistered: EventEmitter<string> = new EventEmitter<string>();
+  public onUserRegistered: EventEmitter<string> = new EventEmitter<string>();
 
   constructor(private firestore: Firestore) { }
 

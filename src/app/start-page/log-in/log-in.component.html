@@ -11,17 +11,17 @@
     <div class="card-input-section">
       <div class="input-container">
         <img src="./../../../assets/images/mail.svg">
-        <input placeholder="MaxMustermann@gmail.com">
+        <input ngModel required name="email" placeholder="MaxMustermann@gmail.com">
       </div>
       <div class="pseudo">
-        <span class="input-information">Diese E-Mail-Adresse ist leider ungultig</span>
+        <span *ngIf="signUpForm.controls['email'] && signUpForm.controls['email'].errors?.['required'] && signUpForm.controls['email'].touched" class="input-information">Diese E-Mail-Adresse ist leider ungultig.</span>
       </div>
       <div class="input-container">
         <img src="./../../../assets/images/lock.svg">
-        <input type="password" placeholder="Passwort">
+        <input ngModel required type="password" name="password" placeholder="Passwort">
       </div>
       <div class="pseudo">
-        <span class="input-information">Dieses Passwort ist leider ungultig</span>
+        <span *ngIf="signUpForm.controls['password'] && signUpForm.controls['password'].errors?.['required'] && signUpForm.controls['password'].touched" class="input-information">Dieses Passwort ist leider ungultig.</span>
       </div>
       <div class="card-link">
         <a (click)="openForgetPasswordComponent()">Passwort vergessen ?</a>
@@ -41,7 +41,7 @@
 
     <div class="login-button-container">
      <div>
-      <button class="user-login">Anmelden</button>
+      <button type="submit" class="user-login">Anmelden</button>
      </div>
       <div>
         <button (click)="guestLogIn()" class="guest-login">Gäste-Login</button>
