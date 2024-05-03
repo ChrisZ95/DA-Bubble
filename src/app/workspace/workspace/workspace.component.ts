@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DialogCreateChannelComponent } from '../../dialog-create-channel/dialog-create-channel.component';
 import { MatDialog } from '@angular/material/dialog';
+import { Firestore, onSnapshot, collection, doc } from '@angular/fire/firestore';
+import { Channel } from './../../../models/channel.class';
 
 @Component({
   selector: 'app-workspace',
@@ -11,8 +13,15 @@ import { MatDialog } from '@angular/material/dialog';
   styleUrl: './workspace.component.scss',
 })
 export class WorkspaceComponent implements OnInit {
-  constructor(public dialog: MatDialog) {}
   displayUsers: boolean = true;
+  channel = new Channel();
+  allChannels: any = [];
+
+  constructor(public dialog: MatDialog, private readonly firestore: Firestore) {
+    onSnapshot(collection(this.firestore, 'channels'), (list) => {
+      this.allChannels = list.docs.map(doc => doc.data());
+    });
+  }
 
   openCreateChannelDialog() {
     this.dialog.open(DialogCreateChannelComponent);
@@ -38,5 +47,3 @@ export class WorkspaceComponent implements OnInit {
     },
   ];
 }
-
-
