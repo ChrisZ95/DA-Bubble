@@ -12,11 +12,11 @@
   </div>
 </div>
 
-<div>
+<ng-container *ngFor="let message of messages">
   <div class="separator">
     <div class="separator-line"></div>
     <div class="separator-date">
-      Samstag, 27.04.2024
+      {{message.createdAt | timestamp: 'time' }}
     </div>
     <div class="separator-line"></div>
   </div>
@@ -30,7 +30,7 @@
       </div>
 
       <div class="speechbubble">
-        <p>Nachricht</p>
+        <p>{{ message.message }}</p>
       </div>
 
       <div class="reply">
@@ -41,5 +41,5 @@
 
     </div>
   </div>
-</div>
+</ng-container>
 <app-text-editor />

@@ -8,17 +8,19 @@ import { TextEditorComponent } from '../../shared/text-editor/text-editor.compon
 import { ChatService } from '../../services/chat.service';
 import { log } from 'console';
 import { doc, collection, getDocs } from 'firebase/firestore';
+import { NgFor } from '@angular/common';
+import { TimestampPipe } from '../../shared/pipes/timestamp.pipe';
 
 @Component({
   selector: 'app-channelchat',
   standalone: true,
-  imports: [TextEditorComponent],
+  imports: [TextEditorComponent, NgFor, TimestampPipe],
   templateUrl: './channelchat.component.html',
   styleUrls: ['./channelchat.component.scss', '../chats.component.scss'],
 })
 export class ChannelchatComponent implements OnInit {
   constructor(public dialog: MatDialog, public chats: ChatService) {}
-  messages: any;
+  messages: any[] = [];
 
   openMemberDialog() {
     this.dialog.open(DialogMembersComponent);
@@ -40,10 +42,16 @@ export class ChannelchatComponent implements OnInit {
   async loadMessages() {
     const chatsRef = collection(this.chats.db, 'chats');
     const querySnapshot = await getDocs(chatsRef);
+
     querySnapshot.forEach((doc) => {
-      console.log('Nachricht ID:', doc.id);
-      console.log('Nachricht Daten:', doc.data());
+      let message = {
+        ...doc.data(), // alle anderen Eigenschaften des Dokuments einfügen
+      };
+      this.messages.push(message);
     });
+    setTimeout(() => {
+      console.log('messages', this.messages);
+    }, 250);
   }
 
   ngOnInit(): void {

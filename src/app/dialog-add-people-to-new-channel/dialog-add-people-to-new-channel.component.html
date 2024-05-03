@@ -11,8 +11,15 @@
         <input type="radio" [(ngModel)]="selectedOption" value="certain" (change)="toggleButtonColor()">
         <label for="certain-people">Bestimmte Leute hinzufügen</label>
     </div>
-    <input *ngIf="selectedOption === 'certain'" type="text" [(ngModel)]="personName" placeholder="Name der Person">
+    <input *ngIf="selectedOption === 'certain'" 
+    type="text" 
+    [(ngModel)]="personName" 
+    placeholder="Name der Person" 
+    (input)="filterUsers()">
+    <div *ngIf="showUserList" class="user-dropdown">
+       <div *ngFor="let user of filteredUsers" class="user-option">{{ user.username }}</div> 
+    </div>
     <div class="dialog-add-people-to-new-channel-button">
-        <button [style.background-color]="buttonColor" (click)="createChannel()">Erstellen</button>
+        <button [style.background-color]="buttonColor" (click)="addUserToChannel()">Erstellen</button>
     </div>
 </div>

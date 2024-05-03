@@ -22,19 +22,6 @@ export class FirestoreService {
     this.firestore = getFirestore(myFirebaseApp);
   }
 
-  private observeAuthState(): void {
-    onAuthStateChanged(this.auth, (user) => {
-      if (user) {
-        // User ist angemeldet
-        console.log('User is signed in:', user.uid);
-        // Hier können Sie weitere Aktionen für angemeldete Benutzer ausführen
-      } else {
-        // User ist abgemeldet
-        console.log('User is signed out');
-      }
-    });
-  }
-
   async getAllUsers(): Promise<User[]> {
     try {
         const usersCollection = collection(this.firestore, 'users');
@@ -50,11 +37,20 @@ export class FirestoreService {
     }
 }
 
-  async createUserWithEmailAndPassword(
-    email: string,
-    password: string,
-    username: string
-  ): Promise<void> {
+  private observeAuthState(): void {
+    onAuthStateChanged(this.auth, (user) => {
+      if (user) {
+        // User ist angemeldet
+        console.log('User is signed in:', user.uid);
+        // Hier können Sie weitere Aktionen für angemeldete Benutzer ausführen
+      } else {
+        // User ist abgemeldet
+        console.log('User is signed out');
+      }
+    });
+  }
+
+  async createUserWithEmailAndPassword(email: string, password: string, username: string): Promise<void> {
     try {
       debugger;
       const userCredential = await createUserWithEmailAndPassword(
@@ -66,17 +62,13 @@ export class FirestoreService {
       const userRef = doc(this.firestore, 'users', user.uid);
       await setDoc(userRef, { email: email, username: username });
       this.onUserRegistered.emit(user.uid);
-    }  catch (error) {
+    }
+    catch (error) {
       console.error('Error creating user:', error);
     }
   }
 
-
-
-  async signInWithEmailAndPassword(
-    email: string,
-    password: string
-  ): Promise<void> {
+  async signInWithEmailAndPassword(email: string, password: string): Promise<void> {
     try {
       const userCredential = await signInWithEmailAndPassword(
         this.auth,
