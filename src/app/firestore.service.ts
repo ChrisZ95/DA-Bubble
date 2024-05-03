@@ -1,40 +1,53 @@
 import { Injectable, EventEmitter } from '@angular/core';
-import { getAuth, createUserWithEmailAndPassword } from '@angular/fire/auth';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from '@angular/fire/auth';
 import { FirebaseApp } from '@angular/fire/app';
-import { appConfig } from './app.config';
-import { getFirestore, collection, doc, setDoc } from '@angular/fire/firestore';
-import { Firestore } from '@angular/fire/firestore';
+import { getFirestore, doc, setDoc } from '@angular/fire/firestore';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FirestoreService {
   public onUserRegistered: EventEmitter<string> = new EventEmitter<string>();
-  private auth: any;
-  private firestore: any;
+  public auth: any;
+  public firestore: any;
 
   constructor(private myFirebaseApp: FirebaseApp) {
     this.auth = getAuth(myFirebaseApp);
     this.firestore = getFirestore(myFirebaseApp);
-
-    this.createUserWithEmailAndPassword('c.zwick95@gmail.com', 'password123', 'Christopher Zwick');
   }
 
-  getAuth(): any {
-    return this.auth;
+  private observeAuthState(): void {
+    onAuthStateChanged(this.auth, (user) => {
+      if (user) {
+        // User ist angemeldet
+        console.log('User is signed in:', user.uid);
+        // Hier können Sie weitere Aktionen für angemeldete Benutzer ausführen
+      } else {
+        // User ist abgemeldet
+        console.log('User is signed out');
+      }
+    });
   }
 
   async createUserWithEmailAndPassword(email: string, password: string, username: string): Promise<void> {
     try {
       const userCredential = await createUserWithEmailAndPassword(this.auth, email, password);
-
       const user = userCredential.user;
       const userRef = doc(this.firestore, 'users', user.uid);
       await setDoc(userRef, { email: email, username: username });
-
       this.onUserRegistered.emit(user.uid);
-    } catch (error) {
+    }
+    catch (error) {
       console.error('Error creating user:', error);
+    }
+  }
+
+  async signInWithEmailAndPassword(email: string, password: string): Promise<void> {
+    try {
+      const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
+      console.log('User log in erfolgreich')
+    } catch (error) {
+      console.error('Error signing in:', error);
     }
   }
 }

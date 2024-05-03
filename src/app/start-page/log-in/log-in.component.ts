@@ -26,7 +26,9 @@ export class LogInComponent {
     this.forgotPassword.emit();
   }
 
-  userLogIn() {
-
+  userLogIn(formData: any): void  {
+    const { email, password} = formData.value;
+    this.firestoreService.signInWithEmailAndPassword( email, password);
+    console.log('User log in erfolgt')
   }
 }
