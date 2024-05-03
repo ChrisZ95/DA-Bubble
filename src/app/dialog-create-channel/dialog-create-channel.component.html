@@ -2,8 +2,8 @@
     <div class="create-channel-title"><h2>Channel erstellen</h2><img (click)="closeCreateChannelDialog()" src="./../../assets/images/close.png"></div>
     <span>Channels dienen deinem Team zur Kommunikation. Am besten sollten sie themenbezogen sein #marketing zum Beispiel.</span>
     <label>Channel-Name</label>
-    <input type="text" name="" id="" [(ngModel)]="newChannelName" placeholder="z.B. Kooperationsprojekte">
+    <input type="text" name="" id="" [(ngModel)]="channelName" placeholder="z.B. Kooperationsprojekte">
     <label>Beschreibung <span class="optional">(optional)</span></label>
-    <input type="text" name="" id="" [(ngModel)]="newChannelDescription" placeholder="Dein Text hier">
+    <input type="text" name="" id="" [(ngModel)]="channelDescription" placeholder="Dein Text hier">
     <div class="create-channel-button"><button (click)="openAddPeopleToNewChannelDialog()">Erstellen</button></div>
 </div>

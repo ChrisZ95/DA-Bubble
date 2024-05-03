@@ -1,7 +1,8 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from '@angular/fire/auth';
 import { FirebaseApp } from '@angular/fire/app';
-import { getFirestore, doc, setDoc } from '@angular/fire/firestore';
+import { getFirestore, doc, setDoc, collection, getDocs } from '@angular/fire/firestore';
+import { User } from '../models/user.class';
 
 @Injectable({
   providedIn: 'root'
@@ -27,6 +28,23 @@ export class FirestoreService {
         console.log('User is signed out');
       }
     });
+  }
+
+  async getAllUsers(): Promise<User[]> {
+    try {
+      const usersCollection = collection(this.firestore, 'users');
+      const querySnapshot = await getDocs(usersCollection);
+      const users: User[] = [];
+      querySnapshot.forEach((doc) => {
+        const userData = doc.data();
+        const user = new User(userData);
+        users.push(user);
+      });
+      return users;
+    } catch (error) {
+      console.error('Fehler beim Abrufen der Benutzer:', error);
+      return [];
+    }
   }
 
   async createUserWithEmailAndPassword(email: string, password: string, username: string): Promise<void> {
