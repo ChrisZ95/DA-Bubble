@@ -1,10 +1,16 @@
 import { Injectable, EventEmitter } from '@angular/core';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from '@angular/fire/auth';
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+} from '@angular/fire/auth';
 import { FirebaseApp } from '@angular/fire/app';
-import { getFirestore, doc, setDoc } from '@angular/fire/firestore';
+import { getFirestore, doc, setDoc, collection, getDocs, getDoc } from '@angular/fire/firestore';
+import { User } from '../models/user.class';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class FirestoreService {
   public onUserRegistered: EventEmitter<string> = new EventEmitter<string>();
@@ -29,23 +35,55 @@ export class FirestoreService {
     });
   }
 
-  async createUserWithEmailAndPassword(email: string, password: string, username: string): Promise<void> {
+  async getAllUsers(): Promise<User[]> {
     try {
-      const userCredential = await createUserWithEmailAndPassword(this.auth, email, password);
+        const usersCollection = collection(this.firestore, 'users');
+        const usersSnapshot = await getDocs(usersCollection);
+        const users: User[] = [];
+        usersSnapshot.forEach((doc) => {
+            users.push(doc.data() as User);
+        });
+        return users;
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        throw error;
+    }
+}
+
+  async createUserWithEmailAndPassword(
+    email: string,
+    password: string,
+    username: string
+  ): Promise<void> {
+    try {
+      debugger;
+      const userCredential = await createUserWithEmailAndPassword(
+        this.auth,
+        email,
+        password
+      );
       const user = userCredential.user;
       const userRef = doc(this.firestore, 'users', user.uid);
       await setDoc(userRef, { email: email, username: username });
       this.onUserRegistered.emit(user.uid);
-    }
-    catch (error) {
+    }  catch (error) {
       console.error('Error creating user:', error);
     }
   }
 
-  async signInWithEmailAndPassword(email: string, password: string): Promise<void> {
+
+
+  async signInWithEmailAndPassword(
+    email: string,
+    password: string
+  ): Promise<void> {
     try {
-      const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
-      console.log('User log in erfolgreich')
+      const userCredential = await signInWithEmailAndPassword(
+        this.auth,
+        email,
+        password
+      );
+      console.log('User log in erfolgreich');
     } catch (error) {
       console.error('Error signing in:', error);
     }
