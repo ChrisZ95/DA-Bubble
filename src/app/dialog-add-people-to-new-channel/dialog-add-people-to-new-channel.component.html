@@ -13,11 +13,9 @@
     </div>
     <input *ngIf="selectedOption === 'certain'" type="text" [(ngModel)]="personName" placeholder="Name der Person">
     <div *ngIf="selectedOption === 'certain'">
-        <ul>
-            <li *ngFor="let user of allUsers">
-                {{ user.name }}
-            </li>
-        </ul>
+        <select>
+            <option *ngFor="let user of allUsers" [value]="user">{{ user.username }}</option>
+        </select>
     </div>
     <div class="dialog-add-people-to-new-channel-button">
         <button [style.background-color]="buttonColor" (click)="addUserToChannel()">Erstellen</button>

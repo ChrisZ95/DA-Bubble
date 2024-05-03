@@ -6,7 +6,7 @@ import {
   onAuthStateChanged,
 } from '@angular/fire/auth';
 import { FirebaseApp } from '@angular/fire/app';
-import { getFirestore, doc, setDoc, collection, getDocs } from '@angular/fire/firestore';
+import { getFirestore, doc, setDoc, collection, getDocs, getDoc } from '@angular/fire/firestore';
 import { User } from '../models/user.class';
 
 @Injectable({
@@ -22,6 +22,21 @@ export class FirestoreService {
     this.firestore = getFirestore(myFirebaseApp);
   }
 
+  async getAllUsers(): Promise<User[]> {
+    try {
+        const usersCollection = collection(this.firestore, 'users');
+        const usersSnapshot = await getDocs(usersCollection);
+        const users: User[] = [];
+        usersSnapshot.forEach((doc) => {
+            users.push(doc.data() as User);
+        });
+        return users;
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        throw error;
+    }
+}
+
   private observeAuthState(): void {
     onAuthStateChanged(this.auth, (user) => {
       if (user) {
@@ -33,23 +48,6 @@ export class FirestoreService {
         console.log('User is signed out');
       }
     });
-  }
-
-  async getAllUsers(): Promise<User[]> {
-    try {
-      const usersCollection = collection(this.firestore, 'users');
-      const querySnapshot = await getDocs(usersCollection);
-      const users: User[] = [];
-      querySnapshot.forEach((doc) => {
-        const userData = doc.data();
-        const user = new User(userData);
-        users.push(user);
-      });
-      return users;
-    } catch (error) {
-      console.error('Fehler beim Abrufen der Benutzer:', error);
-      return [];
-    }
   }
 
   async createUserWithEmailAndPassword(

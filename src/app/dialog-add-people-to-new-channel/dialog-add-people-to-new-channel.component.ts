@@ -17,17 +17,18 @@ export class DialogAddPeopleToNewChannelComponent implements OnInit {
   selectedOption: string = '';
   buttonColor: string = '#686868';
   personName: string = '';
-  allUsers: User[] = [];
+  allUsers: any[] = [];
 
   constructor(private dialogRef: MatDialogRef<DialogAddPeopleToNewChannelComponent>, private firestoreService: FirestoreService){}
 
   ngOnInit(): void {
-    this.fetchAllUsers();
+    this.firestoreService.getAllUsers().then(users => {
+      this.allUsers = users;
+    }).catch(error => {
+      console.error('Error fetching users:', error);
+    });
   }
 
-  async fetchAllUsers(){
-    this.allUsers = await this.firestoreService.getAllUsers();
-  }
 
   closeAddPeopleToNewChannelDialog(): void {
     this.dialogRef.close();
