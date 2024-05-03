@@ -18,6 +18,8 @@ export class DialogAddPeopleToNewChannelComponent implements OnInit {
   buttonColor: string = '#686868';
   personName: string = '';
   allUsers: any[] = [];
+  filteredUsers: any[] = [];
+  showUserList: boolean = false; 
 
   constructor(private dialogRef: MatDialogRef<DialogAddPeopleToNewChannelComponent>, private firestoreService: FirestoreService){}
 
@@ -41,4 +43,16 @@ export class DialogAddPeopleToNewChannelComponent implements OnInit {
   addUserToChannel(): void {
   // Logik zum Erstellen des Kanals hier
   }
+
+  filterUsers(): void {
+    if (this.personName.trim() !== '') {
+        this.filteredUsers = this.allUsers.filter(user => {
+            return user.username.toLowerCase().includes(this.personName.toLowerCase());
+        });
+        this.showUserList = true;
+    } else {
+        this.filteredUsers = [];
+        this.showUserList = false;
+    }
+}
 }
