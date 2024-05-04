@@ -37,12 +37,11 @@ export class FirestoreService {
     }
 }
 
-  private observeAuthState(): void {
+  observeAuthState(): void {
     onAuthStateChanged(this.auth, (user) => {
       if (user) {
         // User ist angemeldet
         console.log('User is signed in:', user.uid);
-        // Hier können Sie weitere Aktionen für angemeldete Benutzer ausführen
       } else {
         // User ist abgemeldet
         console.log('User is signed out');
@@ -76,6 +75,7 @@ export class FirestoreService {
         password
       );
       console.log('User log in erfolgreich');
+      this.observeAuthState();
     } catch (error) {
       console.error('Error signing in:', error);
     }
