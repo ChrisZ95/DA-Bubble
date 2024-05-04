@@ -28,6 +28,7 @@ export class DialogCreateChannelComponent {
   openAddPeopleToNewChannelDialog() {
     this.createChannel();
     this.dialog.open(DialogAddPeopleToNewChannelComponent);
+    this.dialogRef.close();
   }
 
   createChannel(): void {

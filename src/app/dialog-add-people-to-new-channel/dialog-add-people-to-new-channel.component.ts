@@ -26,6 +26,7 @@ export class DialogAddPeopleToNewChannelComponent implements OnInit {
   channelName: string = '';
   channelDescription: string = '';
   channelMember: { userId: string }[] = [];
+  selectedUsers: any[] = [];
   
 
   constructor(private dialogRef: MatDialogRef<DialogAddPeopleToNewChannelComponent>, private firestoreService: FirestoreService, private channelService: ChannelService, private readonly firestore: Firestore){
@@ -41,7 +42,6 @@ export class DialogAddPeopleToNewChannelComponent implements OnInit {
     });
   }
 
-
   closeAddPeopleToNewChannelDialog(): void {
     this.dialogRef.close();
   }
@@ -51,24 +51,18 @@ export class DialogAddPeopleToNewChannelComponent implements OnInit {
   }
 
   selectUser(user: any): void {
-    this.personName = user.username; // Setze den Benutzernamen in der Anzeige
-    this.channelMember.push({ userId: user.id }); // Füge den ausgewählten Benutzer zum channelMember Array hinzu
-    this.showUserList = false; // Verstecke die Benutzerliste
-    console.log(this.channelMember)
+    this.personName = user.username;
+    this.channelMember.push({ userId: user.username });
+    this.showUserList = false;
   }
 
   createChannel() {
-    // Erstelle ein neues Channel-Objekt mit den eingegebenen Werten
     const newChannelData: Channel = new Channel({
       channelName: this.channelName,
       channelDescription: this.channelDescription,
-      channelMember: this.channelMember
+      channelMember: this.selectedUsers
     });
-  
-    // Überprüfe, ob die Werte korrekt übernommen wurden
     console.log("New Channel Data:", newChannelData);
-  
-    // Führe den Vorgang zum Hinzufügen des Kanals durch
     this.channelService.addChannel(newChannelData)
       .then(() => {
         console.log('Channel successfully created!');
