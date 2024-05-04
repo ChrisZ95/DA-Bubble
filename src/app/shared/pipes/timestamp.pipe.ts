@@ -7,13 +7,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class TimestampPipe implements PipeTransform {
   transform(value: number | string, ...args: string[]): string {
-    const timestamp = typeof value === 'string' ? parseFloat(value) : value;
-
-    if (isNaN(timestamp) || !isFinite(timestamp)) {
-      return '';
-    }
-
-    const date = new Date(timestamp);
+    const date = new Date(value);
     const today = new Date();
 
     if (args.includes('time')) {
