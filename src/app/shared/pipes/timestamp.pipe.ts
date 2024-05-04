@@ -6,27 +6,33 @@ import { Pipe, PipeTransform } from '@angular/core';
   standalone: true,
 })
 export class TimestampPipe implements PipeTransform {
-  transform(value: number | string, ...args: string[]): string {
-    const date = new Date(value);
-    const today = new Date();
+  weekday: string = '';
+  date: any = [];
+  valueArr: any = [];
 
-    if (args.includes('time')) {
-      return `${this.padZero(date.getHours())}:${this.padZero(
-        date.getMinutes()
-      )}:${this.padZero(date.getSeconds())}`;
-    } else if (this.isSameDay(date, today)) {
-      return 'heute';
-    } else {
-      return this.formatDate(date);
+  transform(value: string, ...args: unknown[]): unknown {
+    const milliseconds = parseInt(value, 10);
+    if (isNaN(milliseconds)) {
+      return 'Ungültige Eingabe';
     }
+
+    const dateObj = new Date(milliseconds);
+    const weekday = this.convertWeekday(dateObj.getDay());
+    const day = dateObj.getDate();
+    const month = this.convertMonth(dateObj.getMonth());
+    const year = dateObj.getFullYear();
+    const hours = dateObj.getHours();
+    const minutes = dateObj.getMinutes();
+    const seconds = dateObj.getSeconds();
+
+    const formattedDate = `${weekday}, ${day}. ${month} ${year}`;
+    const formattedTime = `${hours}:${minutes}:${seconds} Uhr`;
+
+    return [formattedDate, formattedTime];
   }
 
-  private padZero(value: number): string {
-    return value < 10 ? `0${value}` : `${value}`;
-  }
-
-  private formatDate(date: Date): string {
-    const days = [
+  convertWeekday(day: number): string {
+    const daysMap: string[] = [
       'Sonntag',
       'Montag',
       'Dienstag',
@@ -35,7 +41,11 @@ export class TimestampPipe implements PipeTransform {
       'Freitag',
       'Samstag',
     ];
-    const months = [
+    return daysMap[day] || 'Ungültiger Wochentag';
+  }
+
+  convertMonth(month: number): string {
+    const monthsMap: string[] = [
       'Januar',
       'Februar',
       'März',
@@ -49,18 +59,6 @@ export class TimestampPipe implements PipeTransform {
       'November',
       'Dezember',
     ];
-    const day = days[date.getDay()];
-    const month = months[date.getMonth()];
-    const dayOfMonth = date.getDate();
-
-    return `${day}, ${dayOfMonth}. ${month}`;
-  }
-
-  private isSameDay(date1: Date, date2: Date): boolean {
-    return (
-      date1.getFullYear() === date2.getFullYear() &&
-      date1.getMonth() === date2.getMonth() &&
-      date1.getDate() === date2.getDate()
-    );
+    return monthsMap[month] || 'Ungültiger Monat';
   }
 }
