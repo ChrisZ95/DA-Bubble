@@ -75,6 +75,8 @@
     margin-top: -30px;
     width: 50%;
     margin-left: 15px;
+    position: absolute;
+    top: 70%;
 }
 
 .user-option{
@@ -86,4 +88,7 @@
     &:hover {
         background-color: rgb(236, 238, 254) !important;
     }
+    border-radius: 50px;
+    width: fit-content;
+    margin-left: 20px;
 }

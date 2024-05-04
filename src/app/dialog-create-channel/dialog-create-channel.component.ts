@@ -19,30 +19,20 @@ export class DialogCreateChannelComponent {
   channelName: string = '';
   channelDescription: string = '';
 
-  constructor(private dialogRef: MatDialogRef<DialogCreateChannelComponent>, public dialog: MatDialog, private firestoreService: ChannelService) {}
+  constructor(private dialogRef: MatDialogRef<DialogCreateChannelComponent>, public dialog: MatDialog, private channelService: ChannelService) {}
 
   closeCreateChannelDialog(): void {
     this.dialogRef.close();
   }
 
-  createChannel() {
-    const newChannelData: Channel = new Channel({
-      channelName: this.channelName,
-      channelDescription: this.channelDescription
-    });
-
-    this.firestoreService.addChannel(newChannelData)
-      .then(() => {
-        console.log('Channel successfully created!');
-        this.dialogRef.close();
-      })
-      .catch((error) => {
-        console.error('Error creating channel: ', error);
-      });
-  }
-
   openAddPeopleToNewChannelDialog() {
     this.createChannel();
     this.dialog.open(DialogAddPeopleToNewChannelComponent);
+  }
+
+  createChannel(): void {
+    const channelName = this.channelName;
+    const channelDescription = this.channelDescription;
+    this.channelService.setChannelData(channelName, channelDescription);
   }
 }

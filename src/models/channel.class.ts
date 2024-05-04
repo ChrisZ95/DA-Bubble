@@ -1,23 +1,27 @@
 export class Channel {
-    channelName: string;
-    channelDescription: string;
-    channelMember: {
-        userId: string
-    }[];
-  
-    constructor(obj?: any) {
-      this.channelName = obj ? obj.channelName : '';
-      this.channelDescription = obj ? obj.channelDescription : '';
-      this.channelMember = obj && obj.channelMember ? obj.channelMember : [{
-        userId: ''
-    }]
-    }
-  
-    toJson() {
-      return {
-        channelName: this.channelName,
-        channelDescription: this.channelDescription,
-        channelMember : this.channelMember
-      };
-    }
+  id: string;
+  channelName: string;
+  channelDescription: string;
+  channelMember: {
+      userId: string
+  }[];
+
+  constructor(obj?: any) {
+    this.id = obj && obj.id ? obj.id : undefined;
+    this.channelName = obj ? obj.channelName : '';
+    this.channelDescription = obj ? obj.channelDescription : '';
+    this.channelMember = obj?.channelMember || [];
   }
+
+  static create(obj?: any): Channel {
+    return new Channel(obj);
+  }
+
+  toJson() {
+    return {
+      channelName: this.channelName,
+      channelDescription: this.channelDescription,
+      channelMember : this.channelMember
+    };
+  }
+}

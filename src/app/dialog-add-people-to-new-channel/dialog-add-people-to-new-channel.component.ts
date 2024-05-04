@@ -1,10 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { Firestore, collection, getDocs } from '@angular/fire/firestore';
+import { Component, OnInit, Input } from '@angular/core';
+import { Firestore, collection, getDocs, doc, updateDoc } from '@angular/fire/firestore';
 import { FormsModule } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { User } from '../../models/user.class';
 import { FirestoreService } from '../firestore.service';
+import { Channel } from './../../models/channel.class';
+import { ChannelService } from '../services/channel.service';
 
 @Component({
   selector: 'app-dialog-add-people-to-new-channel',
@@ -19,9 +21,17 @@ export class DialogAddPeopleToNewChannelComponent implements OnInit {
   personName: string = '';
   allUsers: any[] = [];
   filteredUsers: any[] = [];
-  showUserList: boolean = false; 
+  showUserList: boolean = false;
+  channel: Channel = Channel.create();
+  channelName: string = '';
+  channelDescription: string = '';
+  channelMember: { userId: string }[] = [];
+  
 
-  constructor(private dialogRef: MatDialogRef<DialogAddPeopleToNewChannelComponent>, private firestoreService: FirestoreService){}
+  constructor(private dialogRef: MatDialogRef<DialogAddPeopleToNewChannelComponent>, private firestoreService: FirestoreService, private channelService: ChannelService, private readonly firestore: Firestore){
+    this.channelName = this.channelService.getChannelName();
+    this.channelDescription = this.channelService.getChannelDescription();
+  }
 
   ngOnInit(): void {
     this.firestoreService.getAllUsers().then(users => {
@@ -40,8 +50,33 @@ export class DialogAddPeopleToNewChannelComponent implements OnInit {
     this.buttonColor = !this.selectedOption ? '#686868' : '#444DF2';
   }
 
-  addUserToChannel(): void {
-  // Logik zum Erstellen des Kanals hier
+  selectUser(user: any): void {
+    this.personName = user.username; // Setze den Benutzernamen in der Anzeige
+    this.channelMember.push({ userId: user.id }); // Füge den ausgewählten Benutzer zum channelMember Array hinzu
+    this.showUserList = false; // Verstecke die Benutzerliste
+    console.log(this.channelMember)
+  }
+
+  createChannel() {
+    // Erstelle ein neues Channel-Objekt mit den eingegebenen Werten
+    const newChannelData: Channel = new Channel({
+      channelName: this.channelName,
+      channelDescription: this.channelDescription,
+      channelMember: this.channelMember
+    });
+  
+    // Überprüfe, ob die Werte korrekt übernommen wurden
+    console.log("New Channel Data:", newChannelData);
+  
+    // Führe den Vorgang zum Hinzufügen des Kanals durch
+    this.channelService.addChannel(newChannelData)
+      .then(() => {
+        console.log('Channel successfully created!');
+        this.dialogRef.close();
+      })
+      .catch((error) => {
+        console.error('Error creating channel: ', error);
+      });
   }
 
   filterUsers(): void {
@@ -54,5 +89,5 @@ export class DialogAddPeopleToNewChannelComponent implements OnInit {
         this.filteredUsers = [];
         this.showUserList = false;
     }
-}
+  }
 }
