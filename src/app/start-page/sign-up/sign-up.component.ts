@@ -20,12 +20,14 @@ export class SignUpComponent {
   constructor(private firestoreService: FirestoreService) { }
   showInputInformation: boolean = false;
 
-  userSignUp(formData: any): void {
+  userSignUp(formData: NgForm): void {
+    console.log('Formulardaten:', formData.value);
     const { email, password, username } = formData.value;
-    this.firestoreService.createUserWithEmailAndPassword( email, password, username);
+    this.firestoreService.signUpUser(email, password, username);
     console.log('userSignUp wurde aufgerufen');
     this.toChooseAvatar();
   }
+
 
   backToLogIn() {
     this.backToLoginClicked.emit();

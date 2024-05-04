@@ -50,9 +50,9 @@ export class FirestoreService {
     });
   }
 
-  async createUserWithEmailAndPassword(email: string, password: string, username: string): Promise<void> {
+
+  async signUpUser(email: string, password: string, username: string): Promise<void> {
     try {
-      debugger;
       const userCredential = await createUserWithEmailAndPassword(
         this.auth,
         email,
@@ -68,7 +68,7 @@ export class FirestoreService {
     }
   }
 
-  async signInWithEmailAndPassword(email: string, password: string): Promise<void> {
+  async logInUser(email: string, password: string): Promise<void> {
     try {
       const userCredential = await signInWithEmailAndPassword(
         this.auth,

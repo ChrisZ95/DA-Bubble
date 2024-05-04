@@ -10,11 +10,11 @@
       <span>Mit deinem Namen und deiner E-Mail-adresse hast<br> du ein neues DABubble-Konto.</span>
     </div>
 
-    <form id="signUpForm" (ngSubmit)="userSignUp(signUpForm)" #signUpForm="ngForm">
+    <form (ngSubmit)="userSignUp(signUpForm)" #signUpForm="ngForm">
       <div class="card-input-section">
         <div class="input-container">
           <img src="./../../../assets/images/unisex-user-icon.svg">
-          <input required placeholder="Name und Nachname" name="username" >
+          <input required placeholder="Name und Nachname" name="username" ngModel #name="ngModel">
         </div>
         <div class="pseudo">
           <span class="input-information" *ngIf="showInputInformation">Bitte gebe deinen Namen an.</span>
@@ -22,7 +22,7 @@
         </div>
         <div class="input-container">
           <img src="./../../../assets/images/mail.svg">
-          <input required placeholder="MaxMustermann@gmail.com" name="email">
+          <input required placeholder="MaxMustermann@gmail.com" name="email" ngModel #email="ngModel">
         </div>
         <div class="pseudo">
           <span class="input-information" *ngIf="showInputInformation ">Bitte geben Sie eine gültige E-Mail-Adresse ein.</span>
@@ -30,14 +30,14 @@
         </div>
         <div class="input-container">
           <img src="./../../../assets/images/lock.svg">
-          <input required type="password" placeholder="Passwort" name="password" >
+          <input required type="password" placeholder="Passwort" name="password" ngModel #password="ngModel">
         </div>
        <div class="pseudo">
         <span class="input-information" *ngIf="showInputInformation ">Das Passwort muss 6 Zeichen lang sein.</span>
        </div>
 
         <div class="input-checkbox-container">
-          <input required type="checkbox" name="privacyPolice">
+          <input required type="checkbox">
           <span>Ich stimme der <a (click)="openPrivacyPoliceComponent()">Datenschutzerklärung</a> zu</span>
         </div>
         <div class="pseudo">

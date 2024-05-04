@@ -28,7 +28,7 @@ export class LogInComponent {
 
   userLogIn(formData: any): void  {
     const { email, password} = formData.value;
-    this.firestoreService.signInWithEmailAndPassword( email, password);
+    this.firestoreService.logInUser( email, password);
     console.log('User log in erfolgt')
   }
 }
