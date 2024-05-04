@@ -8,9 +8,9 @@
         <app-workspace></app-workspace>
       </div>
 
-      <div class="chat">
+      <div *ngIf="showChannelChat" class="chat">
         <app-channelchat></app-channelchat>
-      </div>
+    </div>
 
       <div class="thread">
         <app-channelthread></app-channelthread>

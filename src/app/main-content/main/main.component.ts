@@ -19,6 +19,7 @@ import { DialogChannelInfoComponent } from '../../dialog-channel-info/dialog-cha
 import { DialogMembersComponent } from '../../dialog-members/dialog-members.component';
 import { ChannelthreadComponent } from '../../threads/channelthread/channelthread.component';
 import { HeaderComponent } from '../../header/header.component';
+import { ChannelService } from '../../services/channel.service';
 
 @Component({
   selector: 'app-main',
@@ -73,11 +74,15 @@ import { HeaderComponent } from '../../header/header.component';
   ],
 })
 export class MainComponent {
-  constructor() {}
+  constructor(private channelService: ChannelService) {}
   displayWorkspace: boolean = true;
 
   
   showHideWorkspace() {
     this.displayWorkspace = !this.displayWorkspace;
+  }
+
+  get showChannelChat(): boolean {
+    return this.channelService.showChannelChat;
   }
 }

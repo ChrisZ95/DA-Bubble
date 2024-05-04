@@ -14,7 +14,7 @@
             <img (click)="openCreateChannelDialog()" src="../assets/images/add.svg" alt="" class="channels-add">
         </div>
         <div class="active-channel" *ngFor="let channel of allChannels">
-            {{ channel.channelName }}
+            <div (click)="openChannelChat(channel.channelName)">{{ channel.channelName }}</div>
         </div>
     </div>
 </div>
@@ -29,10 +29,9 @@
     <div class="users"
         [ngStyle]="{'height': displayUsers ? '250px' : '0', 'overflow': 'hidden', 'transition': 'height 0.5s ease'}">
 
-        <div class="user" *ngFor="let user of testUsers, let i = index">
-            <img [src]="user.avatar" alt="Avatar">
-            <div>{{ user.fullName }}</div>
+        <div class="user" *ngFor="let user of allUsers, let i = index">
+            <img src="./../../../assets/images/avatar.png" alt="Avatar">
+            <div>{{ user.username }}</div>
         </div>
-
     </div>
 </div>

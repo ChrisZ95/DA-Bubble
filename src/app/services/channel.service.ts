@@ -9,6 +9,8 @@ import { Channel } from './../../models/channel.class';
 export class ChannelService {
   private channelName: string = '';
   private channelDescription: string = '';
+  showChannelChat: boolean = true;
+  selectedChannelName: string | null = null;
   
   constructor(private readonly firestore: Firestore) {}
 
@@ -49,5 +51,13 @@ export class ChannelService {
 
   getChannelDescription(): string {
     return this.channelDescription;
+  }
+
+  setSelectedChannelName(channelName: string) {
+    this.selectedChannelName = channelName;
+  }
+
+  getSelectedChannelName(): string | null {
+    return this.selectedChannelName;
   }
 }

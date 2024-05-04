@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { DialogMembersComponent } from '../../dialog-members/dialog-members.component';
 import { DialogChannelInfoComponent } from '../../dialog-channel-info/dialog-channel-info.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -10,6 +10,10 @@ import { log } from 'console';
 import { doc, collection, getDocs } from 'firebase/firestore';
 import { NgFor } from '@angular/common';
 import { TimestampPipe } from '../../shared/pipes/timestamp.pipe';
+import { Channel } from './../../../models/channel.class';
+import { ChannelService } from '../../services/channel.service';
+import { Firestore, onSnapshot } from '@angular/fire/firestore';
+import { FirestoreService } from '../../firestore.service';
 
 @Component({
   selector: 'app-channelchat',
@@ -19,8 +23,17 @@ import { TimestampPipe } from '../../shared/pipes/timestamp.pipe';
   styleUrls: ['./channelchat.component.scss', '../chats.component.scss'],
 })
 export class ChannelchatComponent implements OnInit {
-  constructor(public dialog: MatDialog, public chats: ChatService) {}
+  constructor(public dialog: MatDialog, public chats: ChatService, private channelService: ChannelService, private readonly firestore: Firestore, private firestoreService: FirestoreService) {
+    onSnapshot(collection(this.firestore, 'channels'), (list) => {
+      this.allChannels = list.docs.map(doc => doc.data());
+      this.selectedChannelName = this.channelService.getSelectedChannelName();
+    });
+  }
+
   messages: any[] = [];
+  allChannels: any = [];
+  channel = new Channel();
+  selectedChannelName: string | null = null;
 
   openMemberDialog() {
     this.dialog.open(DialogMembersComponent);
@@ -56,5 +69,7 @@ export class ChannelchatComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadMessages();
+    this.selectedChannelName = this.channelService.getSelectedChannelName();
+    console.log(this.selectedChannelName);
   }
 }

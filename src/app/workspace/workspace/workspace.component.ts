@@ -4,6 +4,8 @@ import { DialogCreateChannelComponent } from '../../dialog-create-channel/dialog
 import { MatDialog } from '@angular/material/dialog';
 import { Firestore, onSnapshot, collection, doc } from '@angular/fire/firestore';
 import { Channel } from './../../../models/channel.class';
+import { FirestoreService } from '../../firestore.service';
+import { ChannelService } from '../../services/channel.service';
 
 @Component({
   selector: 'app-workspace',
@@ -16,8 +18,10 @@ export class WorkspaceComponent implements OnInit {
   displayUsers: boolean = true;
   channel = new Channel();
   allChannels: any = [];
+  allUsers: any[] = [];
+  selectedChannelName: string | null = null;
 
-  constructor(public dialog: MatDialog, private readonly firestore: Firestore) {
+  constructor(public dialog: MatDialog, private readonly firestore: Firestore, private firestoreService: FirestoreService, private channelService: ChannelService) {
     onSnapshot(collection(this.firestore, 'channels'), (list) => {
       this.allChannels = list.docs.map(doc => doc.data());
     });
@@ -30,20 +34,17 @@ export class WorkspaceComponent implements OnInit {
   dropDownMessages() {
     this.displayUsers = !this.displayUsers;
   }
-  ngOnInit(): void {}
 
-  testUsers: any = [
-    {
-      fullName: 'qwe',
-      avatar: '../../../assets/images/avatar.png',
-    },
-    {
-      fullName: 'asd',
-      avatar: '../../../assets/images/avatar.png',
-    },
-    {
-      fullName: 'yxc',
-      avatar: '../../../assets/images/avatar.png',
-    },
-  ];
+  ngOnInit(): void {
+    this.firestoreService.getAllUsers().then(users => {
+      this.allUsers = users;
+    }).catch(error => {
+      console.error('Error fetching users:', error);
+    });
+  }
+
+  openChannelChat(channelName: string){
+    this.channelService.showChannelChat = true;
+    this.channelService.setSelectedChannelName(channelName);
+  }
 }
