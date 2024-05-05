@@ -17,7 +17,7 @@
           <input required placeholder="Name und Nachname" name="username" ngModel #name="ngModel">
         </div>
         <div class="pseudo">
-          <span class="input-information" *ngIf="showInputInformation">Bitte gebe deinen Namen an.</span>
+          <span class="input-information" *ngIf="showInputInformationUserName">Bitte gebe deinen Namen an.</span>
 
         </div>
         <div class="input-container">
@@ -25,7 +25,7 @@
           <input required placeholder="MaxMustermann@gmail.com" name="email" ngModel #email="ngModel">
         </div>
         <div class="pseudo">
-          <span class="input-information" *ngIf="showInputInformation ">Bitte geben Sie eine gültige E-Mail-Adresse ein.</span>
+          <span class="input-information" *ngIf="showInputInformationEmail ">Bitte geben Sie eine gültige E-Mail-Adresse ein.</span>
 
         </div>
         <div class="input-container">
@@ -33,21 +33,21 @@
           <input required type="password" placeholder="Passwort" name="password" ngModel #password="ngModel">
         </div>
        <div class="pseudo">
-        <span class="input-information" *ngIf="showInputInformation ">Das Passwort muss 6 Zeichen lang sein.</span>
+        <span class="input-information" *ngIf="showInputInformationPassword ">Das Passwort muss 6 Zeichen lang sein.</span>
        </div>
 
         <div class="input-checkbox-container">
-          <input required type="checkbox">
+          <input required type="checkbox" name="privacyPolice" ngModel #privacyPolice="ngModel">
           <span>Ich stimme der <a (click)="openPrivacyPoliceComponent()">Datenschutzerklärung</a> zu</span>
         </div>
         <div class="pseudo">
-          <span class="input-information-checkbox"  *ngIf="showInputInformation ">Bitte bestätigen Sie die Datenschutzerklärung.</span>
+          <span class="input-information-checkbox"  *ngIf="showInputInformationPrivacyPolice">Bitte bestätigen Sie die Datenschutzerklärung.</span>
         </div>
       </div>
 
       <div class="continue-button-container">
        <div>
-        <button type="submit"  class="continue-button">Weiter</button>
+        <button type="submit" class="continue-button">Weiter</button>
        </div>
       </div>
     </form>

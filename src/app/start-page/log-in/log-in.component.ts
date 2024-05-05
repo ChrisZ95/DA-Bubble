@@ -4,6 +4,7 @@ import { NgForm } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
 import { FirestoreService } from '../../firestore.service';
 import { CommonModule } from '@angular/common';
+import { GoogleAuthProvider } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-log-in',
@@ -25,6 +26,19 @@ export class LogInComponent {
   openForgetPasswordComponent() {
     this.forgotPassword.emit();
   }
+
+  logInWithGoogle() {
+    const auth = this.firestoreService.auth;
+    const provider = new GoogleAuthProvider();
+    this.firestoreService.signInWithPopup(auth, provider)
+      .then((result) => {
+        console.log('Google-Anmeldung erfolgreich:', result);
+      })
+      .catch((error) => {
+        console.error('Fehler bei der Google-Anmeldung:', error);
+      });
+  }
+
 
   userLogIn(formData: any): void  {
     const { email, password} = formData.value;

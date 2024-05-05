@@ -4,9 +4,12 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   onAuthStateChanged,
+  GoogleAuthProvider,
+  signInWithPopup
 } from '@angular/fire/auth';
 import { FirebaseApp } from '@angular/fire/app';
 import { getFirestore, doc, setDoc, collection, getDocs, getDoc } from '@angular/fire/firestore';
+import { getStorage, provideStorage, ref } from '@angular/fire/storage';
 import { User } from '../models/user.class';
 
 @Injectable({
@@ -19,8 +22,13 @@ export class FirestoreService {
 
   constructor(private myFirebaseApp: FirebaseApp) {
     this.auth = getAuth(myFirebaseApp);
+    this.auth.languageCode = 'it';
     this.firestore = getFirestore(myFirebaseApp);
+    const provider = new GoogleAuthProvider();
+    // const storage = getStorage();
+    // const storageRef = ref(storage);
   }
+
 
   async getAllUsers(): Promise<User[]> {
     try {
@@ -50,7 +58,7 @@ export class FirestoreService {
   }
 
 
-  async signUpUser(email: string, password: string, username: string): Promise<void> {
+  async signUpUser(email: string, password: string, username: string, privacyPolice: boolean): Promise<void> {
     try {
       const userCredential = await createUserWithEmailAndPassword(
         this.auth,
@@ -59,7 +67,7 @@ export class FirestoreService {
       );
       const user = userCredential.user;
       const userRef = doc(this.firestore, 'users', user.uid);
-      await setDoc(userRef, { email: email, username: username });
+      await setDoc(userRef, { email: email, username: username , privacyPolice: true});
       this.onUserRegistered.emit(user.uid);
     }
     catch (error) {
@@ -80,4 +88,23 @@ export class FirestoreService {
       console.error('Error signing in:', error);
     }
   }
+
+  async signInWithPopup(auth:any, provider:any): Promise<void> {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      if (credential !== null) {
+        const token = credential.accessToken;
+        const user = result.user;
+      } else {
+        console.error('Credential is null');
+      }
+    } catch (error:any) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      const email = error.customData.email;
+      const credential = GoogleAuthProvider.credentialFromError(error);
+    }
+  }
+
 }
