@@ -5,7 +5,8 @@ import {
   signInWithEmailAndPassword,
   onAuthStateChanged,
   GoogleAuthProvider,
-  signInWithPopup
+  signInWithPopup,
+  sendEmailVerification
 } from '@angular/fire/auth';
 import { FirebaseApp } from '@angular/fire/app';
 import { getFirestore, doc, setDoc, collection, getDocs, getDoc } from '@angular/fire/firestore';
@@ -22,7 +23,7 @@ export class FirestoreService {
 
   constructor(private myFirebaseApp: FirebaseApp) {
     this.auth = getAuth(myFirebaseApp);
-    this.auth.languageCode = 'it';
+    this.auth.languageCode = 'de';
     this.firestore = getFirestore(myFirebaseApp);
     const provider = new GoogleAuthProvider();
     // const storage = getStorage();
@@ -69,6 +70,7 @@ export class FirestoreService {
       const userRef = doc(this.firestore, 'users', user.uid);
       await setDoc(userRef, { email: email, username: username , privacyPolice: true});
       this.onUserRegistered.emit(user.uid);
+      this.sendEmailVerification(user);
     }
     catch (error) {
       console.error('Error creating user:', error);
@@ -104,6 +106,15 @@ export class FirestoreService {
       const errorMessage = error.message;
       const email = error.customData.email;
       const credential = GoogleAuthProvider.credentialFromError(error);
+    }
+  }
+
+  async sendEmailVerification(user: any): Promise<void> {
+    try {
+      await sendEmailVerification(user);
+      console.log('E-Mail zur Verifizierung gesendet');
+    } catch (error) {
+      console.error('Fehler beim Senden der Verifizierungs-E-Mail:', error);
     }
   }
 
