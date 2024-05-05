@@ -6,7 +6,9 @@ import {
   onAuthStateChanged,
   GoogleAuthProvider,
   signInWithPopup,
-  sendEmailVerification
+  sendEmailVerification,
+  updatePassword,
+  sendPasswordResetEmail
 } from '@angular/fire/auth';
 import { FirebaseApp } from '@angular/fire/app';
 import { getFirestore, doc, setDoc, collection, getDocs, getDoc } from '@angular/fire/firestore';
@@ -70,7 +72,7 @@ export class FirestoreService {
       const userRef = doc(this.firestore, 'users', user.uid);
       await setDoc(userRef, { email: email, username: username , privacyPolice: true});
       this.onUserRegistered.emit(user.uid);
-      this.sendEmailVerification(user);
+      this.sendEmailAfterSignUp(user);
     }
     catch (error) {
       console.error('Error creating user:', error);
@@ -109,7 +111,7 @@ export class FirestoreService {
     }
   }
 
-  async sendEmailVerification(user: any): Promise<void> {
+  async sendEmailAfterSignUp(user: any): Promise<void> {
     try {
       await sendEmailVerification(user);
       console.log('E-Mail zur Verifizierung gesendet');
@@ -117,5 +119,15 @@ export class FirestoreService {
       console.error('Fehler beim Senden der Verifizierungs-E-Mail:', error);
     }
   }
+
+  async sendEmailResetPasswort(auth:any, email:any) {
+    try {
+      await sendPasswordResetEmail(auth, email);
+    } catch(error) {
+      console.error('Fehler beim senden der Email zum reseten des passworts')
+    }
+  }
+
+
 
 }
