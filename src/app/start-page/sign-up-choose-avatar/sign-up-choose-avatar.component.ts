@@ -57,6 +57,6 @@ export class SignUpChooseAvatarComponent implements OnInit {
   // }
   async getUserDocument(docId: string) {
     // this.userData = await this.firestoreService.getUserByDocId(docId);
-    console.log('Benutzerdaten erhalten:', this.userData);
+    // console.log('Benutzerdaten erhalten:', this.userData);
   }
 }

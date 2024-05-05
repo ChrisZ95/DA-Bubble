@@ -17,7 +17,8 @@ export class LogInComponent {
   @Output() forgotPassword: EventEmitter<any> = new EventEmitter();
 
   constructor(private router: Router, private firestoreService: FirestoreService) { }
-  showInputInformation: boolean = false;
+  showInputInformationEmail: boolean = false;
+  showInputInformationPassword: boolean = false;
 
   guestLogIn() {
     this.router.navigate(['/generalView']);
@@ -41,8 +42,18 @@ export class LogInComponent {
 
 
   userLogIn(formData: any): void  {
+    this.showInputInformationEmail = false;
+    this.showInputInformationPassword = false;
     const { email, password} = formData.value;
-    this.firestoreService.logInUser( email, password);
-    console.log('User log in erfolgt')
+    if(!formData.valid) {
+      if (formData.controls['email'].invalid) {
+        this.showInputInformationEmail = true;
+      } else if (formData.controls['password'].invalid) {
+        this.showInputInformationPassword = true;
+      }
+    } else {
+      this.firestoreService.logInUser( email, password);
+      console.log('User log in erfolgt')
+    }
   }
 }
