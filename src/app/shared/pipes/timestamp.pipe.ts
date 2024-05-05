@@ -6,29 +6,25 @@ import { Pipe, PipeTransform } from '@angular/core';
   standalone: true,
 })
 export class TimestampPipe implements PipeTransform {
-  weekday: string = '';
-  date: any = [];
-  valueArr: any = [];
 
-  transform(value: string, ...args: unknown[]): unknown {
+  transform(value: string, timeFrame: string): string {
     const milliseconds = parseInt(value, 10);
     if (isNaN(milliseconds)) {
       return 'Ungültige Eingabe';
     }
 
     const dateObj = new Date(milliseconds);
+    const today = new Date();
+    const isToday = dateObj.toDateString() === today.toDateString();
     const weekday = this.convertWeekday(dateObj.getDay());
     const day = dateObj.getDate();
     const month = this.convertMonth(dateObj.getMonth());
-    const year = dateObj.getFullYear();
-    const hours = dateObj.getHours();
-    const minutes = dateObj.getMinutes();
-    const seconds = dateObj.getSeconds();
 
-    const formattedDate = `${weekday}, ${day}. ${month} ${year}`;
-    const formattedTime = `${hours}:${minutes}:${seconds} Uhr`;
-
-    return [formattedDate, formattedTime];
+    if (timeFrame === 'day') {
+      return isToday ? 'heute' : `${weekday}, ${day}. ${month}`;
+    } else {
+      return 'Ungültiger Argumenttyp';
+    }
   }
 
   convertWeekday(day: number): string {
