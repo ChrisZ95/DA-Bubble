@@ -140,11 +140,13 @@ export class FirestoreService {
     }
   }
 
-  async sendEmailResetPasswort(auth: any, email: any) {
+  async sendEmailResetPasswort(email: string): Promise<void> {
     try {
+      const auth = getAuth();
       await sendPasswordResetEmail(auth, email);
+      console.log('E-Mail zum Zurücksetzen des Passworts gesendet');
     } catch (error) {
-      console.error('Fehler beim senden der Email zum reseten des passworts');
+      console.error('Fehler beim Senden der E-Mail zum Zurücksetzen des Passworts:', error);
     }
   }
 
