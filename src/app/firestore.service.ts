@@ -9,6 +9,7 @@ import {
   sendEmailVerification,
   updatePassword,
   sendPasswordResetEmail,
+  OAuthProvider,
 } from '@angular/fire/auth';
 import { FirebaseApp } from '@angular/fire/app';
 import {
@@ -113,13 +114,35 @@ export class FirestoreService {
     }
   }
 
-  async signInWithPopup(auth: any, provider: any): Promise<void> {
+  async signInWithApple(auth: any, provider: any): Promise<void> {
+    debugger
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const credential = OAuthProvider.credentialFromResult(result);
+      if (credential !== null) {
+        const token = credential.accessToken;
+        const user = result.user;
+        this.observeAuthState();
+      } else {
+        console.error('Credential is null');
+      }
+    } catch (error: any) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      const email = error.customData.email;
+      const credential = OAuthProvider.credentialFromError(error);
+      console.log(errorCode)
+    }
+  }
+
+  async signInWithGoogle(auth: any, provider: any): Promise<void> {
     try {
       const result = await signInWithPopup(auth, provider);
       const credential = GoogleAuthProvider.credentialFromResult(result);
       if (credential !== null) {
         const token = credential.accessToken;
         const user = result.user;
+        this.observeAuthState();
       } else {
         console.error('Credential is null');
       }
