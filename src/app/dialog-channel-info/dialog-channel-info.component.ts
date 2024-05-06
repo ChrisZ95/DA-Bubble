@@ -52,13 +52,16 @@ export class DialogChannelInfoComponent implements OnInit {
             this.editingDescription = !this.editingDescription;
         }
         this.isEditing = this.editingName || this.editingDescription;
+        console.log(this.channelName)
+        console.log(this.editedChannelName)
+        console.log(this.selectedChannelName)
     }
     
     saveChanges(field: string) {
         if (field === 'name') {
-            this.channelName = this.editedChannelName;
+            this.selectedChannelName = this.editedChannelName;
         } else if (field === 'description') {
-            this.channelDescription = this.editedDescription;
+            this.selectedChannelDescription = this.editedDescription;
         }
     }
 }
