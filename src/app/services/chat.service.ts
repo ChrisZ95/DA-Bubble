@@ -42,10 +42,10 @@ export class ChatService {
   }
 
   async createChat() {
-    let ids: any;
-    this.getDocumentIDs('chats').then((ids) => {
-      ids = ids;
-      console.log('ids', ids);
+    let userDocIds: any;
+    this.getDocumentIDs('users').then((ids) => {
+      userDocIds = ids.map((str) => str.substring(0, 5));
+      console.log('userDocIds', userDocIds);
     });
 
     let allChats: any = await getDocs(this.chatsCollection);
