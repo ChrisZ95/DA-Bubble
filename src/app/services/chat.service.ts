@@ -34,10 +34,21 @@ export class ChatService {
   chatsCollection = collection(this.db, 'chats');
   usersCollection = collection(this.db, 'users');
 
-  async createChat() {
-    let allChats: any = await getDocs(this.chatsCollection);
-    allChats = allChats.data();
+  // Function to get documents from a collection
+  async getDocumentIDs(collectionName: string) {
+    const docRef = collection(this.db, collectionName);
+    const docSnap = await getDocs(docRef);
+    return docSnap.docs.map((doc) => doc.id);
+  }
 
+  async createChat() {
+    let ids: any;
+    this.getDocumentIDs('chats').then((ids) => {
+      ids = ids;
+      console.log('ids', ids);
+    });
+
+    let allChats: any = await getDocs(this.chatsCollection);
     // 1. Load all Chats
     const dbRef = collection(this.db, 'chats');
 
