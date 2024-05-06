@@ -14,8 +14,10 @@
             <img (click)="openCreateChannelDialog()" src="../assets/images/add.svg" alt="" class="channels-add">
         </div>
         <div class="active-channel" *ngFor="let channel of allChannels">
-            <div (click)="openChannelChat(channel.channelName, channel.channelDescription)">{{ channel.channelName }}
-            </div>
+            <div
+            (click)="channelService.getChannelName(channel.name)"
+            (click)="channelService.getDescription(channel.description)" (click)="channelService.getUserName(channel.users)"
+            (click)="channelService.getAuthor(channel.author)" (click)="openChannelChat(channel.id)">{{ channel.name }}</div>
         </div>
     </div>
 </div>

@@ -23,10 +23,10 @@ import { FirestoreService } from '../../firestore.service';
   styleUrls: ['./channelchat.component.scss', '../chats.component.scss'],
 })
 export class ChannelchatComponent implements OnInit {
-  constructor(public dialog: MatDialog, public chats: ChatService, private channelService: ChannelService, private readonly firestore: Firestore, private firestoreService: FirestoreService) {
+  constructor(public dialog: MatDialog, public chats: ChatService, public channelService: ChannelService, private readonly firestore: Firestore, private firestoreService: FirestoreService) {
     onSnapshot(collection(this.firestore, 'channels'), (list) => {
       this.allChannels = list.docs.map(doc => doc.data());
-      this.selectedChannelName = this.channelService.getSelectedChannelName();
+
     });
   }
 
@@ -40,14 +40,8 @@ export class ChannelchatComponent implements OnInit {
     this.dialog.open(DialogMembersComponent);
   }
 
-  openChannelInfoDialog(selectedChannelName: string | null, selectedChannelDescription: string | null) {
-    if (selectedChannelName && selectedChannelDescription !== null) {
-      this.dialog.open(DialogChannelInfoComponent);
-      this.channelService.setSelectedChannelName(selectedChannelName);
-      this.channelService.setSelectedChannelDescription(selectedChannelDescription);
-    } else {
-      // Behandlung, wenn selectedChannelName null ist
-    }
+  openChannelInfoDialog() {
+    this.dialog.open(DialogChannelInfoComponent);
   }
 
   openAddPeopleDialog() {
@@ -76,8 +70,5 @@ export class ChannelchatComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadMessages();
-    this.selectedChannelName = this.channelService.getSelectedChannelName();
-    this.selectedChannelDescription = this.channelService.getSelectedChannelDescription();
-    console.log(this.selectedChannelName);
   }
 }

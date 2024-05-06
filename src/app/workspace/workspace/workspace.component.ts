@@ -31,7 +31,7 @@ export class WorkspaceComponent implements OnInit {
     public dialog: MatDialog,
     private readonly firestore: Firestore,
     private firestoreService: FirestoreService,
-    private channelService: ChannelService,
+    public channelService: ChannelService,
     private chat: ChatService
   ) {
     onSnapshot(collection(this.firestore, 'channels'), (list) => {
@@ -47,10 +47,9 @@ export class WorkspaceComponent implements OnInit {
     this.displayUsers = !this.displayUsers;
   }
 
-  openChannelChat(channelName: string, channelDescription: string) {
+  openChannelChat(id: string) {
     this.channelService.showChannelChat = true;
-    this.channelService.setSelectedChannelName(channelName);
-    this.channelService.setSelectedChannelDescription(channelDescription);
+    this.chat.subChatList(id);
   }
   // Adrian
   openChat(user: any) {
