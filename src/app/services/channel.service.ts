@@ -1,10 +1,18 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, addDoc, DocumentReference, DocumentData, doc, updateDoc } from '@angular/fire/firestore';
+import {
+  Firestore,
+  collection,
+  addDoc,
+  DocumentReference,
+  DocumentData,
+  doc,
+  updateDoc,
+} from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { Channel } from './../../models/channel.class';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ChannelService {
   private channelName: string = '';
@@ -12,7 +20,7 @@ export class ChannelService {
   showChannelChat: boolean = false;
   selectedChannelName: string | null = null;
   selectedChannelDescription: string | null = null;
-  
+
   constructor(private readonly firestore: Firestore) {}
 
   addChannel(channelData: Channel): Promise<DocumentReference<DocumentData>> {
@@ -28,7 +36,7 @@ export class ChannelService {
       await updateDoc(channelDocRef, {
         channelName: channel.channelName,
         channelDescription: channel.channelDescription,
-        channelMember: channel.channelMember
+        channelMember: channel.channelMember,
       });
       console.log('Kanal aktualisiert:', channel);
     } catch (error) {

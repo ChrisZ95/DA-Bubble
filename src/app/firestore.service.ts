@@ -8,12 +8,20 @@ import {
   signInWithPopup,
   sendEmailVerification,
   updatePassword,
-  sendPasswordResetEmail
+  sendPasswordResetEmail,
 } from '@angular/fire/auth';
 import { FirebaseApp } from '@angular/fire/app';
-import { getFirestore, doc, setDoc, collection, getDocs, getDoc } from '@angular/fire/firestore';
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  collection,
+  getDocs,
+  getDoc,
+} from '@angular/fire/firestore';
 import { getStorage, provideStorage, ref } from '@angular/fire/storage';
 import { User } from '../models/user.class';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -23,7 +31,7 @@ export class FirestoreService {
   public auth: any;
   public firestore: any;
 
-  constructor(private myFirebaseApp: FirebaseApp) {
+  constructor(private myFirebaseApp: FirebaseApp, public router: Router) {
     this.auth = getAuth(myFirebaseApp);
     this.auth.languageCode = 'de';
     this.firestore = getFirestore(myFirebaseApp);
@@ -32,36 +40,43 @@ export class FirestoreService {
     // const storageRef = ref(storage);
   }
 
-
   async getAllUsers(): Promise<User[]> {
     try {
-        const usersCollection = collection(this.firestore, 'users');
-        const usersSnapshot = await getDocs(usersCollection);
-        const users: User[] = [];
-        usersSnapshot.forEach((doc) => {
-            users.push(doc.data() as User);
-        });
-        return users;
+      const usersCollection = collection(this.firestore, 'users');
+      const usersSnapshot = await getDocs(usersCollection);
+      const users: User[] = [];
+      usersSnapshot.forEach((doc) => {
+        users.push(doc.data() as User);
+      });
+      return users;
     } catch (error) {
-        console.error('Error fetching users:', error);
-        throw error;
+      console.error('Error fetching users:', error);
+      throw error;
     }
-}
+  }
 
   observeAuthState(): void {
     onAuthStateChanged(this.auth, (user) => {
       if (user) {
         // User ist angemeldet
         console.log('User is signed in:', user.uid);
+        localStorage.setItem('logedIn', 'true');
+        this.router.navigate(['generalView']);
       } else {
         // User ist abgemeldet
         console.log('User is signed out');
+        localStorage.clear();
+        this.router.navigate(['']);
       }
     });
   }
 
-
-  async signUpUser(email: string, password: string, username: string, privacyPolice: boolean): Promise<void> {
+  async signUpUser(
+    email: string,
+    password: string,
+    username: string,
+    privacyPolice: boolean
+  ): Promise<void> {
     try {
       const userCredential = await createUserWithEmailAndPassword(
         this.auth,
@@ -70,11 +85,15 @@ export class FirestoreService {
       );
       const user = userCredential.user;
       const userRef = doc(this.firestore, 'users', user.uid);
-      await setDoc(userRef, { email: email, username: username , privacyPolice: true});
+      await setDoc(userRef, {
+        email: email,
+        username: username,
+        privacyPolice: true,
+        uid: user.uid,
+      });
       this.onUserRegistered.emit(user.uid);
       this.sendEmailAfterSignUp(user);
-    }
-    catch (error) {
+    } catch (error) {
       console.error('Error creating user:', error);
     }
   }
@@ -93,7 +112,7 @@ export class FirestoreService {
     }
   }
 
-  async signInWithPopup(auth:any, provider:any): Promise<void> {
+  async signInWithPopup(auth: any, provider: any): Promise<void> {
     try {
       const result = await signInWithPopup(auth, provider);
       const credential = GoogleAuthProvider.credentialFromResult(result);
@@ -103,7 +122,7 @@ export class FirestoreService {
       } else {
         console.error('Credential is null');
       }
-    } catch (error:any) {
+    } catch (error: any) {
       const errorCode = error.code;
       const errorMessage = error.message;
       const email = error.customData.email;
@@ -120,14 +139,11 @@ export class FirestoreService {
     }
   }
 
-  async sendEmailResetPasswort(auth:any, email:any) {
+  async sendEmailResetPasswort(auth: any, email: any) {
     try {
       await sendPasswordResetEmail(auth, email);
-    } catch(error) {
-      console.error('Fehler beim senden der Email zum reseten des passworts')
+    } catch (error) {
+      console.error('Fehler beim senden der Email zum reseten des passworts');
     }
   }
-
-
-
 }
