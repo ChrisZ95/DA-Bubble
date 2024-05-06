@@ -9,7 +9,7 @@
             <span class="purple-color" (click)="toggleEditing('name')">{{ editingName ? 'Speichern' : 'Bearbeiten' }}</span>
         </div>
         <input type="text" [(ngModel)]="editedChannelName" *ngIf="editingName"/>
-        <span class="channel-name-small" *ngIf="!editingName">{{ selectedChannelName }}</span>
+        <span class="channel-name-small" *ngIf="!editingName">{{ channelService.channelName }}</span>
     </div>
     <div class="description-container" [ngClass]="{'editing': editingDescription}">
         <div class="description-title">
@@ -17,11 +17,11 @@
             <span class="purple-color" (click)="toggleEditing('description')">{{ editingDescription ? 'Speichern' : 'Bearbeiten' }}</span>
         </div>
         <input type="text" [(ngModel)]="editedDescription" *ngIf="editingDescription"/>
-        <span class="description-text" *ngIf="!editingDescription">{{ selectedChannelDescription }}</span>
+        <span class="description-text" *ngIf="!editingDescription">{{ channelService.channelDescription }}</span>
         <div class="description-line-container"><div class="description-line"></div></div>
         <div class="created-by">
             <span class="created-by-title">Erstellt von</span>
-            <span class="created-by-name">Noah Braun</span>
+            <span class="created-by-name">{{ channelService.author }}</span>
         </div>
     </div>
     <div class="leave-channel-button"><button>Channel verlassen</button></div>

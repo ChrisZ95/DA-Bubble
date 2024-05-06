@@ -6,6 +6,7 @@ import { Firestore, onSnapshot, collection, doc } from '@angular/fire/firestore'
 import { Channel } from './../../../models/channel.class';
 import { FirestoreService } from '../../firestore.service';
 import { ChannelService } from '../../services/channel.service';
+import { ChatService } from '../../services/chat.service';
 
 @Component({
   selector: 'app-workspace',
@@ -21,7 +22,7 @@ export class WorkspaceComponent implements OnInit {
   allUsers: any[] = [];
   selectedChannelName: string | null = null;
 
-  constructor(public dialog: MatDialog, private readonly firestore: Firestore, private firestoreService: FirestoreService, private channelService: ChannelService) {
+  constructor(public dialog: MatDialog, private readonly firestore: Firestore, private firestoreService: FirestoreService, public channelService: ChannelService, public chatService: ChatService) {
     onSnapshot(collection(this.firestore, 'channels'), (list) => {
       this.allChannels = list.docs.map(doc => doc.data());
     });
@@ -43,9 +44,8 @@ export class WorkspaceComponent implements OnInit {
     });
   }
 
-  openChannelChat(channelName: string, channelDescription: string){
+  openChannelChat(id: string){
     this.channelService.showChannelChat = true;
-    this.channelService.setSelectedChannelName(channelName);
-    this.channelService.setSelectedChannelDescription(channelDescription);
+    this.chatService.subChatList(id);
   }
 }

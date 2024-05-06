@@ -22,7 +22,6 @@ export class DialogAddPeopleToNewChannelComponent implements OnInit {
   allUsers: any[] = [];
   filteredUsers: any[] = [];
   showUserList: boolean = false;
-  channel: Channel = Channel.create();
   channelName: string = '';
   channelDescription: string = '';
   channelMember: { userId: string }[] = [];
@@ -30,8 +29,7 @@ export class DialogAddPeopleToNewChannelComponent implements OnInit {
   
 
   constructor(private dialogRef: MatDialogRef<DialogAddPeopleToNewChannelComponent>, private firestoreService: FirestoreService, private channelService: ChannelService, private readonly firestore: Firestore){
-    this.channelName = this.channelService.getChannelName();
-    this.channelDescription = this.channelService.getChannelDescription();
+   
   }
 
   ngOnInit(): void {
@@ -56,21 +54,8 @@ export class DialogAddPeopleToNewChannelComponent implements OnInit {
     this.showUserList = false;
   }
 
-  createChannel() {
-    const newChannelData: Channel = new Channel({
-      channelName: this.channelName,
-      channelDescription: this.channelDescription,
-      channelMember: this.selectedUsers
-    });
-    console.log("New Channel Data:", newChannelData);
-    this.channelService.addChannel(newChannelData)
-      .then(() => {
-        console.log('Channel successfully created!');
-        this.dialogRef.close();
-      })
-      .catch((error) => {
-        console.error('Error creating channel: ', error);
-      });
+  addPeopleToChannel() {
+    this.channelService.addUserToChannel(this.personName);
   }
 
   filterUsers(): void {
