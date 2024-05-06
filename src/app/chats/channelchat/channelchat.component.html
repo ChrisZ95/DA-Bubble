@@ -1,6 +1,6 @@
 <div class="header">
   <div class="active-channel">
-    <div (click)="openChannelInfoDialog()"># {{ selectedChannelName }}</div>
+    <div (click)="openChannelInfoDialog(selectedChannelName, selectedChannelDescription)"># {{ selectedChannelName }}</div>
   </div>
   <div class="images">
     <div class="images-participants" (click)="openMemberDialog()">

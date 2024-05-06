@@ -14,7 +14,7 @@
             <img (click)="openCreateChannelDialog()" src="../assets/images/add.svg" alt="" class="channels-add">
         </div>
         <div class="active-channel" *ngFor="let channel of allChannels">
-            <div (click)="openChannelChat(channel.channelName)">{{ channel.channelName }}</div>
+            <div (click)="openChannelChat(channel.channelName, channel.channelDescription)">{{ channel.channelName }}</div>
         </div>
     </div>
 </div>

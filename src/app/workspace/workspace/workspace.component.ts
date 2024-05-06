@@ -43,8 +43,9 @@ export class WorkspaceComponent implements OnInit {
     });
   }
 
-  openChannelChat(channelName: string){
+  openChannelChat(channelName: string, channelDescription: string){
     this.channelService.showChannelChat = true;
     this.channelService.setSelectedChannelName(channelName);
+    this.channelService.setSelectedChannelDescription(channelDescription);
   }
 }

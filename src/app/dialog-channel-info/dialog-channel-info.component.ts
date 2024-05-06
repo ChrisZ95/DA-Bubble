@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
+import { ChannelService } from '../services/channel.service';
 
 @Component({
   selector: 'app-dialog-channel-info',
@@ -10,20 +11,29 @@ import { MatDialogRef } from '@angular/material/dialog';
   templateUrl: './dialog-channel-info.component.html',
   styleUrl: './dialog-channel-info.component.scss'
 })
-export class DialogChannelInfoComponent {
-  constructor(private dialogRef: MatDialogRef<DialogChannelInfoComponent>) {}
+export class DialogChannelInfoComponent implements OnInit {
+    constructor(private dialogRef: MatDialogRef<DialogChannelInfoComponent>, private channelService: ChannelService) {}
 
-  closeChannelInfoDialog(): void {
+    closeChannelInfoDialog(): void {
     this.dialogRef.close();
-  }
+    }
 
-    channelName = "# Entwicklerteam";
-    description = "Dieser Channel ist für alles rund um #dfsdf vorgesehen. Hier kannst du zusammen mit deinem Team Meetings abhalten, Dokumente teilen und Entscheidungen treffen.";
-    editedChannelName: string = '';
-    editedDescription: string = '';
+    ngOnInit(): void {
+    this.selectedChannelName = this.channelService.getSelectedChannelName();
+    this.selectedChannelDescription = this.channelService.getSelectedChannelDescription();
+    this.channelName = this.selectedChannelName;
+    this.channelDescription = this.selectedChannelDescription;
+    }
+
+    channelName: string | null = null;
+    channelDescription: string | null = null;
+    editedChannelName: string | null = null;
+    editedDescription: string | null = null;
     editingName: boolean = false;
     editingDescription: boolean = false;
     isEditing: boolean = false;
+    selectedChannelName: string | null = null;
+    selectedChannelDescription: string | null = null;
 
     toggleEditing(field: string) {
         if (field === 'name') {
@@ -35,7 +45,7 @@ export class DialogChannelInfoComponent {
             this.editingName = !this.editingName;
         } else if (field === 'description') {
             if (!this.editingDescription) {
-                this.editedDescription = this.description; 
+                this.editedDescription = this.channelDescription; 
             } else {
                 this.saveChanges('description');
             }
@@ -48,7 +58,7 @@ export class DialogChannelInfoComponent {
         if (field === 'name') {
             this.channelName = this.editedChannelName;
         } else if (field === 'description') {
-            this.description = this.editedDescription;
+            this.channelDescription = this.editedDescription;
         }
     }
 }

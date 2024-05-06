@@ -9,8 +9,9 @@ import { Channel } from './../../models/channel.class';
 export class ChannelService {
   private channelName: string = '';
   private channelDescription: string = '';
-  showChannelChat: boolean = true;
+  showChannelChat: boolean = false;
   selectedChannelName: string | null = null;
+  selectedChannelDescription: string | null = null;
   
   constructor(private readonly firestore: Firestore) {}
 
@@ -20,13 +21,9 @@ export class ChannelService {
 
   async updateChannel(channel: Channel): Promise<void> {
     try {
-      // Überprüfen, ob channelMember vorhanden ist und initialisieren, falls nicht
       if (!channel.channelMember) {
         channel.channelMember = [];
       }
-  
-      // Annahme: Sie haben eine Methode, um den Kanal im Firestore zu aktualisieren
-      // Hier ein Beispiel, wie Sie den Kanal im Firestore aktualisieren könnten
       const channelDocRef = doc(this.firestore, 'channels', channel.id);
       await updateDoc(channelDocRef, {
         channelName: channel.channelName,
@@ -59,5 +56,13 @@ export class ChannelService {
 
   getSelectedChannelName(): string | null {
     return this.selectedChannelName;
+  }
+
+  setSelectedChannelDescription(channelDescription: string) {
+    this.selectedChannelDescription = channelDescription;
+  }
+
+  getSelectedChannelDescription(): string | null {
+    return this.selectedChannelDescription;
   }
 }

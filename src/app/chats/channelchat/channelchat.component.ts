@@ -34,13 +34,20 @@ export class ChannelchatComponent implements OnInit {
   allChannels: any = [];
   channel = new Channel();
   selectedChannelName: string | null = null;
+  selectedChannelDescription: string | null = null;
 
   openMemberDialog() {
     this.dialog.open(DialogMembersComponent);
   }
 
-  openChannelInfoDialog() {
-    this.dialog.open(DialogChannelInfoComponent);
+  openChannelInfoDialog(selectedChannelName: string | null, selectedChannelDescription: string | null) {
+    if (selectedChannelName && selectedChannelDescription !== null) {
+      this.dialog.open(DialogChannelInfoComponent);
+      this.channelService.setSelectedChannelName(selectedChannelName);
+      this.channelService.setSelectedChannelDescription(selectedChannelDescription);
+    } else {
+      // Behandlung, wenn selectedChannelName null ist
+    }
   }
 
   openAddPeopleDialog() {
@@ -70,6 +77,7 @@ export class ChannelchatComponent implements OnInit {
   ngOnInit(): void {
     this.loadMessages();
     this.selectedChannelName = this.channelService.getSelectedChannelName();
+    this.selectedChannelDescription = this.channelService.getSelectedChannelDescription();
     console.log(this.selectedChannelName);
   }
 }
