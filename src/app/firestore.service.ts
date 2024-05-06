@@ -33,15 +33,13 @@ export class FirestoreService {
   public firestore: any;
 
   constructor(private myFirebaseApp: FirebaseApp, public router: Router) {
-    this.auth = getAuth();
-    console.log(this.auth)
+    this.auth = getAuth(myFirebaseApp);
     this.auth.languageCode = 'de';
     this.firestore = getFirestore(myFirebaseApp);
     const provider = new GoogleAuthProvider();
     // const storage = getStorage();
     // const storageRef = ref(storage);
   }
-
 
   async getAllUsers(): Promise<User[]> {
     try {
@@ -56,7 +54,7 @@ export class FirestoreService {
       console.error('Error fetching users:', error);
       throw error;
     }
-}
+  }
 
   observeAuthState(): void {
     onAuthStateChanged(this.auth, (user) => {
@@ -73,7 +71,6 @@ export class FirestoreService {
       }
     });
   }
-
 
   async signUpUser(
     email: string,

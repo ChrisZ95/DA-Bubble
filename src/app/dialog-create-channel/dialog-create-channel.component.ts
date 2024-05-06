@@ -26,14 +26,14 @@ export class DialogCreateChannelComponent {
   }
 
   openAddPeopleToNewChannelDialog() {
-    this.createChannel();
     this.dialog.open(DialogAddPeopleToNewChannelComponent);
-    this.dialogRef.close();
   }
 
   createChannel(): void {
-    const channelName = this.channelName;
-    const channelDescription = this.channelDescription;
-    this.channelService.setChannelData(channelName, channelDescription);
+    this.channelService.channel.name = this.channelName;
+    this.channelService.channel.description = this.channelDescription;
+    this.channelService.addChannel();
+    this.dialogRef.close();
+    this.openAddPeopleToNewChannelDialog();
   }
 }

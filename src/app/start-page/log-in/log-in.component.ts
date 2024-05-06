@@ -11,12 +11,15 @@ import { GoogleAuthProvider } from '@angular/fire/auth';
   standalone: true,
   imports: [FormsModule, CommonModule],
   templateUrl: './log-in.component.html',
-  styleUrl: './log-in.component.scss'
+  styleUrl: './log-in.component.scss',
 })
 export class LogInComponent {
   @Output() forgotPassword: EventEmitter<any> = new EventEmitter();
 
-  constructor(private router: Router, private firestoreService: FirestoreService) { }
+  constructor(
+    private router: Router,
+    private firestoreService: FirestoreService
+  ) {}
   showInputInformationEmail: boolean = false;
   showInputInformationPassword: boolean = false;
 
@@ -31,7 +34,8 @@ export class LogInComponent {
   logInWithGoogle() {
     const auth = this.firestoreService.auth;
     const provider = new GoogleAuthProvider();
-    this.firestoreService.signInWithPopup(auth, provider)
+    this.firestoreService
+      .signInWithPopup(auth, provider)
       .then((result) => {
         console.log('Google-Anmeldung erfolgreich:', result);
       })
@@ -40,20 +44,19 @@ export class LogInComponent {
       });
   }
 
-
-  userLogIn(formData: any): void  {
+  userLogIn(formData: any): void {
     this.showInputInformationEmail = false;
     this.showInputInformationPassword = false;
-    const { email, password} = formData.value;
-    if(!formData.valid) {
+    const { email, password } = formData.value;
+    if (!formData.valid) {
       if (formData.controls['email'].invalid) {
         this.showInputInformationEmail = true;
       } else if (formData.controls['password'].invalid) {
         this.showInputInformationPassword = true;
       }
     } else {
-      this.firestoreService.logInUser( email, password);
-      console.log('User log in erfolgt')
+      this.firestoreService.logInUser(email, password);
+      console.log('User log in erfolgt');
     }
   }
 }
