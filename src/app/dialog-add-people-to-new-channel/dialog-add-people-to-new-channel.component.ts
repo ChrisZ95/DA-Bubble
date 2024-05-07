@@ -54,8 +54,8 @@ export class DialogAddPeopleToNewChannelComponent implements OnInit {
     this.showUserList = false;
   }
 
-  addPeopleToChannel() {
-    this.channelService.addUserToChannel(this.personName);
+  async addUserToChannel() {
+   
   }
 
   filterUsers(): void {

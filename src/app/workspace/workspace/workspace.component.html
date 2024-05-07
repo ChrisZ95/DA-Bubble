@@ -17,7 +17,7 @@
             <div
             (click)="channelService.getChannelName(channel.name)"
             (click)="channelService.getDescription(channel.description)" (click)="channelService.getUserName(channel.users)"
-            (click)="channelService.getAuthor(channel.author)" (click)="openChannelChat(channel.id)"># {{ channel.name }}</div>
+            (click)="channelService.getAuthor(channel.author)" (click)="openChannelChat(this.channel['channelId'])"># {{ channel.name }}</div>
         </div>
     </div>
 </div>

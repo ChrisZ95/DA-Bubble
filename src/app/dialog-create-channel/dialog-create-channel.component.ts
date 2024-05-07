@@ -18,8 +18,9 @@ import { ChannelService } from '../services/channel.service';
 export class DialogCreateChannelComponent {
   channelName: string = '';
   channelDescription: string = '';
+  channel = new Channel();
 
-  constructor(private dialogRef: MatDialogRef<DialogCreateChannelComponent>, public dialog: MatDialog, private channelService: ChannelService) {}
+  constructor(private dialogRef: MatDialogRef<DialogCreateChannelComponent>, public dialog: MatDialog, private channelService: ChannelService, private readonly firestore: Firestore) {}
 
   closeCreateChannelDialog(): void {
     this.dialogRef.close();
