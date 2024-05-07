@@ -82,7 +82,7 @@ export class ChannelchatComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // this.loadMessages();
+    this.loadMessages('');
     this.channelService.getChannels().then((channels) => {
       this.allChannels = channels;
       console.log('Channels', channels);
