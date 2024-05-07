@@ -115,7 +115,6 @@ export class FirestoreService {
   }
 
   async signInWithApple(auth: any, provider: any): Promise<void> {
-    debugger
     try {
       const result = await signInWithPopup(auth, provider);
       const credential = OAuthProvider.credentialFromResult(result);
@@ -143,6 +142,7 @@ export class FirestoreService {
         const token = credential.accessToken;
         const user = result.user;
         this.observeAuthState();
+        console.log('der user lautet',user);
       } else {
         console.error('Credential is null');
       }
@@ -163,11 +163,12 @@ export class FirestoreService {
     }
   }
 
-  async sendEmailResetPasswort(emailData: { email: string }): Promise<void> {
+  async sendEmailResetPasswort(emailData: { email: string , uid: string}): Promise<void> {
     try {
       const auth = getAuth();
-      const { email } = emailData;
+      const { email, uid } = emailData;
       console.log('email zum resten des Passworts lautet', email);
+      console.log('Die ID des Users zum zurücksetzen des Passworts lautet', uid);
       await sendPasswordResetEmail(auth, email);
       console.log('E-Mail zum Zurücksetzen des Passworts gesendet');
     } catch (error) {
@@ -175,11 +176,20 @@ export class FirestoreService {
     }
   }
 
-  async updatePassword() {
-   try {
+  async changePassword(userId: string, newPassword: string): Promise<void> {
+    // try {
+    //   const auth = getAuth();
 
-   } catch {
+    //   // Benutzerreferenz aktualisieren
+    //   await updatePassword(auth.currentUser, newPassword);
 
-   }
+    //   // Erfolgsmeldung
+    //   console.log('Passwort erfolgreich aktualisiert');
+    // } catch (error) {
+    //   // Fehlermeldung
+    //   console.error('Fehler beim Aktualisieren des Passworts:', error);
+    //   throw error;
+    // }
   }
+
 }

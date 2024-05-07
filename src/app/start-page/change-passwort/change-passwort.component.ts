@@ -48,6 +48,8 @@ export class ChangePasswortComponent {
       this.showInputInformationConfirmPasswordInputInvalid = true;
     } else {
       console.log('button zum abschicken des neuen passworts gedrückt')
+      this.emailSended();
+      // this.firestoreService.changePassword(userId, password);
     }
   }
 }
