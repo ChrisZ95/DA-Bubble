@@ -82,6 +82,17 @@
           outline: none;
         }
       }
+
+      .pseudo {
+        height: 20px;
+
+        .input-information {
+          color: red;
+          display: flex;
+          justify-content: flex-start;
+          width: 450px;
+        }
+      }
     }
 
     .continue-button-container {

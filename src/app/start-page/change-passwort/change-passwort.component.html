@@ -9,19 +9,28 @@
       <h1>Passwort zurücksetzten</h1>
     </div>
 
-    <div class="card-input-section">
-      <div class="input-container">
-        <input placeholder="Neues Passwort">
+    <form (ngSubmit)="newPassword(newPasswordForm)" #newPasswordForm="ngForm">
+      <div class="card-input-section">
+        <div class="input-container">
+          <input type="password" ngModel required name="password" #password="ngModel" placeholder="Neues Passwort">
+        </div>
+        <div class="pseudo">
+          <span *ngIf="showInputInformationPassword" class="input-information">Bitte geben Sie ein Passwort an.</span>
+        </div>
+
+        <div class="input-container">
+          <input type="password" ngModel required name="confirmPassword" #confirmPassword="ngModel" placeholder="Neues Kennwort bestätigen">
+        </div>
+        <div class="pseudo">
+          <span *ngIf="showInputInformationConfirmPasswordInputEmpty" class="input-information">Bitte bestätigen Sie Ihr Passwort.</span>
+          <span *ngIf="showInputInformationConfirmPasswordInputInvalid" class="input-information">Die Passwörter stimmen nicht überein.</span>
+        </div>
       </div>
 
-      <div class="input-container">
-        <input placeholder="Neues Kennwort bestätigen">
+      <div class="continue-button-container">
+        <button type="submit" class="continue-button">Passwort ändern</button>
       </div>
-    </div>
-
-    <div class="continue-button-container">
-      <button (click)="emailSended()" class="continue-button">Passwort ändern</button>
-    </div>
+    </form>
 
   </div>
 

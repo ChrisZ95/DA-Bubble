@@ -37,6 +37,7 @@ export class FirestoreService {
     this.auth.languageCode = 'de';
     this.firestore = getFirestore(myFirebaseApp);
     const provider = new GoogleAuthProvider();
+    // const newPassword = getASecureRandomPassword();
     // const storage = getStorage();
     // const storageRef = ref(storage);
   }
@@ -172,5 +173,13 @@ export class FirestoreService {
     } catch (error) {
       console.error('Fehler beim Senden der E-Mail zum Zurücksetzen des Passworts:', error);
     }
+  }
+
+  async updatePassword() {
+   try {
+
+   } catch {
+
+   }
   }
 }
