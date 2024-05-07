@@ -30,7 +30,7 @@ export class SignUpChooseAvatarComponent implements OnInit {
     console.log('choose avatar started')
     this.firestoreService.onUserRegistered.subscribe(docId => {
       this.getUserDocument(docId);
-      console.log('signUp choose avatr id',docId)
+      console.log('signUp choose avatar id',docId)
     });
   }
 

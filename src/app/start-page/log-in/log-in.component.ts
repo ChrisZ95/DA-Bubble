@@ -45,7 +45,6 @@ export class LogInComponent {
   }
 
   logInWithApple() {
-    debugger
     const auth = this.firestoreService.auth;
     const provider = new OAuthProvider('apple.com');
     this.firestoreService
