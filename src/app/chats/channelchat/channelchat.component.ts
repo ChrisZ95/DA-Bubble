@@ -64,8 +64,8 @@ export class ChannelchatComponent implements OnInit {
 
   // wird noch verschoben
   async loadMessages(userDetails: any) {
-    let chatInformation = this.chatsService.createChat(userDetails);
-    console.log('chatInformation', (await chatInformation).valueOf());
+    // let chatInformation = this.chatsService.createChat(userDetails);
+    // console.log('chatInformation', (await chatInformation).valueOf());
 
     const chatsRef = collection(this.chatsService.db, 'chats');
     const querySnapshot = await getDocs(chatsRef);
