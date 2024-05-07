@@ -17,25 +17,42 @@ export class ForgetPasswordComponent {
 
   constructor(private firestoreService: FirestoreService) { }
 
-  showInputInformationEmail: boolean = false;
+  showInputInformationEmailInputInvalid: boolean = false;
+  showInputInformationEmailInputEmpty: boolean = false;
 
   backToLogIn() {
     this.backToLoginClicked.emit();
     console.log('back to login')
   }
 
-  sendMail(formData:any) {
-    debugger
-    this.showInputInformationEmail = false;
-    const email = formData.value;
-    if(!formData.valid) {
-      if (formData.controls['email'].invalid) {
-        this.showInputInformationEmail = true;
+  sendMail(formData: any) {
+    debugger;
+    this.showInputInformationEmailInputInvalid = false;
+    this.showInputInformationEmailInputEmpty = false;
+
+    this.firestoreService.getAllUsers().then(users => {
+      console.log(users);
+
+      const email = formData.value.email;
+
+      if (!formData.valid) {
+        if (formData.controls['email'].invalid) {
+          this.showInputInformationEmailInputEmpty = true;
+        }
+      } else {
+        const userWithEmail = users.find(user => user.email === email);
+        if (userWithEmail) {
+          this.firestoreService.sendEmailResetPasswort({ email });
+          this.emailSended.emit();
+          console.log('E-Mail gesendet');
+        } else {
+          this.showInputInformationEmailInputInvalid = true;
+          console.log('E-Mail-Adresse nicht gefunden');
+        }
       }
-    } else {
-      this.firestoreService.sendEmailResetPasswort(email);
-      this.emailSended.emit();
-      console.log('email gesendet')
-    }
+    }).catch(error => {
+      console.error('Fehler beim Abrufen der Benutzer:', error);
+    });
   }
+
 }
