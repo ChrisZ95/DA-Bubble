@@ -19,6 +19,8 @@ $wct-height: calc(100vh - 20vh);
   border: 1px solid black;
   border-radius: 30px;
   padding: 10px;
+  background-color: rgb(255, 255, 255);
+  height: $wct-height;
 }
 
 .workspace-menu {
@@ -56,4 +58,7 @@ $wct-height: calc(100vh - 20vh);
 .thread {
   height: $wct-height;
   width: calc(20vw - 2px);
+  background-color: rgb(255, 255, 255);
+  border: 1px solid black;
+  border-radius: 30px;
 }
