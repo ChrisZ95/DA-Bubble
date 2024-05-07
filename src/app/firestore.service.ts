@@ -23,6 +23,7 @@ import {
 import { getStorage, provideStorage, ref } from '@angular/fire/storage';
 import { User } from '../models/user.class';
 import { Router } from '@angular/router';
+import { log } from 'console';
 
 @Injectable({
   providedIn: 'root',
@@ -39,10 +40,13 @@ export class FirestoreService {
     this.auth.languageCode = 'de';
     this.firestore = getFirestore(myFirebaseApp);
     const provider = new GoogleAuthProvider();
+    this.currentuid = localStorage.getItem('uid');
     // const newPassword = getASecureRandomPassword();
     // const storage = getStorage();
     // const storageRef = ref(storage);
   }
+
+  currentuid: any;
 
   async getAllUsers(): Promise<User[]> {
     try {
@@ -109,6 +113,7 @@ export class FirestoreService {
         email,
         password
       );
+      localStorage.setItem('uid', userCredential.user.uid);
       console.log('User log in erfolgreich');
       this.observeAuthState();
     } catch (error) {
@@ -132,7 +137,7 @@ export class FirestoreService {
       const errorMessage = error.message;
       const email = error.customData.email;
       const credential = OAuthProvider.credentialFromError(error);
-      console.log(errorCode)
+      console.log(errorCode);
     }
   }
 
@@ -144,7 +149,7 @@ export class FirestoreService {
         const token = credential.accessToken;
         const user = result.user;
         this.observeAuthState();
-        console.log('der user lautet',user);
+        console.log('der user lautet', user);
       } else {
         console.error('Credential is null');
       }
@@ -165,27 +170,34 @@ export class FirestoreService {
     }
   }
 
-  async sendEmailResetPasswort(emailData: { email: string; uid: string; }): Promise<void> {
+  async sendEmailResetPasswort(emailData: {
+    email: string;
+    uid: string;
+  }): Promise<void> {
     try {
       const auth = getAuth();
       const { email, uid } = emailData;
       console.log('email zum resten des Passworts lautet', email);
-      console.log('Die ID des Users zum zurücksetzen des Passworts lautet', uid);
+      console.log(
+        'Die ID des Users zum zurücksetzen des Passworts lautet',
+        uid
+      );
       this.resetPasswordUserId.emit(uid);
       await sendPasswordResetEmail(auth, email);
       console.log('E-Mail zum Zurücksetzen des Passworts gesendet');
     } catch (error) {
-      console.error('Fehler beim Senden der E-Mail zum Zurücksetzen des Passworts:', error);
+      console.error(
+        'Fehler beim Senden der E-Mail zum Zurücksetzen des Passworts:',
+        error
+      );
     }
   }
 
   async changePassword(userId: string, newPassword: string): Promise<void> {
     // try {
     //   const auth = getAuth();
-
     //   // Benutzerreferenz aktualisieren
     //   await updatePassword(auth.currentUser, newPassword);
-
     //   // Erfolgsmeldung
     //   console.log('Passwort erfolgreich aktualisiert');
     // } catch (error) {
@@ -194,5 +206,4 @@ export class FirestoreService {
     //   throw error;
     // }
   }
-
 }

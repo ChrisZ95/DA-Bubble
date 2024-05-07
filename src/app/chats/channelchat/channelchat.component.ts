@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 import { DialogMembersComponent } from '../../dialog-members/dialog-members.component';
 import { DialogChannelInfoComponent } from '../../dialog-channel-info/dialog-channel-info.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -6,7 +6,7 @@ import { DialogAddPeopleComponent } from '../../dialog-add-people/dialog-add-peo
 import { DialogContactInfoComponent } from '../../dialog-contact-info/dialog-contact-info.component';
 import { TextEditorComponent } from '../../shared/text-editor/text-editor.component';
 import { ChatService } from '../../services/chat.service';
-import { log } from 'console';
+import { debug, log } from 'console';
 import { doc, collection, getDocs } from 'firebase/firestore';
 import { NgFor } from '@angular/common';
 import { TimestampPipe } from '../../shared/pipes/timestamp.pipe';
@@ -23,12 +23,19 @@ import { FirestoreService } from '../../firestore.service';
   styleUrls: ['./channelchat.component.scss', '../chats.component.scss'],
 })
 export class ChannelchatComponent implements OnInit {
-  constructor(public dialog: MatDialog, public chats: ChatService, public channelService: ChannelService, private readonly firestore: Firestore, private firestoreService: FirestoreService) {
+  constructor(
+    public dialog: MatDialog,
+    public chatsService: ChatService,
+    public channelService: ChannelService,
+    private readonly firestore: Firestore,
+    private firestoreService: FirestoreService
+  ) {
     onSnapshot(collection(this.firestore, 'channels'), (list) => {
-      this.allChannels = list.docs.map(doc => doc.data());
-
+      this.allChannels = list.docs.map((doc) => doc.data());
     });
   }
+
+  @Input() userDetails: any = '';
 
   messages: any[] = [];
   allChannels: any = [];
@@ -53,8 +60,11 @@ export class ChannelchatComponent implements OnInit {
   }
 
   // wird noch verschoben
-  async loadMessages() {
-    const chatsRef = collection(this.chats.db, 'chats');
+  async loadMessages(userDetails: any) {
+    let chatInformation = this.chatsService.createChat(userDetails);
+    console.log('chatInformation', (await chatInformation).valueOf());
+
+    const chatsRef = collection(this.chatsService.db, 'chats');
     const querySnapshot = await getDocs(chatsRef);
 
     querySnapshot.forEach((doc) => {
@@ -68,7 +78,10 @@ export class ChannelchatComponent implements OnInit {
     }, 250);
   }
 
-  ngOnInit(): void {
-    this.loadMessages();
+  ngOnInit(): void {}
+  ngOnChanges(changes: SimpleChanges): void {
+    if (this.userDetails != '' && changes['userDetails']) {
+      this.loadMessages(this.userDetails);
+    }
   }
 }

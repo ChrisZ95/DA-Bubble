@@ -32,7 +32,7 @@ import { ChannelService } from '../../services/channel.service';
     WorkspaceComponent,
     ChannelchatComponent,
     ChannelthreadComponent,
-    HeaderComponent
+    HeaderComponent,
   ],
   templateUrl: './main.component.html',
   styleUrl: './main.component.scss',
@@ -77,12 +77,15 @@ export class MainComponent {
   constructor(private channelService: ChannelService) {}
   displayWorkspace: boolean = true;
 
-  
   showHideWorkspace() {
     this.displayWorkspace = !this.displayWorkspace;
   }
 
   get showChannelChat(): boolean {
     return this.channelService.showChannelChat;
+  }
+  userDetails: any = '';
+  openChat(userDetails: any) {
+    this.userDetails = userDetails;
   }
 }

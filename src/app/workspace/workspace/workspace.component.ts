@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DialogCreateChannelComponent } from '../../dialog-create-channel/dialog-create-channel.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -7,7 +7,7 @@ import {
   onSnapshot,
   collection,
   doc,
-  getDoc
+  getDoc,
 } from '@angular/fire/firestore';
 import { Channel } from './../../../models/channel.class';
 import { FirestoreService } from '../../firestore.service';
@@ -40,6 +40,8 @@ export class WorkspaceComponent implements OnInit {
     });
   }
 
+  @Output() userDetails = new EventEmitter<string>();
+
   openCreateChannelDialog() {
     this.dialog.open(DialogCreateChannelComponent);
   }
@@ -54,7 +56,7 @@ export class WorkspaceComponent implements OnInit {
   // Adrian
   openChat(user: any) {
     this.channelService.showChannelChat = true;
-    this.chat.createChat();
+    this.userDetails.emit(user);
   }
 
   ngOnInit(): void {

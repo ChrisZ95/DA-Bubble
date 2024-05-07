@@ -17,6 +17,7 @@ import {
 } from 'firebase/firestore';
 import { ChannelService } from './channel.service';
 import { FirestoreService } from '../firestore.service';
+import { log } from 'console';
 
 @Injectable({
   providedIn: 'root',
@@ -35,26 +36,38 @@ export class ChatService {
   usersCollection = collection(this.db, 'users');
 
   // Function to get documents from a collection
-  async getDocumentIDs(collectionName: string) {
+  async getChatsDocumentIDs(collectionName: string) {
     const docRef = collection(this.db, collectionName);
     const docSnap = await getDocs(docRef);
     return docSnap.docs.map((doc) => doc.id);
   }
 
-  async createChat() {
-    let userDocIds: any;
-    this.getDocumentIDs('users').then((ids) => {
-      userDocIds = ids.map((str) => str.substring(0, 5));
-      console.log('userDocIds', userDocIds);
-    });
+  async createChat(userDetails: any) {
+    let currentuid = this.FirestoreService.currentuid;
+    if (currentuid == userDetails.uid) {
+      return 1;
+    }
+    if (userDetails.uid) {
+      //if Nur solange die gespeichert Daten unterschiedlich sind
 
-    let allChats: any = await getDocs(this.chatsCollection);
-    // 1. Load all Chats
-    const dbRef = collection(this.db, 'chats');
+      let chatDocIds: any;
+      this.getChatsDocumentIDs('chats').then((ids) => {
+        chatDocIds = ids;
+      });
+      setTimeout(() => {
+        console.log('chatDocIds', chatDocIds);
+      }, 250);
 
-    // 2. Iterate if Chat is existing
-    // 3. Yes -> Load Chat
-    // 4. No -> Create new Chat
+      let allChats: any = await getDocs(this.chatsCollection);
+      // 1. Load all Chats
+      const dbRef = collection(this.db, 'chats');
+
+      // 2. Iterate if Chat is existing
+      // 3. Yes -> Load Chat
+      // 4. No -> Create new Chat
+      return '2';
+    }
+    return '3';
   }
 
   async sendData(text: any) {
