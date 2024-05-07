@@ -7,6 +7,7 @@ import {
   onSnapshot,
   collection,
   doc,
+  getDoc
 } from '@angular/fire/firestore';
 import { Channel } from './../../../models/channel.class';
 import { FirestoreService } from '../../firestore.service';
@@ -49,7 +50,6 @@ export class WorkspaceComponent implements OnInit {
 
   openChannelChat(id: string) {
     this.channelService.showChannelChat = true;
-    this.chat.subChatList(id);
   }
   // Adrian
   openChat(user: any) {

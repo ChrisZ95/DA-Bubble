@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, addDoc, DocumentReference, DocumentData, doc, updateDoc, onSnapshot, getDoc, arrayUnion } from '@angular/fire/firestore';
+import { Firestore, collection, addDoc, DocumentReference, DocumentData, doc, updateDoc, onSnapshot, getDoc, arrayUnion, query, where, getDocs } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { Channel } from './../../models/channel.class';
 import { FirestoreService } from '../firestore.service';
@@ -15,18 +15,14 @@ export class ChannelService {
   channelDescription = '';
   UserName = '';
   author = ''
-  channelUserAmount!: number;
-  unsubchannel;
+  
   showChannelChat: boolean = true;
 
-  // Array to store channel list data
   channelList: any = [];
-
-  // List of profile images for channel users
   channelProfileImagesList: any = []
   
   constructor(private readonly firestore: Firestore, private FirestoreService: FirestoreService) {
-    this.unsubchannel = this.subChannelList();
+    
   }
 
   getChannelRef() {
@@ -37,6 +33,16 @@ export class ChannelService {
     return doc(collection(this.firestore, 'channels'), this.channelID);
   }
 
+  async getChannelIDByField(field: string, value: any): Promise<string | null> {
+    const q = query(collection(this.firestore, 'channels'), where(field, '==', value));
+    const querySnapshot = await getDocs(q);
+    if (querySnapshot.size === 0) {
+      return null;
+    }
+    const docSnapshot = querySnapshot.docs[0];
+    return docSnapshot.id;
+  }
+
   getChannelDocByID(ID:string) {
     return doc(collection(this.firestore, 'channels'), ID);
   }
@@ -45,10 +51,10 @@ export class ChannelService {
     addDoc(collection(this.firestore, 'channels'), this.channel.toJSON());
   }
 
-  async updateChannel(channelRef: DocumentReference, object: {}) {
-    await updateDoc(channelRef, object)
+  async updateChannel(channelRef: DocumentReference<DocumentData>, object: {}) {
+    await updateDoc(channelRef, object);
   }
-
+  
   getChannelName(name: string) {
     this.channelName = name;
   }
@@ -65,16 +71,6 @@ export class ChannelService {
     this.author = author;
   }
 
-  setChannelObject(obj: any, id: string) {
-    return {
-      id: id || "",
-      name: obj.name || "",
-      users: obj.users || "",
-      description: obj.description || "",
-      author: obj.author || ""
-    }
-  }
-
   async addUserToChannel(channelDoc: string) {
     let channelRef = this.getChannelDocByID(channelDoc)
     const channelDocSnapshot = await getDoc(channelRef);
@@ -83,17 +79,4 @@ export class ChannelService {
       users: userData
     })
   }
-
-  subChannelList() {
-    return onSnapshot(this.getChannelRef(), (list) => {
-      this.channelList = [];
-      this.channelListNamesArray = [];
-      list.forEach(element => {
-        if (element.data()['users'].includes(this.FirestoreService.currentUser?.email)) {
-          this.channelList.push(this.setChannelObject(element.data(), element.id));
-          this.channelListNamesArray.push(element.data()['name']);
-        }
-      });
-    })
-  };
 }

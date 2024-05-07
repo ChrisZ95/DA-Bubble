@@ -64,37 +64,4 @@ export class ChatService {
       }
     );
   }
-
-  subChatList(docID: any) {
-    this.channelService.channelID = docID;
-    return onSnapshot(this.getChatRef(), (list) => {
-      this.chatList = [];
-      list.forEach((element) => {
-        if (element.data()['id'] == docID) {
-          this.chatList.push(this.setChatObject(element.data(), element.id));
-        }
-      });
-      this.chatList = this.FirestoreService.sortArray(this.chatList);
-    });
-  }
-
-  getChatRef() {
-    return collection(this.firestore, 'chats');
-  }
-
-  setChatObject(obj: any, id: string) {
-    return {
-      id: id || '',
-      channelID: obj.id || '',
-      textAreaInput: obj.textAreaInput || '',
-      channelName: obj.channelName || '',
-      time: obj.time || '',
-      date: obj.date || '',
-      loginName: obj.loginName || '',
-      emoji: obj.emoji || '',
-      profileImg: obj.profileImg || 'kein img vorhanden',
-      mail: obj.mail || 'email@nichtVorhanden.de',
-      chatImage: obj.chatImage || 'noImage',
-    };
-  }
 }

@@ -54,37 +54,33 @@ export class DialogChannelInfoComponent implements OnInit {
 
     async updateName() {
         if (this.editedChannelName !== null) {
-            await this.updateChannel('name', this.editedChannelName); 
+          const fieldName = 'name';
+          const channelID = await this.channelService.getChannelIDByField(fieldName, this.channelService.channelName);
+          if (channelID !== null) {
+            const channelRef = this.channelService.getChannelDocByID(channelID);
+            await this.channelService.updateChannel(channelRef, { name: this.editedChannelName }); 
             this.channelService.channelName = this.editedChannelName; 
+          } else {
+            console.error('Dokument mit diesem Feldwert wurde nicht gefunden.');
+          }
         } else {
-            console.error('Bearbeiteter Kanalname ist null.');
+          console.error('Bearbeiteter Kanalname ist null.');
         }
-    }
+      }
 
-    async updateDescription() {
+      async updateDescription() {
         if (this.editedDescription !== null) { 
-            await this.updateChannel('description', this.editedDescription); 
+          const fieldName = 'description';
+          const channelID = await this.channelService.getChannelIDByField(fieldName, this.channelService.channelDescription);
+          if (channelID !== null) {
+            const channelRef = this.channelService.getChannelDocByID(channelID);
+            await this.channelService.updateChannel(channelRef, { description: this.editedDescription }); 
             this.channelService.channelDescription = this.editedDescription; 
+          } else {
+            console.error('Dokument mit diesem Feldwert wurde nicht gefunden.');
+          }
         } else {
-            console.error('Bearbeitete Kanalbeschreibung ist null.');
+          console.error('Bearbeitete Kanalbeschreibung ist null.');
         }
-    }
-
-    async updateChannel(field: string, value: string) {
-        if (!value) {
-          this.showError()
-          return;
-        }
-        this.updateChannelData(field, value);
-    }
-
-    async updateChannelData(field: string, value: string) {
-        const id = this.channelService.getChannelDoc();
-        await this.channelService.updateChannel(id, { [field]: value });
-        console.log(id);
-    }
-
-    showError() {
-        alert('Es ist ein Fehler unterlaufen, Channel konnte nicht bearbeitet werden')
-    }
+      }
 }
