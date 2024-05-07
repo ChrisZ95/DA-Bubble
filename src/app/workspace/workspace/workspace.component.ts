@@ -27,6 +27,7 @@ export class WorkspaceComponent implements OnInit {
   allChannels: any = [];
   allUsers: any[] = [];
   selectedChannelName: string | null = null;
+  currentChannelId: string = '';
 
   constructor(
     public dialog: MatDialog,
@@ -48,7 +49,8 @@ export class WorkspaceComponent implements OnInit {
     this.displayUsers = !this.displayUsers;
   }
 
-  openChannelChat(id: string) {
+  openChannelChat(channelId: string) {
+    this.channelService.setCurrentChannelId(channelId);
     this.channelService.showChannelChat = true;
   }
   // Adrian
@@ -66,5 +68,9 @@ export class WorkspaceComponent implements OnInit {
       .catch((error) => {
         console.error('Error fetching users:', error);
       });
-  }
+      this.channelService.getChannels().then((channels) => {
+        this.allChannels = channels;
+        console.log('Channels', channels)
+      })
+  } 
 }

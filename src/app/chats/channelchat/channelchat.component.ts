@@ -30,11 +30,13 @@ export class ChannelchatComponent implements OnInit {
     });
   }
 
+  currentChannel!: Channel;
   messages: any[] = [];
   allChannels: any = [];
   channel = new Channel();
   selectedChannelName: string | null = null;
   selectedChannelDescription: string | null = null;
+  currentChannelId: string = '';
 
   openMemberDialog() {
     this.dialog.open(DialogMembersComponent);
@@ -46,6 +48,7 @@ export class ChannelchatComponent implements OnInit {
 
   openAddPeopleDialog() {
     this.dialog.open(DialogAddPeopleComponent);
+    this.currentChannelId = this.channelService.getCurrentChannelId();
   }
 
   openContactInfoDialog() {
@@ -70,5 +73,9 @@ export class ChannelchatComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadMessages();
+    this.channelService.getChannels().then((channels) => {
+      this.allChannels = channels;
+      console.log('Channels', channels)
+    });
   }
 }
