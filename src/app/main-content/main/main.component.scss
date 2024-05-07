@@ -16,7 +16,6 @@ $wct-height: calc(100vh - 20vh);
 
 .workspace {
   height: 100%;
-  border: 1px solid black;
   border-radius: 30px;
   padding: 10px;
   background-color: rgb(255, 255, 255);
@@ -51,7 +50,6 @@ $wct-height: calc(100vh - 20vh);
   flex-direction: column;
   width: auto;
   height: $wct-height;
-  border: 1px solid black;
   border-radius: 30px;
 }
 
@@ -59,6 +57,5 @@ $wct-height: calc(100vh - 20vh);
   height: $wct-height;
   width: calc(20vw - 2px);
   background-color: rgb(255, 255, 255);
-  border: 1px solid black;
   border-radius: 30px;
 }
