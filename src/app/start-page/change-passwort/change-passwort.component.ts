@@ -34,22 +34,27 @@ export class ChangePasswortComponent {
   }
 
   newPassword(formData: any) {
-    this.showInputInformationPassword = false;
-    this.showInputInformationConfirmPasswordInputInvalid = false;
-    this.showInputInformationConfirmPasswordInputEmpty = false;
-    const { password, confirmPassword } = formData.value;
-    if (!formData.valid) {
-      if (formData.controls['password'].invalid) {
-        this.showInputInformationPassword = true;
-      } else if (formData.controls['confirmPassword'].invalid) {
-        this.showInputInformationConfirmPasswordInputEmpty = true;
+    debugger;
+    this.firestoreService.resetPasswordUserId.subscribe(uid => {
+      console.log('übertragende id lautet', uid);
+      this.showInputInformationPassword = false;
+      this.showInputInformationConfirmPasswordInputInvalid = false;
+      this.showInputInformationConfirmPasswordInputEmpty = false;
+      const { password, confirmPassword } = formData.value;
+      if (!formData.valid) {
+        if (formData.controls['password'].invalid) {
+          this.showInputInformationPassword = true;
+        } else if (formData.controls['confirmPassword'].invalid) {
+          this.showInputInformationConfirmPasswordInputEmpty = true;
+        }
+      } else if (password !== confirmPassword) {
+        this.showInputInformationConfirmPasswordInputInvalid = true;
+      } else {
+        console.log('button zum abschicken des neuen passworts gedrückt');
+        this.emailSended();
+        this.firestoreService.changePassword(uid, password);
       }
-    } else if(password !== confirmPassword) {
-      this.showInputInformationConfirmPasswordInputInvalid = true;
-    } else {
-      console.log('button zum abschicken des neuen passworts gedrückt')
-      this.emailSended();
-      // this.firestoreService.changePassword(userId, password);
-    }
+    });
   }
+
 }

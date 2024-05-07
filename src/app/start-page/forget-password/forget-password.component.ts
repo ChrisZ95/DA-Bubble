@@ -42,7 +42,7 @@ export class ForgetPasswordComponent {
       } else {
         const userWithEmail = users.find(user => user.email === email);
         if (userWithEmail) {
-          this.firestoreService.sendEmailResetPasswort({ email });
+          this.firestoreService.sendEmailResetPasswort({ email, uid: userWithEmail.uid });
           this.emailSended.emit();
           console.log('E-Mail gesendet');
         } else {
@@ -54,5 +54,6 @@ export class ForgetPasswordComponent {
       console.error('Fehler beim Abrufen der Benutzer:', error);
     });
   }
+
 
 }

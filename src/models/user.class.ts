@@ -3,12 +3,14 @@ export class User {
   email: string;
   password: string;
   privacyPolice: boolean;
+  uid: string;
 
   constructor(obj?: any) {
     this.name = obj ? obj.name : '';
     this.email = obj ? obj.email : '';
     this.password = obj ? obj.password : '';
     this.privacyPolice = obj ? obj.PrivacyPolice : '';
+    this.uid = obj ? obj.uid : '';
   }
 
   public toJson() {
@@ -17,6 +19,7 @@ export class User {
       email: this.email,
       password: this.password,
       privacyPolice: this.privacyPolice,
+      uid: this.uid,
     }
   }
 }
