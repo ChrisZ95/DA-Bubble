@@ -14,6 +14,7 @@ import { Channel } from './../../../models/channel.class';
 import { ChannelService } from '../../services/channel.service';
 import { Firestore, onSnapshot } from '@angular/fire/firestore';
 import { FirestoreService } from '../../firestore.service';
+import { query, where, Query, DocumentData } from 'firebase/firestore';
 
 @Component({
   selector: 'app-channelchat',
@@ -62,30 +63,13 @@ export class ChannelchatComponent implements OnInit {
     this.dialog.open(DialogContactInfoComponent);
   }
 
-  // wird noch verschoben
-  async loadMessages(userDetails: any) {
-    // let chatInformation = this.chatsService.createChat(userDetails);
-    // console.log('chatInformation', (await chatInformation).valueOf());
-
-    const chatsRef = collection(this.chatsService.db, 'chats');
-    const querySnapshot = await getDocs(chatsRef);
-
-    querySnapshot.forEach((doc) => {
-      let message = {
-        ...doc.data(), // alle anderen Eigenschaften des Dokuments einfügen
-      };
-      this.messages.push(message);
-    });
-    setTimeout(() => {
-      console.log('messages', this.messages);
-    }, 250);
-  }
-
   ngOnInit(): void {
-    this.loadMessages('');
+    this.currentChannelId = this.channelService.getCurrentChannelId();
+    const channelId = this.currentChannelId;
     this.channelService.getChannels().then((channels) => {
       this.allChannels = channels;
       console.log('Channels', channels);
     });
+    console.log(this.channelService.messages);
   }
 }

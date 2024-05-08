@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, addDoc, DocumentReference, DocumentData, doc, updateDoc, onSnapshot, getDoc, arrayUnion, query, where, getDocs } from '@angular/fire/firestore';
+import { Firestore, collection, addDoc, DocumentReference, DocumentData, doc, updateDoc, onSnapshot, getDoc, arrayUnion, query, where, getDocs, Query } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { Channel } from './../../models/channel.class';
 import { FirestoreService } from '../firestore.service';
@@ -16,7 +16,8 @@ export class ChannelService {
   UserName = '';
   author = ''
   private currentChannelId: string = '';
-  showChannelChat: boolean = true;
+  showChannelChat: boolean = false;
+  messages: any[] = [];
 
   channelList: any = [];
   channelProfileImagesList: any = []
@@ -75,7 +76,7 @@ export class ChannelService {
         updateDoc(doc(this.firestore, 'channels', result.id), newChannel)
         .then(() => {
           console.log(result);
-          resolve(result.id); // Übergebe die neu erstellte Kanal-ID
+          resolve(result.id);
         })
         .catch(error => {
           console.error('Fehler beim Aktualisieren des Kanals:', error);
@@ -115,5 +116,22 @@ export class ChannelService {
 
   getCurrentChannelId(): string {
     return this.currentChannelId;
+  }
+
+  async loadMessagesForChannel(channelId: string): Promise<any[]> {
+    try {
+      const chatsRef = collection(this.firestore, 'chats');
+      const q: Query<DocumentData> = query(chatsRef, where('channelId', '==', channelId));
+      const querySnapshot = await getDocs(q);
+
+      querySnapshot.forEach((doc) => {
+        this.messages.push(doc.data());
+      });
+
+      return this.messages;
+    } catch (error) {
+      console.error('Error loading messages for channel:', error);
+      return [];
+    }
   }
 }

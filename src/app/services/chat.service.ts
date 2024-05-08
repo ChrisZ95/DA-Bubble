@@ -82,22 +82,18 @@ export class ChatService {
 
   async createChatForChannel(channelId: string): Promise<void> {
     try {
-      // Erstellen Sie eine eindeutige Chat-ID
       const chatId = this.generateIdServie.generateId();
 
-      // Erstellen Sie die Chat-Daten
       const chatData = {
         channelId: channelId,
-        // Weitere relevante Daten für den Chat hier hinzufügen
       };
 
-      // Speichern Sie den Chat in der Firestore-Sammlung
       await setDoc(doc(this.firestore, 'chats', chatId), chatData);
 
       console.log('Chat erfolgreich erstellt für Kanal:', channelId);
     } catch (error) {
       console.error('Fehler beim Erstellen des Chats für Kanal:', channelId, error);
-      throw error; // Fehler weiterwerfen, um ihn in der Aufruferkomponente zu behandeln
+      throw error;
     }
   }
 }
