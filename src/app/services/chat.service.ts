@@ -18,6 +18,7 @@ import {
 import { ChannelService } from './channel.service';
 import { FirestoreService } from '../firestore.service';
 import { log } from 'console';
+import { GenerateIdsService } from './generate-ids.service';
 
 @Injectable({
   providedIn: 'root',
@@ -28,7 +29,8 @@ export class ChatService {
   constructor(
     private firestore: Firestore,
     public channelService: ChannelService,
-    public FirestoreService: FirestoreService
+    public FirestoreService: FirestoreService,
+    public generateIdServie: GenerateIdsService
   ) {}
 
   db = getFirestore();
@@ -76,5 +78,26 @@ export class ChatService {
         console.log('data saved');
       }
     );
+  }
+
+  async createChatForChannel(channelId: string): Promise<void> {
+    try {
+      // Erstellen Sie eine eindeutige Chat-ID
+      const chatId = this.generateIdServie.generateId();
+
+      // Erstellen Sie die Chat-Daten
+      const chatData = {
+        channelId: channelId,
+        // Weitere relevante Daten für den Chat hier hinzufügen
+      };
+
+      // Speichern Sie den Chat in der Firestore-Sammlung
+      await setDoc(doc(this.firestore, 'chats', chatId), chatData);
+
+      console.log('Chat erfolgreich erstellt für Kanal:', channelId);
+    } catch (error) {
+      console.error('Fehler beim Erstellen des Chats für Kanal:', channelId, error);
+      throw error; // Fehler weiterwerfen, um ihn in der Aufruferkomponente zu behandeln
+    }
   }
 }
