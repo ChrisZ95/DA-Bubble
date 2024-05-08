@@ -146,7 +146,18 @@ export class FirestoreService {
         const token = credential.accessToken;
         const user = result.user;
         this.observeAuthState();
-        console.log('der user lautet', user);
+        console.log('Google login user name:', user.displayName);
+        console.log('Google login user email:', user.email);
+        console.log('Google login user photo:', user.photoURL);
+        console.log('Google login user uid:',user.uid);
+        const userRef = doc(this.firestore, 'users', user.uid);
+      await setDoc(userRef, {
+        email:  user.email,
+        username: user.displayName,
+        privacyPolice: true,
+        uid: user.uid,
+        photo: user.photoURL
+      });
       } else {
         console.error('Credential is null');
       }
