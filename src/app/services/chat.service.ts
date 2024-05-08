@@ -25,6 +25,7 @@ import { GenerateIdsService } from './generate-ids.service';
 })
 export class ChatService {
   chatList: any = [];
+  loadedchatInformation: any;
 
   constructor(
     private firestore: Firestore,
@@ -45,20 +46,32 @@ export class ChatService {
   }
 
   async createChat(userDetails: any) {
+    let chatDocIds: any;
+    this.getChatsDocumentIDs('chats').then((ids) => {
+      chatDocIds = ids;
+    });
     let currentuid = this.FirestoreService.currentuid;
+
     if (currentuid == userDetails.uid) {
-      return 1;
+      setTimeout(() => {
+        let ownChatDocId = chatDocIds.filter((ids: any) => {
+          if (currentuid == ids) {
+            return ids;
+          }
+        });
+        if (ownChatDocId.length == 0) {
+          ownChatDocId = currentuid;
+          const chatData = {
+            chatId: currentuid,
+          };
+          setDoc(doc(this.firestore, 'chats', currentuid), chatData);
+        }
+        this.loadMessages(ownChatDocId);
+      }, 250);
     }
+
     if (userDetails.uid) {
       //if Nur solange die gespeichert Daten unterschiedlich sind
-
-      let chatDocIds: any;
-      this.getChatsDocumentIDs('chats').then((ids) => {
-        chatDocIds = ids;
-      });
-      setTimeout(() => {
-        console.log('chatDocIds', chatDocIds);
-      }, 250);
 
       let allChats: any = await getDocs(this.chatsCollection);
       // 1. Load all Chats
@@ -71,13 +84,40 @@ export class ChatService {
     }
     return '3';
   }
+  chatDocId: any;
+  async loadMessages(docId: any) {
+    this.chatDocId = docId;
+    console.log('ownChatDocId123', docId);
+    let chatRef = doc(this.chatsCollection, docId[0]);
+    let chatData = await getDoc(chatRef);
+    this.loadedchatInformation = chatData.data();
+    console.log('chat', this.loadedchatInformation);
+  }
 
   async sendData(text: any) {
-    let chat = await setDoc(doc(this.chatsCollection, text.id), text).then(
-      () => {
-        console.log('data saved');
-      }
-    );
+    console.log('loadedchatInformation', this.loadedchatInformation);
+    let id = this.generateIdServie.generateId();
+    let date = new Date().getTime();
+    let currentuid = this.FirestoreService.currentuid;
+    let message = {
+      message: text,
+      id: id,
+      creator: currentuid,
+      createdAt: date,
+    };
+    console.log('message', message);
+
+    if (this.loadedchatInformation.messages) {
+      console.log('exist');
+    } else {
+      console.log('DONT exist');
+    }
+
+    // let chat = await setDoc(doc(this.chatsCollection, text.id), text).then(
+    //   () => {
+    //     console.log('data saved');
+    //   }
+    // );
   }
 
   async createChatForChannel(channelId: string): Promise<void> {
@@ -85,7 +125,6 @@ export class ChatService {
       // Erstellen Sie eine eindeutige Chat-ID
       const chatId = this.generateIdServie.generateId();
 
-      // Erstellen Sie die Chat-Daten
       const chatData = {
         channelId: channelId,
         // Weitere relevante Daten für den Chat hier hinzufügen
@@ -96,7 +135,11 @@ export class ChatService {
 
       console.log('Chat erfolgreich erstellt für Kanal:', channelId);
     } catch (error) {
-      console.error('Fehler beim Erstellen des Chats für Kanal:', channelId, error);
+      console.error(
+        'Fehler beim Erstellen des Chats für Kanal:',
+        channelId,
+        error
+      );
       throw error; // Fehler weiterwerfen, um ihn in der Aufruferkomponente zu behandeln
     }
   }

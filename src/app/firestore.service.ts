@@ -52,10 +52,7 @@ export class FirestoreService {
     try {
       const usersCollection = collection(this.firestore, 'users');
       const usersSnapshot = await getDocs(usersCollection);
-      const users: User[] = [];
-      usersSnapshot.forEach((doc) => {
-        users.push(doc.data() as User);
-      });
+      const users: User[] = usersSnapshot.docs.map((doc) => doc.data() as User);
       return users;
     } catch (error) {
       console.error('Error fetching users:', error);

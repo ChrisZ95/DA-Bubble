@@ -66,13 +66,14 @@ export class WorkspaceComponent implements OnInit {
       .getAllUsers()
       .then((users) => {
         this.allUsers = users;
+        console.log('allUsers', this.allUsers);
       })
       .catch((error) => {
         console.error('Error fetching users:', error);
       });
-      this.channelService.getChannels().then((channels) => {
-        this.allChannels = channels;
-        console.log('Channels', channels)
-      })
-  } 
+    this.channelService.getChannels().then((channels) => {
+      this.allChannels = channels;
+      console.log('Channels', channels);
+    });
+  }
 }

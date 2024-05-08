@@ -64,8 +64,8 @@ export class ChannelchatComponent implements OnInit {
 
   // wird noch verschoben
   async loadMessages(userDetails: any) {
-    // let chatInformation = this.chatsService.createChat(userDetails);
-    // console.log('chatInformation', (await chatInformation).valueOf());
+    let chatInformation = this.chatsService.createChat(userDetails);
+    console.log('chatInformation', (await chatInformation).valueOf());
 
     const chatsRef = collection(this.chatsService.db, 'chats');
     const querySnapshot = await getDocs(chatsRef);
@@ -81,8 +81,14 @@ export class ChannelchatComponent implements OnInit {
     }, 250);
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (this.userDetails != '' && changes['userDetails']) {
+      this.loadMessages(this.userDetails);
+    }
+  }
+
   ngOnInit(): void {
-    this.loadMessages('');
+    // this.loadMessages('');
     this.channelService.getChannels().then((channels) => {
       this.allChannels = channels;
       console.log('Channels', channels);
