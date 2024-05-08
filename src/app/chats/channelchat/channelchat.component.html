@@ -31,8 +31,10 @@
         <p>00:00Uhr</p>
       </div>
 
-      <div class="speechbubble">
-        <p>{{ message.message }}</p>
+      <div *ngFor="let message of channelService.messages">
+        <div class="message">
+          <p>{{ channelService.messages }}</p>
+        </div>
       </div>
 
       <div class="reply">
