@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, Input } from '@angular/core';
-import { Firestore, collection, getDocs, doc, updateDoc } from '@angular/fire/firestore';
+import { Component, OnInit, Input, Inject } from '@angular/core';
+import { Firestore, collection, getDocs, doc, updateDoc, onSnapshot } from '@angular/fire/firestore';
 import { FormsModule } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { User } from '../../models/user.class';
 import { FirestoreService } from '../firestore.service';
 import { Channel } from './../../models/channel.class';
@@ -26,10 +26,15 @@ export class DialogAddPeopleToNewChannelComponent implements OnInit {
   channelDescription: string = '';
   channelMember: { userId: string }[] = [];
   selectedUsers: any[] = [];
+  channel: Channel = new Channel(); 
+  allChannels: any = [];
+  currentChannelId: string = '';
   
 
-  constructor(private dialogRef: MatDialogRef<DialogAddPeopleToNewChannelComponent>, private firestoreService: FirestoreService, private channelService: ChannelService, private readonly firestore: Firestore){
-   
+  constructor(private dialogRef: MatDialogRef<DialogAddPeopleToNewChannelComponent>, @Inject(MAT_DIALOG_DATA) public data: { channels: any[] }, private firestoreService: FirestoreService, private channelService: ChannelService, private readonly firestore: Firestore){
+    onSnapshot(collection(this.firestore, 'channels'), (list) => {
+      this.allChannels = list.docs.map((doc) => doc.data());
+    });
   }
 
   ngOnInit(): void {
@@ -38,6 +43,12 @@ export class DialogAddPeopleToNewChannelComponent implements OnInit {
     }).catch(error => {
       console.error('Error fetching users:', error);
     });
+    this.channelService.getChannels().then((channels) => {
+      this.allChannels = channels;
+      console.log('Channels', channels);
+    });
+    this.currentChannelId = this.channelService.getCurrentChannelId();
+    console.log(this.currentChannelId)
   }
 
   closeAddPeopleToNewChannelDialog(): void {
@@ -55,7 +66,17 @@ export class DialogAddPeopleToNewChannelComponent implements OnInit {
   }
 
   async addUserToChannel() {
-   
+    try {
+      const channelDocRef = this.channelService.getChannelDocByID(this.currentChannelId);
+      await this.channelService.updateChannel(channelDocRef, {
+        users: this.channelService.channel.users.concat(this.personName) 
+      });
+      this.personName = '';
+      this.showUserList = false;
+    } catch (error) {
+      console.error('Fehler beim Hinzufügen des Benutzers zum Kanal:', error);
+    }
+    this.dialogRef.close();
   }
 
   filterUsers(): void {

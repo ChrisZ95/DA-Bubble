@@ -66,13 +66,27 @@ export class ChannelService {
     return doc(collection(this.firestore, 'channels'), ID);
   }
 
-  addChannel() {
-    addDoc(collection(this.firestore, 'channels'), this.channel.toJSON())
-    .then((result: any) => {
-      this.channel['channelId'] = result.id
-      updateDoc(doc(this.firestore, 'channels', this.channel['channelId']), this.channel.toJSON());
-      console.log(result);
-    })
+  addChannel(): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+      const newChannel = this.channel.toJSON();
+      addDoc(collection(this.firestore, 'channels'), newChannel)
+      .then((result: any) => {
+        newChannel['channelId'] = result.id;
+        updateDoc(doc(this.firestore, 'channels', result.id), newChannel)
+        .then(() => {
+          console.log(result);
+          resolve(result.id); // Übergebe die neu erstellte Kanal-ID
+        })
+        .catch(error => {
+          console.error('Fehler beim Aktualisieren des Kanals:', error);
+          reject(error);
+        });
+      })
+      .catch(error => {
+        console.error('Fehler beim Erstellen des Kanals:', error);
+        reject(error);
+      });
+    });
   }
 
   async updateChannel(channelRef: DocumentReference<DocumentData>, object: {}) {

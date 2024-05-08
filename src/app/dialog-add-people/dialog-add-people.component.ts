@@ -76,5 +76,6 @@ export class DialogAddPeopleComponent implements OnInit {
     } catch (error) {
       console.error('Fehler beim Hinzufügen des Benutzers zum Kanal:', error);
     }
+    this.dialogRef.close();
   }
 }
