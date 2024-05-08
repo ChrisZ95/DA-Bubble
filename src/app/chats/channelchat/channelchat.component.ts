@@ -63,7 +63,6 @@ export class ChannelchatComponent implements OnInit {
     this.dialog.open(DialogContactInfoComponent);
   }
 
-<<<<<<< HEAD
   // wird noch verschoben
   async loadMessages(userDetails: any) {
     let chatInformation = this.chatsService.createChat(userDetails);
@@ -91,11 +90,10 @@ export class ChannelchatComponent implements OnInit {
 
   ngOnInit(): void {
     // this.loadMessages('');
-=======
-  ngOnInit(): void {
+
     this.currentChannelId = this.channelService.getCurrentChannelId();
     const channelId = this.currentChannelId;
->>>>>>> 5a25cd62f19d0a0195744f98c9470d2d616a156f
+
     this.channelService.getChannels().then((channels) => {
       this.allChannels = channels;
       console.log('Channels', channels);

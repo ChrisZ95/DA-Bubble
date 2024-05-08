@@ -33,7 +33,9 @@
 
       <div *ngFor="let message of channelService.messages">
         <div class="message">
-          <p>{{ channelService.messages }}</p>
+          <div class="speechbubble">
+            <p>{{ channelService.messages }}</p>
+          </div>
         </div>
       </div>
 
