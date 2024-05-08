@@ -19,14 +19,16 @@ export class SignUpComponent {
 
   constructor(private firestoreService: FirestoreService) { }
   showInputInformationUserName: boolean = false;
-  showInputInformationEmail: boolean = false;
+  showInputInformationEmailInputEmpty: boolean = false;
+  showInputInformationEmailforgive: boolean = false;
   showInputInformationPassword: boolean = false;
   showInputInformationPrivacyPolice: boolean = false;
 
 
-  userSignUp(formData: NgForm): void {
+  async userSignUp(formData: NgForm): Promise<void> {
     this.showInputInformationUserName = false;
-    this.showInputInformationEmail = false;
+    this.showInputInformationEmailInputEmpty = false;
+    this.showInputInformationEmailforgive = false;
     this.showInputInformationPassword = false;
     this.showInputInformationPrivacyPolice = false;
     console.log('Formulardaten:', formData.value);
@@ -36,17 +38,27 @@ export class SignUpComponent {
       if (formData.controls['username'].invalid) {
         this.showInputInformationUserName = true;
       } else if (formData.controls['email'].invalid) {
-        this.showInputInformationEmail = true;
+        this.showInputInformationEmailInputEmpty = true;
       }  else if (formData.controls['password'].invalid) {
         this.showInputInformationPassword = true;
       }  else if(formData.controls['privacyPolice'].invalid) {
         this.showInputInformationPrivacyPolice = true;
       }
       } else {
-      this.firestoreService.signUpUser(email, password, username, privacyPolice);
-      console.log('userSignUp wurde aufgerufen');
-      this.toChooseAvatar();
-    }
+        const registrationSuccess = await this.firestoreService.signUpUser(email, password, username, privacyPolice);
+        if (registrationSuccess === 'auth/invalid-recipient-email' || 'auth/invalid-email') {
+          this.showInputInformationEmailInputEmpty = true;
+          return;
+        } else if (registrationSuccess === 'weak-password') {
+          this.showInputInformationPassword = true;
+          return;
+        } else if (registrationSuccess === 'auth/email-already-in-use') {
+          this.showInputInformationEmailforgive = true;
+          return;
+        }
+        console.log('userSignUp wurde aufgerufen');
+        this.toChooseAvatar();
+      }
   }
 
   backToLogIn() {

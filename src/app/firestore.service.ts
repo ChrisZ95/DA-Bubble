@@ -81,7 +81,7 @@ export class FirestoreService {
     password: string,
     username: string,
     privacyPolice: boolean
-  ): Promise<void> {
+  ): Promise<string | null> {
     try {
       const userCredential = await createUserWithEmailAndPassword(
         this.auth,
@@ -98,10 +98,25 @@ export class FirestoreService {
       });
       this.onUserRegistered.emit(user.uid);
       this.sendEmailAfterSignUp(user);
-    } catch (error) {
+      return null;
+    } catch (error: any) {
       console.error('Error creating user:', error);
+      if (error.code === 'auth/invalid-recipient-email' || 'auth/invalid-email') {
+        console.log('Email-Adresse entspricht nicht den gültigen Vorlagen.');
+        return 'auth/invalid-recipient-email';
+      } else if (error.code === 'auth/email-already-in-use') {
+        console.log('Email-Adresse wird bereits verwendet.');
+        return 'auth/email-already-in-use';
+      } else if (error.code === 'auth/weak-password') {
+        console.log('Das Passwort ist zu schwach.');
+        return 'weak-password';
+      } else {
+        return null;
+      }
     }
   }
+
+
 
   async logInUser(email: string, password: string): Promise<void> {
     try {

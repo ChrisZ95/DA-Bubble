@@ -25,7 +25,8 @@
           <input required placeholder="MaxMustermann@gmail.com" name="email" ngModel #email="ngModel">
         </div>
         <div class="pseudo">
-          <span class="input-information" *ngIf="showInputInformationEmail ">Bitte geben Sie eine gültige E-Mail-Adresse ein.</span>
+          <span class="input-information" *ngIf="showInputInformationEmailInputEmpty ">Bitte geben Sie eine gültige E-Mail-Adresse ein.</span>
+          <span class="input-information" *ngIf="showInputInformationEmailforgive ">Mit dieser E-Mail-Adresse gibt es bereits ein Konto.</span>
 
         </div>
         <div class="input-container">
