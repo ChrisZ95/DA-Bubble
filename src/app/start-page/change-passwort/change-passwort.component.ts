@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 import { FirestoreService } from '../../firestore.service';
 import { NgForm } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: './change-passwort.component.html',
   styleUrl: './change-passwort.component.scss'
 })
-export class ChangePasswortComponent {
+export class ChangePasswortComponent implements OnInit {
   @Output() PasswordSuccesfullyChanged: EventEmitter<any> = new EventEmitter();
   @Output() forgotPassword: EventEmitter<any> = new EventEmitter();
 
@@ -19,9 +19,19 @@ export class ChangePasswortComponent {
   showInputInformationConfirmPasswordInputInvalid: boolean = false;
   showInputInformationConfirmPasswordInputEmpty: boolean = false;
 
+  uid: any;
+
   constructor(
     private firestoreService: FirestoreService
   ) {}
+
+  async ngOnInit() {
+    await this.firestoreService.resetPasswordUserId.subscribe(uid => {
+      this.uid = uid;
+      console.log('signUp choose avatar id', uid);
+    });
+  }
+
 
   backToForgotPassword() {
     this.forgotPassword.emit();
@@ -34,9 +44,8 @@ export class ChangePasswortComponent {
   }
 
   newPassword(formData: any) {
-    debugger;
-    this.firestoreService.resetPasswordUserId.subscribe(uid => {
-      console.log('übertragende id lautet', uid);
+    debugger
+      console.log('übertragende id lautet',this.uid);
       this.showInputInformationPassword = false;
       this.showInputInformationConfirmPasswordInputInvalid = false;
       this.showInputInformationConfirmPasswordInputEmpty = false;
@@ -52,9 +61,8 @@ export class ChangePasswortComponent {
       } else {
         console.log('button zum abschicken des neuen passworts gedrückt');
         this.emailSended();
-        this.firestoreService.changePassword(uid, password);
+        this.firestoreService.changePassword(this.uid, password);
       }
-    });
-  }
+    };
 
 }

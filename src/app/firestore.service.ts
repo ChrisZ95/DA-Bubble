@@ -199,16 +199,14 @@ export class FirestoreService {
 
   async sendEmailResetPasswort(emailData: {
     email: string;
-    uid: string;
+    uid: any;
   }): Promise<void> {
+
     try {
       const auth = getAuth();
       const { email, uid } = emailData;
       console.log('email zum resten des Passworts lautet', email);
-      console.log(
-        'Die ID des Users zum zurücksetzen des Passworts lautet',
-        uid
-      );
+      console.log('Die ID des Users zum zurücksetzen des Passworts lautet',uid);
       this.resetPasswordUserId.emit(uid);
       await sendPasswordResetEmail(auth, email);
       console.log('E-Mail zum Zurücksetzen des Passworts gesendet');
