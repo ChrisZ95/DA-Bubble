@@ -9,7 +9,11 @@
       </div>
 
       <div *ngIf="showChannelChat" class="chat">
-        <app-channelchat [userDetails]="userDetails" />
+        <app-channelchat />
+      </div>
+
+      <div  *ngIf="showOwnChat" class="chat">
+        <app-ownchat [userDetails]="userDetails" />
       </div>
 
       <div class="thread">

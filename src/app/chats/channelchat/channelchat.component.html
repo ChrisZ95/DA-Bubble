@@ -15,11 +15,10 @@
 </div>
 
 <div class="scrollbar" #scrollContainer>
-  <ng-container *ngFor="let message of messages">
     <div class="separator">
       <div class="separator-line"></div>
       <div class="separator-date">
-        {{message.createdAt | timestamp: 'day' }}
+        <!-- {{message.createdAt | timestamp: 'day' }} -->
       </div>
       <div class="separator-line"></div>
     </div>
@@ -48,7 +47,6 @@
 
       </div>
     </div>
-  </ng-container>
   <div>
 
     <app-text-editor />

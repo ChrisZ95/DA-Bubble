@@ -20,6 +20,7 @@ import { DialogMembersComponent } from '../../dialog-members/dialog-members.comp
 import { ChannelthreadComponent } from '../../threads/channelthread/channelthread.component';
 import { HeaderComponent } from '../../header/header.component';
 import { ChannelService } from '../../services/channel.service';
+import { OwnchatComponent } from '../../chats/ownchat/ownchat.component';
 
 @Component({
   selector: 'app-main',
@@ -32,6 +33,7 @@ import { ChannelService } from '../../services/channel.service';
     WorkspaceComponent,
     ChannelchatComponent,
     ChannelthreadComponent,
+    OwnchatComponent,
     HeaderComponent,
   ],
   templateUrl: './main.component.html',
@@ -76,6 +78,7 @@ import { ChannelService } from '../../services/channel.service';
 export class MainComponent {
   constructor(private channelService: ChannelService) {}
   displayWorkspace: boolean = true;
+  showOwnChat: boolean = false;
   userDetails: any = '';
 
   showHideWorkspace() {
@@ -85,7 +88,9 @@ export class MainComponent {
   get showChannelChat(): boolean {
     return this.channelService.showChannelChat;
   }
+
   openChat(userDetails: any) {
+    this.showOwnChat = true;
     this.userDetails = userDetails;
   }
 }

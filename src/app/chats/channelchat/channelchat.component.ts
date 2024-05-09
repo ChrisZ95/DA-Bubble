@@ -34,7 +34,6 @@ import { query, where, Query, DocumentData } from 'firebase/firestore';
 export class ChannelchatComponent implements OnInit, AfterViewInit {
   constructor(
     public dialog: MatDialog,
-    public chatsService: ChatService,
     public channelService: ChannelService,
     private readonly firestore: Firestore,
     private firestoreService: FirestoreService
@@ -44,11 +43,9 @@ export class ChannelchatComponent implements OnInit, AfterViewInit {
     });
   }
 
-  @Input() userDetails: any;
   @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
 
   currentChannel!: Channel;
-  messages: any[] = [];
   allChannels: any = [];
   channel = new Channel();
   selectedChannelName: string | null = null;
@@ -70,31 +67,6 @@ export class ChannelchatComponent implements OnInit, AfterViewInit {
 
   openContactInfoDialog() {
     this.dialog.open(DialogContactInfoComponent);
-  }
-
-  // wird noch verschoben
-  async loadMessages(userDetails: any) {
-    let chatInformation = this.chatsService.createChat(userDetails);
-    console.log('chatInformation', (await chatInformation).valueOf());
-
-    const chatsRef = collection(this.chatsService.db, 'chats');
-    const querySnapshot = await getDocs(chatsRef);
-
-    querySnapshot.forEach((doc) => {
-      let message = {
-        ...doc.data(), // alle anderen Eigenschaften des Dokuments einfügen
-      };
-      this.messages.push(message);
-    });
-    setTimeout(() => {
-      console.log('messages', this.messages);
-    }, 250);
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (this.userDetails != '' && changes['userDetails']) {
-      this.loadMessages(this.userDetails);
-    }
   }
 
   ngAfterViewInit() {
@@ -120,6 +92,6 @@ export class ChannelchatComponent implements OnInit, AfterViewInit {
       this.allChannels = channels;
       console.log('Channels', channels);
     });
-    console.log(this.channelService.messages);
+    // console.log(this.channelService.messages);
   }
 }

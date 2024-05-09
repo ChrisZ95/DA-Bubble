@@ -1,0 +1,46 @@
+<div class="header">
+    <div class="active-channel">
+        <div (click)="openChannelInfoDialog()"></div>
+    </div>
+    <div class="images">
+        <div class="images-participants" (click)="openMemberDialog()">
+            <img src="../../../assets/images/avatar.png" alt="">
+            <img src="../../../assets/images/avatar.png" alt="">
+            <img src="../../../assets/images/avatar.png" alt="">
+        </div>
+        <div class="add-participants">
+        </div>
+    </div>
+</div>
+
+<div class="scrollbar" #scrollContainer>
+    <ng-container *ngFor="let message of messages">
+        <div class="separator">
+            <div class="separator-line"></div>
+            <div class="separator-date">
+                {{message.createdAt | timestamp: 'day' }}
+            </div>
+            <div class="separator-line"></div>
+        </div>
+
+        <div class="conversation-container">
+            <img src="../../../assets/images/avatar.png" alt="">
+            <div class="conversation">
+                <div class="name-timestamp">
+                    <h5 (click)="openContactInfoDialog()"><strong>FullName</strong></h5>
+                    <p>00:00Uhr</p>
+                </div>
+
+
+                <div class="reply">
+                    <a> 0 Antworten</a>
+                    <p> Letzte Antwort 00:00Uhr
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </ng-container>
+    <div>
+
+        <app-text-editor />

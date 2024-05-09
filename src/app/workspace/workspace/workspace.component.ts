@@ -75,7 +75,6 @@ export class WorkspaceComponent implements OnInit {
   }
   // Adrian
   openChat(user: any) {
-    this.channelService.showChannelChat = true;
     this.userDetails.emit(user);
   }
 

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import {
   Firestore,
   getFirestore,
@@ -45,28 +45,28 @@ export class ChatService {
     const docSnap = await getDocs(docRef);
     return docSnap.docs.map((doc) => doc.id);
   }
-
+  currentuid: any;
   async createChat(userDetails: any) {
     let chatDocIds: any;
     this.getChatsDocumentIDs('chats').then((ids) => {
       chatDocIds = ids;
     });
-    let currentuid = this.FirestoreService.currentuid;
-
-    if (currentuid == userDetails.uid) {
+    this.currentuid = this.FirestoreService.currentuid;
+    if (this.currentuid == userDetails.uid) {
       setTimeout(() => {
         let ownChatDocId = chatDocIds.filter((ids: any) => {
-          if (currentuid == ids) {
+          if (this.currentuid == ids) {
             return ids;
           }
         });
         if (ownChatDocId.length == 0) {
-          ownChatDocId = currentuid;
+          ownChatDocId = this.currentuid;
           const chatData = {
-            chatId: currentuid,
+            chatId: this.currentuid,
           };
-          setDoc(doc(this.firestore, 'chats', currentuid), chatData);
+          setDoc(doc(this.firestore, 'chats', this.currentuid), chatData);
         }
+        console.log('ownChatDocId', ownChatDocId);
         this.loadMessages(ownChatDocId);
       }, 250);
     }
@@ -85,17 +85,15 @@ export class ChatService {
     }
     return '3';
   }
+
   async loadMessages(docId: any) {
     this.chatDocId = docId;
-    console.log('ownChatDocId123', docId);
     let chatRef = doc(this.chatsCollection, docId[0]);
     let chatData = await getDoc(chatRef);
     this.loadedchatInformation = chatData.data();
-    console.log('chat', this.loadedchatInformation);
   }
 
   async sendData(text: any) {
-    console.log('loadedchatInformation', this.loadedchatInformation);
     let id = this.generateIdServie.generateId();
     let date = new Date().getTime().toString();
     let currentuid = this.FirestoreService.currentuid;
@@ -105,19 +103,17 @@ export class ChatService {
       creator: currentuid,
       createdAt: date,
     };
-    console.log('message', message);
-
-    if (this.loadedchatInformation.messages) {
+    if (this.loadedchatInformation?.messages) {
+      this.loadedchatInformation.messages.push(message);
       console.log('exist');
     } else {
       console.log('DONT exist');
     }
 
-    // let chat = await setDoc(doc(this.chatsCollection, text.id), text).then(
-    //   () => {
-    //     console.log('data saved');
-    //   }
-    // );
+    let chat = await setDoc(
+      doc(this.chatsCollection, this.currentuid),
+      this.loadedchatInformation
+    );
   }
 
   async createChatForChannel(channelId: string): Promise<void> {
