@@ -1,5 +1,5 @@
 import { DialogCreateChannelComponent } from './../../dialog-create-channel/dialog-create-channel.component';
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
@@ -73,11 +73,10 @@ import { ChannelService } from '../../services/channel.service';
     ]),
   ],
 })
-export class MainComponent implements AfterViewInit {
+export class MainComponent {
   constructor(private channelService: ChannelService) {}
   displayWorkspace: boolean = true;
   userDetails: any = '';
-  @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
 
   showHideWorkspace() {
     this.displayWorkspace = !this.displayWorkspace;
@@ -88,17 +87,5 @@ export class MainComponent implements AfterViewInit {
   }
   openChat(userDetails: any) {
     this.userDetails = userDetails;
-  }
-  ngAfterViewInit() {
-    this.scrollToBottom();
-  }
-
-  private scrollToBottom(): void {
-    try {
-      this.scrollContainer.nativeElement.scrollTop =
-        this.scrollContainer.nativeElement.scrollHeight;
-    } catch (err) {
-      console.error('Scroll to bottom failed:', err);
-    }
   }
 }

@@ -1,4 +1,12 @@
-import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  SimpleChanges,
+  AfterViewInit,
+  ElementRef,
+  ViewChild,
+} from '@angular/core';
 import { DialogMembersComponent } from '../../dialog-members/dialog-members.component';
 import { DialogChannelInfoComponent } from '../../dialog-channel-info/dialog-channel-info.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -23,7 +31,7 @@ import { query, where, Query, DocumentData } from 'firebase/firestore';
   templateUrl: './channelchat.component.html',
   styleUrls: ['./channelchat.component.scss', '../chats.component.scss'],
 })
-export class ChannelchatComponent implements OnInit {
+export class ChannelchatComponent implements OnInit, AfterViewInit {
   constructor(
     public dialog: MatDialog,
     public chatsService: ChatService,
@@ -37,6 +45,7 @@ export class ChannelchatComponent implements OnInit {
   }
 
   @Input() userDetails: any;
+  @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
 
   currentChannel!: Channel;
   messages: any[] = [];
@@ -85,6 +94,19 @@ export class ChannelchatComponent implements OnInit {
   ngOnChanges(changes: SimpleChanges): void {
     if (this.userDetails != '' && changes['userDetails']) {
       this.loadMessages(this.userDetails);
+    }
+  }
+
+  ngAfterViewInit() {
+    this.scrollToBottom();
+  }
+
+  private scrollToBottom(): void {
+    try {
+      this.scrollContainer.nativeElement.scrollTop =
+        this.scrollContainer.nativeElement.scrollHeight;
+    } catch (err) {
+      console.error('Scroll to bottom failed:', err);
     }
   }
 
