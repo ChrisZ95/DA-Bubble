@@ -83,8 +83,6 @@ export class ChannelchatComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    // this.loadMessages('');
-
     this.currentChannelId = this.channelService.getCurrentChannelId();
     const channelId = this.currentChannelId;
 
@@ -92,6 +90,7 @@ export class ChannelchatComponent implements OnInit, AfterViewInit {
       this.allChannels = channels;
       console.log('Channels', channels);
     });
-    // console.log(this.channelService.messages);
+
+    console.log('Messages123', this.channelService.messages);
   }
 }

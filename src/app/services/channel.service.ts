@@ -138,6 +138,7 @@ export class ChannelService {
   }
 
   async loadMessagesForChannel(channelId: string): Promise<any[]> {
+    this.messages = [];
     try {
       const chatsRef = collection(this.firestore, 'chats');
       const q: Query<DocumentData> = query(
