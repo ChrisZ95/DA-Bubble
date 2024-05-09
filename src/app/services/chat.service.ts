@@ -26,6 +26,7 @@ import { GenerateIdsService } from './generate-ids.service';
 export class ChatService {
   chatList: any = [];
   loadedchatInformation: any;
+  chatDocId: any;
 
   constructor(
     private firestore: Firestore,
@@ -84,7 +85,6 @@ export class ChatService {
     }
     return '3';
   }
-  chatDocId: any;
   async loadMessages(docId: any) {
     this.chatDocId = docId;
     console.log('ownChatDocId123', docId);
@@ -97,7 +97,7 @@ export class ChatService {
   async sendData(text: any) {
     console.log('loadedchatInformation', this.loadedchatInformation);
     let id = this.generateIdServie.generateId();
-    let date = new Date().getTime();
+    let date = new Date().getTime().toString();
     let currentuid = this.FirestoreService.currentuid;
     let message = {
       message: text,

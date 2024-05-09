@@ -60,19 +60,6 @@
   border-radius: 30px;
 }
 
-.container {
-  overflow: auto;
-  // Webkit-based browsers (Chrome, Safari)
-  &::-webkit-scrollbar {
-    width: 0px; // For vertical scrollbars
-    height: 0px; // For horizontal scrollbars
-  }
-  // For Firefox
-  scrollbar-width: none;
-  // For IE and Edge
-  -ms-overflow-style: none;
-}
-
 .conversation-container {
   position: relative;
   display: flex;

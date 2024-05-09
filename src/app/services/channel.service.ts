@@ -1,5 +1,20 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, addDoc, DocumentReference, DocumentData, doc, updateDoc, onSnapshot, getDoc, arrayUnion, query, where, getDocs, Query } from '@angular/fire/firestore';
+import {
+  Firestore,
+  collection,
+  addDoc,
+  DocumentReference,
+  DocumentData,
+  doc,
+  updateDoc,
+  onSnapshot,
+  getDoc,
+  arrayUnion,
+  query,
+  where,
+  getDocs,
+  Query,
+} from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { Channel } from './../../models/channel.class';
 import { FirestoreService } from '../firestore.service';
@@ -9,22 +24,23 @@ import { FirestoreService } from '../firestore.service';
 })
 export class ChannelService {
   channel = new Channel();
-  channelID: string = ''
+  channelID: string = '';
   channelName = '';
   channelListNamesArray: any = [];
   channelDescription = '';
   UserName = '';
-  author = ''
+  author = '';
   private currentChannelId: string = '';
   showChannelChat: boolean = false;
   messages: any[] = [];
 
   channelList: any = [];
-  channelProfileImagesList: any = []
-  
-  constructor(private readonly firestore: Firestore, private FirestoreService: FirestoreService) {
-   
-  }
+  channelProfileImagesList: any = [];
+
+  constructor(
+    private readonly firestore: Firestore,
+    private FirestoreService: FirestoreService
+  ) {}
 
   getChannelRef() {
     return collection(this.firestore, 'channels');
@@ -47,14 +63,17 @@ export class ChannelService {
 
   getChannelDoc() {
     if (this.channelID) {
-        return doc(collection(this.firestore, 'channels'), this.channelID);
+      return doc(collection(this.firestore, 'channels'), this.channelID);
     } else {
-        throw new Error('Channel-ID fehlt.');
+      throw new Error('Channel-ID fehlt.');
     }
-}
+  }
 
   async getChannelIDByField(field: string, value: any): Promise<string | null> {
-    const q = query(collection(this.firestore, 'channels'), where(field, '==', value));
+    const q = query(
+      collection(this.firestore, 'channels'),
+      where(field, '==', value)
+    );
     const querySnapshot = await getDocs(q);
     if (querySnapshot.size === 0) {
       return null;
@@ -63,7 +82,7 @@ export class ChannelService {
     return docSnapshot.id;
   }
 
-  getChannelDocByID(ID:string) {
+  getChannelDocByID(ID: string) {
     return doc(collection(this.firestore, 'channels'), ID);
   }
 
@@ -71,29 +90,29 @@ export class ChannelService {
     return new Promise<string>((resolve, reject) => {
       const newChannel = this.channel.toJSON();
       addDoc(collection(this.firestore, 'channels'), newChannel)
-      .then((result: any) => {
-        newChannel['channelId'] = result.id;
-        updateDoc(doc(this.firestore, 'channels', result.id), newChannel)
-        .then(() => {
-          console.log(result);
-          resolve(result.id);
+        .then((result: any) => {
+          newChannel['channelId'] = result.id;
+          updateDoc(doc(this.firestore, 'channels', result.id), newChannel)
+            .then(() => {
+              console.log(result);
+              resolve(result.id);
+            })
+            .catch((error) => {
+              console.error('Fehler beim Aktualisieren des Kanals:', error);
+              reject(error);
+            });
         })
-        .catch(error => {
-          console.error('Fehler beim Aktualisieren des Kanals:', error);
+        .catch((error) => {
+          console.error('Fehler beim Erstellen des Kanals:', error);
           reject(error);
         });
-      })
-      .catch(error => {
-        console.error('Fehler beim Erstellen des Kanals:', error);
-        reject(error);
-      });
     });
   }
 
   async updateChannel(channelRef: DocumentReference<DocumentData>, object: {}) {
     await updateDoc(channelRef, object);
   }
-  
+
   getChannelName(name: string) {
     this.channelName = name;
   }
@@ -121,7 +140,10 @@ export class ChannelService {
   async loadMessagesForChannel(channelId: string): Promise<any[]> {
     try {
       const chatsRef = collection(this.firestore, 'chats');
-      const q: Query<DocumentData> = query(chatsRef, where('channelId', '==', channelId));
+      const q: Query<DocumentData> = query(
+        chatsRef,
+        where('channelId', '==', channelId)
+      );
       const querySnapshot = await getDocs(q);
 
       querySnapshot.forEach((doc) => {
