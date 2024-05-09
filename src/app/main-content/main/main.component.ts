@@ -76,6 +76,7 @@ import { ChannelService } from '../../services/channel.service';
 export class MainComponent implements AfterViewInit {
   constructor(private channelService: ChannelService) {}
   displayWorkspace: boolean = true;
+  userDetails: any = '';
   @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
 
   showHideWorkspace() {
@@ -85,7 +86,6 @@ export class MainComponent implements AfterViewInit {
   get showChannelChat(): boolean {
     return this.channelService.showChannelChat;
   }
-  userDetails: any = '';
   openChat(userDetails: any) {
     this.userDetails = userDetails;
   }
