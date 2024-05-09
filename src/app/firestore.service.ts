@@ -161,10 +161,14 @@ export class FirestoreService {
         const token = credential.accessToken;
         const user = result.user;
         this.observeAuthState();
+        console.log(user)
         console.log('Google login user name:', user.displayName);
         console.log('Google login user email:', user.email);
         console.log('Google login user photo:', user.photoURL);
         console.log('Google login user uid:',user.uid);
+        console.log('Google user wurde erstellt am', user.metadata.creationTime)
+        console.log('Google user wurde zuletzt gesehen am', user.metadata.lastSignInTime)
+        console.log('Google login user handy nummer', user.phoneNumber)
         const userRef = doc(this.firestore, 'users', user.uid);
       await setDoc(userRef, {
         email:  user.email,
