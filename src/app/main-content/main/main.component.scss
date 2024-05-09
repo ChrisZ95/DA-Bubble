@@ -51,6 +51,17 @@ $wct-height: calc(100vh - 20vh);
   width: auto;
   height: $wct-height;
   border-radius: 30px;
+
+  overflow: auto;
+  // Webkit-based browsers (Chrome, Safari)
+  &::-webkit-scrollbar {
+    width: 0px; // For vertical scrollbars
+    height: 0px; // For horizontal scrollbars
+  }
+  // For Firefox
+  scrollbar-width: none;
+  // For IE and Edge
+  -ms-overflow-style: none;
 }
 
 .thread {
