@@ -46,13 +46,15 @@ export class SignUpComponent {
       }
       } else {
         const registrationSuccess = await this.firestoreService.signUpUser(email, password, username, privacyPolice);
-        if (registrationSuccess === 'auth/invalid-recipient-email' || 'auth/invalid-email') {
-          this.showInputInformationEmailInputEmpty = true;
-          return;
-        } else if (registrationSuccess === 'weak-password') {
+        // if (registrationSuccess === 'auth/invalid-recipient-email' || 'auth/invalid-email') {
+        //   this.showInputInformationEmailInputEmpty = true;
+        //   return;
+        // }
+         if (registrationSuccess === 'weak-password') {
           this.showInputInformationPassword = true;
           return;
-        } else if (registrationSuccess === 'auth/email-already-in-use') {
+        }
+        else if (registrationSuccess === 'auth/email-already-in-use') {
           this.showInputInformationEmailforgive = true;
           return;
         }

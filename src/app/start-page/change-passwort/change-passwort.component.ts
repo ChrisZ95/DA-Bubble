@@ -19,16 +19,16 @@ export class ChangePasswortComponent implements OnInit {
   showInputInformationConfirmPasswordInputInvalid: boolean = false;
   showInputInformationConfirmPasswordInputEmpty: boolean = false;
 
-  uid: any;
+  userId: any;
 
   constructor(
     private firestoreService: FirestoreService
   ) {}
 
-  async ngOnInit() {
-    await this.firestoreService.resetPasswordUserId.subscribe(uid => {
-      this.uid = uid;
-      console.log('signUp choose avatar id', uid);
+  ngOnInit() {
+    this.firestoreService.resetPasswordUserId$.subscribe(uid => {
+      this.userId = uid;
+      console.log('UserID für Passwortänderung:', uid);
     });
   }
 
@@ -45,7 +45,7 @@ export class ChangePasswortComponent implements OnInit {
 
   newPassword(formData: any) {
     debugger
-      console.log('übertragende id lautet',this.uid);
+      console.log('übertragende id lautet',this.userId);
       this.showInputInformationPassword = false;
       this.showInputInformationConfirmPasswordInputInvalid = false;
       this.showInputInformationConfirmPasswordInputEmpty = false;
@@ -61,7 +61,7 @@ export class ChangePasswortComponent implements OnInit {
       } else {
         console.log('button zum abschicken des neuen passworts gedrückt');
         this.emailSended();
-        this.firestoreService.changePassword(this.uid, password);
+        this.firestoreService.changePassword(this.userId, password);
       }
     };
 

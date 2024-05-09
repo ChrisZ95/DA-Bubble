@@ -10,6 +10,7 @@ import {
   updatePassword,
   sendPasswordResetEmail,
   OAuthProvider,
+  Auth,
 } from '@angular/fire/auth';
 import { FirebaseApp } from '@angular/fire/app';
 import {
@@ -24,13 +25,16 @@ import { getStorage, provideStorage, ref } from '@angular/fire/storage';
 import { User } from '../models/user.class';
 import { Router } from '@angular/router';
 import { log } from 'console';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FirestoreService {
   public onUserRegistered: EventEmitter<string> = new EventEmitter<string>();
-  public resetPasswordUserId: EventEmitter<string> = new EventEmitter<string>();
+  private resetPasswordUserIdSubject = new BehaviorSubject<any>(null);
+  resetPasswordUserId$ = this.resetPasswordUserIdSubject.asObservable();
+
 
   public auth: any;
   public firestore: any;
@@ -101,18 +105,20 @@ export class FirestoreService {
       return null;
     } catch (error: any) {
       console.error('Error creating user:', error);
-      if (error.code === 'auth/invalid-recipient-email' || 'auth/invalid-email') {
-        console.log('Email-Adresse entspricht nicht den gültigen Vorlagen.');
-        return 'auth/invalid-recipient-email';
-      } else if (error.code === 'auth/email-already-in-use') {
-        console.log('Email-Adresse wird bereits verwendet.');
-        return 'auth/email-already-in-use';
-      } else if (error.code === 'auth/weak-password') {
-        console.log('Das Passwort ist zu schwach.');
-        return 'weak-password';
-      } else {
+      // if (error.code === 'auth/invalid-recipient-email' || 'auth/invalid-email') {
+      //   console.log('Email-Adresse entspricht nicht den gültigen Vorlagen.');
+      //   return 'auth/invalid-recipient-email';
+      // }
+      // else if (error.code === 'auth/email-already-in-use') {
+      //   console.log('Email-Adresse wird bereits verwendet.');
+      //   return 'auth/email-already-in-use';
+      // }
+      //  else if (error.code === 'auth/weak-password') {
+      //   console.log('Das Passwort ist zu schwach.');
+      //   return 'weak-password';
+      // } else {
         return null;
-      }
+      // }
     }
   }
 
@@ -207,7 +213,7 @@ export class FirestoreService {
       const { email, uid } = emailData;
       console.log('email zum resten des Passworts lautet', email);
       console.log('Die ID des Users zum zurücksetzen des Passworts lautet',uid);
-      this.resetPasswordUserId.emit(uid);
+      this.resetPasswordUserIdSubject.next(uid);
       await sendPasswordResetEmail(auth, email);
       console.log('E-Mail zum Zurücksetzen des Passworts gesendet');
     } catch (error) {
@@ -218,17 +224,15 @@ export class FirestoreService {
     }
   }
 
-  async changePassword(userId: string, newPassword: string): Promise<void> {
-    // try {
-    //   const auth = getAuth();
-    //   // Benutzerreferenz aktualisieren
-    //   await updatePassword(auth.currentUser, newPassword);
-    //   // Erfolgsmeldung
-    //   console.log('Passwort erfolgreich aktualisiert');
-    // } catch (error) {
-    //   // Fehlermeldung
-    //   console.error('Fehler beim Aktualisieren des Passworts:', error);
-    //   throw error;
-    // }
+  async changePassword(userId: any, newPassword: string): Promise<void> {
+    console.log(userId, newPassword)
+    try {
+      await updatePassword(this.auth.currentUser, newPassword);
+      console.log('Passwort erfolgreich aktualisiert');
+    } catch (error) {
+      console.error('Fehler beim Aktualisieren des Passworts:', error);
+      throw error;
+    }
   }
+
 }
