@@ -4,6 +4,7 @@ import {
   getFirestore,
   provideFirestore,
   onSnapshot,
+  DocumentData
 } from '@angular/fire/firestore';
 import { getDatabase, provideDatabase } from '@angular/fire/database';
 import { getStorage, provideStorage } from '@angular/fire/storage';
@@ -14,11 +15,15 @@ import {
   collection,
   getDoc,
   getDocs,
+  updateDoc,
+  query,
+  where
 } from 'firebase/firestore';
 import { ChannelService } from './channel.service';
 import { FirestoreService } from '../firestore.service';
 import { log } from 'console';
 import { GenerateIdsService } from './generate-ids.service';
+import { DocumentReference } from 'firebase/firestore';
 
 @Injectable({
   providedIn: 'root',
@@ -45,7 +50,9 @@ export class ChatService {
     const docSnap = await getDocs(docRef);
     return docSnap.docs.map((doc) => doc.id);
   }
+
   currentuid: any;
+
   async createChat(userDetails: any) {
     let chatDocIds: any;
     this.getChatsDocumentIDs('chats').then((ids) => {
@@ -116,16 +123,36 @@ export class ChatService {
     );
   }
 
+  async sendDataToChannel(channelId: string, message: any) {
+    try {
+      const chatsRef = collection(this.firestore, 'chats');
+      const q = query(chatsRef, where('channelId', '==', channelId));
+      const querySnapshot = await getDocs(q);
+  
+      if (!querySnapshot.empty) {
+        const doc = querySnapshot.docs[0];
+        const chatDocRef = doc.ref;
+        const currentMessages = doc.data()?.['messages'] || [];
+        const updatedMessages = [...currentMessages, message];
+        await updateDoc(chatDocRef, { messages: updatedMessages });
+      } else {
+        console.error('Chat document not found for channelId:', channelId);
+      }
+    } catch (error) {
+      console.error('Error sending message:', error);
+    }
+  }
+
   async createChatForChannel(channelId: string): Promise<void> {
     try {
+      const createdAt = Date.now();
       const chatId = this.generateIdServie.generateId();
-
       const chatData = {
-        channelId: channelId,
+        createdAt: createdAt, 
+        channelId: channelId, 
+        id: chatId, 
       };
-
       await setDoc(doc(this.firestore, 'chats', chatId), chatData);
-
       console.log('Chat erfolgreich erstellt für Kanal:', channelId);
     } catch (error) {
       console.error(
@@ -133,7 +160,7 @@ export class ChatService {
         channelId,
         error
       );
-      throw error; // Fehler weiterwerfen, um ihn in der Aufruferkomponente zu behandeln
+      throw error;
     }
   }
 }

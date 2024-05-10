@@ -3,6 +3,8 @@ import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../services/chat.service';
 import { log } from 'console';
 import { GenerateIdsService } from '../../services/generate-ids.service';
+import { Firestore, doc, collection, addDoc } from '@angular/fire/firestore';
+import { ChannelService } from '../../services/channel.service';
 
 @Component({
   selector: 'app-text-editor',
@@ -14,7 +16,9 @@ import { GenerateIdsService } from '../../services/generate-ids.service';
 export class TextEditorComponent implements OnInit {
   constructor(
     private chatService: ChatService,
-    private generateId: GenerateIdsService
+    private generateId: GenerateIdsService,
+    private firestore: Firestore,
+    public channelService: ChannelService
   ) {}
   message: any = '';
 
@@ -30,5 +34,24 @@ export class TextEditorComponent implements OnInit {
     this.chatService.sendData(text);
     this.message = '';
   }
+
+  sendMessageToChannel() {
+    const currentChannelId = this.channelService.getCurrentChannelId();
+    if (currentChannelId) {
+      const timestamp: number = Date.now();
+      const timestampString: string = timestamp.toString();
+      const message = {
+        id: this.generateId.generateId(),
+        message: this.message,
+        createdAt: timestampString
+      };
+      this.chatService.sendDataToChannel(currentChannelId, message);
+      this.message = '';
+    } else {
+      console.error('Kein aktueller Kanal ausgewählt.');
+      // Fehlerfall, falls kein aktueller Kanal ausgewählt ist
+    }
+  }
+
   ngOnInit(): void {}
 }

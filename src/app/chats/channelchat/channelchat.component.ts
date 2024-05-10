@@ -93,4 +93,8 @@ export class ChannelchatComponent implements OnInit, AfterViewInit {
 
     console.log('Messages123', this.channelService.messages);
   }
+
+  openThreadWindow(){
+    this.channelService.showThreadWindow = true;
+  }
 }

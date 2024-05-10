@@ -16,7 +16,7 @@
         <app-ownchat [userDetails]="userDetails" />
       </div>
 
-      <div class="thread">
+      <div *ngIf="showThreadWindow" class="thread">
         <app-channelthread></app-channelthread>
       </div>
     </div>

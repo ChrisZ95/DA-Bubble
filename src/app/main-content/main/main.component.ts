@@ -89,6 +89,10 @@ export class MainComponent {
     return this.channelService.showChannelChat;
   }
 
+  get showThreadWindow(): boolean {
+    return this.channelService.showThreadWindow;
+  }
+
   openChat(userDetails: any) {
     this.showOwnChat = true;
     this.userDetails = userDetails;

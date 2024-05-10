@@ -32,6 +32,7 @@ export class ChannelService {
   author = '';
   private currentChannelId: string = '';
   showChannelChat: boolean = false;
+  showThreadWindow: boolean = false;
   messages: any[] = [];
 
   channelList: any = [];
@@ -146,11 +147,15 @@ export class ChannelService {
         where('channelId', '==', channelId)
       );
       const querySnapshot = await getDocs(q);
-
+  
       querySnapshot.forEach((doc) => {
-        this.messages.push(doc.data());
+        const chatData = doc.data();
+        if (chatData['messages'] && Array.isArray(chatData['messages'])) {
+          // Überprüfen, ob das Feld "messages" vorhanden und ein Array ist
+          this.messages.push(...chatData['messages']); // Alle Nachrichten hinzufügen
+        }
       });
-
+  
       return this.messages;
     } catch (error) {
       console.error('Error loading messages for channel:', error);

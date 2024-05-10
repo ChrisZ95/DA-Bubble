@@ -19,7 +19,7 @@
     <div class="separator">
       <div class="separator-line"></div>
       <div class="separator-date">
-        <!-- {{message.createdAt | timestamp: 'day' }} -->
+       <!-- {{ message.createdAt | timestamp: 'day' }} -->
       </div>
       <div class="separator-line"></div>
     </div>
@@ -41,7 +41,7 @@
 
 
         <div class="reply">
-          <a> 0 Antworten</a>
+          <div (click)="openThreadWindow()">0 Antworten</div>
           <p> Letzte Antwort 00:00Uhr
           </p>
         </div>
