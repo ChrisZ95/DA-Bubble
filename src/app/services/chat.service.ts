@@ -24,6 +24,7 @@ import { FirestoreService } from '../firestore.service';
 import { log } from 'console';
 import { GenerateIdsService } from './generate-ids.service';
 import { DocumentReference } from 'firebase/firestore';
+import { Message } from 'protobufjs';
 
 @Injectable({
   providedIn: 'root',
@@ -54,50 +55,42 @@ export class ChatService {
   currentuid: any;
 
   async createChat(userDetails: any) {
-    let chatDocIds: any;
-    this.getChatsDocumentIDs('chats').then((ids) => {
-      chatDocIds = ids;
-    });
-    this.currentuid = this.FirestoreService.currentuid;
-    if (this.currentuid == userDetails.uid) {
-      setTimeout(() => {
-        let ownChatDocId = chatDocIds.filter((ids: any) => {
-          if (this.currentuid == ids) {
-            return ids;
-          }
-        });
-        if (ownChatDocId.length == 0) {
-          ownChatDocId = this.currentuid;
+    try {
+      let date = new Date().getTime().toString();
+      let chatDocIds = await this.getChatsDocumentIDs('chats');
+
+      this.currentuid = this.FirestoreService.currentuid;
+
+      if (this.currentuid === userDetails.uid) {
+        let ownChatDocId = chatDocIds.filter(
+          (id: any) => this.currentuid === id
+        );
+
+        if (ownChatDocId.length === 0) {
+          ownChatDocId = [this.currentuid];
           const chatData = {
+            createdAt: date,
             chatId: this.currentuid,
+            messages: [],
           };
-          setDoc(doc(this.firestore, 'chats', this.currentuid), chatData);
+          await setDoc(doc(this.firestore, 'chats', this.currentuid), chatData);
         }
-        console.log('ownChatDocId', ownChatDocId);
-        this.loadMessages(ownChatDocId);
-      }, 250);
+        await this.loadMessages(ownChatDocId);
+      }
+    } catch (error) {
+      console.error('Error creating chat:', error);
     }
-
-    if (userDetails.uid) {
-      //if Nur solange die gespeichert Daten unterschiedlich sind
-
-      let allChats: any = await getDocs(this.chatsCollection);
-      // 1. Load all Chats
-      const dbRef = collection(this.db, 'chats');
-
-      // 2. Iterate if Chat is existing
-      // 3. Yes -> Load Chat
-      // 4. No -> Create new Chat
-      return '2';
-    }
-    return '3';
   }
 
   async loadMessages(docId: any) {
-    this.chatDocId = docId;
-    let chatRef = doc(this.chatsCollection, docId[0]);
-    let chatData = await getDoc(chatRef);
-    this.loadedchatInformation = chatData.data();
+    try {
+      this.chatDocId = docId;
+      let chatRef = doc(this.chatsCollection, docId[0]);
+      let chatData = await getDoc(chatRef);
+      this.loadedchatInformation = chatData.data();
+    } catch (error) {
+      console.error('Error loading messages:', error);
+    }
   }
 
   async sendData(text: any) {
@@ -116,8 +109,6 @@ export class ChatService {
     } else {
       console.log('DONT exist');
     }
-
-    debugger;
     let chat = await setDoc(
       doc(this.chatsCollection, this.currentuid),
       this.loadedchatInformation

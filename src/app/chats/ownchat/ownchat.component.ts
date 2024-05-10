@@ -37,8 +37,6 @@ export class OwnchatComponent implements OnChanges {
   async loadMessages(userDetails: any) {
     this.messages = [];
     let chatInformation = this.chatsService.createChat(userDetails);
-    console.log('chatInformation', (await chatInformation).valueOf());
-
     const chatsRef = collection(this.chatsService.db, 'chats');
     const querySnapshot = await getDocs(chatsRef);
 

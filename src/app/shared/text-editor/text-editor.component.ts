@@ -39,15 +39,7 @@ export class TextEditorComponent implements OnInit {
   }
 
   sendMessage() {
-    const timestamp: number = Date.now();
-    const timestampString: string = timestamp.toString();
-
-    let text = {
-      id: this.generateId.generateId(),
-      message: this.message,
-      createdAt: timestampString,
-    };
-    this.chatService.sendData(text);
+    this.chatService.sendData(this.message);
     this.message = '';
   }
 
