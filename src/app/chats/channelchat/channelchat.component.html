@@ -19,7 +19,7 @@
     <div class="separator">
       <div class="separator-line"></div>
       <div class="separator-date">
-       {{ message.createdAt | timestamp: 'day' }}
+        {{ message.createdAt | timestamp: 'day' }}
       </div>
       <div class="separator-line"></div>
     </div>
@@ -46,8 +46,8 @@
           </p>
         </div>
 
+      </div>
     </div>
   </div>
-</div>
 
-<app-text-editor/>
+  <app-text-editor [componentName]="'channel'" />

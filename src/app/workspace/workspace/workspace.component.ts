@@ -20,6 +20,7 @@ import { FirestoreService } from '../../firestore.service';
 import { ChannelService } from '../../services/channel.service';
 import { ChatService } from '../../services/chat.service';
 import { ChannelchatComponent } from '../../chats/channelchat/channelchat.component';
+import { log } from 'console';
 
 @Component({
   selector: 'app-workspace',

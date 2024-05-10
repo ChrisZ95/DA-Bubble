@@ -4,7 +4,7 @@ import {
   getFirestore,
   provideFirestore,
   onSnapshot,
-  DocumentData
+  DocumentData,
 } from '@angular/fire/firestore';
 import { getDatabase, provideDatabase } from '@angular/fire/database';
 import { getStorage, provideStorage } from '@angular/fire/storage';
@@ -17,7 +17,7 @@ import {
   getDocs,
   updateDoc,
   query,
-  where
+  where,
 } from 'firebase/firestore';
 import { ChannelService } from './channel.service';
 import { FirestoreService } from '../firestore.service';
@@ -117,6 +117,7 @@ export class ChatService {
       console.log('DONT exist');
     }
 
+    debugger;
     let chat = await setDoc(
       doc(this.chatsCollection, this.currentuid),
       this.loadedchatInformation
@@ -128,7 +129,7 @@ export class ChatService {
       const chatsRef = collection(this.firestore, 'chats');
       const q = query(chatsRef, where('channelId', '==', channelId));
       const querySnapshot = await getDocs(q);
-  
+
       if (!querySnapshot.empty) {
         const doc = querySnapshot.docs[0];
         const chatDocRef = doc.ref;
@@ -148,9 +149,9 @@ export class ChatService {
       const createdAt = Date.now();
       const chatId = this.generateIdServie.generateId();
       const chatData = {
-        createdAt: createdAt, 
-        channelId: channelId, 
-        id: chatId, 
+        createdAt: createdAt,
+        channelId: channelId,
+        id: chatId,
       };
       await setDoc(doc(this.firestore, 'chats', chatId), chatData);
       console.log('Chat erfolgreich erstellt für Kanal:', channelId);
@@ -164,7 +165,10 @@ export class ChatService {
     }
   }
 
-  async getCommentsForMessage(channelId: string, messageId: string): Promise<string[]> {
+  async getCommentsForMessage(
+    channelId: string,
+    messageId: string
+  ): Promise<string[]> {
     try {
       const chatDocRef = doc(this.firestore, 'chats', channelId);
       const chatDocSnap = await getDoc(chatDocRef);

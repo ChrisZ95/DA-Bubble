@@ -1,4 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../services/chat.service';
 import { log } from 'console';
@@ -20,7 +25,18 @@ export class TextEditorComponent implements OnInit {
     private firestore: Firestore,
     public channelService: ChannelService
   ) {}
+  @Input() componentName!: string;
+
   message: any = '';
+
+  submit() {
+    if (this.componentName == 'ownChat') {
+      this.sendMessage();
+    }
+    if (this.componentName == 'channel') {
+      this.sendMessageToChannel();
+    }
+  }
 
   sendMessage() {
     const timestamp: number = Date.now();
@@ -43,9 +59,10 @@ export class TextEditorComponent implements OnInit {
       const message = {
         id: this.generateId.generateId(),
         message: this.message,
-        createdAt: timestampString
+        createdAt: timestampString,
       };
       this.chatService.sendDataToChannel(currentChannelId, message);
+
       this.message = '';
     } else {
       console.error('Kein aktueller Kanal ausgewählt.');
@@ -53,5 +70,7 @@ export class TextEditorComponent implements OnInit {
     }
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    console.log('componentName', this.componentName);
+  }
 }
