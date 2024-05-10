@@ -36,7 +36,8 @@ export class ChannelchatComponent implements OnInit, AfterViewInit {
     public dialog: MatDialog,
     public channelService: ChannelService,
     private readonly firestore: Firestore,
-    private firestoreService: FirestoreService
+    private firestoreService: FirestoreService,
+    public chatService: ChatService
   ) {
     onSnapshot(collection(this.firestore, 'channels'), (list) => {
       this.allChannels = list.docs.map((doc) => doc.data());
@@ -90,11 +91,11 @@ export class ChannelchatComponent implements OnInit, AfterViewInit {
       this.allChannels = channels;
       console.log('Channels', channels);
     });
-
     console.log('Messages123', this.channelService.messages);
   }
 
-  openThreadWindow(){
+  openThreadWindow(messageId: string){
+    this.channelService.setCurrentMessageId(messageId);
     this.channelService.showThreadWindow = true;
   }
 }

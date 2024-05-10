@@ -163,4 +163,22 @@ export class ChatService {
       throw error;
     }
   }
+
+  async getCommentsForMessage(channelId: string, messageId: string): Promise<string[]> {
+    try {
+      const chatDocRef = doc(this.firestore, 'chats', channelId);
+      const chatDocSnap = await getDoc(chatDocRef);
+      const messages = chatDocSnap.data()?.['messages'];
+      if (messages) {
+        const message = messages.find((m: any) => m.id === messageId);
+        return message?.comments || [];
+      } else {
+        console.error('No messages found in chat document:', channelId);
+        return [];
+      }
+    } catch (error) {
+      console.error('Error getting comments for message:', error);
+      return [];
+    }
+  }
 }

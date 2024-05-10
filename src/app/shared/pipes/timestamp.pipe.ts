@@ -22,9 +22,21 @@ export class TimestampPipe implements PipeTransform {
 
     if (timeFrame === 'day') {
       return isToday ? 'heute' : `${weekday}, ${day}. ${month}`;
+    } else if (timeFrame === 'time') {
+      return this.formatTime(dateObj);
     } else {
       return 'Ungültiger Argumenttyp';
     }
+  }
+
+  formatTime(date: Date): string {
+    const hours = this.padZero(date.getHours());
+    const minutes = this.padZero(date.getMinutes());
+    return `${hours}:${minutes} Uhr`;
+  }
+
+  padZero(value: number): string {
+    return value < 10 ? '0' + value : value.toString();
   }
 
   convertWeekday(day: number): string {

@@ -31,6 +31,7 @@ export class ChannelService {
   UserName = '';
   author = '';
   private currentChannelId: string = '';
+  private currentMessageId: string = '';
   showChannelChat: boolean = false;
   showThreadWindow: boolean = false;
   messages: any[] = [];
@@ -134,8 +135,16 @@ export class ChannelService {
     this.currentChannelId = channelId;
   }
 
+  setCurrentMessageId(messageId: string) {
+    this.currentMessageId = messageId;
+  }
+
   getCurrentChannelId(): string {
     return this.currentChannelId;
+  }
+
+  getCurrentMessageId(): string {
+    return this.currentMessageId;
   }
 
   async loadMessagesForChannel(channelId: string): Promise<any[]> {
