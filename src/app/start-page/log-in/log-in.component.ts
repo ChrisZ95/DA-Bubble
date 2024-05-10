@@ -68,8 +68,19 @@ export class LogInComponent {
         this.showInputInformationPassword = true;
       }
     } else {
-      this.firestoreService.logInUser(email, password);
-      console.log('User log in erfolgt');
+      this.firestoreService.logInUser(email, password)
+        .then((result) => {
+          if (result === 'auth/invalid-credential') {
+            this.showInputInformationPassword = true;
+            console.log('Invalid credentials error occurred.');
+          } else {
+            console.log('User logged in successfully');
+          }
+        })
+        .catch((error) => {
+          console.error('Error logging in:', error);
+        });
     }
-  }
+}
+
 }

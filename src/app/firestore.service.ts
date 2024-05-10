@@ -21,7 +21,7 @@ import {
   getDocs,
   getDoc,
 } from '@angular/fire/firestore';
-import { getStorage, provideStorage, ref } from '@angular/fire/storage';
+import { getStorage, provideStorage, ref, uploadBytes } from '@angular/fire/storage';
 import { User } from '../models/user.class';
 import { Router } from '@angular/router';
 import { log } from 'console';
@@ -38,16 +38,16 @@ export class FirestoreService {
 
   public auth: any;
   public firestore: any;
+  private storageUserIcon: any;
 
   constructor(private myFirebaseApp: FirebaseApp, public router: Router) {
     this.auth = getAuth(myFirebaseApp);
     this.auth.languageCode = 'de';
     this.firestore = getFirestore(myFirebaseApp);
     const provider = new GoogleAuthProvider();
+    const storageUserIcon = getStorage(myFirebaseApp, "user-icon");
     this.currentuid = localStorage.getItem('uid');
     // const newPassword = getASecureRandomPassword();
-    // const storage = getStorage();
-    // const storageRef = ref(storage);
   }
 
   currentuid: any;
@@ -124,20 +124,27 @@ export class FirestoreService {
 
 
 
-  async logInUser(email: string, password: string): Promise<void> {
+  async logInUser(email: string, password: string): Promise<string | null> {
     try {
-      const userCredential = await signInWithEmailAndPassword(
-        this.auth,
-        email,
-        password
-      );
-      localStorage.setItem('uid', userCredential.user.uid);
-      console.log('User log in erfolgreich');
-      this.observeAuthState();
-    } catch (error) {
-      console.error('Error signing in:', error);
+        const userCredential = await signInWithEmailAndPassword(
+            this.auth,
+            email,
+            password
+        );
+        localStorage.setItem('uid', userCredential.user.uid);
+        console.log('User log in erfolgreich');
+        this.observeAuthState();
+        return null;
+    } catch (error: any) {
+        console.error('Error signing in:', error);
+        if (error.code === 'auth/invalid-credential') {
+            console.log('Email-Adresse entspricht nicht den gültigen Vorlagen.');
+            return 'auth/invalid-credential';
+        }
+        // Handle other errors here if needed
+        throw error; // Throw the error if it's not handled
     }
-  }
+}
 
   async signInWithApple(auth: any, provider: any): Promise<void> {
     try {
