@@ -14,7 +14,7 @@
       <div class="card-input-section">
         <div class="input-container">
           <img src="./../../../assets/images/unisex-user-icon.svg">
-          <input required placeholder="Name und Nachname" name="username" ngModel #username="ngModel">
+          <input required placeholder="Name und Nachname" autocomplete="current-username" name="username" ngModel #username="ngModel">
         </div>
         <div class="pseudo">
           <span class="input-information" *ngIf="showInputInformationUserName">Bitte gebe deinen Namen an.</span>
@@ -22,7 +22,7 @@
         </div>
         <div class="input-container">
           <img src="./../../../assets/images/mail.svg">
-          <input required placeholder="MaxMustermann@gmail.com" name="email" ngModel #email="ngModel">
+          <input required placeholder="MaxMustermann@gmail.com" autocomplete="current-email" name="email" ngModel #email="ngModel">
         </div>
         <div class="pseudo">
           <span class="input-information" *ngIf="showInputInformationEmailInputEmpty ">Bitte geben Sie eine gültige E-Mail-Adresse ein.</span>
@@ -31,7 +31,7 @@
         </div>
         <div class="input-container">
           <img src="./../../../assets/images/lock.svg">
-          <input required type="password" placeholder="Passwort" name="password" ngModel #password="ngModel">
+          <input required type="password" placeholder="Passwort" autocomplete="current-password" name="password" ngModel #password="ngModel">
         </div>
        <div class="pseudo">
         <span class="input-information" *ngIf="showInputInformationPassword ">Das Passwort muss 6 Zeichen lang sein.</span>

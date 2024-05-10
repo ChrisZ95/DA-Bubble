@@ -11,14 +11,14 @@
     <div class="card-input-section">
       <div class="input-container">
         <img src="./../../../assets/images/mail.svg">
-        <input ngModel required name="email" #email="ngModel" placeholder="MaxMustermann@gmail.com">
+        <input ngModel required name="email" #email="ngModel" autocomplete="current-email" placeholder="MaxMustermann@gmail.com">
       </div>
       <div class="pseudo">
         <span *ngIf="showInputInformationEmail" class="input-information">Diese E-Mail-Adresse ist leider ungultig.</span>
       </div>
       <div class="input-container">
         <img src="./../../../assets/images/lock.svg">
-        <input ngModel required type="password" name="password" #password="ngModel" placeholder="Passwort">
+        <input ngModel required type="password" name="password" #password="ngModel" autocomplete="current-password" placeholder="Passwort">
       </div>
       <div class="pseudo">
         <span *ngIf="showInputInformationPassword" class="input-information">Dieses Passwort ist leider ungultig.</span>

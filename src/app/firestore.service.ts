@@ -45,9 +45,22 @@ export class FirestoreService {
     this.auth.languageCode = 'de';
     this.firestore = getFirestore(myFirebaseApp);
     const provider = new GoogleAuthProvider();
-    const storageUserIcon = getStorage(myFirebaseApp, "user-icon");
+    const storageUserIcon = getStorage();
+    const storageUsericonRef = ref(storageUserIcon, 'user-icon')
     this.currentuid = localStorage.getItem('uid');
-    // const newPassword = getASecureRandomPassword();
+    // const file = new File([blob] as BlobPart[], 'meinBild.jpg', { type: 'image/jpeg' });
+
+  }
+
+  async uploadUserIcon(storageUsericonRef: any, file: any) {
+    try {
+      // Datei hochladen
+      await uploadBytes(storageUsericonRef, file);
+      console.log('Datei erfolgreich hochgeladen.');
+  } catch (error) {
+      console.error('Fehler beim Hochladen der Datei:', error);
+      throw error;
+  }
   }
 
   currentuid: any;
