@@ -37,12 +37,10 @@ export class ChannelthreadComponent {
   }
 
   loadCommentsForCurrentMessage() {
-    // Hier wird angenommen, dass channelService.messages eine Liste von Nachrichtenobjekten ist
     const currentMessage = this.channelService.messages.find(message => message.id === this.currentMessageId);
     if (currentMessage) {
       this.currentMessageComments = currentMessage.comments;
     } else {
-      // Nachricht nicht gefunden, leere die Kommentare
       this.currentMessageComments = [];
     }
   }
