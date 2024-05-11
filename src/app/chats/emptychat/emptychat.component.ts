@@ -18,7 +18,7 @@ export class EmptychatComponent implements OnInit {
     console.log('input', input);
 
     const test = this.allUsers.some((item: any) => {
-      input.includes(item.username);
+      return input.includes(item.username);
     });
 
     console.log('test', test);
