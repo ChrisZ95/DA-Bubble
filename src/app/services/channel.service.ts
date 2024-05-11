@@ -160,11 +160,9 @@ export class ChannelService {
       querySnapshot.forEach((doc) => {
         const chatData = doc.data();
         if (chatData['messages'] && Array.isArray(chatData['messages'])) {
-          // Überprüfen, ob das Feld "messages" vorhanden und ein Array ist
-          this.messages.push(...chatData['messages']); // Alle Nachrichten hinzufügen
+          this.messages.push(...chatData['messages']);
         }
       });
-  
       return this.messages;
     } catch (error) {
       console.error('Error loading messages for channel:', error);

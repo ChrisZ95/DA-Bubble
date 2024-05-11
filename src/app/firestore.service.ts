@@ -266,6 +266,7 @@ export class FirestoreService {
     console.log(userId, newPassword)
     try {
       await updatePassword(this.auth.currentUser, newPassword);
+      this.router.navigate(['']);
       console.log('Passwort erfolgreich aktualisiert');
     } catch (error) {
       console.error('Fehler beim Aktualisieren des Passworts:', error);

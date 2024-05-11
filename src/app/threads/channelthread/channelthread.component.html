@@ -1,5 +1,4 @@
 <div class="main">
-
     <div class="header">
         <div class="top-headline">
             <h5><strong> Thread </strong></h5>
@@ -19,8 +18,8 @@
                         <h5>Username</h5>
                         <p>00:00Uhr </p>
                     </div>
-                    <div class="text">
-                        <p>{{ comments }}</p>
+                    <div *ngFor="let comment of currentMessageComments" class="text">
+                        <p>{{ comment }}</p>
                     </div>
                 </div>
             </div>
@@ -29,27 +28,5 @@
         <div class="separator">
             <div class="line"></div>
         </div>
-
-        <ng-container>
-            <div class="reply">
-                <div class="avatar">
-                    <img src="../../../assets/images/avatar.png" alt="">
-                </div>
-
-                <div class="conversation">
-                    <div class="user-timestamp">
-                        <div class="user">
-                            <h5>Username</h5>
-                            <p>oo:00Uhr </p>
-                        </div>
-                    </div>
-                    <div class="text">
-                        <p>Reply1</p>
-                    </div>
-                </div>
-            </div>
-        </ng-container>
     </div>
-
-
 </div>
