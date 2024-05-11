@@ -1,9 +1,4 @@
-import {
-  Component,
-  Input,
-  OnInit,
-  SimpleChanges,
-} from '@angular/core';
+import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../services/chat.service';
 import { log } from 'console';
@@ -62,7 +57,5 @@ export class TextEditorComponent implements OnInit {
     }
   }
 
-  ngOnInit(): void {
-    console.log('componentName', this.componentName);
-  }
+  ngOnInit(): void {}
 }

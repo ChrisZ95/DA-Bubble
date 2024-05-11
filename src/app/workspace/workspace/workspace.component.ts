@@ -27,7 +27,7 @@ import { log } from 'console';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './workspace.component.html',
-  styleUrls: ['./workspace.component.scss', '../../../styles.scss'],
+  styleUrl: './workspace.component.scss',
 })
 export class WorkspaceComponent implements OnInit {
   @ViewChild(ChannelchatComponent) channelchatComponent!: ChannelchatComponent;
