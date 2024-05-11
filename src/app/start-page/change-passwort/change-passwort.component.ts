@@ -26,10 +26,14 @@ export class ChangePasswortComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.firestoreService.resetPasswordUserId$.subscribe(uid => {
-      this.userId = uid;
-      console.log('UserID für Passwortänderung:', uid);
-    });
+    debugger
+    const currentUrl = window.location.href;
+    const continueUrlStart = currentUrl.indexOf('continueUrl=') + 'continueUrl='.length;
+    const continueUrlEnd = currentUrl.indexOf('&', continueUrlStart);
+    const continueUrl = currentUrl.substring(continueUrlStart, continueUrlEnd !== -1 ? continueUrlEnd : undefined);
+    const decodedContinueUrl = decodeURIComponent(continueUrl);
+    this.userId = new URL(decodedContinueUrl).searchParams.get('userId');
+    console.log(this.userId);
   }
 
 

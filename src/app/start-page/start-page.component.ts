@@ -115,8 +115,8 @@ export class StartPageComponent implements OnInit {
   emailSended() {
     this.emailSend = true;
     setTimeout(() => {
-      this.showChangePasswordComponent = true;
-      this.showLoginComponent = false;
+      this.showLoginComponent = true;
+      this.showChangePasswordComponent = false;
       this.showSignUpComponent = false;
       this.showForgetPasswordComponent = false;
       this.showChooseAvatarComponent = false;

@@ -13,14 +13,14 @@
 
       <div class="card-input-section">
         <div class="input-container">
-          <input type="password" ngModel required name="password" #password="ngModel" placeholder="Neues Passwort">
+          <input type="password" ngModel required name="password" autocomplete="new-password" #password="ngModel" placeholder="Neues Passwort">
         </div>
         <div class="pseudo">
           <span *ngIf="showInputInformationPassword" class="input-information">Bitte geben Sie ein Passwort an.</span>
         </div>
 
         <div class="input-container">
-          <input type="password" ngModel required name="confirmPassword" #confirmPassword="ngModel" placeholder="Neues Kennwort bestätigen">
+          <input type="password" ngModel required name="confirmPassword" autocomplete="new-password" #confirmPassword="ngModel" placeholder="Neues Kennwort bestätigen">
         </div>
         <div class="pseudo">
           <span *ngIf="showInputInformationConfirmPasswordInputEmpty" class="input-information">Bitte bestätigen Sie Ihr Passwort.</span>
