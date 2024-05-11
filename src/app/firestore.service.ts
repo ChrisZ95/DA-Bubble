@@ -223,28 +223,46 @@ export class FirestoreService {
     }
   }
 
-  async sendEmailResetPasswort(emailData: {
-    email: string;
-    uid: any;
-  }): Promise<void> {
+  // async sendEmailResetPasswort(emailData: {
+  //   email: string;
+  //   uid: any;
+  // }): Promise<void> {
 
+  //   try {
+  //     const auth = getAuth();
+  //     const { email, uid } = emailData;
+  //     console.log('email zum resten des Passworts lautet', email);
+  //     console.log('Die ID des Users zum zurücksetzen des Passworts lautet',uid);
+  //     this.resetPasswordUserIdSubject.next(uid);
+  //     await sendPasswordResetEmail(auth, email);
+  //     console.log('E-Mail zum Zurücksetzen des Passworts gesendet');
+  //   } catch (error) {
+  //     console.error(
+  //       'Fehler beim Senden der E-Mail zum Zurücksetzen des Passworts:',
+  //       error
+  //     );
+  //   }
+  // }
+
+  async sendEmailResetPasswort(emailData: { email: string; uid: any }): Promise<void> {
     try {
-      const auth = getAuth();
-      const { email, uid } = emailData;
-      console.log('email zum resten des Passworts lautet', email);
-      console.log('Die ID des Users zum zurücksetzen des Passworts lautet',uid);
-      this.resetPasswordUserIdSubject.next(uid);
-      await sendPasswordResetEmail(auth, email);
-      console.log('E-Mail zum Zurücksetzen des Passworts gesendet');
+        const auth = getAuth();
+        const { email, uid } = emailData;
+        const actionCodeSettings = {
+            url: `http://localhost:4200/ChangePasswort?userId=${uid}&mode=resetPassword`,
+            handleCodeInApp: true,
+        };
+
+        await sendPasswordResetEmail(auth, email, actionCodeSettings);
+        console.log('E-Mail zum Zurücksetzen des Passworts gesendet');
     } catch (error) {
-      console.error(
-        'Fehler beim Senden der E-Mail zum Zurücksetzen des Passworts:',
-        error
-      );
+        console.error('Fehler beim Senden der E-Mail zum Zurücksetzen des Passworts:', error);
     }
-  }
+}
+
 
   async changePassword(userId: any, newPassword: string): Promise<void> {
+    debugger
     console.log(userId, newPassword)
     try {
       await updatePassword(this.auth.currentUser, newPassword);
