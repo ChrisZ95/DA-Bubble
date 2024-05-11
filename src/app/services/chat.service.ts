@@ -65,7 +65,6 @@ export class ChatService {
         let ownChatDocId = chatDocIds.filter(
           (id: any) => this.currentuid === id
         );
-
         if (ownChatDocId.length === 0) {
           ownChatDocId = [this.currentuid];
           const chatData = {
@@ -76,10 +75,30 @@ export class ChatService {
           await setDoc(doc(this.firestore, 'chats', this.currentuid), chatData);
         }
         await this.loadMessages(ownChatDocId);
+      } else {
+        // this.createChatWithTwoUsers();
+        let slicedOwnUid = this.currentuid.slice(0, 5);
+        let slicedOtherUid = userDetails.uid.slice(0, 5);
+
+        let combinedShortedId: any = [];
+        combinedShortedId.push(slicedOwnUid);
+        combinedShortedId.push(slicedOtherUid);
+        combinedShortedId = combinedShortedId.sort().join('-');
+
+        const chatData = {
+          createdAt: date,
+          chatId: combinedShortedId,
+          messages: [],
+        };
+        await setDoc(doc(this.firestore, 'chats', combinedShortedId), chatData);
       }
     } catch (error) {
       console.error('Error creating chat:', error);
     }
+  }
+
+  createChatWithTwoUsers() {
+    //
   }
 
   async loadMessages(docId: any) {

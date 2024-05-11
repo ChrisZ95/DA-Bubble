@@ -52,6 +52,7 @@ export class WorkspaceComponent implements OnInit {
   }
 
   @Output() userDetails = new EventEmitter<string>();
+  @Output() disyplayEmptyChat = new EventEmitter<boolean>();
 
   openCreateChannelDialog() {
     this.dialog.open(DialogCreateChannelComponent);
@@ -74,7 +75,10 @@ export class WorkspaceComponent implements OnInit {
         console.error('Error loading messages for channel:', error);
       });
   }
-  // Adrian
+
+  openEmptyChat() {
+    this.disyplayEmptyChat.emit(true);
+  }
   openChat(user: any) {
     this.userDetails.emit(user);
   }

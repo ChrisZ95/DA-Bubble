@@ -5,14 +5,18 @@
     <div class="workspace-chat-thread">
 
       <div class="workspace" [@displayWorkspaceTrigger]="displayWorkspace">
-        <app-workspace (userDetails)="openChat($event)" />
+        <app-workspace (userDetails)="openChat($event)" (disyplayEmptyChat)="openEmptyChat()" />
       </div>
 
       <div *ngIf="showChannelChat" class="chat">
         <app-channelchat />
       </div>
 
-      <div  *ngIf="showOwnChat" class="chat">
+      <div *ngIf="showEmptyChat" class="chat">
+        <app-emptychat />
+      </div>
+
+      <div *ngIf="showOwnChat" class="chat">
         <app-ownchat [userDetails]="userDetails" />
       </div>
 

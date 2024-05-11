@@ -21,6 +21,7 @@ import { ChannelthreadComponent } from '../../threads/channelthread/channelthrea
 import { HeaderComponent } from '../../header/header.component';
 import { ChannelService } from '../../services/channel.service';
 import { OwnchatComponent } from '../../chats/ownchat/ownchat.component';
+import { EmptychatComponent } from '../../chats/emptychat/emptychat.component';
 
 @Component({
   selector: 'app-main',
@@ -33,6 +34,7 @@ import { OwnchatComponent } from '../../chats/ownchat/ownchat.component';
     WorkspaceComponent,
     ChannelchatComponent,
     ChannelthreadComponent,
+    EmptychatComponent,
     OwnchatComponent,
     HeaderComponent,
   ],
@@ -78,6 +80,7 @@ import { OwnchatComponent } from '../../chats/ownchat/ownchat.component';
 export class MainComponent {
   constructor(private channelService: ChannelService) {}
   displayWorkspace: boolean = true;
+  showEmptyChat: boolean = false;
   showOwnChat: boolean = false;
   userDetails: any = '';
 
@@ -91,6 +94,10 @@ export class MainComponent {
 
   get showThreadWindow(): boolean {
     return this.channelService.showThreadWindow;
+  }
+
+  openEmptyChat() {
+    this.showEmptyChat = true;
   }
 
   openChat(userDetails: any) {
