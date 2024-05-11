@@ -1,5 +1,5 @@
-<div class="background start-page" [class.account-created]="accountCreate" [class.account-created]="emailSend" [class.account-created]="changedPassword">
-  <div class="overlay" *ngIf="accountCreate || emailSend || changedPassword"></div>
+<div class="background start-page" [class.account-created]="accountCreate" [class.account-created]="emailSend">
+  <div class="overlay" *ngIf="accountCreate || emailSend"></div>
   <!-- <div *ngIf="startScreen" class="start-screen">
     <div class="start-screen-content">
       <img src="./../../assets/images/Logo (3).png">
@@ -25,7 +25,8 @@
   </ng-template>
 
   <ng-template [ngIf]="showChangePasswordComponent && !showForgetPasswordComponent && !showLoginComponent && !showSignUpComponent && !showChooseAvatarComponent && !showImpressumComponent && !showPrivacyPoliceComponent">
-    <app-change-passwort (forgotPassword)="forgotPassword()" (PasswordSuccesfullyChanged)="PasswordSuccesfullyChanged()"></app-change-passwort>
+    <!-- <app-change-passwort (forgotPassword)="forgotPassword()" (PasswordSuccesfullyChanged)="PasswordSuccesfullyChanged()"></app-change-passwort> -->
+    <app-change-passwort (forgotPassword)="forgotPassword()"></app-change-passwort>
   </ng-template>
 
   <ng-template [ngIf]="showImpressumComponent && !showChangePasswordComponent && !showForgetPasswordComponent && !showLoginComponent && !showSignUpComponent && !showChooseAvatarComponent && !showPrivacyPoliceComponent">
@@ -43,10 +44,6 @@
   <div *ngIf="emailSend" class="email-send-container">
     <img src="./../../assets/images/send.png">
     <span>E-Mail gesendet</span>
-  </div>
-
-  <div *ngIf="changedPassword" class="email-send-container">
-    <span>Anmelden</span>
   </div>
 
   <ng-template [ngIf]="showLoginComponent || showSignUpComponent || showChooseAvatarComponent || showForgetPasswordComponent || showChangePasswordComponent || showImpressumComponent || showPrivacyPoliceComponent">

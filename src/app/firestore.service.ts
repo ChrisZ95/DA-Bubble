@@ -54,7 +54,6 @@ export class FirestoreService {
 
   async uploadUserIcon(storageUsericonRef: any, file: any) {
     try {
-      // Datei hochladen
       await uploadBytes(storageUsericonRef, file);
       console.log('Datei erfolgreich hochgeladen.');
   } catch (error) {
@@ -251,6 +250,7 @@ export class FirestoreService {
         const actionCodeSettings = {
             url: `http://localhost:4200/ChangePasswort?userId=${uid}&mode=resetPassword`,
             handleCodeInApp: true,
+            expiresIn: 60 * 60 * 5,
         };
 
         await sendPasswordResetEmail(auth, email, actionCodeSettings);

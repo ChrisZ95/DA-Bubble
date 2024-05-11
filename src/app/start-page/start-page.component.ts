@@ -18,7 +18,7 @@ import { PrivacyPoliceComponent } from './privacy-police/privacy-police.componen
      CommonModule, RouterModule, SignUpChooseAvatarComponent, ForgetPasswordComponent,
      ChangePasswortComponent, ImprintComponent, PrivacyPoliceComponent],
   templateUrl: './start-page.component.html',
-  styleUrl: './start-page.component.scss'
+  styleUrl: './start-page.component.scss',
 })
 export class StartPageComponent implements OnInit {
   showLoginComponent = false;
@@ -35,7 +35,6 @@ export class StartPageComponent implements OnInit {
 
   accountCreate = false;
   emailSend = false;
-  changedPassword = false;
 
   constructor() { }
 
@@ -126,20 +125,21 @@ export class StartPageComponent implements OnInit {
     }, 2000);
   }
 
-  PasswordSuccesfullyChanged() {
-    this.changedPassword = true;
-    console.log("Passwort zurückgesetzt");
-   setTimeout(() => {
-    this.showLoginComponent = true;
-    this.showChooseAvatarComponent = false;
-    this.showSignUpComponent = false;
-    this.showForgetPasswordComponent = false;
-    this.showChangePasswordComponent = false;
-    this.changedPassword = false;
-    this.showImpressumComponent = false;
-    this.showPrivacyPoliceComponent = false;
-   }, 2000);
-  }
+  // PasswordSuccesfullyChanged() {
+  //   debugger
+  //   this.changedPassword = true;
+  //   console.log("Passwort zurückgesetzt");
+  //  setTimeout(() => {
+  //   this.showLoginComponent = true;
+  //   this.showChooseAvatarComponent = false;
+  //   this.showSignUpComponent = false;
+  //   this.showForgetPasswordComponent = false;
+  //   this.showChangePasswordComponent = false;
+  //   this.changedPassword = false;
+  //   this.showImpressumComponent = false;
+  //   this.showPrivacyPoliceComponent = false;
+  //  }, 2000);
+  // }
 
   forgotPassword() {
     this.showForgetPasswordComponent = true;
@@ -169,5 +169,16 @@ export class StartPageComponent implements OnInit {
     this.showSignUpComponent = false;
     this.showChooseAvatarComponent = false;
     this.showChangePasswordComponent = false;
+  }
+
+  show() {
+    this.showPrivacyPoliceComponent = false;
+    this.showImpressumComponent = false;
+    this.showForgetPasswordComponent = false;
+    this.showLoginComponent = false;
+    this.showSignUpComponent = false;
+    this.showChooseAvatarComponent = false;
+    this.showChangePasswordComponent = true;
+    console.log('is running')
   }
 }

@@ -18,6 +18,7 @@ export class ChangePasswortComponent implements OnInit {
   showInputInformationPassword: boolean = false;
   showInputInformationConfirmPasswordInputInvalid: boolean = false;
   showInputInformationConfirmPasswordInputEmpty: boolean = false;
+  changedPassword = false;
 
   userId: any;
 
@@ -26,7 +27,6 @@ export class ChangePasswortComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    debugger
     const currentUrl = window.location.href;
     const continueUrlStart = currentUrl.indexOf('continueUrl=') + 'continueUrl='.length;
     const continueUrlEnd = currentUrl.indexOf('&', continueUrlStart);
@@ -43,12 +43,12 @@ export class ChangePasswortComponent implements OnInit {
   }
 
   emailSended() {
+    debugger
     this.PasswordSuccesfullyChanged.emit();
     console.log('back to login')
   }
 
   newPassword(formData: any) {
-    debugger
       console.log('übertragende id lautet',this.userId);
       this.showInputInformationPassword = false;
       this.showInputInformationConfirmPasswordInputInvalid = false;
@@ -63,9 +63,13 @@ export class ChangePasswortComponent implements OnInit {
       } else if (password !== confirmPassword) {
         this.showInputInformationConfirmPasswordInputInvalid = true;
       } else {
+        this.changedPassword = true;
         console.log('button zum abschicken des neuen passworts gedrückt');
-        this.emailSended();
-        this.firestoreService.changePassword(this.userId, password);
+        setTimeout(() => {
+          this.changedPassword = false;
+          this.emailSended();
+          this.firestoreService.changePassword(this.userId, password);
+        }, 1500);
       }
     };
 

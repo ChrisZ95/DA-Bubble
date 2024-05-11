@@ -1,11 +1,12 @@
 <div class="forgot-password-card-container">
+  <div class="overlay" *ngIf="changedPassword"></div>
 
   <div class="forgot-password-card">
 
     <div class="card-header-section">
-      <button (click)="backToForgotPassword()" class="back-to-log-in-button">
+      <!-- <button (click)="backToForgotPassword()" class="back-to-log-in-button">
         <img src="./../../../assets/images/arrow_back.png">
-      </button>
+      </button> -->
       <h1>Passwort zurücksetzten</h1>
     </div>
 
@@ -13,6 +14,7 @@
 
       <div class="card-input-section">
         <div class="input-container">
+          <img src="./../../../assets/images/lock.svg">
           <input type="password" ngModel required name="password" autocomplete="new-password" #password="ngModel" placeholder="Neues Passwort">
         </div>
         <div class="pseudo">
@@ -20,6 +22,7 @@
         </div>
 
         <div class="input-container">
+          <img src="./../../../assets/images/lock.svg">
           <input type="password" ngModel required name="confirmPassword" autocomplete="new-password" #confirmPassword="ngModel" placeholder="Neues Kennwort bestätigen">
         </div>
         <div class="pseudo">
@@ -33,6 +36,10 @@
       </div>
     </form>
 
+  </div>
+
+  <div  *ngIf="changedPassword"  class="email-send-container">
+    <span>Passwort geändert</span>
   </div>
 
 </div>
