@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener, ElementRef } from '@angular/core';
 import { FirestoreService } from '../../firestore.service';
 import { NgModule } from '@angular/core';
 // import { BrowserModule } from '@angular/platform-browser';
@@ -13,7 +13,10 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./emptychat.component.scss', '../chats.component.scss'],
 })
 export class EmptychatComponent implements OnInit {
-  constructor(private firestoreService: FirestoreService) {}
+  constructor(
+    private firestoreService: FirestoreService,
+    private eRef: ElementRef
+  ) {}
 
   allUsers: any = [];
   filteredUser: any = '';
@@ -32,11 +35,28 @@ export class EmptychatComponent implements OnInit {
   }
 
   selectUser(user: any) {
-    const inputElement = document.querySelector('input');
+    const inputElement = this.eRef.nativeElement.querySelector('input');
     if (inputElement) {
       inputElement.value = user.username;
     }
     this.showDropdown = false;
+  }
+
+  @HostListener('document:click', ['$event'])
+  clickOutside(event: Event) {
+    if (!this.eRef.nativeElement.contains(event.target)) {
+      this.showDropdown = false;
+    }
+  }
+
+  @HostListener('focusin', ['$event'])
+  onFocus(event: FocusEvent) {
+    if (
+      this.filteredUser.length > 0 &&
+      this.eRef.nativeElement.contains(event.target)
+    ) {
+      this.showDropdown = true;
+    }
   }
 
   ngOnInit(): void {
