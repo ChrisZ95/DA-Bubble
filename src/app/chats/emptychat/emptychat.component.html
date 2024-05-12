@@ -1,3 +1,8 @@
 <div class="header">
-    <input (keyup)="searchUser(inputRef.value)" #inputRef>
+    <input (keyup)="searchUser(inputRef.value)" #inputRef placeholder="Search users..." />
+    <div class="dropdown-menu" *ngIf="showDropdown">
+        <div class="dropdown-item" *ngFor="let user of filteredUser" (click)="selectUser(user)">
+            {{ user.username }}
+        </div>
+    </div>
 </div>
