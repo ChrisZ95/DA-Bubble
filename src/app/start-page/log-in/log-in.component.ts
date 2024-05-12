@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
@@ -13,7 +13,7 @@ import { GoogleAuthProvider, OAuthProvider } from '@angular/fire/auth';
   templateUrl: './log-in.component.html',
   styleUrl: './log-in.component.scss',
 })
-export class LogInComponent {
+export class LogInComponent implements OnInit {
   @Output() forgotPassword: EventEmitter<any> = new EventEmitter();
 
   constructor(
@@ -22,6 +22,20 @@ export class LogInComponent {
   ) {}
   showInputInformationEmail: boolean = false;
   showInputInformationPassword: boolean = false;
+
+  ngOnInit(): void {
+    this.firestoreService.createTimeStamp()
+    // const storageUsericonRef = this.firestoreService.getStorageUserIconRef();
+    // const blobParts: BlobPart[] = [];
+    // const file = new File(blobParts, 'meinBild.jpg', { type: 'image/jpeg' });
+    // this.firestoreService.uploadUserIcon(storageUsericonRef, file)
+    //   .then(() => {
+    //     console.log('Datei erfolgreich hochgeladen.');
+    //   })
+    //   .catch(error => {
+    //     console.error('Fehler beim Hochladen der Datei:', error);
+    //   });
+  }
 
   guestLogIn() {
     this.router.navigate(['/generalView']);

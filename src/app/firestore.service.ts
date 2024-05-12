@@ -1,4 +1,4 @@
-import { Injectable, EventEmitter } from '@angular/core';
+import { Injectable, EventEmitter, OnInit } from '@angular/core';
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -30,7 +30,7 @@ import { BehaviorSubject } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
-export class FirestoreService {
+export class FirestoreService{
   public onUserRegistered: EventEmitter<string> = new EventEmitter<string>();
   private resetPasswordUserIdSubject = new BehaviorSubject<any>(null);
   resetPasswordUserId$ = this.resetPasswordUserIdSubject.asObservable();
@@ -39,17 +39,24 @@ export class FirestoreService {
   public auth: any;
   public firestore: any;
   private storageUserIcon: any;
+  public newDate: any;
 
   constructor(private myFirebaseApp: FirebaseApp, public router: Router) {
     this.auth = getAuth(myFirebaseApp);
     this.auth.languageCode = 'de';
     this.firestore = getFirestore(myFirebaseApp);
     const provider = new GoogleAuthProvider();
+    this.currentuid = localStorage.getItem('uid');
     const storageUserIcon = getStorage();
     const storageUsericonRef = ref(storageUserIcon, 'user-icon')
-    this.currentuid = localStorage.getItem('uid');
-    // const file = new File([blob] as BlobPart[], 'meinBild.jpg', { type: 'image/jpeg' });
+    const blobParts: BlobPart[] = [];
+    const file = new File(blobParts, 'meinBild.jpg', { type: 'image/jpeg' });
+    const storage = getStorage(myFirebaseApp);
+    this.storageUserIcon = ref(storage, 'user-icon');
+  }
 
+  getStorageUserIconRef() {
+    return this.storageUserIcon;
   }
 
   async uploadUserIcon(storageUsericonRef: any, file: any) {
@@ -96,7 +103,8 @@ export class FirestoreService {
     email: string,
     password: string,
     username: string,
-    privacyPolice: boolean
+    privacyPolice: boolean,
+    signUpdate: string,
   ): Promise<string | null> {
     try {
       const userCredential = await createUserWithEmailAndPassword(
@@ -111,6 +119,7 @@ export class FirestoreService {
         username: username,
         privacyPolice: true,
         uid: user.uid,
+        signUpdate: signUpdate
       });
       this.onUserRegistered.emit(user.uid);
       this.sendEmailAfterSignUp(user);
@@ -274,4 +283,11 @@ export class FirestoreService {
     }
   }
 
+  createTimeStamp(): Promise<string> {
+    this.newDate = new Date(Date.now());
+    const formattedDate = this.newDate.toUTCString();
+    console.log(this.newDate)
+
+    return formattedDate;
+  }
 }

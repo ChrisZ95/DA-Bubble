@@ -23,6 +23,7 @@ export class SignUpComponent {
   showInputInformationEmailforgive: boolean = false;
   showInputInformationPassword: boolean = false;
   showInputInformationPrivacyPolice: boolean = false;
+  newDate: any;
 
 
   async userSignUp(formData: NgForm): Promise<void> {
@@ -45,7 +46,9 @@ export class SignUpComponent {
         this.showInputInformationPrivacyPolice = true;
       }
       } else {
-        const registrationSuccess = await this.firestoreService.signUpUser(email, password, username, privacyPolice);
+        const signUpDate = await this.firestoreService.createTimeStamp(); // Hier den Zeitstempel asynchron abrufen
+        console.log(signUpDate); // Den Zeitstempel ausgeben, um sicherzustellen, dass er korrekt ist
+        const registrationSuccess = await this.firestoreService.signUpUser(email, password, username, privacyPolice, signUpDate);
         // if (registrationSuccess === 'auth/invalid-recipient-email' || 'auth/invalid-email') {
         //   this.showInputInformationEmailInputEmpty = true;
         //   return;
