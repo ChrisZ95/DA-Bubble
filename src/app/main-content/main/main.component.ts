@@ -97,7 +97,7 @@ export class MainComponent {
   }
 
   openEmptyChat() {
-    this.showEmptyChat = true;
+    this.showEmptyChat = !this.showEmptyChat;
   }
 
   openChat(userDetails: any) {
