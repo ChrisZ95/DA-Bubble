@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Output, EventEmitter, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
@@ -22,6 +22,7 @@ export class LogInComponent implements OnInit {
   ) {}
   showInputInformationEmail: boolean = false;
   showInputInformationPassword: boolean = false;
+  showPasswordValue = false;
 
   ngOnInit(): void {
     this.firestoreService.createTimeStamp()
@@ -35,6 +36,20 @@ export class LogInComponent implements OnInit {
     //   .catch(error => {
     //     console.error('Fehler beim Hochladen der Datei:', error);
     //   });
+  }
+
+  showPassword() {
+    if(!this.showPasswordValue) {
+      this.showPasswordValue = true;
+      const passwordInput = document.getElementById('password') as HTMLInputElement;
+      passwordInput.type = 'text';
+      console.log('show password')
+    } else if (this.showPasswordValue) {
+      this.showPasswordValue = false;
+      const passwordInput = document.getElementById('password') as HTMLInputElement;
+      passwordInput.type = 'password';
+      console.log('hide password')
+    }
   }
 
   guestLogIn() {

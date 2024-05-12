@@ -24,6 +24,22 @@ export class SignUpComponent {
   showInputInformationPassword: boolean = false;
   showInputInformationPrivacyPolice: boolean = false;
   newDate: any;
+  showPasswordValue = false;
+
+  showPassword() {
+    if(!this.showPasswordValue) {
+      this.showPasswordValue = true;
+      const passwordInput = document.getElementById('password') as HTMLInputElement;
+      passwordInput.type = 'text';
+      console.log('show password')
+    } else if (this.showPasswordValue) {
+      this.showPasswordValue = false;
+      const passwordInput = document.getElementById('password') as HTMLInputElement;
+      passwordInput.type = 'password';
+      console.log('hide password')
+    }
+  }
+
 
 
   async userSignUp(formData: NgForm): Promise<void> {

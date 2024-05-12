@@ -14,16 +14,18 @@
 
       <div class="card-input-section">
         <div class="input-container">
-          <img src="./../../../assets/images/lock.svg">
-          <input type="password" ngModel required name="password" autocomplete="new-password" #password="ngModel" placeholder="Neues Passwort">
+          <img class="show-password-button" *ngIf="!showPasswordValue" (click)="showPassword()" src="./../../../assets/images/lock.svg">
+          <img class="show-password-button" *ngIf="showPasswordValue" (click)="showPassword()" src="./../../../assets/images/lock_open_20dp_FILL0_wght400_GRAD0_opsz20.svg">
+          <input type="password" id="password" ngModel required name="password" autocomplete="new-password" #password="ngModel" placeholder="Neues Passwort">
         </div>
         <div class="pseudo">
           <span *ngIf="showInputInformationPassword" class="input-information">Bitte geben Sie ein Passwort an.</span>
         </div>
 
         <div class="input-container">
-          <img src="./../../../assets/images/lock.svg">
-          <input type="password" ngModel required name="confirmPassword" autocomplete="new-password" #confirmPassword="ngModel" placeholder="Neues Kennwort bestätigen">
+          <img class="show-password-button" *ngIf="!showPasswordValue" (click)="showPassword()" src="./../../../assets/images/lock.svg">
+          <img class="show-password-button" *ngIf="showPasswordValue" (click)="showPassword()" src="./../../../assets/images/lock_open_20dp_FILL0_wght400_GRAD0_opsz20.svg">
+          <input type="password" id="confirmPassword" ngModel required name="confirmPassword" autocomplete="new-password" #confirmPassword="ngModel" placeholder="Neues Kennwort bestätigen">
         </div>
         <div class="pseudo">
           <span *ngIf="showInputInformationConfirmPasswordInputEmpty" class="input-information">Bitte bestätigen Sie Ihr Passwort.</span>

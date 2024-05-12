@@ -17,8 +17,9 @@
         <span *ngIf="showInputInformationEmail" class="input-information">Diese E-Mail-Adresse ist leider ungultig.</span>
       </div>
       <div class="input-container">
-        <img src="./../../../assets/images/lock.svg">
-        <input ngModel required type="password" name="password" #password="ngModel" autocomplete="current-password" placeholder="Passwort">
+        <img class="show-password-button" *ngIf="!showPasswordValue" (click)="showPassword()" src="./../../../assets/images/lock.svg">
+        <img class="show-password-button" *ngIf="showPasswordValue" (click)="showPassword()" src="./../../../assets/images/lock_open_20dp_FILL0_wght400_GRAD0_opsz20.svg">
+        <input ngModel required id="password" type="password" name="password" #password="ngModel" autocomplete="current-password" placeholder="Passwort">
       </div>
       <div class="pseudo">
         <span *ngIf="showInputInformationPassword" class="input-information">Dieses Passwort ist leider ungultig.</span>

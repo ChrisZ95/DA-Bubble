@@ -19,6 +19,7 @@ export class ChangePasswortComponent implements OnInit {
   showInputInformationConfirmPasswordInputInvalid: boolean = false;
   showInputInformationConfirmPasswordInputEmpty: boolean = false;
   changedPassword = false;
+  showPasswordValue = false;
 
   userId: any;
 
@@ -36,6 +37,23 @@ export class ChangePasswortComponent implements OnInit {
     console.log(this.userId);
   }
 
+  showPassword() {
+    if(!this.showPasswordValue) {
+      this.showPasswordValue = true;
+      const passwordInput = document.getElementById('password') as HTMLInputElement;
+      const ConfirmpasswordInput = document.getElementById('confirmPassword') as HTMLInputElement;
+      passwordInput.type = 'text';
+      ConfirmpasswordInput.type = 'text';
+      console.log('show password')
+    } else if (this.showPasswordValue) {
+      this.showPasswordValue = false;
+      const passwordInput = document.getElementById('password') as HTMLInputElement;
+      const ConfirmpasswordInput = document.getElementById('confirmPassword') as HTMLInputElement;
+      passwordInput.type = 'password';
+      ConfirmpasswordInput.type = 'password';
+      console.log('hide password')
+    }
+  }
 
   backToForgotPassword() {
     this.forgotPassword.emit();

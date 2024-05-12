@@ -30,8 +30,9 @@
 
         </div>
         <div class="input-container">
-          <img src="./../../../assets/images/lock.svg">
-          <input required type="password" placeholder="Passwort" autocomplete="current-password" name="password" ngModel #password="ngModel">
+          <img class="show-password-button" *ngIf="!showPasswordValue" (click)="showPassword()" src="./../../../assets/images/lock.svg">
+          <img class="show-password-button" *ngIf="showPasswordValue" (click)="showPassword()" src="./../../../assets/images/lock_open_20dp_FILL0_wght400_GRAD0_opsz20.svg">
+          <input required type="password" id="password" placeholder="Passwort" autocomplete="current-password" name="password" ngModel #password="ngModel">
         </div>
        <div class="pseudo">
         <span class="input-information" *ngIf="showInputInformationPassword ">Das Passwort muss 6 Zeichen lang sein.</span>
