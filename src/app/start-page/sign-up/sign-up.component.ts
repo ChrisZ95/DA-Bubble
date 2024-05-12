@@ -46,8 +46,8 @@ export class SignUpComponent {
         this.showInputInformationPrivacyPolice = true;
       }
       } else {
-        const signUpDate = await this.firestoreService.createTimeStamp(); // Hier den Zeitstempel asynchron abrufen
-        console.log(signUpDate); // Den Zeitstempel ausgeben, um sicherzustellen, dass er korrekt ist
+        const signUpDate = await this.firestoreService.createTimeStamp();
+        console.log(signUpDate);
         const registrationSuccess = await this.firestoreService.signUpUser(email, password, username, privacyPolice, signUpDate);
         // if (registrationSuccess === 'auth/invalid-recipient-email' || 'auth/invalid-email') {
         //   this.showInputInformationEmailInputEmpty = true;
