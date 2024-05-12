@@ -20,6 +20,7 @@ import {
   collection,
   getDocs,
   getDoc,
+  updateDoc,
 } from '@angular/fire/firestore';
 import { getStorage, provideStorage, ref, uploadBytes } from '@angular/fire/storage';
 import { User } from '../models/user.class';
@@ -40,6 +41,7 @@ export class FirestoreService{
   public firestore: any;
   private storageUserIcon: any;
   public newDate: any;
+  public signUpDate : any;
 
   constructor(private myFirebaseApp: FirebaseApp, public router: Router) {
     this.auth = getAuth(myFirebaseApp);
@@ -145,13 +147,17 @@ export class FirestoreService{
 
 
 
-  async logInUser(email: string, password: string): Promise<string | null> {
+  async logInUser(email: string, password: string, logIndate: string): Promise<string | null> {
     try {
         const userCredential = await signInWithEmailAndPassword(
             this.auth,
             email,
             password
         );
+        const userRef = doc(this.firestore, 'users', userCredential.user.uid);
+        await updateDoc(userRef, {
+          logIndate: logIndate,
+        });
         localStorage.setItem('uid', userCredential.user.uid);
         console.log('User log in erfolgreich');
         this.observeAuthState();
@@ -187,7 +193,7 @@ export class FirestoreService{
     }
   }
 
-  async signInWithGoogle(auth: any, provider: any): Promise<void> {
+  async signInWithGoogle(auth: any, provider: any, logInDate: string): Promise<void> {
     try {
       const result = await signInWithPopup(auth, provider);
       const credential = GoogleAuthProvider.credentialFromResult(result);
@@ -204,12 +210,16 @@ export class FirestoreService{
         console.log('Google user wurde zuletzt gesehen am', user.metadata.lastSignInTime)
         console.log('Google login user handy nummer', user.phoneNumber)
         const userRef = doc(this.firestore, 'users', user.uid);
+        const signUpDate = user.metadata.creationTime ? new Date(user.metadata.creationTime) : new Date();
+        const signUpDateUnixTimestamp = signUpDate.getTime();
       await setDoc(userRef, {
         email:  user.email,
         username: user.displayName,
         privacyPolice: true,
         uid: user.uid,
-        photo: user.photoURL
+        photo: user.photoURL,
+        logInDate : logInDate,
+        signUpdate: signUpDateUnixTimestamp,
       });
       } else {
         console.error('Credential is null');
@@ -284,10 +294,8 @@ export class FirestoreService{
   }
 
   createTimeStamp(): Promise<string> {
-    this.newDate = new Date(Date.now());
-    const formattedDate = this.newDate.toUTCString();
+    this.newDate = Date.now();
     console.log(this.newDate)
-
-    return formattedDate;
+    return this.newDate;
   }
 }

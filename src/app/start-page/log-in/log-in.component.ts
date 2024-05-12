@@ -45,11 +45,13 @@ export class LogInComponent implements OnInit {
     this.forgotPassword.emit();
   }
 
-  logInWithGoogle() {
+  async logInWithGoogle() {
     const auth = this.firestoreService.auth;
     const provider = new GoogleAuthProvider();
+    const logInDate = await this.firestoreService.createTimeStamp();
+      console.log(logInDate);
     this.firestoreService
-      .signInWithGoogle(auth, provider)
+      .signInWithGoogle(auth, provider, logInDate)
       .then((result) => {
         console.log('Google-Anmeldung erfolgreich:', result);
       })
@@ -71,7 +73,7 @@ export class LogInComponent implements OnInit {
       });
   }
 
-  userLogIn(formData: any): void {
+  async userLogIn(formData: any) {
     this.showInputInformationEmail = false;
     this.showInputInformationPassword = false;
     const { email, password } = formData.value;
@@ -82,7 +84,9 @@ export class LogInComponent implements OnInit {
         this.showInputInformationPassword = true;
       }
     } else {
-      this.firestoreService.logInUser(email, password)
+      const logInDate = await this.firestoreService.createTimeStamp();
+      console.log(logInDate);
+      this.firestoreService.logInUser(email, password, logInDate)
         .then((result) => {
           if (result === 'auth/invalid-credential') {
             this.showInputInformationPassword = true;
