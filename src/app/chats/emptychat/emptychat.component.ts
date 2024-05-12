@@ -14,14 +14,13 @@ export class EmptychatComponent implements OnInit {
   allUsers: any = [];
   filteredUser: any = '';
 
-  searchUser(input: any) {
-    console.log('input', input);
-
-    const test = this.allUsers.some((item: any) => {
-      return input.includes(item.username);
+  searchUser(input: string) {
+    const lowerCaseInput = input.toLowerCase();
+    this.filteredUser = this.allUsers.filter((item: any) => {
+      return item.username.toLowerCase().includes(lowerCaseInput);
     });
 
-    console.log('test', test);
+    console.log('filteredUser', this.filteredUser);
   }
 
   ngOnInit(): void {
