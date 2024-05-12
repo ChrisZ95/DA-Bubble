@@ -21,6 +21,8 @@ import {
   getDocs,
   getDoc,
   updateDoc,
+  where,
+  QueryDocumentSnapshot
 } from '@angular/fire/firestore';
 import { getStorage, provideStorage, ref, uploadBytes } from '@angular/fire/storage';
 import { User } from '../models/user.class';
@@ -42,6 +44,7 @@ export class FirestoreService{
   private storageUserIcon: any;
   public newDate: any;
   public signUpDate : any;
+  currentuid: any;
 
   constructor(private myFirebaseApp: FirebaseApp, public router: Router) {
     this.auth = getAuth(myFirebaseApp);
@@ -70,8 +73,6 @@ export class FirestoreService{
       throw error;
   }
   }
-
-  currentuid: any;
 
   async getAllUsers(): Promise<User[]> {
     try {
@@ -109,7 +110,7 @@ export class FirestoreService{
     signUpdate: string,
   ): Promise<string | null> {
     try {
-      const userCredential = await createUserWithEmailAndPassword(
+        const userCredential = await createUserWithEmailAndPassword(
         this.auth,
         email,
         password
@@ -124,25 +125,25 @@ export class FirestoreService{
         signUpdate: signUpdate
       });
       this.onUserRegistered.emit(user.uid);
-      this.sendEmailAfterSignUp(user);
-      return null;
+      // this.sendEmailAfterSignUp(user);
+      return 'auth';
     } catch (error: any) {
       console.error('Error creating user:', error);
-      // if (error.code === 'auth/invalid-recipient-email' || 'auth/invalid-email') {
-      //   console.log('Email-Adresse entspricht nicht den gültigen Vorlagen.');
-      //   return 'auth/invalid-recipient-email';
-      // }
-      // else if (error.code === 'auth/email-already-in-use') {
-      //   console.log('Email-Adresse wird bereits verwendet.');
-      //   return 'auth/email-already-in-use';
-      // }
-      //  else if (error.code === 'auth/weak-password') {
-      //   console.log('Das Passwort ist zu schwach.');
-      //   return 'weak-password';
-      // } else {
+      if (error.code === 'auth/invalid-recipient-email' || error.code === 'auth/invalid-email') {
+        console.log('Email-Adresse entspricht nicht den gültigen Vorlagen.');
+        return 'auth/invalid-recipient-email';
+      }
+      if (error.code === 'auth/email-already-in-use') {
+        console.log('Email-Adresse wird bereits verwendet.');
+        return 'auth/email-already-in-use';
+      }
+      if (error.code === 'auth/weak-password') {
+        console.log('Das Passwort ist zu schwach.');
+        return 'weak-password';
+      } else {
         return null;
-      // }
-    }
+      }
+     }
   }
 
 
@@ -168,8 +169,7 @@ export class FirestoreService{
             console.log('Email-Adresse entspricht nicht den gültigen Vorlagen.');
             return 'auth/invalid-credential';
         }
-        // Handle other errors here if needed
-        throw error; // Throw the error if it's not handled
+        throw error;
     }
 }
 
@@ -232,33 +232,12 @@ export class FirestoreService{
     }
   }
 
-  async sendEmailAfterSignUp(user: any): Promise<void> {
-    try {
-      await sendEmailVerification(user);
-      console.log('E-Mail zur Verifizierung gesendet');
-    } catch (error) {
-      console.error('Fehler beim Senden der Verifizierungs-E-Mail:', error);
-    }
-  }
-
-  // async sendEmailResetPasswort(emailData: {
-  //   email: string;
-  //   uid: any;
-  // }): Promise<void> {
-
+  // async sendEmailAfterSignUp(user: any): Promise<void> {
   //   try {
-  //     const auth = getAuth();
-  //     const { email, uid } = emailData;
-  //     console.log('email zum resten des Passworts lautet', email);
-  //     console.log('Die ID des Users zum zurücksetzen des Passworts lautet',uid);
-  //     this.resetPasswordUserIdSubject.next(uid);
-  //     await sendPasswordResetEmail(auth, email);
-  //     console.log('E-Mail zum Zurücksetzen des Passworts gesendet');
+  //     await sendEmailVerification(user);
+  //     console.log('E-Mail zur Verifizierung gesendet');
   //   } catch (error) {
-  //     console.error(
-  //       'Fehler beim Senden der E-Mail zum Zurücksetzen des Passworts:',
-  //       error
-  //     );
+  //     console.error('Fehler beim Senden der Verifizierungs-E-Mail:', error);
   //   }
   // }
 
@@ -268,8 +247,8 @@ export class FirestoreService{
         const { email, uid } = emailData;
         const actionCodeSettings = {
             url: `http://localhost:4200/ChangePasswort?userId=${uid}&mode=resetPassword`,
-            handleCodeInApp: true,
-            expiresIn: 60 * 60 * 5,
+            handleCodeInApp: false,
+            expiresIn: 60 * 60 * 1,
         };
 
         await sendPasswordResetEmail(auth, email, actionCodeSettings);

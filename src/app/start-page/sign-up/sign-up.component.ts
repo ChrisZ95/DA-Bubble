@@ -65,20 +65,22 @@ export class SignUpComponent {
         const signUpDate = await this.firestoreService.createTimeStamp();
         console.log(signUpDate);
         const registrationSuccess = await this.firestoreService.signUpUser(email, password, username, privacyPolice, signUpDate);
-        // if (registrationSuccess === 'auth/invalid-recipient-email' || 'auth/invalid-email') {
-        //   this.showInputInformationEmailInputEmpty = true;
-        //   return;
-        // }
+        if(registrationSuccess === 'auth') {
+          console.log('userSignUp wurde aufgerufen');
+          this.toChooseAvatar();
+        }
+        if (registrationSuccess === 'auth/invalid-recipient-email' || 'auth/invalid-email') {
+          this.showInputInformationEmailInputEmpty = true;
+          return;
+        }
          if (registrationSuccess === 'weak-password') {
           this.showInputInformationPassword = true;
           return;
         }
-        else if (registrationSuccess === 'auth/email-already-in-use') {
+        if (registrationSuccess === 'auth/email-already-in-use') {
           this.showInputInformationEmailforgive = true;
           return;
         }
-        console.log('userSignUp wurde aufgerufen');
-        this.toChooseAvatar();
       }
   }
 
