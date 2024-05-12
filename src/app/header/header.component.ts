@@ -3,6 +3,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
 import { DialogProfileComponent } from '../dialog-profile/dialog-profile.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -12,9 +13,13 @@ import { DialogProfileComponent } from '../dialog-profile/dialog-profile.compone
   styleUrl: './header.component.scss'
 })
 export class HeaderComponent {
-  constructor(public dialog: MatDialog) {}
+  constructor(public dialog: MatDialog,  private router: Router) {}
 
   openProfileDialog() {
     this.dialog.open(DialogProfileComponent);
+  }
+
+  logOut() {
+    this.router.navigate(['']);
   }
 }
