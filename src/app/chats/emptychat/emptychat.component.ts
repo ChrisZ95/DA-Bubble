@@ -19,28 +19,55 @@ export class EmptychatComponent implements OnInit {
   ) {}
 
   allUsers: any = [];
+  allChannels: any = [];
   filteredUser: any = '';
+  filteredEntities: any = '';
   showDropdown: boolean = false;
 
-  searchUser(input: string) {
+  searchEntity(input: string) {
     const lowerCaseInput = input.toLowerCase();
-    this.filteredUser = this.allUsers.filter((item: any) => {
-      console.log('item', item);
-      if (item.username) {
+
+    if (input.startsWith('#')) {
+      this.filteredEntities = this.allUsers.filter((item: any) => {
         return (
+          item.username &&
+          item.username.toLowerCase().includes(lowerCaseInput.substring(1)) &&
+          item.uid !== this.firestoreService.currentuid
+        );
+      });
+    } else if (input.startsWith('@')) {
+      this.filteredEntities = this.allChannels.filter((item: any) => {
+        return (
+          item.name &&
+          item.name.toLowerCase().includes(lowerCaseInput.substring(1))
+        );
+      });
+    } else {
+      const users = this.allUsers.filter((item: any) => {
+        return (
+          item.username &&
           item.username.toLowerCase().includes(lowerCaseInput) &&
           item.uid !== this.firestoreService.currentuid
         );
-      }
-    });
-    this.showDropdown = this.filteredUser.length > 0;
-    console.log('filteredUsers', this.filteredUser);
+      });
+
+      const channels = this.allChannels.filter((item: any) => {
+        return item.name && item.name.toLowerCase().includes(lowerCaseInput);
+      });
+
+      this.filteredEntities = [...users, ...channels];
+    }
+
+    this.showDropdown = this.filteredEntities.length > 0;
+    console.log('filteredEntities', this.filteredEntities);
   }
 
-  selectUser(user: any) {
+  selectEntity(entity: any) {
     const inputElement = this.eRef.nativeElement.querySelector('input');
     if (inputElement) {
-      inputElement.value = user.username;
+      inputElement.value = entity.username
+        ? `#${entity.username}`
+        : `@${entity.channelname}`;
     }
     this.showDropdown = false;
   }
@@ -55,7 +82,7 @@ export class EmptychatComponent implements OnInit {
   @HostListener('focusin', ['$event'])
   onFocus(event: FocusEvent) {
     if (
-      this.filteredUser.length > 0 &&
+      this.filteredEntities.length > 0 &&
       this.eRef.nativeElement.contains(event.target)
     ) {
       this.showDropdown = true;
@@ -67,6 +94,17 @@ export class EmptychatComponent implements OnInit {
       .getAllUsers()
       .then((users) => {
         this.allUsers = users;
+      })
+      .catch((error) => {
+        console.error('Error fetching users:', error);
+      });
+
+    this.firestoreService
+      .getAllChannels()
+      .then((Channels) => {
+        console.log('Channels', Channels);
+
+        this.allChannels = Channels;
       })
       .catch((error) => {
         console.error('Error fetching users:', error);

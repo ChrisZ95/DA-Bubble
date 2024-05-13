@@ -20,6 +20,6 @@ export class User {
       password: this.password,
       privacyPolice: this.privacyPolice,
       uid: this.uid,
-    }
+    };
   }
 }

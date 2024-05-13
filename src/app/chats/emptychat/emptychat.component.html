@@ -1,8 +1,8 @@
 <div class="header">
-    <input (keyup)="searchUser(inputRef.value)" #inputRef placeholder="Search users..." />
+    <input (keyup)="searchEntity(inputRef.value)" #inputRef placeholder="Search users or channels..." value="#" />
     <div class="dropdown-menu" *ngIf="showDropdown">
-        <div class="dropdown-item" *ngFor="let user of filteredUser" (click)="selectUser(user)">
-            {{ user.username }}
+        <div class="dropdown-item" *ngFor="let entity of filteredEntities" (click)="selectEntity(entity)">
+            {{ entity.username || entity.name }}
         </div>
     </div>
 </div>
