@@ -60,6 +60,14 @@ export class FirestoreService{
     this.storageUserIcon = ref(storage, 'user-icon');
   }
 
+  setuid(uid: string) {
+    this.currentuid = uid;
+   }
+
+   getUid(): string {
+     return this.currentuid;
+   }
+
   getStorageUserIconRef() {
     return this.storageUserIcon;
   }
@@ -124,8 +132,7 @@ export class FirestoreService{
         uid: user.uid,
         signUpdate: signUpdate
       });
-      this.onUserRegistered.emit(user.uid);
-      // this.sendEmailAfterSignUp(user);
+      this.setuid(user.uid);
       return 'auth';
     } catch (error: any) {
       console.error('Error creating user:', error);
@@ -276,5 +283,16 @@ export class FirestoreService{
     this.newDate = Date.now();
     console.log(this.newDate)
     return this.newDate;
+  }
+
+  async getUserByDocId(uid: string, userIconTokenURL: string): Promise<void> {
+    try {
+      const userRef = doc(this.firestore, 'users', uid);
+      await updateDoc(userRef, {
+        photo: userIconTokenURL,
+      });
+    } catch (error) {
+      console.error('Fehler beim Aktualisieren des Benutzerdokuments:', error);
+    }
   }
 }

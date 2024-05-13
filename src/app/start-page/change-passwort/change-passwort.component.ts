@@ -61,7 +61,6 @@ export class ChangePasswortComponent implements OnInit {
   }
 
   emailSended() {
-    debugger
     this.PasswordSuccesfullyChanged.emit();
     console.log('back to login')
   }

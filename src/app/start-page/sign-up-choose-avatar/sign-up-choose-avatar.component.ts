@@ -12,11 +12,13 @@ import { User } from '../../../models/user.class';
 })
 export class SignUpChooseAvatarComponent implements OnInit {
   selectedAvatar: string | null = null;
-  userData: User | undefined;
+  userData: any;
   userIconTokenURL: any;
+  uid: any;
 
   @Output() backToSignUpClicked: EventEmitter<any> = new EventEmitter();
   @Output() accountCreated: EventEmitter<any> = new EventEmitter();
+  @Output() onUserRegistered: EventEmitter<any> = new EventEmitter();
 
   constructor(private firestoreService: FirestoreService) { }
 
@@ -30,11 +32,8 @@ export class SignUpChooseAvatarComponent implements OnInit {
 
   ngOnInit(): void {
     debugger
-    console.log('choose avatar started')
-    this.firestoreService.onUserRegistered.subscribe(docId => {
-      this.getUserDocument(docId);
-      console.log('signUp choose avatar id',docId)
-    });
+    this.uid = this.firestoreService.getUid();
+    console.log(this.uid)
   }
 
 
@@ -60,6 +59,7 @@ export class SignUpChooseAvatarComponent implements OnInit {
       this.userIconTokenURL = 'https://firebasestorage.googleapis.com/v0/b/dabubble-180.appspot.com/o/user-icon%2F80.%20avatar%20interaction.png?alt=media&token=4cd2af7c-8927-4901-aaa2-af3b5cc81a79'
     }
     console.log('Avatar ausgewählt:', index ,this.userIconTokenURL);
+    this.getUserDocument(this.uid, this.userIconTokenURL)
   }
 
   createAccount() {
@@ -67,13 +67,8 @@ export class SignUpChooseAvatarComponent implements OnInit {
     console.log('account wurde erstellt')
   }
 
-  // async getUserDocument() {
-  //   const docId = 'hUI1Rirdb1PBnNAYOl1X';
-  //   this.userData = await this.firestoreService.getUserByDocId(docId);
-  //   console.log('Benutzerdaten erhalten:', this.userData);
-  // }
-  async getUserDocument(docId: string) {
-    // this.userData = await this.firestoreService.getUserByDocId(docId);
-    // console.log('Benutzerdaten erhalten:', this.userData);
+  async getUserDocument(uid: string, userIconTokenURL: string) {
+    this.userData = await this.firestoreService.getUserByDocId(uid, userIconTokenURL);
+    console.log('Benutzerdaten erhalten:', this.userData);
   }
 }
