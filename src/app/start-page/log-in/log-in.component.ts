@@ -26,16 +26,16 @@ export class LogInComponent implements OnInit {
 
   ngOnInit(): void {
     this.firestoreService.createTimeStamp()
-    // const storageUsericonRef = this.firestoreService.getStorageUserIconRef();
-    // const blobParts: BlobPart[] = [];
-    // const file = new File(blobParts, 'meinBild.jpg', { type: 'image/jpeg' });
-    // this.firestoreService.uploadUserIcon(storageUsericonRef, file)
-    //   .then(() => {
-    //     console.log('Datei erfolgreich hochgeladen.');
-    //   })
-    //   .catch(error => {
-    //     console.error('Fehler beim Hochladen der Datei:', error);
-    //   });
+    const storageUsericonRef = this.firestoreService.getStorageUserIconRef();
+    const blobParts: BlobPart[] = [];
+    const file = new File(blobParts, 'meinBild.jpg', { type: 'Ordner' });
+    this.firestoreService.uploadUserIcon(storageUsericonRef, file)
+      .then(() => {
+        console.log('Datei erfolgreich hochgeladen.');
+      })
+      .catch(error => {
+        console.error('Fehler beim Hochladen der Datei:', error);
+      });
   }
 
   showPassword() {

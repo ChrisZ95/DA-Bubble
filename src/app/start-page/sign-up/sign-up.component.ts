@@ -62,7 +62,6 @@ export class SignUpComponent {
         this.showInputInformationPrivacyPolice = true;
       }
       } else {
-        debugger
         const signUpDate = await this.firestoreService.createTimeStamp();
         console.log(signUpDate);
         const registrationSuccess = await this.firestoreService.signUpUser(email, password, username, privacyPolice, signUpDate);
