@@ -2,11 +2,13 @@ import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FirestoreService } from '../../firestore.service';
 import { User } from '../../../models/user.class';
+import { NgForm } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-sign-up-choose-avatar',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './sign-up-choose-avatar.component.html',
   styleUrl: './sign-up-choose-avatar.component.scss'
 })
@@ -16,7 +18,9 @@ export class SignUpChooseAvatarComponent implements OnInit {
   userIconTokenURL: any;
   uid: any;
   index: any;
+  userIcon: any;
   showInputInformationUserIcon = false;
+
 
   @Output() backToSignUpClicked: EventEmitter<any> = new EventEmitter();
   @Output() accountCreated: EventEmitter<any> = new EventEmitter();
@@ -34,9 +38,19 @@ export class SignUpChooseAvatarComponent implements OnInit {
 
   ngOnInit(): void {
     this.uid = this.firestoreService.getUid();
-    console.log(this.uid)
+    console.log(this.uid);
   }
 
+  customUserIconURL() {
+    const fileInput = document.getElementById('profile-picture-input') as HTMLInputElement;
+    const file = fileInput.files?.[0];
+    if (file) {
+      const icon = file;
+      console.log(icon);
+    } else {
+      console.log('Kein Bild ausgewählt');
+    }
+  }
 
   backToSignUp() {
     this.backToSignUpClicked.emit();
