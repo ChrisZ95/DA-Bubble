@@ -29,6 +29,7 @@ import {
   provideStorage,
   ref,
   uploadBytes,
+  getDownloadURL,
 } from '@angular/fire/storage';
 import { User } from '../models/user.class';
 import { Channel } from '../models/channel.class';
@@ -57,12 +58,6 @@ export class FirestoreService {
     this.firestore = getFirestore(myFirebaseApp);
     const provider = new GoogleAuthProvider();
     this.currentuid = localStorage.getItem('uid');
-    const storageUserIcon = getStorage();
-    const storageUsericonRef = ref(storageUserIcon, 'user-icon');
-    const blobParts: BlobPart[] = [];
-    const file = new File(blobParts, 'meinBild.jpg', { type: 'image/jpeg' });
-    const storage = getStorage(myFirebaseApp);
-    this.storageUserIcon = ref(storage, 'user-icon');
   }
 
   setuid(uid: string) {
@@ -77,15 +72,20 @@ export class FirestoreService {
     return this.storageUserIcon;
   }
 
-  async uploadUserIcon(storageUsericonRef: any, file: any) {
-    try {
-      await uploadBytes(storageUsericonRef, file);
-      console.log('Datei erfolgreich hochgeladen.');
-    } catch (error) {
-      console.error('Fehler beim Hochladen der Datei:', error);
-      throw error;
-    }
+  async uploadUserIcon(file: any) {
+    debugger
+    const storage = getStorage();
+    const storageRef = ref(storage, 'user-icon/' + file.name);
+    console.log(storageRef)
+    uploadBytes(storageRef, file).then((snapshot) => {
+      console.log('Uploaded user icon');
+    });
+    setTimeout(() => {
+      const downloadURL = getDownloadURL(storageRef);
+      console.log('Download URL:', downloadURL);
+    }, 100);
   }
+
 
   async getAllUsers(): Promise<User[]> {
     try {

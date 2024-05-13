@@ -42,11 +42,15 @@ export class SignUpChooseAvatarComponent implements OnInit {
   }
 
   customUserIconURL() {
+    debugger
     const fileInput = document.getElementById('profile-picture-input') as HTMLInputElement;
     const file = fileInput.files?.[0];
     if (file) {
       const icon = file;
-      console.log(icon);
+      console.log(icon)
+      console.log('Name des Bildes',icon.name);
+      console.log('Bild wurde erstellt am',icon.lastModified);
+      this.firestoreService.uploadUserIcon(icon)
     } else {
       console.log('Kein Bild ausgewählt');
     }
@@ -60,7 +64,6 @@ export class SignUpChooseAvatarComponent implements OnInit {
   chooseAvatar(index: number) {
     debugger
     this.showInputInformationUserIcon = false;
-    console.log('Avatar ausgewählt:', index);
     this.selectedAvatar = this.avatar[index];
     if (index == 0) {
       this.userIconTokenURL = 'https://firebasestorage.googleapis.com/v0/b/dabubble-180.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(1).png?alt=media&token=11dbb694-05b7-49cc-81bc-28e98384b66a'
