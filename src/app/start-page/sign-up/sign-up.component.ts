@@ -62,6 +62,7 @@ export class SignUpComponent {
         this.showInputInformationPrivacyPolice = true;
       }
       } else {
+        debugger
         const signUpDate = await this.firestoreService.createTimeStamp();
         console.log(signUpDate);
         const registrationSuccess = await this.firestoreService.signUpUser(email, password, username, privacyPolice, signUpDate);
@@ -69,7 +70,7 @@ export class SignUpComponent {
           console.log('userSignUp wurde aufgerufen');
           this.toChooseAvatar();
         }
-        if (registrationSuccess === 'auth/invalid-recipient-email' || 'auth/invalid-email') {
+        if (registrationSuccess === 'auth/invalid-recipient-email'|| registrationSuccess === 'auth/invalid-email') {
           this.showInputInformationEmailInputEmpty = true;
           return;
         }
