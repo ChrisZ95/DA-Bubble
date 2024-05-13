@@ -15,6 +15,8 @@ export class SignUpChooseAvatarComponent implements OnInit {
   userData: any;
   userIconTokenURL: any;
   uid: any;
+  index: any;
+  showInputInformationUserIcon = false;
 
   @Output() backToSignUpClicked: EventEmitter<any> = new EventEmitter();
   @Output() accountCreated: EventEmitter<any> = new EventEmitter();
@@ -31,7 +33,6 @@ export class SignUpChooseAvatarComponent implements OnInit {
   ]
 
   ngOnInit(): void {
-    debugger
     this.uid = this.firestoreService.getUid();
     console.log(this.uid)
   }
@@ -43,6 +44,8 @@ export class SignUpChooseAvatarComponent implements OnInit {
   }
 
   chooseAvatar(index: number) {
+    debugger
+    this.showInputInformationUserIcon = false;
     console.log('Avatar ausgewählt:', index);
     this.selectedAvatar = this.avatar[index];
     if (index == 0) {
@@ -59,12 +62,20 @@ export class SignUpChooseAvatarComponent implements OnInit {
       this.userIconTokenURL = 'https://firebasestorage.googleapis.com/v0/b/dabubble-180.appspot.com/o/user-icon%2F80.%20avatar%20interaction.png?alt=media&token=4cd2af7c-8927-4901-aaa2-af3b5cc81a79'
     }
     console.log('Avatar ausgewählt:', index ,this.userIconTokenURL);
+    this.index = index;
     this.getUserDocument(this.uid, this.userIconTokenURL)
   }
 
   createAccount() {
-    this.accountCreated.emit();
-    console.log('account wurde erstellt')
+    this.showInputInformationUserIcon = false;
+    debugger
+    if ([0, 1, 2, 3, 4, 5].includes(this.index)) {
+      this.accountCreated.emit();
+      console.log('account wurde erstellt')
+    } else {
+      this.showInputInformationUserIcon = true;
+      console.log('Bitte ein User Icon wählen');
+    }
   }
 
   async getUserDocument(uid: string, userIconTokenURL: string) {

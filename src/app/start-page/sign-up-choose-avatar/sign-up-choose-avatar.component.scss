@@ -66,6 +66,13 @@
     .choose-avatar-list {
       width: 530px;
 
+      .input-information {
+        color: red;
+        display: flex;
+        justify-content: flex-start;
+        width: 450px;
+      }
+
       span {
         font-size: 20px;
         padding-top: 20px;
