@@ -154,6 +154,36 @@ export class ChatService {
     }
   }
 
+  async sendCommentToChannel(messageId: string, comment: any) {
+    try {
+        const chatsRef = collection(this.firestore, 'chats');
+        const q = query(chatsRef); // keine spezifische Abfrage, um die gesamte Sammlung zu erhalten
+        const querySnapshot = await getDocs(q);
+        console.log('Query Snapshot:', querySnapshot.docs);
+
+        querySnapshot.forEach(async doc => {
+            const messages = doc.data()['messages'] || [];
+            const message = messages.find((message: any) => message.messageId === messageId);
+            if (message) {
+                // Nachricht mit der gesuchten messageId gefunden
+                const chatDocRef = doc.ref;
+                const updatedMessages = messages.map((msg: any) => {
+                    if (msg.messageId === messageId) {
+                        return {
+                            ...msg,
+                            comments: [...(msg.comments || []), comment]
+                        };
+                    }
+                    return msg;
+                });
+                await updateDoc(chatDocRef, { messages: updatedMessages });
+            }
+        });
+    } catch (error) {
+        console.error('Error sending message:', error);
+    }
+}
+
   async createChatForChannel(channelId: string): Promise<void> {
     try {
       const createdAt = Date.now();

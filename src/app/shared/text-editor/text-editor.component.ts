@@ -44,7 +44,7 @@ export class TextEditorComponent implements OnInit {
       const timestamp: number = Date.now();
       const timestampString: string = timestamp.toString();
       const message = {
-        id: this.generateId.generateId(),
+        messageId: this.generateId.generateId(),
         message: this.message,
         createdAt: timestampString,
       };

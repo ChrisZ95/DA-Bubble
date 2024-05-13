@@ -86,7 +86,6 @@ export class ChannelchatComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.currentChannelId = this.channelService.getCurrentChannelId();
     const channelId = this.currentChannelId;
-
     this.channelService.getChannels().then((channels) => {
       this.allChannels = channels;
       console.log('Channels', channels);
