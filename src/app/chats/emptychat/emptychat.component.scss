@@ -1,17 +1,27 @@
+.header {
+  position: relative;
+}
+
 input[type="text"] {
   width: 100%;
   padding: 8px;
   box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
 .dropdown-menu {
   position: absolute;
+  top: 100%;
+  left: 0;
   width: 100%;
   background: white;
   border: 1px solid #ccc;
+  border-top: none;
   max-height: 150px;
   overflow-y: auto;
   z-index: 1000;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .dropdown-item {
