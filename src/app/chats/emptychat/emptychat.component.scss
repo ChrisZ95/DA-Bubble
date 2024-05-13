@@ -1,13 +1,20 @@
 .header {
   position: relative;
+  width: 100%;
 }
 
 input[type="text"] {
-  width: 100%;
+  display: block;
   padding: 8px;
   box-sizing: border-box;
   border: 1px solid #ccc;
   border-radius: 4px;
+}
+
+.inputField {
+  width: 90%;
+  position: absolute;
+  bottom: 5px;
 }
 
 .dropdown-menu {

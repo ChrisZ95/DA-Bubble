@@ -20,14 +20,33 @@ export class EmptychatComponent implements OnInit {
 
   allUsers: any = [];
   allChannels: any = [];
-  filteredUser: any = '';
-  filteredEntities: any = '';
+  filteredUser: any;
+  filteredEntities: any;
   showDropdown: boolean = false;
+  showUserPlaceholder: any;
+  showChannelPlaceholder: any;
+  showUserChannelPlaceholder: boolean = false;
+  selectedUsers: string[] = [];
 
   searchEntity(input: string) {
     const lowerCaseInput = input.toLowerCase();
 
-    if (input.startsWith('#')) {
+    if (input === '') {
+      this.filteredEntities = [];
+      this.showUserChannelPlaceholder = true;
+      this.showUserPlaceholder = false;
+      this.showChannelPlaceholder = false;
+    } else if (input === '#') {
+      this.filteredEntities = [];
+      this.showUserPlaceholder = true;
+      this.showChannelPlaceholder = false;
+      this.showUserChannelPlaceholder = false;
+    } else if (input === '@') {
+      this.filteredEntities = [];
+      this.showUserPlaceholder = false;
+      this.showChannelPlaceholder = true;
+      this.showUserChannelPlaceholder = false;
+    } else if (input.startsWith('#')) {
       this.filteredEntities = this.allUsers.filter((item: any) => {
         return (
           item.username &&
@@ -35,6 +54,9 @@ export class EmptychatComponent implements OnInit {
           item.uid !== this.firestoreService.currentuid
         );
       });
+      this.showUserPlaceholder = false;
+      this.showChannelPlaceholder = false;
+      this.showUserChannelPlaceholder = false;
     } else if (input.startsWith('@')) {
       this.filteredEntities = this.allChannels.filter((item: any) => {
         return (
@@ -42,6 +64,9 @@ export class EmptychatComponent implements OnInit {
           item.name.toLowerCase().includes(lowerCaseInput.substring(1))
         );
       });
+      this.showUserPlaceholder = false;
+      this.showChannelPlaceholder = false;
+      this.showUserChannelPlaceholder = false;
     } else {
       const users = this.allUsers.filter((item: any) => {
         return (
@@ -56,18 +81,98 @@ export class EmptychatComponent implements OnInit {
       });
 
       this.filteredEntities = [...users, ...channels];
+      this.showUserPlaceholder = false;
+      this.showChannelPlaceholder = false;
+      this.showUserChannelPlaceholder = false;
     }
 
-    this.showDropdown = this.filteredEntities.length > 0;
+    this.showDropdown =
+      this.filteredEntities.length > 0 ||
+      input === '' ||
+      input === '#' ||
+      input === '@';
     console.log('filteredEntities', this.filteredEntities);
+  }
+
+  updatePlaceholder(input: string) {
+    if (input === '') {
+      this.showUserChannelPlaceholder = true;
+      this.showUserPlaceholder = false;
+      this.showChannelPlaceholder = false;
+    } else if (input === '#') {
+      this.showUserPlaceholder = true;
+      this.showChannelPlaceholder = false;
+      this.showUserChannelPlaceholder = false;
+    } else if (input === '@') {
+      this.showUserPlaceholder = false;
+      this.showChannelPlaceholder = true;
+      this.showUserChannelPlaceholder = false;
+    } else {
+      this.showUserPlaceholder = false;
+      this.showChannelPlaceholder = false;
+      this.showUserChannelPlaceholder = false;
+    }
+    this.showDropdown =
+      input === '' ||
+      input === '#' ||
+      input === '@' ||
+      this.filteredEntities.length > 0;
+  }
+
+  displayAllUsersAndChannels() {
+    this.filteredEntities = [
+      ...this.allUsers.filter(
+        (user: any) =>
+          user.username && user.uid !== this.firestoreService.currentuid
+      ),
+      ...this.allChannels.filter((channel: any) => channel.name),
+    ];
+
+    this.showUserChannelPlaceholder = false;
+    this.showDropdown = true;
+
+    setTimeout(() => {
+      this.focusInputField();
+      this.showUserChannelPlaceholder = false;
+    }, 0);
+  }
+
+  displayAllUsers() {
+    this.filteredEntities = this.allUsers.filter((item: any) => {
+      return item.username && item.uid !== this.firestoreService.currentuid;
+    });
+    this.showUserPlaceholder = false;
+    this.showChannelPlaceholder = false;
+    this.showUserChannelPlaceholder = false;
+    this.showDropdown = true;
+
+    setTimeout(() => {
+      this.focusInputField();
+    }, 0);
+  }
+
+  displayAllChannels() {
+    this.filteredEntities = this.allChannels.filter((item: any) => {
+      return item.name;
+    });
+    this.showUserPlaceholder = false;
+    this.showChannelPlaceholder = false;
+    this.showUserChannelPlaceholder = false;
+    this.showDropdown = true;
+
+    setTimeout(() => {
+      this.focusInputField();
+    }, 0);
   }
 
   selectEntity(entity: any) {
     const inputElement = this.eRef.nativeElement.querySelector('input');
-    if (inputElement) {
-      inputElement.value = entity.username
-        ? `#${entity.username}`
-        : `@${entity.channelname}`;
+    if (entity.username) {
+      this.selectedUsers.push(`#${entity.username}`);
+      inputElement.value = this.selectedUsers.join(', ');
+    } else {
+      inputElement.value = `@${entity.name}`;
+      this.selectedUsers = [];
     }
     this.showDropdown = false;
   }
@@ -81,11 +186,21 @@ export class EmptychatComponent implements OnInit {
 
   @HostListener('focusin', ['$event'])
   onFocus(event: FocusEvent) {
-    if (
-      this.filteredEntities.length > 0 &&
-      this.eRef.nativeElement.contains(event.target)
-    ) {
+    if (this.eRef.nativeElement.contains(event.target)) {
+      if (
+        this.selectedUsers.length === 0 &&
+        this.eRef.nativeElement.querySelector('input').value === ''
+      ) {
+        this.showUserChannelPlaceholder = true;
+      }
       this.showDropdown = true;
+    }
+  }
+
+  private focusInputField() {
+    const inputElement = this.eRef.nativeElement.querySelector('input');
+    if (inputElement) {
+      inputElement.focus();
     }
   }
 
@@ -102,8 +217,6 @@ export class EmptychatComponent implements OnInit {
     this.firestoreService
       .getAllChannels()
       .then((Channels) => {
-        console.log('Channels', Channels);
-
         this.allChannels = Channels;
       })
       .catch((error) => {

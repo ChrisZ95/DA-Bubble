@@ -1,6 +1,12 @@
 <div class="header">
-    <input (keyup)="searchEntity(inputRef.value)" #inputRef placeholder="Search users or channels..." value="#" />
+    <input (keyup)="searchEntity(inputRef.value)" (input)="updatePlaceholder(inputRef.value)" #inputRef
+        placeholder="Search users or channels..." value="" class="inputField" />
     <div class="dropdown-menu" *ngIf="showDropdown">
+        <div *ngIf="showUserChannelPlaceholder" class="dropdown-item" (click)="displayAllUsersAndChannels()">Show Users
+            and Channels</div>
+        <div *ngIf="showUserPlaceholder" class="dropdown-item" (click)="displayAllUsers()">Search for User</div>
+        <div *ngIf="showChannelPlaceholder" class="dropdown-item" (click)="displayAllChannels()">Search for Channel
+        </div>
         <div class="dropdown-item" *ngFor="let entity of filteredEntities" (click)="selectEntity(entity)">
             {{ entity.username || entity.name }}
         </div>
