@@ -25,10 +25,13 @@ export class EmptychatComponent implements OnInit {
   searchUser(input: string) {
     const lowerCaseInput = input.toLowerCase();
     this.filteredUser = this.allUsers.filter((item: any) => {
-      return (
-        item.username.toLowerCase().includes(lowerCaseInput) &&
-        item.uid !== this.firestoreService.currentuid
-      );
+      console.log('item', item);
+      if (item.username) {
+        return (
+          item.username.toLowerCase().includes(lowerCaseInput) &&
+          item.uid !== this.firestoreService.currentuid
+        );
+      }
     });
     this.showDropdown = this.filteredUser.length > 0;
     console.log('filteredUsers', this.filteredUser);
