@@ -1,20 +1,50 @@
 .header {
   position: relative;
   width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-input[type="text"] {
-  display: block;
-  padding: 8px;
-  box-sizing: border-box;
+.inputFieldContainer {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
   border: 1px solid #ccc;
   border-radius: 4px;
+  padding: 4px;
+  width: 90%;
+  background: white;
 }
 
 .inputField {
-  width: 90%;
-  position: absolute;
-  bottom: 5px;
+  border: none;
+  outline: none;
+  flex: 1;
+  padding: 4px;
+  min-width: 150px;
+}
+
+.user-tag {
+  display: inline-flex;
+  align-items: center;
+  background: #e0e0e0;
+  border-radius: 3px;
+  padding: 2px 5px;
+  margin: 2px;
+  transition: background-color 0.3s;
+}
+
+.user-tag:hover {
+  background: #d0d0d0;
+}
+
+.remove-tag {
+  margin-left: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  color: red;
 }
 
 .dropdown-menu {
@@ -34,6 +64,7 @@ input[type="text"] {
 .dropdown-item {
   padding: 8px;
   cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 .dropdown-item:hover {

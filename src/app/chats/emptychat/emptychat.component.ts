@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 // import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { log } from 'console';
 
 @Component({
   selector: 'app-emptychat',
@@ -25,11 +26,12 @@ export class EmptychatComponent implements OnInit {
   showDropdown: boolean = false;
   showUserPlaceholder: any;
   showChannelPlaceholder: any;
+
   showUserChannelPlaceholder: boolean = false;
   selectedUsers: string[] = [];
 
   searchEntity(input: string) {
-    const lowerCaseInput = input.toLowerCase();
+    const lowerCaseInput = input.toLowerCase().trim();
 
     if (input === '') {
       this.filteredEntities = [];
@@ -51,7 +53,8 @@ export class EmptychatComponent implements OnInit {
         return (
           item.username &&
           item.username.toLowerCase().includes(lowerCaseInput.substring(1)) &&
-          item.uid !== this.firestoreService.currentuid
+          item.uid !== this.firestoreService.currentuid &&
+          !this.selectedUsers.includes(`#${item.username}`)
         );
       });
       this.showUserPlaceholder = false;
@@ -72,7 +75,8 @@ export class EmptychatComponent implements OnInit {
         return (
           item.username &&
           item.username.toLowerCase().includes(lowerCaseInput) &&
-          item.uid !== this.firestoreService.currentuid
+          item.uid !== this.firestoreService.currentuid &&
+          !this.selectedUsers.includes(`#${item.username}`)
         );
       });
 
@@ -123,7 +127,9 @@ export class EmptychatComponent implements OnInit {
     this.filteredEntities = [
       ...this.allUsers.filter(
         (user: any) =>
-          user.username && user.uid !== this.firestoreService.currentuid
+          user.username &&
+          user.uid !== this.firestoreService.currentuid &&
+          !this.selectedUsers.includes(`#${user.username}`)
       ),
       ...this.allChannels.filter((channel: any) => channel.name),
     ];
@@ -139,7 +145,11 @@ export class EmptychatComponent implements OnInit {
 
   displayAllUsers() {
     this.filteredEntities = this.allUsers.filter((item: any) => {
-      return item.username && item.uid !== this.firestoreService.currentuid;
+      return (
+        item.username &&
+        item.uid !== this.firestoreService.currentuid &&
+        !this.selectedUsers.includes(`#${item.username}`)
+      );
     });
     this.showUserPlaceholder = false;
     this.showChannelPlaceholder = false;
@@ -166,15 +176,39 @@ export class EmptychatComponent implements OnInit {
   }
 
   selectEntity(entity: any) {
-    const inputElement = this.eRef.nativeElement.querySelector('input');
-    if (entity.username) {
+    if (
+      entity.username &&
+      !this.selectedUsers.includes(`#${entity.username}`)
+    ) {
       this.selectedUsers.push(`#${entity.username}`);
-      inputElement.value = this.selectedUsers.join(', ');
-    } else {
-      inputElement.value = `@${entity.name}`;
+      this.updateInputField();
+    } else if (!entity.username) {
+      const inputElement = this.eRef.nativeElement.querySelector(
+        '.inputFieldContainer'
+      );
+      inputElement.innerHTML = `<span class="channel-tag">@${entity.name}</span>`;
       this.selectedUsers = [];
     }
     this.showDropdown = false;
+
+    // Remove focus from the input field
+    setTimeout(() => {
+      this.blurInputField();
+    }, 0);
+  }
+
+  // Function to blur the input field
+  private blurInputField() {
+    const inputElement = this.eRef.nativeElement.querySelector('input');
+    if (inputElement) {
+      inputElement.blur();
+    }
+  }
+
+  removeUser(user: string) {
+    console.log('removed');
+    this.selectedUsers = this.selectedUsers.filter((u) => u !== user);
+    this.updateInputField();
   }
 
   @HostListener('document:click', ['$event'])
@@ -202,6 +236,24 @@ export class EmptychatComponent implements OnInit {
     if (inputElement) {
       inputElement.focus();
     }
+  }
+
+  private updateInputField() {
+    const inputElement = this.eRef.nativeElement.querySelector(
+      '.inputFieldContainer'
+    );
+    inputElement.innerHTML =
+      this.selectedUsers
+        .map(
+          (user) =>
+            `<span class="user-tag">${user} <span class="remove-tag">
+          <img src="../../../assets/images/close.png" alt="" style="cursor: pointer;" (click)="removeUser('${user}')">
+          </span>
+          </span>`
+        )
+        .join('') +
+      '<input type="text" class="inputField" (keyup)="searchEntity(inputRef.value)" (input)="updatePlaceholder(inputRef.value)" #inputRef />';
+    this.focusInputField();
   }
 
   ngOnInit(): void {
