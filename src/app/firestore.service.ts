@@ -52,6 +52,7 @@ export class FirestoreService {
   public signUpDate: any;
   currentuid: any;
   storageId: any;
+  signInuid: any;
 
   constructor(private myFirebaseApp: FirebaseApp, public router: Router) {
     this.auth = getAuth(myFirebaseApp);
@@ -81,13 +82,13 @@ export class FirestoreService {
 
   /* Speichert die uid  beim signup (function signUpUser)*/
   setuid(uid: string) {
-    this.currentuid = uid;
-    console.log(this.currentuid)
+    this.signInuid = uid;
+    console.log(this.signInuid)
   }
 
   /* Gibt die in setuid gespeicherte uid zurück */
   getUid(): string {
-    return this.currentuid;
+    return this.signInuid;
   }
 
   /* ? */
@@ -116,7 +117,7 @@ export class FirestoreService {
 
       if (docSnap.exists()) {
           const userData = docSnap.data();
-          console.log('Der Name lautet:', userData['photo']);
+          console.log('Die URL des Bildes lautet:', userData['photo']);
           return userData['photo'];
       } else {
           console.log('Benutzerdokument nicht gefunden für UID:', uid);
@@ -175,6 +176,7 @@ export class FirestoreService {
   /* Überwacht den Status des Users (Angemeldet / Abgemeldet) */
   observeAuthState(): void {
     onAuthStateChanged(this.auth, (user) => {
+      console.log(user)
       if (user) {
         // User ist angemeldet
         console.log('User is signed in:', user.uid);
@@ -197,6 +199,7 @@ export class FirestoreService {
     privacyPolice: boolean,
     signUpdate: string
   ): Promise<string | null> {
+    debugger
     try {
       const userCredential = await createUserWithEmailAndPassword(
         this.auth,
@@ -212,7 +215,6 @@ export class FirestoreService {
         uid: user.uid,
         signUpdate: signUpdate,
       });
-      this.setuid(user.uid);
       return 'auth';
     } catch (error: any) {
       console.error('Error creating user:', error);
