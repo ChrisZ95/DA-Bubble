@@ -14,10 +14,11 @@ import { FormsModule } from '@angular/forms';
 })
 export class SignUpChooseAvatarComponent implements OnInit {
   selectedAvatar: string | null = null;
+  userName: any;
   userData: any;
   userIconTokenURL: any;
   uid: any;
-  index: any;
+  iconIndex: any;
   userIcon: any;
   showInputInformationUserIcon = false;
 
@@ -36,8 +37,9 @@ export class SignUpChooseAvatarComponent implements OnInit {
    './../../../assets/images/80. avatar interaction (5).png',
   ]
 
-  ngOnInit(): void {
-    this.uid = this.firestoreService.getUid();
+  async ngOnInit() {
+    this.uid = await this.firestoreService.getUid();
+    this.userName = await this.firestoreService.getUserName(this.uid);
     console.log(this.uid);
   }
 
@@ -46,13 +48,13 @@ export class SignUpChooseAvatarComponent implements OnInit {
     const fileInput = document.getElementById('profile-picture-input') as HTMLInputElement;
     const file = fileInput.files?.[0];
     if (file) {
-      this.index = 6;
+      this.iconIndex = 6;
       const icon = file;
       console.log(icon)
       console.log('Name des Bildes',icon.name);
       console.log('Bild wurde erstellt am',icon.lastModified);
       const userIconTokenURL = await this.firestoreService.uploadUserIconIntoStorage(this.uid, icon);
-      this.getUserDocument(this.uid, userIconTokenURL);
+      this.uploadUserIcon(this.uid, userIconTokenURL);
     } else {
       console.log('Kein Bild ausgewählt');
     }
@@ -80,14 +82,14 @@ export class SignUpChooseAvatarComponent implements OnInit {
       this.userIconTokenURL = 'https://firebasestorage.googleapis.com/v0/b/dabubble-180.appspot.com/o/user-icon%2F80.%20avatar%20interaction.png?alt=media&token=4cd2af7c-8927-4901-aaa2-af3b5cc81a79'
     }
     console.log('Avatar ausgewählt:', index ,this.userIconTokenURL);
-    this.index = index;
-    this.getUserDocument(this.uid, this.userIconTokenURL);
+    this.iconIndex = index;
+    this.uploadUserIcon(this.uid, this.userIconTokenURL);
   }
 
   createAccount() {
     this.showInputInformationUserIcon = false;
-    // debugger
-    if ([0, 1, 2, 3, 4, 5, 6].includes(this.index)) {
+    debugger
+    if ([0, 1, 2, 3, 4, 5, 6].includes(this.iconIndex)) {
       this.accountCreated.emit();
       console.log('account wurde erstellt')
     } else {
@@ -96,8 +98,7 @@ export class SignUpChooseAvatarComponent implements OnInit {
     }
   }
 
-  async getUserDocument(uid: string, userIconTokenURL: any) {
+  async uploadUserIcon(uid: string, userIconTokenURL: any) {
     this.userData = await this.firestoreService.uploadUserIconIntoDatabase(uid, userIconTokenURL);
-    console.log('Benutzerdaten erhalten:', this.userData);
   }
 }
