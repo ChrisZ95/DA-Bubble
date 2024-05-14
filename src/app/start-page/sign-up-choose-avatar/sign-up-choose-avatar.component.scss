@@ -52,9 +52,10 @@
       padding-top: 20px;
       gap: 20px;
 
-      img {
+      .user-icon {
         height: 168px;
         width: 168px;
+        border-radius: 100%;
       }
 
       h1 {

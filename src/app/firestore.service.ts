@@ -109,6 +109,23 @@ export class FirestoreService {
     }
   }
 
+  async downloadUserIcon(uid: any) {
+    const userData = doc(this.firestore, 'users', uid);
+    try {
+      const docSnap = await getDoc(userData);
+
+      if (docSnap.exists()) {
+          const userData = docSnap.data();
+          console.log('Der Name lautet:', userData['photo']);
+          return userData['photo'];
+      } else {
+          console.log('Benutzerdokument nicht gefunden für UID:', uid);
+      }
+  } catch (error) {
+      console.error('Fehler beim Abrufen des Benutzerdokuments:', error);
+  }
+  }
+
   /* Speichert das Bild im Storage Ordner user-icon/ */
   async uploadUserIconIntoStorage(userId: any, file: any) {
     const storage = getStorage();

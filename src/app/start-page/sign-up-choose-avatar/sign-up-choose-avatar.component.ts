@@ -20,7 +20,9 @@ export class SignUpChooseAvatarComponent implements OnInit {
   uid: any;
   iconIndex: any;
   userIcon: any;
+  downloadedUserIcon: any;
   showInputInformationUserIcon = false;
+  img: any;
 
 
   @Output() backToSignUpClicked: EventEmitter<any> = new EventEmitter();
@@ -66,20 +68,22 @@ export class SignUpChooseAvatarComponent implements OnInit {
   }
 
   chooseAvatar(index: number) {
+    console.log(index)
+    debugger
     this.showInputInformationUserIcon = false;
     this.selectedAvatar = this.avatar[index];
     if (index == 0) {
-      this.userIconTokenURL = 'https://firebasestorage.googleapis.com/v0/b/dabubble-180.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(1).png?alt=media&token=11dbb694-05b7-49cc-81bc-28e98384b66a'
+      this.userIconTokenURL = 'https://firebasestorage.googleapis.com/v0/b/dabubble-180.appspot.com/o/user-icon%2F80.%20avatar%20interaction.png?alt=media&token=90c756bc-d021-4e06-816f-f1b26a431f89'
     } else if (index == 1) {
-      this.userIconTokenURL = 'https://firebasestorage.googleapis.com/v0/b/dabubble-180.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(2).png?alt=media&token=98f30010-e7aa-4c39-b4c7-6bd7b38b0ea5'
+      this.userIconTokenURL = 'https://firebasestorage.googleapis.com/v0/b/dabubble-180.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(1).png?alt=media&token=11dbb694-05b7-49cc-81bc-28e98384b66a'
     } else if (index == 2) {
-      this.userIconTokenURL = 'https://firebasestorage.googleapis.com/v0/b/dabubble-180.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(3).png?alt=media&token=fb4029b9-d972-4d39-97ca-53b1af67fb00'
+      this.userIconTokenURL = 'https://firebasestorage.googleapis.com/v0/b/dabubble-180.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(2).png?alt=media&token=98f30010-e7aa-4c39-b4c7-6bd7b38b0ea5'
     } else if (index == 3) {
-      this.userIconTokenURL = 'https://firebasestorage.googleapis.com/v0/b/dabubble-180.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(4).png?alt=media&token=3891c2d7-7435-476c-8db2-b27062a6d9ae'
+      this.userIconTokenURL = 'https://firebasestorage.googleapis.com/v0/b/dabubble-180.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(3).png?alt=media&token=fb4029b9-d972-4d39-97ca-53b1af67fb00'
     } else if (index == 4) {
-      this.userIconTokenURL = 'https://firebasestorage.googleapis.com/v0/b/dabubble-180.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(5).png?alt=media&token=dd0480c1-1af4-49da-b8dc-762a556bb25d'
+      this.userIconTokenURL = 'https://firebasestorage.googleapis.com/v0/b/dabubble-180.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(4).png?alt=media&token=3891c2d7-7435-476c-8db2-b27062a6d9ae'
     } else if (index == 5) {
-      this.userIconTokenURL = 'https://firebasestorage.googleapis.com/v0/b/dabubble-180.appspot.com/o/user-icon%2F80.%20avatar%20interaction.png?alt=media&token=4cd2af7c-8927-4901-aaa2-af3b5cc81a79'
+      this.userIconTokenURL = 'https://firebasestorage.googleapis.com/v0/b/dabubble-180.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(5).png?alt=media&token=dd0480c1-1af4-49da-b8dc-762a556bb25d'
     }
     console.log('Avatar ausgewählt:', index ,this.userIconTokenURL);
     this.iconIndex = index;
@@ -99,6 +103,11 @@ export class SignUpChooseAvatarComponent implements OnInit {
   }
 
   async uploadUserIcon(uid: string, userIconTokenURL: any) {
+    debugger
     this.userData = await this.firestoreService.uploadUserIconIntoDatabase(uid, userIconTokenURL);
+    this.downloadedUserIcon = await  this.firestoreService.downloadUserIcon(uid);
+    this.img = document.getElementById('userIcon');
+    this.img.setAttribute('src', this.downloadedUserIcon);
+    console.log(this.downloadedUserIcon)
   }
 }
