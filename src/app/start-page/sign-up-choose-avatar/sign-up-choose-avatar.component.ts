@@ -46,6 +46,7 @@ export class SignUpChooseAvatarComponent implements OnInit {
     const fileInput = document.getElementById('profile-picture-input') as HTMLInputElement;
     const file = fileInput.files?.[0];
     if (file) {
+      this.index = 6;
       const icon = file;
       console.log(icon)
       console.log('Name des Bildes',icon.name);
@@ -86,7 +87,7 @@ export class SignUpChooseAvatarComponent implements OnInit {
   createAccount() {
     this.showInputInformationUserIcon = false;
     debugger
-    if ([0, 1, 2, 3, 4, 5].includes(this.index)) {
+    if ([0, 1, 2, 3, 4, 5, 6].includes(this.index)) {
       this.accountCreated.emit();
       console.log('account wurde erstellt')
     } else {

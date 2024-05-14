@@ -63,6 +63,7 @@ export class FirestoreService {
 
   setuid(uid: string) {
     this.currentuid = uid;
+    console.log(this.currentuid)
   }
 
   getUid(): string {
@@ -74,7 +75,6 @@ export class FirestoreService {
   }
 
   async uploadUserIconIntoDatabase(uid: string, userIconTokenURL: string): Promise<void> {
-    debugger
     console.log(uid)
     console.log(userIconTokenURL)
     try {
@@ -127,6 +127,7 @@ export class FirestoreService {
       if (user) {
         // User ist angemeldet
         console.log('User is signed in:', user.uid);
+        this.setuid(user.uid);
         localStorage.setItem('logedIn', 'true');
         this.router.navigate(['generalView']);
       } else {
