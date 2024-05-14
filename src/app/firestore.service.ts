@@ -72,10 +72,10 @@ export class FirestoreService {
     return this.storageUserIcon;
   }
 
-  async uploadUserIcon(file: any) {
+  async uploadUserIcon(userid: any, file: any) {
     debugger
     const storage = getStorage();
-    const storageRef = ref(storage, 'user-icon/' + file.name);
+    const storageRef = ref(storage, 'user-icon/' + userid);
     console.log(storageRef)
     uploadBytes(storageRef, file).then((snapshot) => {
       console.log('Uploaded user icon');
@@ -83,7 +83,7 @@ export class FirestoreService {
     setTimeout(() => {
       const downloadURL = getDownloadURL(storageRef);
       console.log('Download URL:', downloadURL);
-    }, 100);
+    }, 500);
   }
 
 

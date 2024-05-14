@@ -50,7 +50,7 @@ export class SignUpChooseAvatarComponent implements OnInit {
       console.log(icon)
       console.log('Name des Bildes',icon.name);
       console.log('Bild wurde erstellt am',icon.lastModified);
-      this.firestoreService.uploadUserIcon(icon)
+      this.firestoreService.uploadUserIcon(this.uid, icon)
     } else {
       console.log('Kein Bild ausgewählt');
     }

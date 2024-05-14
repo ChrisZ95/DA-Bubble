@@ -30,9 +30,9 @@
       <form (ngSubmit)="customUserIconURL()" #ngform="ngForm" enctype="multipart/form-data">
         <div class="upload-own-img-container">
           <span>eigenes Bild verwenden</span>
-          <input ngModel #icon="ngModel" type="file" name="profile-picture" accept="image/*" id="profile-picture-input">
-          <label for="profile-picture-input" class="upload-img-button">Datei hochladen</label>
-          <button type="submit">Hochladen</button>
+          <input ngModel #icon="ngModel" type="file" name="profile-picture" accept="image/*" id="profile-picture-input" style="display: none;">
+          <label for="profile-picture-input" class="upload-img-button">Datei auswählen</label>
+          <button class="upload-img-button" type="submit">Datei hochladen</button>
         </div>
       </form>
 
