@@ -1,9 +1,10 @@
 <div class="dialog-member-container">
     <div class="dialog-member-title"><span>Mitglieder</span><img src="./../../assets/images/close.png" alt="" (click)="closeDialogMember()"></div>
     <div class="dialog-member-avatar-name">
-        <div class="dialog-member-avatar"><img src="./../../assets/images/avatar.png" alt=""><span>Frederik Beck (Du)</span></div>
-        <div class="dialog-member-avatar"><img src="./../../assets/images/avatar.png" alt=""><span>Sofia Müller</span></div>
-        <div class="dialog-member-avatar"><img src="./../../assets/images/avatar.png" alt=""><span>Noah Braun</span></div>
+      <div class="dialog-member-avatar" *ngFor="let user of channelService.UserName">
+        <img src="./../../assets/images/avatar.png" alt="">
+        <span>{{ user }}</span>
+      </div>
     </div>
     <div class="add-member-container" (click)="openAddPeopleDialog()"><img src="./../../assets/images/addMemberButton.png" alt=""><span>Mitglieder hinzufügen</span></div>
 </div>

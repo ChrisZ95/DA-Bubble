@@ -145,33 +145,33 @@ export class ChannelService {
   }
 
   async loadMessagesForChannel(channelId: string): Promise<any[]> {
-    this.messages = [];
-    try {
-      const chatsRef = collection(this.firestore, 'chats');
-      const q: Query<DocumentData> = query(
-        chatsRef,
-        where('channelId', '==', channelId)
-      );
-      const querySnapshot = await getDocs(q);
-  
-      querySnapshot.forEach((doc) => {
-        const chatData = doc.data();
-        if (chatData['messages'] && Array.isArray(chatData['messages'])) {
-          const messagesWithCommentCount = chatData['messages'].map((message: any) => {
-            const commentCount = message.comments ? message.comments.length : 0;
-            const lastCommentTime = message.comments ? message.comments.reduce((latest: number, comment: any) => {
-              const commentTime = parseInt(comment.createdAt);
-              return commentTime > latest ? commentTime : latest;
-            }, 0) : 0;
-            return { ...message, commentCount, lastCommentTime };
-          });
-          this.messages.push(...messagesWithCommentCount);
-        }
-      });
-      return this.messages;
-    } catch (error) {
-      console.error('Error loading messages for channel:', error);
-      return [];
-    }
+  this.messages = [];
+  try {
+    const chatsRef = collection(this.firestore, 'chats');
+    const q: Query<DocumentData> = query(
+      chatsRef,
+      where('channelId', '==', channelId)
+    );
+    const querySnapshot = await getDocs(q);
+
+    querySnapshot.forEach((doc) => {
+      const chatData = doc.data();
+      if (chatData['messages'] && Array.isArray(chatData['messages'])) {
+        const messagesWithCommentCount = chatData['messages'].map((message: any) => {
+          const commentCount = message.comments ? message.comments.length : 0;
+          const lastCommentTime = message.comments ? message.comments.reduce((latest: number, comment: any) => {
+            const commentTime = parseInt(comment.createdAt);
+            return commentTime > latest ? commentTime : latest;
+          }, 0) : 0;
+          return { ...message, commentCount, lastCommentTime };
+        });
+        this.messages.push(...messagesWithCommentCount);
+      }
+    });
+    return this.messages;
+  } catch (error) {
+    console.error('Error loading messages for channel:', error);
+    return [];
+  }
   }
 }
