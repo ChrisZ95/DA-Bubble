@@ -61,19 +61,41 @@ export class FirestoreService {
     this.currentuid = localStorage.getItem('uid');
   }
 
+  /* Name des Users für die sign-up-choose-avatar.component*/
+  async getUserName(uid: any) {
+    const userData = doc(this.firestore, 'users', uid);
+    try {
+      const docSnap = await getDoc(userData);
+
+      if (docSnap.exists()) {
+          const userData = docSnap.data();
+          console.log('Der Name lautet:', userData['username']);
+          return userData['username'];
+      } else {
+          console.log('Benutzerdokument nicht gefunden für UID:', uid);
+      }
+  } catch (error) {
+      console.error('Fehler beim Abrufen des Benutzerdokuments:', error);
+  }
+  }
+
+  /* Speichert die uid  beim signup (function signUpUser)*/
   setuid(uid: string) {
     this.currentuid = uid;
     console.log(this.currentuid)
   }
 
+  /* Gibt die in setuid gespeicherte uid zurück */
   getUid(): string {
     return this.currentuid;
   }
 
+  /* ? */
   getStorageUserIconRef() {
     return this.storageUserIcon;
   }
 
+  /* Wird in der  sign-up-choose-avatar.component aufgerufen und speichert die URL des icons in der Datenbank*/
   async uploadUserIconIntoDatabase(uid: string, userIconTokenURL: string): Promise<void> {
     console.log(uid)
     console.log(userIconTokenURL)
@@ -87,6 +109,7 @@ export class FirestoreService {
     }
   }
 
+  /* Speichert das Bild im Storage Ordner user-icon/ */
   async uploadUserIconIntoStorage(userId: any, file: any) {
     const storage = getStorage();
     const storageRef = ref(storage, 'user-icon/' + file.name);
@@ -97,6 +120,7 @@ export class FirestoreService {
     return token;
   }
 
+  /* Alle vorhandenen User werden ausgegeben */
   async getAllUsers(): Promise<User[]> {
     try {
       const usersCollection = collection(this.firestore, 'users');
@@ -109,6 +133,7 @@ export class FirestoreService {
     }
   }
 
+  /* Alle Channels werden ausgegeben */
   async getAllChannels(): Promise<Channel[]> {
     try {
       const channelsCollection = collection(this.firestore, 'channels');
@@ -123,12 +148,12 @@ export class FirestoreService {
     }
   }
 
+  /* Überwacht den Status des Users (Angemeldet / Abgemeldet) */
   observeAuthState(): void {
     onAuthStateChanged(this.auth, (user) => {
       if (user) {
         // User ist angemeldet
         console.log('User is signed in:', user.uid);
-        this.setuid(user.uid);
         localStorage.setItem('logedIn', 'true');
         this.router.navigate(['generalView']);
       } else {
@@ -140,6 +165,7 @@ export class FirestoreService {
     });
   }
 
+  /* Regristiert neue Nutzer */
   async signUpUser(
     email: string,
     password: string,
@@ -186,6 +212,7 @@ export class FirestoreService {
     }
   }
 
+  /* Nutzer wird eingeloggt */
   async logInUser(
     email: string,
     password: string,
@@ -215,6 +242,7 @@ export class FirestoreService {
     }
   }
 
+  /* FUNKTIONIERT AKTUELL NICHT! SignUp / LogIn mit Apple*/
   async signInWithApple(auth: any, provider: any): Promise<void> {
     try {
       const result = await signInWithPopup(auth, provider);
@@ -235,6 +263,7 @@ export class FirestoreService {
     }
   }
 
+  /* SignUp / LogIn mit Google */
   async signInWithGoogle(
     auth: any,
     provider: any,
@@ -286,6 +315,7 @@ export class FirestoreService {
     }
   }
 
+  /* AKTUELL NICHT IN GEBRAUCH / verschickt nach dem sign up eine email an den User */
   // async sendEmailAfterSignUp(user: any): Promise<void> {
   //   try {
   //     await sendEmailVerification(user);
@@ -295,6 +325,7 @@ export class FirestoreService {
   //   }
   // }
 
+  /* Verschickt eine email an den user zum Passwort ändern */
   async sendEmailResetPasswort(emailData: {
     email: string;
     uid: any;
@@ -318,6 +349,7 @@ export class FirestoreService {
     }
   }
 
+  /* Funktionalität um das Passwort zu ändern */
   async changePassword(userId: any, newPassword: string): Promise<void> {
     debugger;
     console.log(userId, newPassword);
@@ -331,6 +363,7 @@ export class FirestoreService {
     }
   }
 
+  /* Erstellt einen Timestamp , wird beim login / signup benutzt */
   createTimeStamp(): Promise<string> {
     this.newDate = Date.now();
     console.log(this.newDate);
