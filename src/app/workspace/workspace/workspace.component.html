@@ -14,10 +14,10 @@
             <img (click)="openCreateChannelDialog()" src="../assets/images/add.svg" alt="" class="channels-add">
         </div>
         <div class="active-channel" *ngFor="let channel of allChannels">
-            <div (click)="channelService.getChannelName(channel.name)"
+            <div (click)="channelService.getChannelName(channel.channelName)"
                 (click)="channelService.getDescription(channel.description)"
                 (click)="channelService.getUserName(channel.users)" (click)="channelService.getAuthor(channel.author)"
-                (click)="openChannelChat(this.channel['channelId'])"># {{ channel.name }}</div>
+                (click)="openChannelChat(this.channel['channelId'])"># {{ channel.channelName }}</div>
         </div>
     </div>
 </div>

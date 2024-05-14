@@ -28,7 +28,6 @@ export class DialogCreateChannelComponent {
   }
 
   openAddPeopleToNewChannelDialog(newChannelId: string) {
-    // Öffne die Dialogkomponente zum Hinzufügen von Personen zum neuen Kanal
     this.dialogRef.close();
     this.dialog.open(DialogAddPeopleToNewChannelComponent, {
       data: {
@@ -40,20 +39,18 @@ export class DialogCreateChannelComponent {
 
   async createChannel(): Promise<void> {
     try {
-      this.channelService.channel.name = this.channelName;
+      this.channelService.channel.channelName = this.channelName;
       this.channelService.channel.description = this.channelDescription;
   
-      // Kanal erstellen
       const newChannelId = await this.channelService.addChannel();
   
-      // Chat für den neuen Kanal erstellen
       await this.chatService.createChatForChannel(newChannelId);
   
       this.dialogRef.close();
       this.openAddPeopleToNewChannelDialog(newChannelId);
     } catch (error) {
       console.error('Fehler beim Erstellen des Kanals:', error);
-      throw error; // Fehler weiterwerfen, um ihn in der Aufruferkomponente zu behandeln
+      throw error;
     }
   }
 }

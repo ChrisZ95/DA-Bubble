@@ -1,7 +1,7 @@
 export class Channel {
     channelId: string;
     users:any;
-    name:string;
+    channelName:string;
     description:string;
     author:string;
 
@@ -9,7 +9,7 @@ export class Channel {
   constructor(obj?:any){
     this.channelId = obj ? obj.channelId : '';
     this.users = obj ? obj.id : [];
-    this.name = obj ? obj.channelName : '';
+    this.channelName = obj ? obj.channelName : '';
     this.description = obj ? obj.channelDescription : '';
     this.author = obj ? obj.author : 'Admin';
   
@@ -18,7 +18,7 @@ export class Channel {
   public toJSON(){
       return{
         channelId: this.channelId,
-        name: this.name,
+        channelName: this.channelName,
         description: this.description,
         users: this.users,
         author: this.author,

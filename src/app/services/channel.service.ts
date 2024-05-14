@@ -36,9 +36,6 @@ export class ChannelService {
   showThreadWindow: boolean = false;
   messages: any[] = [];
 
-  channelList: any = [];
-  channelProfileImagesList: any = [];
-
   constructor(
     private readonly firestore: Firestore,
     private FirestoreService: FirestoreService
@@ -115,8 +112,8 @@ export class ChannelService {
     await updateDoc(channelRef, object);
   }
 
-  getChannelName(name: string) {
-    this.channelName = name;
+  getChannelName(channelName: string) {
+    this.channelName = channelName;
   }
 
   getDescription(text: string) {
@@ -160,7 +157,15 @@ export class ChannelService {
       querySnapshot.forEach((doc) => {
         const chatData = doc.data();
         if (chatData['messages'] && Array.isArray(chatData['messages'])) {
-          this.messages.push(...chatData['messages']);
+          const messagesWithCommentCount = chatData['messages'].map((message: any) => {
+            const commentCount = message.comments ? message.comments.length : 0;
+            const lastCommentTime = message.comments ? message.comments.reduce((latest: number, comment: any) => {
+              const commentTime = parseInt(comment.createdAt);
+              return commentTime > latest ? commentTime : latest;
+            }, 0) : 0;
+            return { ...message, commentCount, lastCommentTime };
+          });
+          this.messages.push(...messagesWithCommentCount);
         }
       });
       return this.messages;

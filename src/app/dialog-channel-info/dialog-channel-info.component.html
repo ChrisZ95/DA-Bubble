@@ -1,6 +1,6 @@
 <div class="dialog-channel-info-container">
     <div class="channel-info-title">
-        <span># Entwicklerteam</span>
+        <span># {{ channelService.channelName }}</span>
         <img src="./../../assets/images/close.png" alt="" (click)="closeChannelInfoDialog()">
     </div>
     <div class="channel-name-container" [ngClass]="{'editing': editingName}">

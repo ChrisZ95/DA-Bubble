@@ -95,5 +95,5 @@ export class ChannelchatComponent implements OnInit, AfterViewInit {
   openThreadWindow(messageId: string){
     this.channelService.setCurrentMessageId(messageId);
     this.channelService.showThreadWindow = true;
-  }
+  }   
 }

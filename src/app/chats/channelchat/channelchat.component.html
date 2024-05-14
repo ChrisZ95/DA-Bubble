@@ -41,8 +41,8 @@
 
 
         <div class="reply">
-          <div (click)="openThreadWindow(message.messageId)">0 Antworten</div>
-          <p> Letzte Antwort 00:00Uhr
+          <div (click)="openThreadWindow(message.messageId)">{{ message.commentCount }} Antworten</div>
+          <p> Letzte Antwort {{ message.lastCommentTime | timestamp: 'time' }}
           </p>
         </div>
 
