@@ -1,4 +1,10 @@
-import { Component, OnInit, HostListener, ElementRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  HostListener,
+  ElementRef,
+  Renderer2,
+} from '@angular/core';
 import { FirestoreService } from '../../firestore.service';
 import { NgModule } from '@angular/core';
 // import { BrowserModule } from '@angular/platform-browser';
@@ -16,7 +22,8 @@ import { log } from 'console';
 export class EmptychatComponent implements OnInit {
   constructor(
     private firestoreService: FirestoreService,
-    private eRef: ElementRef
+    private eRef: ElementRef,
+    private renderer: Renderer2
   ) {}
 
   allUsers: any = [];
@@ -151,6 +158,18 @@ export class EmptychatComponent implements OnInit {
         !this.selectedUsers.includes(`#${item.username}`)
       );
     });
+    this.filteredEntities.sort((a: any, b: any) => {
+      const usernameA = a.username.toLowerCase();
+      const usernameB = b.username.toLowerCase();
+      if (usernameA < usernameB) {
+        return -1;
+      }
+      if (usernameA > usernameB) {
+        return 1;
+      }
+      return 0;
+    });
+    console.log('filteredEntities', this.filteredEntities);
     this.showUserPlaceholder = false;
     this.showChannelPlaceholder = false;
     this.showUserChannelPlaceholder = false;
@@ -242,17 +261,33 @@ export class EmptychatComponent implements OnInit {
     const inputElement = this.eRef.nativeElement.querySelector(
       '.inputFieldContainer'
     );
-    inputElement.innerHTML =
+    const htmlString =
       this.selectedUsers
         .map(
           (user) =>
             `<span class="user-tag">${user} <span class="remove-tag">
-          <img src="../../../assets/images/close.png" alt="" style="cursor: pointer;" (click)="removeUser('${user}')">
-          </span>
-          </span>`
+      <img src="../../../assets/images/close.png" alt="" style="cursor: pointer;">
+      </span></span>`
         )
-        .join('') +
-      '<input type="text" class="inputField" (keyup)="searchEntity(inputRef.value)" (input)="updatePlaceholder(inputRef.value)" #inputRef />';
+        .join('') + '<input type="text" class="inputField" />';
+
+    inputElement.innerHTML = htmlString;
+
+    this.selectedUsers.forEach((user) => {
+      const removeBtn = this.eRef.nativeElement.querySelector(
+        `.user-tag:last-child .remove-tag img`
+      );
+      this.renderer.listen(removeBtn, 'click', () => this.removeUser(user));
+    });
+
+    const inputField = this.eRef.nativeElement.querySelector('.inputField');
+    this.renderer.listen(inputField, 'keyup', (event) =>
+      this.searchEntity(event.target.value)
+    );
+    this.renderer.listen(inputField, 'input', (event) =>
+      this.updatePlaceholder(event.target.value)
+    );
+
     this.focusInputField();
   }
 
