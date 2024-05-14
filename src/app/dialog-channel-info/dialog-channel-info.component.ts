@@ -14,16 +14,6 @@ import { Channel } from './../../models/channel.class';
   styleUrl: './dialog-channel-info.component.scss'
 })
 export class DialogChannelInfoComponent implements OnInit {
-  constructor(private dialogRef: MatDialogRef<DialogChannelInfoComponent>, public channelService: ChannelService, private readonly firestore: Firestore) {}
-
-  closeChannelInfoDialog(): void {
-  this.dialogRef.close();
-  }
-
-  ngOnInit(): void {
-
-  }
-
   channelName!: string
   description!: string
   channelDescription: string | null = null;
@@ -32,6 +22,43 @@ export class DialogChannelInfoComponent implements OnInit {
   editingName: boolean = false;
   editingDescription: boolean = false;
   isEditing: boolean = false;
+  authorName!: string;
+
+  constructor(private dialogRef: MatDialogRef<DialogChannelInfoComponent>, public channelService: ChannelService, private readonly firestore: Firestore) {}
+
+  closeChannelInfoDialog(): void {
+  this.dialogRef.close();
+  }
+
+  async ngOnInit(): Promise<void> {
+    // Rufe die channelId aus dem Kanalservice ab
+    const channelId = this.channelService.getCurrentChannelId();
+    
+    if (channelId) { // Überprüfe, ob channelId nicht null ist
+      // Rufe den Autor anhand der channelId ab
+      this.channelService.getChannelAuthorUid(channelId).then(authorUid => {
+        if (authorUid) { // Überprüfe, ob authorUid nicht null ist
+          // Rufe den Namen des Autors anhand seiner UID ab
+          this.channelService.getAuthorName(authorUid).then(authorName => {
+            if (authorName) { // Überprüfe, ob authorName nicht null ist
+              this.authorName = authorName;
+            } else {
+              console.error('Benutzername ist null.');
+            }
+          }).catch(error => {
+            console.error('Fehler beim Abrufen des Benutzernamens:', error);
+          });
+        } else {
+          console.error('Autor ist null.');
+        }
+      }).catch(error => {
+        console.error('Fehler beim Abrufen des Autors:', error);
+      });
+    } else {
+      console.error('channelId ist null.');
+    }
+  }
+  
 
   toggleEditing(field: string) {
     if (field === 'name') {

@@ -128,6 +128,50 @@ export class ChannelService {
     this.author = author;
   }
 
+  async getAuthorName(uid: string): Promise<string | null> {
+    try {
+      const userDocRef = doc(this.firestore, 'users', uid);
+      const userSnapshot = await getDoc(userDocRef);
+      if (userSnapshot.exists()) {
+        const userData = userSnapshot.data() as DocumentData;
+        if (userData && userData['username']) {
+          return userData['username'];
+        } else {
+          console.error('Benutzername nicht gefunden.');
+          return null;
+        }
+      } else {
+        console.error('Benutzer nicht gefunden.');
+        return null;
+      }
+    } catch (error) {
+      console.error('Fehler beim Abrufen des Benutzernamens:', error);
+      throw error;
+    }
+  }
+
+  async getChannelAuthorUid(channelId: string): Promise<string | null > {
+    try {
+      const channelDocRef = doc(this.firestore, 'channels', channelId);
+      const channelSnapshot = await getDoc(channelDocRef);
+      if (channelSnapshot.exists()) {
+        const channelData = channelSnapshot.data() as DocumentData;
+        if (channelData && channelData['author']) {
+          return channelData['author'];
+        } else {
+          console.error('Autor des Kanals nicht gefunden.');
+          return null;
+        }
+      } else {
+        console.error('Kanal nicht gefunden.');
+        return null;
+      }
+    } catch (error) {
+      console.error('Fehler beim Abrufen des Autors des Kanals:', error);
+      throw error;
+    }
+  }
+
   setCurrentChannelId(channelId: string) {
     this.currentChannelId = channelId;
   }

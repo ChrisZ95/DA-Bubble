@@ -24,7 +24,7 @@ export class DialogAddPeopleComponent implements OnInit {
   showUserList: boolean = false;
   channelName: string = '';
   channelDescription: string = '';
-  channelMember: { userId: string, photo: string }[] = [];
+  channelMember: { userId: string }[] = [];
   selectedUsers: any[] = [];
   channel = new Channel();
   currentChannelId: string = '';
@@ -46,8 +46,7 @@ export class DialogAddPeopleComponent implements OnInit {
 
   selectUser(user: any): void {
     this.personName = user.username;
-    this.personPhoto = user.photo;
-    this.selectedUsers.push({ userId: user.username, photo: user.photo }); // Änderung: von userPhoto zu photo
+    this.selectedUsers.push({ userId: user.username });
     this.showUserList = false;
   }
 
@@ -73,7 +72,7 @@ export class DialogAddPeopleComponent implements OnInit {
       this.channelMember.push(...this.selectedUsers);
       const currentMembers = this.channelService.channel.users || [];
       const updatedMembers = currentMembers.concat(this.channelMember.map(member => {
-        return { userId: member.userId, photo: member.photo }; // Include user photo
+        return { userId: member.userId };
       }));
       await this.channelService.updateChannel(channelDocRef, { users: updatedMembers });
       this.selectedUsers = [];
