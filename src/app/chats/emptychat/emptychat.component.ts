@@ -7,7 +7,6 @@ import {
 } from '@angular/core';
 import { FirestoreService } from '../../firestore.service';
 import { NgModule } from '@angular/core';
-// import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { log } from 'console';
@@ -210,13 +209,11 @@ export class EmptychatComponent implements OnInit {
     }
     this.showDropdown = false;
 
-    // Remove focus from the input field
     setTimeout(() => {
       this.blurInputField();
     }, 0);
   }
 
-  // Function to blur the input field
   private blurInputField() {
     const inputElement = this.eRef.nativeElement.querySelector('input');
     if (inputElement) {
