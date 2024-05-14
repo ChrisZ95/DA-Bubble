@@ -11,7 +11,7 @@ export class Channel {
     this.users = obj ? obj.id : [];
     this.channelName = obj ? obj.channelName : '';
     this.description = obj ? obj.channelDescription : '';
-    this.author = obj ? obj.author : 'Admin';
+    this.author = obj ? obj.author : '';
   
   }
 

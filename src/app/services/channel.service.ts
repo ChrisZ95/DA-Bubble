@@ -85,9 +85,9 @@ export class ChannelService {
     return doc(collection(this.firestore, 'channels'), ID);
   }
 
-  addChannel(): Promise<string> {
+  addChannel(channelData: any): Promise<string> {
     return new Promise<string>((resolve, reject) => {
-      const newChannel = this.channel.toJSON();
+      const newChannel = channelData; // Verwende das übergebene channelData
       addDoc(collection(this.firestore, 'channels'), newChannel)
         .then((result: any) => {
           newChannel['channelId'] = result.id;

@@ -1,5 +1,5 @@
 import { DialogCreateChannelComponent } from './../../dialog-create-channel/dialog-create-channel.component';
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
@@ -22,6 +22,7 @@ import { HeaderComponent } from '../../header/header.component';
 import { ChannelService } from '../../services/channel.service';
 import { OwnchatComponent } from '../../chats/ownchat/ownchat.component';
 import { EmptychatComponent } from '../../chats/emptychat/emptychat.component';
+import { FirestoreService } from '../../firestore.service';
 
 @Component({
   selector: 'app-main',
@@ -77,8 +78,8 @@ import { EmptychatComponent } from '../../chats/emptychat/emptychat.component';
     ]),
   ],
 })
-export class MainComponent {
-  constructor(private channelService: ChannelService) {}
+export class MainComponent implements OnInit {
+  constructor(private channelService: ChannelService, public firestoreService: FirestoreService) {}
   displayWorkspace: boolean = true;
   showEmptyChat: boolean = false;
   showOwnChat: boolean = false;
@@ -103,5 +104,9 @@ export class MainComponent {
   openChat(userDetails: any) {
     this.showOwnChat = true;
     this.userDetails = userDetails;
+  }
+
+  ngOnInit(): void {
+    
   }
 }

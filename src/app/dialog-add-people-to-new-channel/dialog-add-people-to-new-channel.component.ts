@@ -68,11 +68,8 @@ export class DialogAddPeopleToNewChannelComponent implements OnInit {
   async addUserToChannel() {
     try {
       const channelDocRef = this.channelService.getChannelDocByID(this.currentChannelId);
-      // Holen Sie sich die aktuellen Benutzer des Kanals
       const currentUsers = this.channelService.channel.users || [];
-      // Fügen Sie den ausgewählten Benutzer zu den aktuellen Benutzern hinzu
       const updatedUsers = currentUsers.concat(this.channelMember.map(member => member.userId));
-      // Aktualisieren Sie den Kanal mit den aktualisierten Benutzern
       await this.channelService.updateChannel(channelDocRef, { users: updatedUsers });
       this.showUserList = false;
     } catch (error) {

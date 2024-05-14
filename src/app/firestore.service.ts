@@ -98,6 +98,7 @@ export class FirestoreService {
       throw error;
     }
   }
+
   async getAllChannels(): Promise<Channel[]> {
     try {
       const channelsCollection = collection(this.firestore, 'channels');

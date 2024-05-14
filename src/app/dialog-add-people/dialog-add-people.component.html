@@ -8,7 +8,7 @@
     (input)="filterUsers()"
     >
     <div *ngIf="showUserList" class="user-dropdown">
-       <div *ngFor="let user of filteredUsers" class="user-option" (click)="selectUser(user)">{{ user.username }}</div> 
+       <div *ngFor="let user of filteredUsers" class="user-option" (click)="selectUser(user)"><img src="{{ user.photo }}" alt="">{{ user.username }}</div> 
     </div>
     <div class="dialog-add-people-to-new-channel-button">
         <button [style.background-color]="buttonColor" (click)="addUserToChannel()">Hinzufügen</button>

@@ -18,12 +18,13 @@ export class DialogAddPeopleComponent implements OnInit {
   selectedOption: string = '';
   buttonColor: string = '#686868';
   personName: string = '';
+  personPhoto: string = '';
   allUsers: any[] = [];
   filteredUsers: any[] = [];
   showUserList: boolean = false;
   channelName: string = '';
   channelDescription: string = '';
-  channelMember: { userId: string }[] = [];
+  channelMember: { userId: string, photo: string }[] = [];
   selectedUsers: any[] = [];
   channel = new Channel();
   currentChannelId: string = '';
@@ -45,7 +46,8 @@ export class DialogAddPeopleComponent implements OnInit {
 
   selectUser(user: any): void {
     this.personName = user.username;
-    this.selectedUsers.push({ userId: user.username });
+    this.personPhoto = user.photo;
+    this.selectedUsers.push({ userId: user.username, photo: user.photo }); // Änderung: von userPhoto zu photo
     this.showUserList = false;
   }
 
@@ -68,14 +70,12 @@ export class DialogAddPeopleComponent implements OnInit {
   async addUserToChannel() {
     try {
       const channelDocRef = this.channelService.getChannelDocByID(this.currentChannelId);
-      // Fügen Sie die ausgewählten Benutzer zur channelMember-Liste hinzu
       this.channelMember.push(...this.selectedUsers);
-      // Holen Sie sich die aktuellen Benutzer des Kanals
-      const currentUsers = this.channelService.channel.users || [];
-      // Kombinieren Sie die aktuellen Benutzer mit den ausgewählten Benutzern
-      const updatedUsers = currentUsers.concat(this.channelMember.map(member => member.userId));
-      // Aktualisieren Sie den Kanal mit den aktualisierten Benutzern
-      await this.channelService.updateChannel(channelDocRef, { users: updatedUsers });
+      const currentMembers = this.channelService.channel.users || [];
+      const updatedMembers = currentMembers.concat(this.channelMember.map(member => {
+        return { userId: member.userId, photo: member.photo }; // Include user photo
+      }));
+      await this.channelService.updateChannel(channelDocRef, { users: updatedMembers });
       this.selectedUsers = [];
       this.showUserList = false;
     } catch (error) {
