@@ -51,6 +51,7 @@ export class FirestoreService {
   public newDate: any;
   public signUpDate: any;
   currentuid: any;
+  storageId: any;
 
   constructor(private myFirebaseApp: FirebaseApp, public router: Router) {
     this.auth = getAuth(myFirebaseApp);
@@ -72,20 +73,29 @@ export class FirestoreService {
     return this.storageUserIcon;
   }
 
-  async uploadUserIcon(userid: any, file: any) {
+  async uploadUserIconIntoDatabase(uid: string, userIconTokenURL: string): Promise<void> {
     debugger
-    const storage = getStorage();
-    const storageRef = ref(storage, 'user-icon/' + userid);
-    console.log(storageRef)
-    uploadBytes(storageRef, file).then((snapshot) => {
-      console.log('Uploaded user icon');
-    });
-    setTimeout(() => {
-      const downloadURL = getDownloadURL(storageRef);
-      console.log('Download URL:', downloadURL);
-    }, 500);
+    console.log(uid)
+    console.log(userIconTokenURL)
+    try {
+      const userRef = doc(this.firestore, 'users', uid);
+      await updateDoc(userRef, {
+        photo: userIconTokenURL,
+      });
+    } catch (error) {
+      console.error('Fehler beim Aktualisieren des Benutzerdokuments:', error);
+    }
   }
 
+  async uploadUserIconIntoStorage(userId: any, file: any) {
+    const storage = getStorage();
+    const storageRef = ref(storage, 'user-icon/' + file.name);
+    await uploadBytes(storageRef, file);
+    const token = await getDownloadURL(storageRef);
+    console.log('Die URL zum Bild lautet',token)
+    console.log('User icon uploaded and access token saved.');
+    return token;
+  }
 
   async getAllUsers(): Promise<User[]> {
     try {
@@ -323,16 +333,5 @@ export class FirestoreService {
     this.newDate = Date.now();
     console.log(this.newDate);
     return this.newDate;
-  }
-
-  async getUserByDocId(uid: string, userIconTokenURL: string): Promise<void> {
-    try {
-      const userRef = doc(this.firestore, 'users', uid);
-      await updateDoc(userRef, {
-        photo: userIconTokenURL,
-      });
-    } catch (error) {
-      console.error('Fehler beim Aktualisieren des Benutzerdokuments:', error);
-    }
   }
 }

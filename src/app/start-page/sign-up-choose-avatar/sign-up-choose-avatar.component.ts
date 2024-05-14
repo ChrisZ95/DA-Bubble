@@ -41,7 +41,7 @@ export class SignUpChooseAvatarComponent implements OnInit {
     console.log(this.uid);
   }
 
-  customUserIconURL() {
+  async customUserIconURL() {
     debugger
     const fileInput = document.getElementById('profile-picture-input') as HTMLInputElement;
     const file = fileInput.files?.[0];
@@ -50,7 +50,8 @@ export class SignUpChooseAvatarComponent implements OnInit {
       console.log(icon)
       console.log('Name des Bildes',icon.name);
       console.log('Bild wurde erstellt am',icon.lastModified);
-      this.firestoreService.uploadUserIcon(this.uid, icon)
+      const userIconTokenURL = await this.firestoreService.uploadUserIconIntoStorage(this.uid, icon);
+      this.getUserDocument(this.uid, userIconTokenURL);
     } else {
       console.log('Kein Bild ausgewählt');
     }
@@ -62,7 +63,6 @@ export class SignUpChooseAvatarComponent implements OnInit {
   }
 
   chooseAvatar(index: number) {
-    debugger
     this.showInputInformationUserIcon = false;
     this.selectedAvatar = this.avatar[index];
     if (index == 0) {
@@ -80,7 +80,7 @@ export class SignUpChooseAvatarComponent implements OnInit {
     }
     console.log('Avatar ausgewählt:', index ,this.userIconTokenURL);
     this.index = index;
-    this.getUserDocument(this.uid, this.userIconTokenURL)
+    this.getUserDocument(this.uid, this.userIconTokenURL);
   }
 
   createAccount() {
@@ -95,8 +95,8 @@ export class SignUpChooseAvatarComponent implements OnInit {
     }
   }
 
-  async getUserDocument(uid: string, userIconTokenURL: string) {
-    this.userData = await this.firestoreService.getUserByDocId(uid, userIconTokenURL);
+  async getUserDocument(uid: string, userIconTokenURL: any) {
+    this.userData = await this.firestoreService.uploadUserIconIntoDatabase(uid, userIconTokenURL);
     console.log('Benutzerdaten erhalten:', this.userData);
   }
 }
