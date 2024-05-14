@@ -97,6 +97,14 @@ export class FirestoreService {
     return token;
   }
 
+  async uploadDataIntoStorage(file: any){
+    const storage = getStorage();
+    const storageRef = ref(storage, 'testData/' + file.name);
+    await uploadBytes(storageRef, file);
+    const token = await getDownloadURL(storageRef);
+    return token;
+  }
+
   async getAllUsers(): Promise<User[]> {
     try {
       const usersCollection = collection(this.firestore, 'users');
@@ -319,7 +327,7 @@ export class FirestoreService {
   }
 
   async changePassword(userId: any, newPassword: string): Promise<void> {
-    debugger;
+    // debugger;
     console.log(userId, newPassword);
     try {
       await updatePassword(this.auth.currentUser, newPassword);

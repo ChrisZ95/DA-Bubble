@@ -78,3 +78,26 @@
   height: 40px;
   width: 1px;
 }
+
+.editor {
+  border: 1px solid #ccc;
+  min-height: 100px;
+  padding: 10px;
+}
+.toolbar button {
+  margin-right: 5px;
+}
+
+.toolbar button {
+  cursor: pointer;
+  padding: 5px;
+  margin-right: 5px;
+  border: none;
+  background: none;
+}
+.toolbar button:focus {
+  outline: none;
+}
+.editor:focus {
+  outline: none;
+}

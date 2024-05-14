@@ -86,7 +86,7 @@ export class SignUpChooseAvatarComponent implements OnInit {
 
   createAccount() {
     this.showInputInformationUserIcon = false;
-    debugger
+    // debugger
     if ([0, 1, 2, 3, 4, 5, 6].includes(this.index)) {
       this.accountCreated.emit();
       console.log('account wurde erstellt')

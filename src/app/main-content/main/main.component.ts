@@ -79,10 +79,13 @@ import { FirestoreService } from '../../firestore.service';
   ],
 })
 export class MainComponent implements OnInit {
-  constructor(private channelService: ChannelService, public firestoreService: FirestoreService) {}
+  constructor(
+    private channelService: ChannelService,
+    public firestoreService: FirestoreService
+  ) {}
   displayWorkspace: boolean = true;
   showEmptyChat: boolean = false;
-  showOwnChat: boolean = false;
+  showOwnChat: boolean = true;
   userDetails: any = '';
 
   showHideWorkspace() {
@@ -99,14 +102,14 @@ export class MainComponent implements OnInit {
 
   openEmptyChat() {
     this.showEmptyChat = !this.showEmptyChat;
+    this.showOwnChat = false;
   }
 
   openChat(userDetails: any) {
+    this.showEmptyChat = false;
     this.showOwnChat = true;
     this.userDetails = userDetails;
   }
 
-  ngOnInit(): void {
-    
-  }
+  ngOnInit(): void {}
 }

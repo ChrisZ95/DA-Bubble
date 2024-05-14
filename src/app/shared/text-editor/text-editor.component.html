@@ -1,21 +1,23 @@
-<form (ngSubmit)="submit()" class="container">
+<form (submit)="submit()" class="container">
     <div class="chat-input-container">
-        <textarea name="" id="" cols="3" rows="3" placeholder="Nachricht an #Entwicklerteam" [(ngModel)]="message"
+        <textarea id="textArea" cols="30" rows="10" placeholder="Nachricht an #Entwicklerteam" [(ngModel)]="message"
             name="message"></textarea>
+        <div id="imageDisplay" style="min-height: 100px; border: 1px solid #ccc; padding: 10px;"></div>
         <div class="img-container">
             <div class="images">
                 <div class="img">
-                    <img src="../../../assets/images/add.png" alt="">
+                    <img src="../../../assets/images/add.png" alt="Add" (click)="triggerFileInput()">
+                    <input type="file" accept="image/*" id="data-input" style="display: none;" #fileInput (change)="customDataURL()">
                 </div>
                 <div class="chat-input-line"></div>
                 <div class="img">
-                    <img src="../../../assets/images/smiley.png" alt="">
+                    <img src="../../../assets/images/smiley.png" alt="Smiley">
                 </div>
                 <div class="img">
-                    <img src="../../../assets/images/atsign.png" alt="">
+                    <img src="../../../assets/images/atsign.png" alt="At Sign">
                 </div>
             </div>
-            <button type="submit"><img src="../../../assets/images/send.png" alt=""></button>
+            <button type="submit"><img src="../../../assets/images/send.png" alt="Send"></button>
         </div>
     </div>
 </form>
