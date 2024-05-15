@@ -14,7 +14,9 @@
         <div *ngIf="showChannelPlaceholder" class="dropdown-item" (click)="displayAllChannels()">Search for Channel
         </div>
         <div class="dropdown-item" *ngFor="let entity of filteredEntities" (click)="selectEntity(entity)">
-            {{ entity.username || entity.name }}
+            {{ entity.username || entity.channelName }}
         </div>
     </div>
 </div>
+
+<app-text-editor [componentName]="'emptyChat'" />

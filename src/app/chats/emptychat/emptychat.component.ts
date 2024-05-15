@@ -10,11 +10,13 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { log } from 'console';
+import { TextEditorComponent } from '../../shared/text-editor/text-editor.component';
+import { ChatService } from '../../services/chat.service';
 
 @Component({
   selector: 'app-emptychat',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, TextEditorComponent],
   templateUrl: './emptychat.component.html',
   styleUrls: ['./emptychat.component.scss', '../chats.component.scss'],
 })
@@ -22,7 +24,8 @@ export class EmptychatComponent implements OnInit {
   constructor(
     private firestoreService: FirestoreService,
     private eRef: ElementRef,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private chatService: ChatService
   ) {}
 
   allUsers: any = [];
@@ -131,15 +134,15 @@ export class EmptychatComponent implements OnInit {
 
   displayAllUsersAndChannels() {
     this.filteredEntities = [
-      ...this.allUsers.filter(
-        (user: any) =>
+      ...this.allUsers.filter((user: any) => {
+        return (
           user.username &&
           user.uid !== this.firestoreService.currentuid &&
           !this.selectedUsers.includes(`#${user.username}`)
-      ),
-      ...this.allChannels.filter((channel: any) => channel.name),
+        );
+      }),
+      ...this.allChannels.filter((channel: any) => channel.channelName),
     ];
-
     this.showUserChannelPlaceholder = false;
     this.showDropdown = true;
 
@@ -168,7 +171,7 @@ export class EmptychatComponent implements OnInit {
       }
       return 0;
     });
-    console.log('filteredEntities', this.filteredEntities);
+
     this.showUserPlaceholder = false;
     this.showChannelPlaceholder = false;
     this.showUserChannelPlaceholder = false;
@@ -181,7 +184,7 @@ export class EmptychatComponent implements OnInit {
 
   displayAllChannels() {
     this.filteredEntities = this.allChannels.filter((item: any) => {
-      return item.name;
+      return item.channelName;
     });
     this.showUserPlaceholder = false;
     this.showChannelPlaceholder = false;
@@ -199,12 +202,14 @@ export class EmptychatComponent implements OnInit {
       !this.selectedUsers.includes(`#${entity.username}`)
     ) {
       this.selectedUsers.push(`#${entity.username}`);
+      this.chatService.allPotentialChatUsers.push(entity);
+
       this.updateInputField();
     } else if (!entity.username) {
       const inputElement = this.eRef.nativeElement.querySelector(
         '.inputFieldContainer'
       );
-      inputElement.innerHTML = `<span class="channel-tag">@${entity.name}</span>`;
+      inputElement.innerHTML = `<span class="channel-tag">@${entity.channelName}</span>`;
       this.selectedUsers = [];
     }
     this.showDropdown = false;
@@ -262,9 +267,9 @@ export class EmptychatComponent implements OnInit {
       this.selectedUsers
         .map(
           (user) =>
-            `<span class="user-tag">${user} <span class="remove-tag">
-      <img src="../../../assets/images/close.png" alt="" style="cursor: pointer;">
-      </span></span>`
+            `<div (click)="removeUser(${user})"><span class="user-tag">${user} <span class="remove-tag">
+      <img src="../../../assets/images/close.png" alt="" style=" cursor: pointer; z-index:999;" class="remove-user" >
+      </span></span> </div>`
         )
         .join('') + '<input type="text" class="inputField" />';
 

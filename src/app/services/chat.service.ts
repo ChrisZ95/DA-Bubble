@@ -28,9 +28,11 @@ import { Message } from 'protobufjs';
   providedIn: 'root',
 })
 export class ChatService {
+  currentuid: any;
   chatList: any = [];
   loadedchatInformation: any;
   chatDocId: any;
+  allPotentialChatUsers: any[] = [];
 
   constructor(
     private firestore: Firestore,
@@ -49,8 +51,6 @@ export class ChatService {
     const docSnap = await getDocs(docRef);
     return docSnap.docs.map((doc) => doc.id);
   }
-
-  currentuid: any;
 
   async createChat(userDetails: any) {
     try {
@@ -95,8 +95,36 @@ export class ChatService {
     }
   }
 
-  createChatWithTwoUsers() {
-    //
+  async createChatWithUsers(): Promise<void> {
+    this.currentuid = this.FirestoreService.currentuid;
+    let allUsers = await this.FirestoreService.getAllUsers();
+    const currentUser = allUsers.find((user) => user.uid === this.currentuid);
+    if (currentUser) {
+      this.allPotentialChatUsers = [
+        currentUser,
+        ...this.allPotentialChatUsers.filter(
+          (user) => user.uid !== this.currentuid
+        ),
+      ];
+    }
+    let uniqueShortIds = new Set(
+      this.allPotentialChatUsers.map((user) => user.uid.slice(0, 5))
+    );
+    let combinedShortedId = Array.from(uniqueShortIds).sort().join('-');
+    let existingChatIDs = await this.getChatsDocumentIDs('chats');
+
+    let filteredChats = existingChatIDs.filter(
+      (id) => id === combinedShortedId
+    );
+    const chatData = {
+      createdAt: 'date',
+      chatId: combinedShortedId,
+      messages: [],
+    };
+    console.log('filteredChats', filteredChats);
+    if (filteredChats.length == 0) {
+      await setDoc(doc(this.firestore, 'chats', combinedShortedId), chatData);
+    }
   }
 
   async loadMessages(docId: any) {
@@ -154,33 +182,35 @@ export class ChatService {
 
   async sendCommentToChannel(messageId: string, comment: any) {
     try {
-        const chatsRef = collection(this.firestore, 'chats');
-        const q = query(chatsRef); // keine spezifische Abfrage, um die gesamte Sammlung zu erhalten
-        const querySnapshot = await getDocs(q);
-        console.log('Query Snapshot:', querySnapshot.docs);
+      const chatsRef = collection(this.firestore, 'chats');
+      const q = query(chatsRef); // keine spezifische Abfrage, um die gesamte Sammlung zu erhalten
+      const querySnapshot = await getDocs(q);
+      console.log('Query Snapshot:', querySnapshot.docs);
 
-        querySnapshot.forEach(async doc => {
-            const messages = doc.data()['messages'] || [];
-            const message = messages.find((message: any) => message.messageId === messageId);
-            if (message) {
-                // Nachricht mit der gesuchten messageId gefunden
-                const chatDocRef = doc.ref;
-                const updatedMessages = messages.map((msg: any) => {
-                    if (msg.messageId === messageId) {
-                        return {
-                            ...msg,
-                            comments: [...(msg.comments || []), comment]
-                        };
-                    }
-                    return msg;
-                });
-                await updateDoc(chatDocRef, { messages: updatedMessages });
+      querySnapshot.forEach(async (doc) => {
+        const messages = doc.data()['messages'] || [];
+        const message = messages.find(
+          (message: any) => message.messageId === messageId
+        );
+        if (message) {
+          // Nachricht mit der gesuchten messageId gefunden
+          const chatDocRef = doc.ref;
+          const updatedMessages = messages.map((msg: any) => {
+            if (msg.messageId === messageId) {
+              return {
+                ...msg,
+                comments: [...(msg.comments || []), comment],
+              };
             }
-        });
+            return msg;
+          });
+          await updateDoc(chatDocRef, { messages: updatedMessages });
+        }
+      });
     } catch (error) {
-        console.error('Error sending message:', error);
+      console.error('Error sending message:', error);
     }
-}
+  }
 
   async createChatForChannel(channelId: string): Promise<void> {
     try {

@@ -1,6 +1,7 @@
 import {
   Component,
   ElementRef,
+  HostListener,
   Input,
   OnInit,
   SimpleChanges,
@@ -10,7 +11,14 @@ import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../services/chat.service';
 import { log } from 'console';
 import { GenerateIdsService } from '../../services/generate-ids.service';
-import { Firestore, doc, collection, addDoc, onSnapshot, query } from '@angular/fire/firestore';
+import {
+  Firestore,
+  doc,
+  collection,
+  addDoc,
+  onSnapshot,
+  query,
+} from '@angular/fire/firestore';
 import { ChannelService } from '../../services/channel.service';
 import { FirestoreService } from '../../firestore.service';
 
@@ -40,6 +48,12 @@ export class TextEditorComponent implements OnInit {
     }
     if (this.componentName == 'channel') {
       this.sendMessageToChannel();
+    }
+  }
+  @HostListener('focusin', ['$event'])
+  onFocus(event: FocusEvent) {
+    if (this.componentName == 'emptyChat') {
+      this.chatService.createChatWithUsers();
     }
   }
 

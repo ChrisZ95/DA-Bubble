@@ -1,4 +1,4 @@
-import { NgFor } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { collection, getDocs } from 'firebase/firestore';
 import { ChatService } from '../../services/chat.service';
@@ -13,7 +13,7 @@ import { DialogMembersComponent } from '../../dialog-members/dialog-members.comp
 @Component({
   selector: 'app-ownchat',
   standalone: true,
-  imports: [TextEditorComponent, NgFor, TimestampPipe],
+  imports: [TextEditorComponent, TimestampPipe, CommonModule],
   templateUrl: './ownchat.component.html',
   styleUrls: ['./ownchat.component.scss', '../chats.component.scss'],
 })
