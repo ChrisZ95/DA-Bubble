@@ -16,7 +16,7 @@ import { TextEditorComponent } from '../../shared/text-editor/text-editor.compon
 import { ChatService } from '../../services/chat.service';
 import { debug, log } from 'console';
 import { doc, collection, getDocs } from 'firebase/firestore';
-import { NgFor } from '@angular/common';
+import { CommonModule, NgFor } from '@angular/common';
 import { TimestampPipe } from '../../shared/pipes/timestamp.pipe';
 import { Channel } from './../../../models/channel.class';
 import { ChannelService } from '../../services/channel.service';
@@ -27,7 +27,7 @@ import { query, where, Query, DocumentData } from 'firebase/firestore';
 @Component({
   selector: 'app-channelchat',
   standalone: true,
-  imports: [TextEditorComponent, NgFor, TimestampPipe],
+  imports: [TextEditorComponent, NgFor, TimestampPipe, CommonModule],
   templateUrl: './channelchat.component.html',
   styleUrls: ['./channelchat.component.scss', '../chats.component.scss'],
 })
@@ -52,6 +52,7 @@ export class ChannelchatComponent implements OnInit, AfterViewInit {
   selectedChannelName: string | null = null;
   selectedChannelDescription: string | null = null;
   currentChannelId: string = '';
+  allUsers: any[] = [];
 
   openMemberDialog() {
     this.dialog.open(DialogMembersComponent);
@@ -90,10 +91,20 @@ export class ChannelchatComponent implements OnInit, AfterViewInit {
       this.allChannels = channels;
       console.log('Channels', channels);
     });
+    this.firestoreService.getAllUsers().then(users => {
+      this.allUsers = users
+    }).catch(error => {
+      console.error('Error fetching users:', error);
+    });
   }
 
   openThreadWindow(messageId: string){
     this.channelService.setCurrentMessageId(messageId);
     this.channelService.showThreadWindow = true;
-  }   
+  }
+  
+  getMemberAvatar(memberId: string): string {
+    const member = this.allUsers.find(user => user.uid === memberId);
+    return member ? member.photo : '';
+  }
 }

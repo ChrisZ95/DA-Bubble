@@ -3,10 +3,18 @@
     <div (click)="openChannelInfoDialog()"># {{ channelService.channelName }}</div>
   </div>
   <div class="images">
-    <div class="images-participants" (click)="openMemberDialog()">
-      <img src="../../../assets/images/avatar.png" alt="">
-      <img src="../../../assets/images/avatar.png" alt="">
-      <img src="../../../assets/images/avatar.png" alt="">
+    <div (click)="openMemberDialog()" class="d-flex">
+      <div class="images-participants">
+        <ng-container *ngFor="let member of channelService.UserName.slice(0, 3); let i = index">
+          <!-- Zeige die Avatare der ersten drei Mitglieder an -->
+          <img [src]="getMemberAvatar(member)" alt="">
+        </ng-container>
+      </div>
+      <!-- Überprüfe, ob es mehr als drei Mitglieder gibt -->
+      <ng-container *ngIf="channelService.UserName.length > 3">
+        <!-- Zeige die Anzahl der weiteren Mitglieder an -->
+        <div class="additional-members">{{ channelService.UserName.length - 3 }}+</div>
+      </ng-container>
     </div>
     <div class="add-participants">
       <img (click)="openAddPeopleDialog()" src="../../../assets/images/addMemberButton.png" alt="">
