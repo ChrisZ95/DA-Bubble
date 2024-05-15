@@ -218,4 +218,20 @@ export class ChannelService {
     return [];
   }
   }
+
+  async getUserById(userId: string): Promise<any> {
+    try {
+      const userDoc = doc(this.firestore, 'users', userId);
+      const userSnapshot = await getDoc(userDoc);
+      if (userSnapshot.exists()) {
+        return userSnapshot.data();
+      } else {
+        console.error('User document does not exist');
+        return null;
+      }
+    } catch (error) {
+      console.error('Error fetching user:', error);
+      throw error;
+    }
+  }
 }

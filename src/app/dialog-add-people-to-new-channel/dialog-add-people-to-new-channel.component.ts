@@ -61,7 +61,7 @@ export class DialogAddPeopleToNewChannelComponent implements OnInit {
 
   selectUser(user: any): void {
     this.personName = user.username;
-    this.channelMember.push({ userId: user.username });
+    this.channelMember.push({ userId: user.uid });
     this.showUserList = false;
   }
 

@@ -32,13 +32,11 @@
           <p>{{ message.createdAt | timestamp: 'time' }}</p>
         </div>
 
-
         <div class="messages-container">
           <div class="speechbubble">
             <p>{{ message.message }}</p>
           </div>
         </div>
-
 
         <div class="reply">
           <div (click)="openThreadWindow(message.messageId)">{{ message.commentCount }} Antworten</div>

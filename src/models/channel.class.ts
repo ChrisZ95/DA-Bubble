@@ -1,6 +1,6 @@
 export class Channel {
     channelId: string;
-    users:any;
+    users: string[];
     channelName:string;
     description:string;
     author:string;

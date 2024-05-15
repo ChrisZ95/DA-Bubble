@@ -14,6 +14,7 @@ import { FirestoreService } from '../firestore.service';
 })
 export class DialogMembersComponent implements OnInit {
   allUsers: any[] = [];
+  memberData: { username: string, photo: string }[] = [];
 
   constructor(private dialogRef: MatDialogRef<DialogMembersComponent>, public dialog: MatDialog, public channelService: ChannelService, public firestoreService: FirestoreService) {}
 
@@ -29,9 +30,15 @@ export class DialogMembersComponent implements OnInit {
   ngOnInit(): void {
     this.firestoreService.getAllUsers().then(users => {
       this.allUsers = users;
-      console.log(users)
+      this.updateMemberData();
     }).catch(error => {
       console.error('Error fetching users:', error);
     });
+  }
+
+  updateMemberData(): void {
+    this.memberData = this.allUsers
+      .filter(user => this.channelService.UserName.includes(user.uid))
+      .map(user => ({ username: user.username, photo: user.photo }));
   }
 }

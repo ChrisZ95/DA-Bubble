@@ -1,9 +1,9 @@
 <div class="dialog-member-container">
     <div class="dialog-member-title"><span>Mitglieder</span><img src="./../../assets/images/close.png" alt="" (click)="closeDialogMember()"></div>
     <div class="dialog-member-avatar-name">
-      <div class="dialog-member-avatar" *ngFor="let user of channelService.UserName">
-        <img src="" alt="">
-        <span>{{ user }}</span>
+      <div class="dialog-member-avatar" *ngFor="let member of memberData">
+        <img src="{{ member.photo }}" alt="">
+        <span>{{ member.username }}</span>
       </div>
     </div>
     <div class="add-member-container" (click)="openAddPeopleDialog()"><img src="./../../assets/images/addMemberButton.png" alt=""><span>Mitglieder hinzufügen</span></div>

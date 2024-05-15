@@ -41,33 +41,19 @@ export class DialogCreateChannelComponent {
 
   async createChannel(): Promise<void> {
     try {
-      // Setze den Autor des Kanals
-      const authorUid = this.firestoreService.getUid();
-  
-      // Überprüfe, ob der Autor vorhanden ist
+      const authorUid = this.firestoreService.currentuid;
       if (!authorUid) {
         console.error('Benutzer nicht angemeldet.');
         return;
       }
-  
-      // Setze die Informationen für den Kanal
       const channelData = {
         channelName: this.channelName,
         description: this.channelDescription,
-        author: authorUid, // Setze die UID des Autors
-        // Weitere Eigenschaften des Kanals hier hinzufügen
+        author: authorUid,
       };
-  
-      // Füge den Kanal zur Datenbank hinzu
       const newChannelId = await this.channelService.addChannel(channelData);
-  
-      // Erstelle den Chat für den Kanal
       await this.chatService.createChatForChannel(newChannelId);
-  
-      // Schließe das Dialogfeld
       this.dialogRef.close();
-  
-      // Öffne das Dialogfeld zum Hinzufügen von Personen zum neuen Kanal
       this.openAddPeopleToNewChannelDialog(newChannelId);
     } catch (error) {
       console.error('Fehler beim Erstellen des Kanals:', error);

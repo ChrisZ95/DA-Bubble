@@ -4,7 +4,7 @@ import { FirestoreService } from '../firestore.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ChannelService } from '../services/channel.service';
-import { Firestore, arrayUnion, doc, addDoc, updateDoc } from '@angular/fire/firestore';
+import { Firestore, arrayUnion, doc, addDoc, updateDoc, onSnapshot, collection } from '@angular/fire/firestore';
 import { Channel } from './../../models/channel.class';
 
 @Component({
@@ -28,8 +28,13 @@ export class DialogAddPeopleComponent implements OnInit {
   selectedUsers: any[] = [];
   channel = new Channel();
   currentChannelId: string = '';
+  allChannels: any = [];
 
-  constructor(private dialogRef: MatDialogRef<DialogAddPeopleComponent>, private firestoreService: FirestoreService, public channelService: ChannelService, private readonly firestore: Firestore) {}
+  constructor(private dialogRef: MatDialogRef<DialogAddPeopleComponent>, private firestoreService: FirestoreService, public channelService: ChannelService, private readonly firestore: Firestore) {
+    onSnapshot(collection(this.firestore, 'channels'), (list) => {
+      this.allChannels = list.docs.map((doc) => doc.data());
+    });
+  }
 
   closeAddPeopleDialog(): void {
     this.dialogRef.close();
@@ -41,12 +46,17 @@ export class DialogAddPeopleComponent implements OnInit {
     }).catch(error => {
       console.error('Error fetching users:', error);
     });
+    this.channelService.getChannels().then((channels) => {
+      this.allChannels = channels;
+      console.log('Channels', channels);
+    });
     this.currentChannelId = this.channelService.getCurrentChannelId();
+    console.log(this.currentChannelId)
   }
 
   selectUser(user: any): void {
     this.personName = user.username;
-    this.selectedUsers.push({ userId: user.username });
+    this.selectedUsers.push({ userId: user.uid });
     this.showUserList = false;
   }
 
@@ -69,13 +79,9 @@ export class DialogAddPeopleComponent implements OnInit {
   async addUserToChannel() {
     try {
       const channelDocRef = this.channelService.getChannelDocByID(this.currentChannelId);
-      this.channelMember.push(...this.selectedUsers);
-      const currentMembers = this.channelService.channel.users || [];
-      const updatedMembers = currentMembers.concat(this.channelMember.map(member => {
-        return { userId: member.userId };
-      }));
-      await this.channelService.updateChannel(channelDocRef, { users: updatedMembers });
-      this.selectedUsers = [];
+      const currentUsers = this.channelService.channel.users || [];
+      const updatedUsers = currentUsers.concat(this.selectedUsers.map(user => user.userId)); // Benutze selectedUsers anstatt channelMember
+      await this.channelService.updateChannel(channelDocRef, { users: updatedUsers });
       this.showUserList = false;
     } catch (error) {
       console.error('Fehler beim Hinzufügen der Benutzer zum Kanal:', error);
