@@ -18,6 +18,7 @@ import {
 import { Observable } from 'rxjs';
 import { Channel } from './../../models/channel.class';
 import { FirestoreService } from '../firestore.service';
+import { EventEmitter } from '@angular/core';
 
 @Injectable({
   providedIn: 'root',
@@ -31,10 +32,12 @@ export class ChannelService {
   UserName = '';
   author = '';
   private currentChannelId: string = '';
-  private currentMessageId: string = '';
+  currentMessageId: string = '';
   showChannelChat: boolean = false;
   showThreadWindow: boolean = false;
   messages: any[] = [];
+  comments: any[] = [];
+  currentMessageIdChanged: EventEmitter<string> = new EventEmitter<string>();
 
   constructor(
     private readonly firestore: Firestore,
@@ -178,6 +181,7 @@ export class ChannelService {
 
   setCurrentMessageId(messageId: string) {
     this.currentMessageId = messageId;
+    this.currentMessageIdChanged.emit(messageId);
   }
 
   getCurrentChannelId(): string {

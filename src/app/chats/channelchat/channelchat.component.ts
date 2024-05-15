@@ -6,6 +6,7 @@ import {
   AfterViewInit,
   ElementRef,
   ViewChild,
+  Output,
 } from '@angular/core';
 import { DialogMembersComponent } from '../../dialog-members/dialog-members.component';
 import { DialogChannelInfoComponent } from '../../dialog-channel-info/dialog-channel-info.component';
@@ -23,6 +24,7 @@ import { ChannelService } from '../../services/channel.service';
 import { Firestore, onSnapshot } from '@angular/fire/firestore';
 import { FirestoreService } from '../../firestore.service';
 import { query, where, Query, DocumentData } from 'firebase/firestore';
+import { EventEmitter } from 'stream';
 
 @Component({
   selector: 'app-channelchat',
@@ -48,7 +50,6 @@ export class ChannelchatComponent implements OnInit, AfterViewInit {
   }
 
   @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
-
   currentChannel!: Channel;
   allChannels: any = [];
   allChats: any = [];
@@ -57,6 +58,7 @@ export class ChannelchatComponent implements OnInit, AfterViewInit {
   selectedChannelDescription: string | null = null;
   currentChannelId: string = '';
   allUsers: any[] = [];
+  currentMessageComments: { id: string, comment: string, createdAt: string }[] = [];
 
   openMemberDialog() {
     this.dialog.open(DialogMembersComponent);
@@ -103,6 +105,7 @@ export class ChannelchatComponent implements OnInit, AfterViewInit {
   }
 
   openThreadWindow(messageId: string){
+    this.channelService.currentMessageId = messageId;
     this.channelService.setCurrentMessageId(messageId);
     this.channelService.showThreadWindow = true;
   }

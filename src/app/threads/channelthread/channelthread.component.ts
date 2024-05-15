@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { ChannelService } from '../../services/channel.service';
 import { ChatService } from '../../services/chat.service';
 import { FormsModule } from '@angular/forms';
@@ -6,6 +6,8 @@ import { CommonModule } from '@angular/common';
 import { GenerateIdsService } from '../../services/generate-ids.service';
 import { Firestore, query, collection, onSnapshot } from '@angular/fire/firestore';
 import { TimestampPipe } from '../../shared/pipes/timestamp.pipe';
+import { ChannelchatComponent } from '../../chats/channelchat/channelchat.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-channelthread',
@@ -14,7 +16,7 @@ import { TimestampPipe } from '../../shared/pipes/timestamp.pipe';
   templateUrl: './channelthread.component.html',
   styleUrls: ['./channelthread.component.scss', '../threads.component.scss'],
 })
-export class ChannelthreadComponent {
+export class ChannelthreadComponent implements OnChanges {
   channelId: string = '';
   messageId: string = '';
   comments: string[] = [];
@@ -26,23 +28,28 @@ export class ChannelthreadComponent {
   constructor(private chatService: ChatService,
     private generateId: GenerateIdsService,
     private firestore: Firestore,
-    public channelService: ChannelService) {
-    
-  }
+    public channelService: ChannelService) {}
 
   closeThreadWindow(){
     this.channelService.showThreadWindow = false;
   }
 
-  ngOnInit(): void {
-    this.currentChannelId = this.channelService.getCurrentChannelId();
-    this.currentMessageId = this.channelService.getCurrentMessageId();
-    this.messages = this.channelService.messages;
-    this.loadCommentsForCurrentMessage();
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['currentMessageId']) {
+      this.loadCommentsForCurrentMessage(changes['currentMessageId'].currentValue);
+    }
   }
 
-  loadCommentsForCurrentMessage() {
-    const currentMessage = this.channelService.messages.find(message => message.messageId === this.currentMessageId);
+  ngOnInit(): void {
+    this.channelService.currentMessageIdChanged.subscribe(messageId => {
+      this.loadCommentsForCurrentMessage(messageId);
+    });
+    this.currentMessageId = this.channelService.getCurrentMessageId();
+    this.loadCommentsForCurrentMessage(this.currentMessageId);
+  }
+
+  loadCommentsForCurrentMessage(messageId: string) {
+    const currentMessage = this.channelService.messages.find(message => message.messageId === messageId);
     if (currentMessage) {
       this.currentMessageComments = currentMessage.comments;
     } else {

@@ -87,6 +87,7 @@ export class MainComponent implements OnInit {
   showEmptyChat: boolean = false;
   showOwnChat: boolean = true;
   userDetails: any = '';
+  selectedMessageId: string = '';
 
   showHideWorkspace() {
     this.displayWorkspace = !this.displayWorkspace;
