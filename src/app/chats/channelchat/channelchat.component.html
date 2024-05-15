@@ -6,14 +6,11 @@
     <div (click)="openMemberDialog()" class="d-flex">
       <div class="images-participants">
         <ng-container *ngFor="let member of channelService.UserName.slice(0, 3); let i = index">
-          <!-- Zeige die Avatare der ersten drei Mitglieder an -->
           <img [src]="getMemberAvatar(member)" alt="">
         </ng-container>
       </div>
-      <!-- Überprüfe, ob es mehr als drei Mitglieder gibt -->
       <ng-container *ngIf="channelService.UserName.length > 3">
-        <!-- Zeige die Anzahl der weiteren Mitglieder an -->
-        <div class="additional-members">{{ channelService.UserName.length - 3 }}+</div>
+        <div class="additional-members">+{{ channelService.UserName.length - 3 }}</div>
       </ng-container>
     </div>
     <div class="add-participants">

@@ -42,12 +42,16 @@ export class ChannelchatComponent implements OnInit, AfterViewInit {
     onSnapshot(collection(this.firestore, 'channels'), (list) => {
       this.allChannels = list.docs.map((doc) => doc.data());
     });
+    onSnapshot(collection(this.firestore, 'chats'), (list) => {
+      this.allChats = list.docs.map((doc) => doc.data());
+    });
   }
 
   @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
 
   currentChannel!: Channel;
   allChannels: any = [];
+  allChats: any = [];
   channel = new Channel();
   selectedChannelName: string | null = null;
   selectedChannelDescription: string | null = null;

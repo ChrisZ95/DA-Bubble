@@ -4,7 +4,7 @@ import { ChatService } from '../../services/chat.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { GenerateIdsService } from '../../services/generate-ids.service';
-import { Firestore } from '@angular/fire/firestore';
+import { Firestore, query, collection, onSnapshot } from '@angular/fire/firestore';
 import { TimestampPipe } from '../../shared/pipes/timestamp.pipe';
 
 @Component({
@@ -39,7 +39,6 @@ export class ChannelthreadComponent {
     this.currentMessageId = this.channelService.getCurrentMessageId();
     this.messages = this.channelService.messages;
     this.loadCommentsForCurrentMessage();
-    console.log('Messages123', this.channelService.messages);
   }
 
   loadCommentsForCurrentMessage() {

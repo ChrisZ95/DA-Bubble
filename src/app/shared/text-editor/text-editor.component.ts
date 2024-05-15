@@ -10,7 +10,7 @@ import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../services/chat.service';
 import { log } from 'console';
 import { GenerateIdsService } from '../../services/generate-ids.service';
-import { Firestore, doc, collection, addDoc } from '@angular/fire/firestore';
+import { Firestore, doc, collection, addDoc, onSnapshot, query } from '@angular/fire/firestore';
 import { ChannelService } from '../../services/channel.service';
 import { FirestoreService } from '../../firestore.service';
 
@@ -59,11 +59,10 @@ export class TextEditorComponent implements OnInit {
         createdAt: timestampString,
       };
       this.chatService.sendDataToChannel(currentChannelId, message);
-
+      this.channelService.messages.push(message);
       this.message = '';
     } else {
       console.error('Kein aktueller Kanal ausgewählt.');
-      // Fehlerfall, falls kein aktueller Kanal ausgewählt ist
     }
   }
 
@@ -77,7 +76,7 @@ export class TextEditorComponent implements OnInit {
       try {
         const dataURL = await this.firestoreService.uploadDataIntoStorage(file);
         console.log('dataURL', dataURL);
-        this.insertImage(dataURL); // Assuming insertImage handles the insertion of the image URL correctly
+        this.insertImage(dataURL);
       } catch (error) {
         console.error('Error uploading file:', error);
       }
@@ -91,5 +90,24 @@ export class TextEditorComponent implements OnInit {
     }
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.subscribeToMessages();
+  }
+
+  subscribeToMessages() {
+    const currentChannelId = this.channelService.getCurrentChannelId();
+    if (currentChannelId) {
+      const q = query(
+        collection(this.firestore, 'channels', currentChannelId, 'messages')
+      );
+      onSnapshot(q, (snapshot) => {
+        snapshot.docChanges().forEach((change) => {
+          if (change.type === 'added') {
+            const messageData = change.doc.data();
+            this.channelService.messages.push(messageData);
+          }
+        });
+      });
+    }
+  }
 }
