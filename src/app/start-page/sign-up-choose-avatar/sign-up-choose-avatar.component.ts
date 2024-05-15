@@ -40,6 +40,7 @@ export class SignUpChooseAvatarComponent implements OnInit {
   ]
 
   async ngOnInit() {
+    debugger
     this.uid = await this.firestoreService.getUid();
     this.userName = await this.firestoreService.getUserName(this.uid);
     console.log(this.uid);
@@ -108,6 +109,5 @@ export class SignUpChooseAvatarComponent implements OnInit {
     this.downloadedUserIcon = await  this.firestoreService.downloadUserIcon(uid);
     this.img = document.getElementById('userIcon');
     this.img.setAttribute('src', this.downloadedUserIcon);
-    console.log(this.downloadedUserIcon)
   }
 }

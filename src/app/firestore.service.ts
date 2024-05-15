@@ -82,6 +82,7 @@ export class FirestoreService {
 
   /* Speichert die uid  beim signup (function signUpUser)*/
   setuid(uid: string) {
+    debugger
     this.signInuid = uid;
     console.log(this.signInuid)
   }
@@ -98,6 +99,7 @@ export class FirestoreService {
 
   /* Wird in der  sign-up-choose-avatar.component aufgerufen und speichert die URL des icons in der Datenbank*/
   async uploadUserIconIntoDatabase(uid: string, userIconTokenURL: string): Promise<void> {
+    debugger
     console.log(uid)
     console.log(userIconTokenURL)
     try {
@@ -215,6 +217,7 @@ export class FirestoreService {
         uid: user.uid,
         signUpdate: signUpdate,
       });
+      this.setuid(user.uid);
       return 'auth';
     } catch (error: any) {
       console.error('Error creating user:', error);
