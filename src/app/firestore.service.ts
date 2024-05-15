@@ -11,6 +11,7 @@ import {
   sendPasswordResetEmail,
   OAuthProvider,
   Auth,
+  signOut
 } from '@angular/fire/auth';
 import { FirebaseApp } from '@angular/fire/app';
 import {
@@ -54,6 +55,7 @@ export class FirestoreService {
   storageId: any;
   signInuid: any;
 
+
   constructor(private myFirebaseApp: FirebaseApp, public router: Router) {
     this.auth = getAuth(myFirebaseApp);
     this.auth.languageCode = 'de';
@@ -61,6 +63,23 @@ export class FirestoreService {
     const provider = new GoogleAuthProvider();
     this.currentuid = localStorage.getItem('uid');
   }
+
+  currentAuth() {
+    return this.auth;
+  }
+
+  logOut() {
+    debugger
+    signOut(this.auth) // Beendet die aktuelle Authentifizierungssitzung
+      .then(() => {
+        localStorage.clear(); // Löscht alle im localStorage gespeicherten Daten
+        this.router.navigate(['']); // Navigiert zur Startseite
+      })
+      .catch((error) => {
+        console.error('Error signing out:', error);
+      });
+  }
+
 
   /* Name des Users für die sign-up-choose-avatar.component*/
   async getUserName(uid: any) {
@@ -82,7 +101,6 @@ export class FirestoreService {
 
   /* Speichert die uid  beim signup (function signUpUser)*/
   setuid(uid: string) {
-    debugger
     this.signInuid = uid;
     console.log(this.signInuid)
   }
@@ -99,7 +117,6 @@ export class FirestoreService {
 
   /* Wird in der  sign-up-choose-avatar.component aufgerufen und speichert die URL des icons in der Datenbank*/
   async uploadUserIconIntoDatabase(uid: string, userIconTokenURL: string): Promise<void> {
-    debugger
     console.log(uid)
     console.log(userIconTokenURL)
     try {
@@ -178,7 +195,8 @@ export class FirestoreService {
   /* Überwacht den Status des Users (Angemeldet / Abgemeldet) */
   observeAuthState(): void {
     onAuthStateChanged(this.auth, (user) => {
-      console.log(user)
+      console.log('Der aktuelle user',user)
+      console.log(this.auth)
       if (user) {
         // User ist angemeldet
         console.log('User is signed in:', user.uid);
@@ -202,9 +220,12 @@ export class FirestoreService {
     signUpdate: string
   ): Promise<string | null> {
     debugger
+    const auth = getAuth(this.myFirebaseApp);
+    console.log(this.auth)
+    console.log(auth)
     try {
       const userCredential = await createUserWithEmailAndPassword(
-        this.auth,
+        auth,
         email,
         password
       );
@@ -217,6 +238,7 @@ export class FirestoreService {
         uid: user.uid,
         signUpdate: signUpdate,
       });
+
       this.setuid(user.uid);
       return 'auth';
     } catch (error: any) {
@@ -240,6 +262,8 @@ export class FirestoreService {
       }
     }
   }
+
+
 
   /* Nutzer wird eingeloggt */
   async logInUser(
@@ -380,7 +404,6 @@ export class FirestoreService {
 
   /* Funktionalität um das Passwort zu ändern */
   async changePassword(userId: any, newPassword: string): Promise<void> {
-    // debugger;
     console.log(userId, newPassword);
     try {
       await updatePassword(this.auth.currentUser, newPassword);

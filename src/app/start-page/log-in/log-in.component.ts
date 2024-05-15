@@ -4,7 +4,7 @@ import { NgForm } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
 import { FirestoreService } from '../../firestore.service';
 import { CommonModule } from '@angular/common';
-import { GoogleAuthProvider, OAuthProvider } from '@angular/fire/auth';
+import { GoogleAuthProvider, OAuthProvider, getAuth } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-log-in',
@@ -25,7 +25,9 @@ export class LogInComponent implements OnInit {
   showPasswordValue = false;
 
   ngOnInit(): void {
-    this.firestoreService.createTimeStamp()
+    this.firestoreService.createTimeStamp();
+    const currentAuthStatus = this.firestoreService.currentAuth()
+    console.log('AUTH im login bereich',currentAuthStatus)
   }
 
   showPassword() {

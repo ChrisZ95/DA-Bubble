@@ -40,14 +40,12 @@ export class SignUpChooseAvatarComponent implements OnInit {
   ]
 
   async ngOnInit() {
-    debugger
     this.uid = await this.firestoreService.getUid();
     this.userName = await this.firestoreService.getUserName(this.uid);
     console.log(this.uid);
   }
 
   async customUserIconURL() {
-    debugger
     const fileInput = document.getElementById('profile-picture-input') as HTMLInputElement;
     const file = fileInput.files?.[0];
     if (file) {
@@ -70,7 +68,6 @@ export class SignUpChooseAvatarComponent implements OnInit {
 
   chooseAvatar(index: number) {
     console.log(index)
-    debugger
     this.showInputInformationUserIcon = false;
     this.selectedAvatar = this.avatar[index];
     if (index == 0) {
@@ -93,7 +90,6 @@ export class SignUpChooseAvatarComponent implements OnInit {
 
   createAccount() {
     this.showInputInformationUserIcon = false;
-    debugger
     if ([0, 1, 2, 3, 4, 5, 6].includes(this.iconIndex)) {
       this.accountCreated.emit();
       console.log('account wurde erstellt')
@@ -104,7 +100,6 @@ export class SignUpChooseAvatarComponent implements OnInit {
   }
 
   async uploadUserIcon(uid: string, userIconTokenURL: any) {
-    debugger
     this.userData = await this.firestoreService.uploadUserIconIntoDatabase(uid, userIconTokenURL);
     this.downloadedUserIcon = await  this.firestoreService.downloadUserIcon(uid);
     this.img = document.getElementById('userIcon');

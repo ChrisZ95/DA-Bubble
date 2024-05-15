@@ -1,3 +1,4 @@
+import { FirestoreService } from './../firestore.service';
 import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -13,7 +14,7 @@ import { Router } from '@angular/router';
   styleUrl: './header.component.scss'
 })
 export class HeaderComponent {
-  constructor(public dialog: MatDialog,  private router: Router) {}
+  constructor(public dialog: MatDialog,  private router: Router, private firestoreService: FirestoreService) {}
 
   openProfileDialog() {
     this.dialog.open(DialogProfileComponent);
@@ -21,5 +22,6 @@ export class HeaderComponent {
 
   logOut() {
     this.router.navigate(['']);
+    this.firestoreService.logOut()
   }
 }
