@@ -71,7 +71,7 @@ export class ChannelchatComponent implements OnInit, AfterViewInit {
   allUsers: any[] = [];
   currentMessageComments: { id: string, comment: string, createdAt: string }[] = [];
   isHoveredArray: boolean[] = [];
-  messagesWithAuthors: any[] = [];
+  // messagesWithAuthors: any[] = [];
   private channelSubscription: Subscription | undefined;
 
   openMemberDialog() {
@@ -117,7 +117,7 @@ export class ChannelchatComponent implements OnInit, AfterViewInit {
       console.error('Error fetching users:', error);
     });
     const messages = await this.channelService.loadMessagesForChannel(channelId);
-    this.messagesWithAuthors = await Promise.all(messages.map(async message => {
+    this.channelService.messagesWithAuthors = await Promise.all(messages.map(async message => {
       const authorName = await this.channelService.getAuthorName(message.uid);
       return { ...message, authorName };
     }));
@@ -125,7 +125,7 @@ export class ChannelchatComponent implements OnInit, AfterViewInit {
 
   async onChannelChange(channelId: string) {
     const messages = await this.channelService.loadMessagesForChannel(channelId);
-    this.messagesWithAuthors = await Promise.all(messages.map(async message => {
+    this.channelService.messagesWithAuthors = await Promise.all(messages.map(async message => {
       const authorName = await this.channelService.getAuthorName(message.uid);
       return { ...message, authorName };
     }));

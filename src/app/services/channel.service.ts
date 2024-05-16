@@ -37,6 +37,7 @@ export class ChannelService {
   showThreadWindow: boolean = false;
   messages: any[] = [];
   comments: any[] = [];
+  messagesWithAuthors: any[] = [];
   currentMessageIdChanged: EventEmitter<string> = new EventEmitter<string>();
   currentChannelIdChanged: EventEmitter<string> = new EventEmitter<string>();
 

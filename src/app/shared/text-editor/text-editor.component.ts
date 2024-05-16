@@ -79,7 +79,7 @@ export class TextEditorComponent implements OnInit {
       };
   
       this.chatService.sendDataToChannel(currentChannelId, message);
-      this.channelService.messages.push(message);
+      this.channelService.messagesWithAuthors.push(message);
       this.message = '';
     } else {
       console.error('Kein aktueller Kanal ausgewählt oder Benutzer nicht angemeldet.');
@@ -125,7 +125,7 @@ export class TextEditorComponent implements OnInit {
         snapshot.docChanges().forEach((change) => {
           if (change.type === 'added') {
             const messageData = change.doc.data();
-            this.channelService.messages.push(messageData);
+            this.channelService.messagesWithAuthors.push(messageData);
           }
         });
       });
