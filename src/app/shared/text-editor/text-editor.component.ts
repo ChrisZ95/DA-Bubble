@@ -77,7 +77,6 @@ export class TextEditorComponent implements OnInit {
         createdAt: timestampString,
         uid: currentUid,
       };
-  
       this.chatService.sendDataToChannel(currentChannelId, message);
       this.channelService.messagesWithAuthors.push(message);
       this.message = '';

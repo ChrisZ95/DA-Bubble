@@ -38,6 +38,7 @@ export class ChannelService {
   messages: any[] = [];
   comments: any[] = [];
   messagesWithAuthors: any[] = [];
+  commentsWithAuthors: any[] = [];
   currentMessageIdChanged: EventEmitter<string> = new EventEmitter<string>();
   currentChannelIdChanged: EventEmitter<string> = new EventEmitter<string>();
 

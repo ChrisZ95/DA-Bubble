@@ -71,7 +71,6 @@ export class ChannelchatComponent implements OnInit, AfterViewInit {
   allUsers: any[] = [];
   currentMessageComments: { id: string, comment: string, createdAt: string }[] = [];
   isHoveredArray: boolean[] = [];
-  // messagesWithAuthors: any[] = [];
   private channelSubscription: Subscription | undefined;
 
   openMemberDialog() {

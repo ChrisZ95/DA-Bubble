@@ -8,14 +8,14 @@
     </div>
 
     <div *ngFor="let comment of currentMessageComments" class="history">
-        <div class="creator">
+        <div class="creator" [ngClass]="{'justify-end': comment.uid === this.firestoreService.currentuid, 'justify-start': comment.uid !== this.firestoreService.currentuid}">
             <div class="avatar">
                 <img src="../../../assets/images/avatar.png" alt="">
             </div>
             <div class="conversation">
                 <div class="user-timestamp">
                     <div class="user">
-                        <h5>Username</h5>
+                        <h5>{{ comment.uid }}</h5>
                         <p>{{ comment.createdAt | timestamp: 'time' }}</p>
                     </div>
                     <div class="text">

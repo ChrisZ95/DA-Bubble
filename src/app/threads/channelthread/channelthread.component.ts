@@ -9,6 +9,7 @@ import { TimestampPipe } from '../../shared/pipes/timestamp.pipe';
 import { ChannelchatComponent } from '../../chats/channelchat/channelchat.component';
 import { Subscription } from 'rxjs';
 import { EventEmitter } from 'node:stream';
+import { FirestoreService } from '../../firestore.service';
 
 @Component({
   selector: 'app-channelthread',
@@ -23,13 +24,14 @@ export class ChannelthreadComponent implements OnChanges {
   comments: string[] = [];
   currentChannelId: string = '';
   currentMessageId: string = '';
-  currentMessageComments: { id: string, comment: string, createdAt: string }[] = []; 
+  currentMessageComments: { id: string, comment: string, createdAt: string, uid: string }[] = []; 
   messages: any[] = [];
 
   constructor(private chatService: ChatService,
     private generateId: GenerateIdsService,
     private firestore: Firestore,
-    public channelService: ChannelService) {}
+    public channelService: ChannelService,
+    public firestoreService: FirestoreService) {}
 
   closeThreadWindow(){
     this.channelService.showThreadWindow = false;
@@ -41,7 +43,7 @@ export class ChannelthreadComponent implements OnChanges {
     }
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.channelService.currentMessageIdChanged.subscribe(messageId => {
       this.loadCommentsForCurrentMessage(messageId);
     });
@@ -62,6 +64,7 @@ export class ChannelthreadComponent implements OnChanges {
 
   sendCommentToMessage() {
     const currentMessageId = this.channelService.getCurrentMessageId();
+    const currentUid = this.firestoreService.currentuid;
     if (currentMessageId) {
       const timestamp: number = Date.now();
       const timestampString: string = timestamp.toString();
@@ -69,8 +72,8 @@ export class ChannelthreadComponent implements OnChanges {
         id: this.generateId.generateId(),
         comment: this.comment,
         createdAt: timestampString,
+        uid: currentUid,
       };
-  
       // Überprüfe, ob currentMessageComments initialisiert wurde
       if (this.currentMessageComments) {
         this.currentMessageComments.push(newComment);
@@ -78,7 +81,6 @@ export class ChannelthreadComponent implements OnChanges {
         // Wenn currentMessageComments nicht initialisiert wurde, initialisiere es mit einem leeren Array und füge dann den Kommentar hinzu
         this.currentMessageComments = [newComment];
       }
-  
       this.chatService.sendCommentToChannel(currentMessageId, newComment);
       this.updateCommentCount(currentMessageId);
       this.updateLastCommentTime(currentMessageId, timestampString);
