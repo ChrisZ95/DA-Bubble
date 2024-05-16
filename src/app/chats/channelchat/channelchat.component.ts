@@ -48,6 +48,13 @@ export class ChannelchatComponent implements OnInit, AfterViewInit {
     onSnapshot(collection(this.firestore, 'chats'), (list) => {
       this.allChats = list.docs.map((doc) => doc.data());
     });
+    for (let i = 0; i < this.channelService.messages.length; i++) {
+      this.isHoveredArray.push(false);
+    }
+  }
+
+  updateHoverState(index: number, isHovered: boolean) {
+    this.isHoveredArray[index] = isHovered;
   }
 
   @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
@@ -60,7 +67,7 @@ export class ChannelchatComponent implements OnInit, AfterViewInit {
   currentChannelId: string = '';
   allUsers: any[] = [];
   currentMessageComments: { id: string, comment: string, createdAt: string }[] = [];
-  isHovered: boolean = false;
+  isHoveredArray: boolean[] = [];
 
   openMemberDialog() {
     this.dialog.open(DialogMembersComponent);

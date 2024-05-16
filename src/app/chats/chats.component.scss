@@ -120,12 +120,25 @@
 
 .popup-window {
   position: absolute;
-  right: 0;
-  border-radius: 50px 50px 0px 50px;
-  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  top: -18px;
+  right: 20px;
+  height: 46px;
+  border: 1px solid;
+  border-radius: 25px 25px 0px 25px;
+  padding: 3px 15px 3px 20px;
   background-color: white;
   >img{
-    height: 24px;
-    width: 24px;
+    height: 20px;
+    width: 20px;
+    padding: 10px;
+    border-radius: 100%;
+    &:hover{
+      background-color: #ECEEFE;
+      cursor: pointer;
+    }
   }
 }
