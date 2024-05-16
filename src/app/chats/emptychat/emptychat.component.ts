@@ -250,7 +250,9 @@ export class EmptychatComponent implements OnInit {
         this.selectedUsers.length === 0 &&
         this.eRef.nativeElement.querySelector('input').value === ''
       ) {
-        this.showUserChannelPlaceholder = true;
+        if (this.filteredEntities == undefined) {
+          this.showUserChannelPlaceholder = true;
+        }
       }
       this.showDropdown = true;
     }
