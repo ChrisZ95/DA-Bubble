@@ -20,7 +20,7 @@
 </div>
 
 <div class="scrollbar" #scrollContainer>
-  <div *ngFor="let message of channelService.messages; let i = index">
+  <div *ngFor="let message of messagesWithAuthors; let i = index">
     <div class="separator">
       <div class="separator-line"></div>
       <div class="separator-date">
@@ -31,7 +31,8 @@
 
     <div class="conversation-container"
       (mouseenter)="updateHoverState(i, true)" 
-      (mouseleave)="updateHoverState(i, false)">
+      (mouseleave)="updateHoverState(i, false)"
+      [ngClass]="{'justify-end': message.uid === this.firestoreService.currentuid, 'justify-start': message.uid !== this.firestoreService.currentuid}">
       <div class="popup-window" *ngIf="isHoveredArray[i]">
         <img src="./../../../assets/images/green-tick.png" alt="">
         <img src="./../../../assets/images/hands-emoji.png" alt="">
@@ -41,7 +42,7 @@
       <img src="../../../assets/images/avatar.png" alt="">
       <div class="conversation">
         <div class="name-timestamp">
-          <h5 (click)="openContactInfoDialog()"><strong>FullName</strong></h5>
+          <h5 (click)="openContactInfoDialog()"><strong>{{ message.authorName }}</strong></h5>
           <p>{{ message.createdAt | timestamp: 'time' }}</p>
         </div>
 

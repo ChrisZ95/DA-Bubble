@@ -39,7 +39,7 @@ export class ChannelchatComponent implements OnInit, AfterViewInit {
     public dialog: MatDialog,
     public channelService: ChannelService,
     private readonly firestore: Firestore,
-    private firestoreService: FirestoreService,
+    public firestoreService: FirestoreService,
     public chatService: ChatService
   ) {
     onSnapshot(collection(this.firestore, 'channels'), (list) => {
@@ -51,6 +51,9 @@ export class ChannelchatComponent implements OnInit, AfterViewInit {
     for (let i = 0; i < this.channelService.messages.length; i++) {
       this.isHoveredArray.push(false);
     }
+    this.channelSubscription = this.channelService.currentChannelIdChanged.subscribe((channelId: string) => {
+      this.onChannelChange(channelId);
+    });
   }
 
   updateHoverState(index: number, isHovered: boolean) {
@@ -68,6 +71,8 @@ export class ChannelchatComponent implements OnInit, AfterViewInit {
   allUsers: any[] = [];
   currentMessageComments: { id: string, comment: string, createdAt: string }[] = [];
   isHoveredArray: boolean[] = [];
+  messagesWithAuthors: any[] = [];
+  private channelSubscription: Subscription | undefined;
 
   openMemberDialog() {
     this.dialog.open(DialogMembersComponent);
@@ -99,7 +104,7 @@ export class ChannelchatComponent implements OnInit, AfterViewInit {
     }
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.currentChannelId = this.channelService.getCurrentChannelId();
     const channelId = this.currentChannelId;
     this.channelService.getChannels().then((channels) => {
@@ -111,6 +116,19 @@ export class ChannelchatComponent implements OnInit, AfterViewInit {
     }).catch(error => {
       console.error('Error fetching users:', error);
     });
+    const messages = await this.channelService.loadMessagesForChannel(channelId);
+    this.messagesWithAuthors = await Promise.all(messages.map(async message => {
+      const authorName = await this.channelService.getAuthorName(message.uid);
+      return { ...message, authorName };
+    }));
+  }
+
+  async onChannelChange(channelId: string) {
+    const messages = await this.channelService.loadMessagesForChannel(channelId);
+    this.messagesWithAuthors = await Promise.all(messages.map(async message => {
+      const authorName = await this.channelService.getAuthorName(message.uid);
+      return { ...message, authorName };
+    }));
   }
 
   openThreadWindow(messageId: string){

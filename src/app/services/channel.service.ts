@@ -31,13 +31,14 @@ export class ChannelService {
   channelDescription = '';
   UserName = '';
   author = '';
-  private currentChannelId: string = '';
+  currentChannelId: string = '';
   currentMessageId: string = '';
   showChannelChat: boolean = false;
   showThreadWindow: boolean = false;
   messages: any[] = [];
   comments: any[] = [];
   currentMessageIdChanged: EventEmitter<string> = new EventEmitter<string>();
+  currentChannelIdChanged: EventEmitter<string> = new EventEmitter<string>();
 
   constructor(
     private readonly firestore: Firestore,
@@ -177,6 +178,8 @@ export class ChannelService {
 
   setCurrentChannelId(channelId: string) {
     this.currentChannelId = channelId;
+    console.log('Current channel ID changed to:', channelId);
+    this.currentChannelIdChanged.emit(channelId);
   }
 
   setCurrentMessageId(messageId: string) {

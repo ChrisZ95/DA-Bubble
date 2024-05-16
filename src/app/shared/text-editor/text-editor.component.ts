@@ -21,6 +21,7 @@ import {
 } from '@angular/fire/firestore';
 import { ChannelService } from '../../services/channel.service';
 import { FirestoreService } from '../../firestore.service';
+import { EventEmitter } from 'stream';
 
 @Component({
   selector: 'app-text-editor',
@@ -33,6 +34,7 @@ export class TextEditorComponent implements OnInit {
   @ViewChild('fileInput', { static: true })
   fileInput!: ElementRef<HTMLInputElement>;
   message: string = '';
+
   constructor(
     private chatService: ChatService,
     private generateId: GenerateIdsService,
@@ -64,19 +66,23 @@ export class TextEditorComponent implements OnInit {
 
   sendMessageToChannel() {
     const currentChannelId = this.channelService.getCurrentChannelId();
-    if (currentChannelId) {
+    const currentUid = this.firestoreService.currentuid;
+  
+    if (currentChannelId && currentUid) {
       const timestamp: number = Date.now();
       const timestampString: string = timestamp.toString();
       const message = {
         messageId: this.generateId.generateId(),
         message: this.message,
         createdAt: timestampString,
+        uid: currentUid,
       };
+  
       this.chatService.sendDataToChannel(currentChannelId, message);
       this.channelService.messages.push(message);
       this.message = '';
     } else {
-      console.error('Kein aktueller Kanal ausgewählt.');
+      console.error('Kein aktueller Kanal ausgewählt oder Benutzer nicht angemeldet.');
     }
   }
 

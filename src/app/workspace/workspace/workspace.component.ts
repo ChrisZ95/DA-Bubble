@@ -65,16 +65,7 @@ export class WorkspaceComponent implements OnInit {
   openChannelChat(channelId: string) {
     this.channelService.setCurrentChannelId(channelId);
     this.channelService.showChannelChat = true;
-    this.chatService.showOwnChat = false;
-    this.channelService
-      .loadMessagesForChannel(channelId)
-      .then((messages) => {
-        // Nachrichten wurden erfolgreich geladen, aktualisieren Sie den ChannelchatComponent
-        // Beispiel: this.channelchatComponent.messages = messages;
-      })
-      .catch((error) => {
-        console.error('Error loading messages for channel:', error);
-      });
+    this.chatService.showOwnChat = false; 
     this.channelService.showThreadWindow = false;
   }
 
@@ -99,5 +90,6 @@ export class WorkspaceComponent implements OnInit {
       this.allChannels = channels;
       console.log('Channels', channels);
     });
+    console.log('Aktueller User ist:', this.firestoreService.currentuid)
   }
 }
