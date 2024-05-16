@@ -16,7 +16,7 @@
         <app-emptychat />
       </div>
 
-      <div *ngIf="showOwnChat" class="chat">
+      <div *ngIf="chatService.showOwnChat" class="chat">
         <app-ownchat [userDetails]="userDetails" />
       </div>
 

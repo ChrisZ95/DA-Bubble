@@ -15,7 +15,7 @@ import {
   getDocs,
   Query,
 } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { Channel } from './../../models/channel.class';
 import { FirestoreService } from '../firestore.service';
 import { EventEmitter } from '@angular/core';
@@ -217,10 +217,10 @@ export class ChannelService {
       }
     });
     return this.messages;
-  } catch (error) {
-    console.error('Error loading messages for channel:', error);
-    return [];
-  }
+    } catch (error) {
+      console.error('Error loading messages for channel:', error);
+      return [];
+    }
   }
 
   async getUserById(userId: string): Promise<any> {

@@ -83,6 +83,7 @@ export class TextEditorComponent implements OnInit {
   triggerFileInput(): void {
     this.fileInput.nativeElement.click();
   }
+  
   async customDataURL() {
     const fileInput = document.getElementById('data-input') as HTMLInputElement;
     const file = fileInput.files?.[0];

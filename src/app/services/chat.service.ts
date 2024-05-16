@@ -33,6 +33,7 @@ export class ChatService {
   loadedchatInformation: any;
   chatDocId: any;
   allPotentialChatUsers: any[] = [];
+  showOwnChat: boolean = true;
 
   constructor(
     private firestore: Firestore,

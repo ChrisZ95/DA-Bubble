@@ -25,6 +25,7 @@ import { Firestore, onSnapshot } from '@angular/fire/firestore';
 import { FirestoreService } from '../../firestore.service';
 import { query, where, Query, DocumentData } from 'firebase/firestore';
 import { EventEmitter } from 'stream';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-channelchat',

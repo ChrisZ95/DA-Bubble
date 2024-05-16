@@ -44,7 +44,7 @@ export class WorkspaceComponent implements OnInit {
     private readonly firestore: Firestore,
     private firestoreService: FirestoreService,
     public channelService: ChannelService,
-    private chat: ChatService
+    public chatService: ChatService
   ) {
     onSnapshot(collection(this.firestore, 'channels'), (list) => {
       this.allChannels = list.docs.map((doc) => doc.data());
@@ -65,6 +65,7 @@ export class WorkspaceComponent implements OnInit {
   openChannelChat(channelId: string) {
     this.channelService.setCurrentChannelId(channelId);
     this.channelService.showChannelChat = true;
+    this.chatService.showOwnChat = false;
     this.channelService
       .loadMessagesForChannel(channelId)
       .then((messages) => {
@@ -74,6 +75,7 @@ export class WorkspaceComponent implements OnInit {
       .catch((error) => {
         console.error('Error loading messages for channel:', error);
       });
+    this.channelService.showThreadWindow = false;
   }
 
   openEmptyChat() {

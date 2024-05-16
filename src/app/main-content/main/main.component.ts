@@ -23,6 +23,7 @@ import { ChannelService } from '../../services/channel.service';
 import { OwnchatComponent } from '../../chats/ownchat/ownchat.component';
 import { EmptychatComponent } from '../../chats/emptychat/emptychat.component';
 import { FirestoreService } from '../../firestore.service';
+import { ChatService } from '../../services/chat.service';
 
 @Component({
   selector: 'app-main',
@@ -81,11 +82,11 @@ import { FirestoreService } from '../../firestore.service';
 export class MainComponent implements OnInit {
   constructor(
     private channelService: ChannelService,
-    public firestoreService: FirestoreService
+    public firestoreService: FirestoreService,
+    public chatService: ChatService
   ) {}
   displayWorkspace: boolean = true;
   showEmptyChat: boolean = false;
-  showOwnChat: boolean = true;
   userDetails: any = '';
   selectedMessageId: string = '';
 
@@ -103,12 +104,12 @@ export class MainComponent implements OnInit {
 
   openEmptyChat() {
     this.showEmptyChat = !this.showEmptyChat;
-    this.showOwnChat = false;
+    this.chatService.showOwnChat = false;
   }
 
   openChat(userDetails: any) {
     this.showEmptyChat = false;
-    this.showOwnChat = true;
+    this.chatService.showOwnChat = true;
     this.userDetails = userDetails;
   }
 

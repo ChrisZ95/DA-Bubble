@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { ChannelService } from '../../services/channel.service';
 import { ChatService } from '../../services/chat.service';
 import { FormsModule } from '@angular/forms';
@@ -8,6 +8,7 @@ import { Firestore, query, collection, onSnapshot } from '@angular/fire/firestor
 import { TimestampPipe } from '../../shared/pipes/timestamp.pipe';
 import { ChannelchatComponent } from '../../chats/channelchat/channelchat.component';
 import { Subscription } from 'rxjs';
+import { EventEmitter } from 'node:stream';
 
 @Component({
   selector: 'app-channelthread',
@@ -64,17 +65,41 @@ export class ChannelthreadComponent implements OnChanges {
     if (currentMessageId) {
       const timestamp: number = Date.now();
       const timestampString: string = timestamp.toString();
-      const comment = {
+      const newComment = {
         id: this.generateId.generateId(),
         comment: this.comment,
         createdAt: timestampString,
       };
-      this.chatService.sendCommentToChannel(currentMessageId, comment);
-
+  
+      // Überprüfe, ob currentMessageComments initialisiert wurde
+      if (this.currentMessageComments) {
+        this.currentMessageComments.push(newComment);
+      } else {
+        // Wenn currentMessageComments nicht initialisiert wurde, initialisiere es mit einem leeren Array und füge dann den Kommentar hinzu
+        this.currentMessageComments = [newComment];
+      }
+  
+      this.chatService.sendCommentToChannel(currentMessageId, newComment);
+      this.updateCommentCount(currentMessageId);
+      this.updateLastCommentTime(currentMessageId, timestampString);
       this.comment = '';
     } else {
       console.error('Kein aktueller Kanal ausgewählt.');
       // Fehlerfall, falls kein aktueller Kanal ausgewählt ist
+    }
+  }
+
+  updateCommentCount(messageId: string): void {
+    const message = this.channelService.messages.find(msg => msg.messageId === messageId);
+    if (message) {
+      message.commentCount++;
+    }
+  }
+
+  updateLastCommentTime(messageId: string, timestamp: string): void {
+    const message = this.channelService.messages.find(msg => msg.messageId === messageId);
+    if (message) {
+      message.lastCommentTime = timestamp;
     }
   }
 }

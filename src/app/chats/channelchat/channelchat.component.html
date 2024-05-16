@@ -43,10 +43,9 @@
           </div>
         </div>
 
-        <div class="reply">
+        <div class="reply" *ngIf="message.commentCount > 0">
           <div (click)="openThreadWindow(message.messageId)">{{ message.commentCount }} Antworten</div>
-          <p> Letzte Antwort {{ message.lastCommentTime | timestamp: 'time' }}
-          </p>
+          <p> Letzte Antwort {{ message.lastCommentTime | timestamp: 'time' }}</p>
         </div>
 
       </div>
