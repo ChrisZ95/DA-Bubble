@@ -65,7 +65,7 @@ export class WorkspaceComponent implements OnInit {
   openChannelChat(channelId: string) {
     this.channelService.setCurrentChannelId(channelId);
     this.channelService.showChannelChat = true;
-    this.chatService.showOwnChat = false; 
+    this.chatService.showOwnChat = false;
     this.channelService.showThreadWindow = false;
   }
 

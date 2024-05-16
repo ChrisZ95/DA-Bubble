@@ -12,7 +12,7 @@ import { NgForm } from '@angular/forms';
   templateUrl: './sign-up.component.html',
   styleUrl: './sign-up.component.scss'
 })
-export class SignUpComponent {
+export class SignUpComponent implements OnInit{
   @Output() backToLoginClicked: EventEmitter<any> = new EventEmitter();
   @Output() continueToChooseAvatar: EventEmitter<any> = new EventEmitter();
   @Output() openPrivacyPolice: EventEmitter<any> = new EventEmitter();
@@ -25,6 +25,11 @@ export class SignUpComponent {
   showInputInformationPrivacyPolice: boolean = false;
   newDate: any;
   showPasswordValue = false;
+
+  ngOnInit(): void {
+    const allVariabeln = this.firestoreService.getAllVariables()
+    console.log('Alle variabeln',allVariabeln)
+  }
 
   showPassword() {
     if(!this.showPasswordValue) {

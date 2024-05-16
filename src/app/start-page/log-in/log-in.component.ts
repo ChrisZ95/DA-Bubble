@@ -27,7 +27,10 @@ export class LogInComponent implements OnInit {
   ngOnInit(): void {
     this.firestoreService.createTimeStamp();
     const currentAuthStatus = this.firestoreService.currentAuth()
-    console.log('AUTH im login bereich',currentAuthStatus)
+    // console.log('AUTH im login bereich',currentAuthStatus);
+    this.firestoreService.observeAuthState()
+    const allVariabeln = this.firestoreService.getAllVariables()
+    console.log('Alle variabeln',allVariabeln)
   }
 
   showPassword() {
@@ -35,12 +38,12 @@ export class LogInComponent implements OnInit {
       this.showPasswordValue = true;
       const passwordInput = document.getElementById('password') as HTMLInputElement;
       passwordInput.type = 'text';
-      console.log('show password')
+      // console.log('show password')
     } else if (this.showPasswordValue) {
       this.showPasswordValue = false;
       const passwordInput = document.getElementById('password') as HTMLInputElement;
       passwordInput.type = 'password';
-      console.log('hide password')
+      // console.log('hide password')
     }
   }
 
@@ -57,14 +60,14 @@ export class LogInComponent implements OnInit {
     const auth = this.firestoreService.auth;
     const provider = new GoogleAuthProvider();
     const logInDate = await this.firestoreService.createTimeStamp();
-      console.log(logInDate);
+      // console.log(logInDate);
     this.firestoreService
       .signInWithGoogle(auth, provider, logInDate)
       .then((result) => {
-        console.log('Google-Anmeldung erfolgreich:', result);
+        // console.log('Google-Anmeldung erfolgreich:', result);
       })
       .catch((error) => {
-        console.error('Fehler bei der Google-Anmeldung:', error);
+        // console.error('Fehler bei der Google-Anmeldung:', error);
       });
   }
 
@@ -74,7 +77,7 @@ export class LogInComponent implements OnInit {
     this.firestoreService
       .signInWithApple(auth, provider)
       .then((result) => {
-        console.log('Apple-Anmeldung erfolgreich:', result);
+        // console.log('Apple-Anmeldung erfolgreich:', result);
       })
       .catch((error) => {
         console.error('Fehler bei der Apple-Anmeldung:', error);
@@ -94,14 +97,14 @@ export class LogInComponent implements OnInit {
       }
     } else {
       const logInDate = await this.firestoreService.createTimeStamp();
-      console.log(logInDate);
+      // console.log(logInDate);
       this.firestoreService.logInUser(email, password, logInDate)
         .then((result) => {
           if (result === 'auth/invalid-credential') {
             this.showInputInformationPassword = true;
-            console.log('Invalid credentials error occurred.');
+            // console.log('Invalid credentials error occurred.');
           } else {
-            console.log('User logged in successfully');
+            // console.log('User logged in successfully');
           }
         })
         .catch((error) => {

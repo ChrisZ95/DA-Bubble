@@ -62,18 +62,38 @@ export class FirestoreService {
     this.firestore = getFirestore(myFirebaseApp);
     const provider = new GoogleAuthProvider();
     this.currentuid = localStorage.getItem('uid');
+    const allVariabeln = this.getAllVariables()
+    console.log('Alle variabeln',allVariabeln)
   }
 
   currentAuth() {
     return this.auth;
   }
 
+  getAllVariables() {
+    return {
+      onUserRegistered: this.onUserRegistered,
+      resetPasswordUserId$: this.resetPasswordUserId$,
+      auth: this.auth,
+      firestore: this.firestore,
+      storageUserIcon: this.storageUserIcon,
+      newDate: this.newDate,
+      signUpDate: this.signUpDate,
+      currentuid: this.currentuid,
+      storageId: this.storageId,
+      signInuid: this.signInuid,
+    };
+  }
+
   logOut() {
     debugger
-    signOut(this.auth) // Beendet die aktuelle Authentifizierungssitzung
+    signOut(this.auth)
       .then(() => {
-        localStorage.clear(); // Löscht alle im localStorage gespeicherten Daten
-        this.router.navigate(['']); // Navigiert zur Startseite
+        localStorage.clear();
+        this.router.navigate(['']);
+        this.currentuid = null;
+        this.signInuid = null;
+         console.log(this.currentuid)
       })
       .catch((error) => {
         console.error('Error signing out:', error);
@@ -89,10 +109,10 @@ export class FirestoreService {
 
       if (docSnap.exists()) {
           const userData = docSnap.data();
-          console.log('Der Name lautet:', userData['username']);
+           console.log('Der Name lautet:', userData['username']);
           return userData['username'];
       } else {
-          console.log('Benutzerdokument nicht gefunden für UID:', uid);
+           console.log('Benutzerdokument nicht gefunden für UID:', uid);
       }
   } catch (error) {
       console.error('Fehler beim Abrufen des Benutzerdokuments:', error);
@@ -102,7 +122,7 @@ export class FirestoreService {
   /* Speichert die uid  beim signup (function signUpUser)*/
   setuid(uid: string) {
     this.signInuid = uid;
-    console.log(this.signInuid)
+     console.log(this.signInuid)
   }
 
   /* Gibt die in setuid gespeicherte uid zurück */
@@ -117,8 +137,8 @@ export class FirestoreService {
 
   /* Wird in der  sign-up-choose-avatar.component aufgerufen und speichert die URL des icons in der Datenbank*/
   async uploadUserIconIntoDatabase(uid: string, userIconTokenURL: string): Promise<void> {
-    console.log(uid)
-    console.log(userIconTokenURL)
+     console.log(uid)
+     console.log(userIconTokenURL)
     try {
       const userRef = doc(this.firestore, 'users', uid);
       await updateDoc(userRef, {
@@ -136,10 +156,10 @@ export class FirestoreService {
 
       if (docSnap.exists()) {
           const userData = docSnap.data();
-          console.log('Die URL des Bildes lautet:', userData['photo']);
+           console.log('Die URL des Bildes lautet:', userData['photo']);
           return userData['photo'];
       } else {
-          console.log('Benutzerdokument nicht gefunden für UID:', uid);
+           console.log('Benutzerdokument nicht gefunden für UID:', uid);
       }
   } catch (error) {
       console.error('Fehler beim Abrufen des Benutzerdokuments:', error);
@@ -152,8 +172,8 @@ export class FirestoreService {
     const storageRef = ref(storage, 'user-icon/' + file.name);
     await uploadBytes(storageRef, file);
     const token = await getDownloadURL(storageRef);
-    console.log('Die URL zum Bild lautet',token)
-    console.log('User icon uploaded and access token saved.');
+     console.log('Die URL zum Bild lautet',token)
+     console.log('User icon uploaded and access token saved.');
     return token;
   }
 
@@ -195,16 +215,16 @@ export class FirestoreService {
   /* Überwacht den Status des Users (Angemeldet / Abgemeldet) */
   observeAuthState(): void {
     onAuthStateChanged(this.auth, (user) => {
-      console.log('Der aktuelle user',user)
-      console.log(this.auth)
+       console.log('Der aktuelle user',user)
+       console.log(this.auth)
       if (user) {
         // User ist angemeldet
-        console.log('User is signed in:', user.uid);
+         console.log('User is signed in:', user.uid);
         localStorage.setItem('logedIn', 'true');
         this.router.navigate(['generalView']);
       } else {
         // User ist abgemeldet
-        console.log('User is signed out');
+         console.log('User is signed out');
         localStorage.clear();
         this.router.navigate(['']);
       }
@@ -221,15 +241,15 @@ export class FirestoreService {
   ): Promise<string | null> {
     debugger
     const auth = getAuth(this.myFirebaseApp);
-    console.log(this.auth)
-    console.log(auth)
+     console.log(this.auth)
+     console.log(auth)
     try {
-      const userCredential = await createUserWithEmailAndPassword(
+      const userCredentialSignUp = await createUserWithEmailAndPassword(
         auth,
         email,
         password
       );
-      const user = userCredential.user;
+      const user = userCredentialSignUp.user;
       const userRef = doc(this.firestore, 'users', user.uid);
       await setDoc(userRef, {
         email: email,
@@ -247,15 +267,15 @@ export class FirestoreService {
         error.code === 'auth/invalid-recipient-email' ||
         error.code === 'auth/invalid-email'
       ) {
-        console.log('Email-Adresse entspricht nicht den gültigen Vorlagen.');
+         console.log('Email-Adresse entspricht nicht den gültigen Vorlagen.');
         return 'auth/invalid-recipient-email';
       }
       if (error.code === 'auth/email-already-in-use') {
-        console.log('Email-Adresse wird bereits verwendet.');
+         console.log('Email-Adresse wird bereits verwendet.');
         return 'auth/email-already-in-use';
       }
       if (error.code === 'auth/weak-password') {
-        console.log('Das Passwort ist zu schwach.');
+         console.log('Das Passwort ist zu schwach.');
         return 'weak-password';
       } else {
         return null;
@@ -282,13 +302,13 @@ export class FirestoreService {
         logIndate: logIndate,
       });
       localStorage.setItem('uid', userCredential.user.uid);
-      console.log('User log in erfolgreich');
+       console.log('User log in erfolgreich');
       this.observeAuthState();
       return null;
     } catch (error: any) {
       console.error('Error signing in:', error);
       if (error.code === 'auth/invalid-credential') {
-        console.log('Email-Adresse entspricht nicht den gültigen Vorlagen.');
+         console.log('Email-Adresse entspricht nicht den gültigen Vorlagen.');
         return 'auth/invalid-credential';
       }
       throw error;
@@ -312,7 +332,7 @@ export class FirestoreService {
       const errorMessage = error.message;
       const email = error.customData.email;
       const credential = OAuthProvider.credentialFromError(error);
-      console.log(errorCode);
+       console.log(errorCode);
     }
   }
 
@@ -329,20 +349,20 @@ export class FirestoreService {
         const token = credential.accessToken;
         const user = result.user;
         this.observeAuthState();
-        console.log(user);
-        console.log('Google login user name:', user.displayName);
-        console.log('Google login user email:', user.email);
-        console.log('Google login user photo:', user.photoURL);
-        console.log('Google login user uid:', user.uid);
-        console.log(
-          'Google user wurde erstellt am',
-          user.metadata.creationTime
-        );
-        console.log(
-          'Google user wurde zuletzt gesehen am',
-          user.metadata.lastSignInTime
-        );
-        console.log('Google login user handy nummer', user.phoneNumber);
+         console.log(user);
+         console.log('Google login user name:', user.displayName);
+         console.log('Google login user email:', user.email);
+         console.log('Google login user photo:', user.photoURL);
+         console.log('Google login user uid:', user.uid);
+         console.log(
+           'Google user wurde erstellt am',
+           user.metadata.creationTime
+         );
+         console.log(
+           'Google user wurde zuletzt gesehen am',
+           user.metadata.lastSignInTime
+         );
+         console.log('Google login user handy nummer', user.phoneNumber);
         const userRef = doc(this.firestore, 'users', user.uid);
         const signUpDate = user.metadata.creationTime
           ? new Date(user.metadata.creationTime)
@@ -393,7 +413,7 @@ export class FirestoreService {
       };
 
       await sendPasswordResetEmail(auth, email, actionCodeSettings);
-      console.log('E-Mail zum Zurücksetzen des Passworts gesendet');
+       console.log('E-Mail zum Zurücksetzen des Passworts gesendet');
     } catch (error) {
       console.error(
         'Fehler beim Senden der E-Mail zum Zurücksetzen des Passworts:',
@@ -404,11 +424,11 @@ export class FirestoreService {
 
   /* Funktionalität um das Passwort zu ändern */
   async changePassword(userId: any, newPassword: string): Promise<void> {
-    console.log(userId, newPassword);
+     console.log(userId, newPassword);
     try {
       await updatePassword(this.auth.currentUser, newPassword);
       this.router.navigate(['']);
-      console.log('Passwort erfolgreich aktualisiert');
+       console.log('Passwort erfolgreich aktualisiert');
     } catch (error) {
       console.error('Fehler beim Aktualisieren des Passworts:', error);
       throw error;
@@ -418,7 +438,7 @@ export class FirestoreService {
   /* Erstellt einen Timestamp , wird beim login / signup benutzt */
   createTimeStamp(): Promise<string> {
     this.newDate = Date.now();
-    console.log(this.newDate);
+     console.log(this.newDate);
     return this.newDate;
   }
 }
