@@ -61,29 +61,30 @@ export class FirestoreService {
     this.auth.languageCode = 'de';
     this.firestore = getFirestore(myFirebaseApp);
     const provider = new GoogleAuthProvider();
+    // this.observeAuthState();
     this.currentuid = localStorage.getItem('uid');
-    const allVariabeln = this.getAllVariables()
-    console.log('Alle variabeln',allVariabeln)
+    // const allVariabeln = this.getAllVariables()
+    // console.log('Alle variabeln',allVariabeln)
   }
 
   currentAuth() {
     return this.auth;
   }
 
-  getAllVariables() {
-    return {
-      onUserRegistered: this.onUserRegistered,
-      resetPasswordUserId$: this.resetPasswordUserId$,
-      auth: this.auth,
-      firestore: this.firestore,
-      storageUserIcon: this.storageUserIcon,
-      newDate: this.newDate,
-      signUpDate: this.signUpDate,
-      currentuid: this.currentuid,
-      storageId: this.storageId,
-      signInuid: this.signInuid,
-    };
-  }
+  // getAllVariables() {
+  //   return {
+  //     onUserRegistered: this.onUserRegistered,
+  //     resetPasswordUserId$: this.resetPasswordUserId$,
+  //     auth: this.auth,
+  //     firestore: this.firestore,
+  //     storageUserIcon: this.storageUserIcon,
+  //     newDate: this.newDate,
+  //     signUpDate: this.signUpDate,
+  //     currentuid: this.currentuid,
+  //     storageId: this.storageId,
+  //     signInuid: this.signInuid,
+  //   };
+  // }
 
   logOut() {
     debugger
@@ -91,9 +92,9 @@ export class FirestoreService {
       .then(() => {
         localStorage.clear();
         this.router.navigate(['']);
-        this.currentuid = null;
-        this.signInuid = null;
-         console.log(this.currentuid)
+        // this.currentuid = null;
+        // this.signInuid = null;
+        // console.log(this.currentuid)
       })
       .catch((error) => {
         console.error('Error signing out:', error);
@@ -214,6 +215,7 @@ export class FirestoreService {
 
   /* Überwacht den Status des Users (Angemeldet / Abgemeldet) */
   observeAuthState(): void {
+    debugger
     onAuthStateChanged(this.auth, (user) => {
        console.log('Der aktuelle user',user)
        console.log(this.auth)
@@ -240,16 +242,13 @@ export class FirestoreService {
     signUpdate: string
   ): Promise<string | null> {
     debugger
-    const auth = getAuth(this.myFirebaseApp);
-     console.log(this.auth)
-     console.log(auth)
     try {
-      const userCredentialSignUp = await createUserWithEmailAndPassword(
-        auth,
+      const userCredential = await createUserWithEmailAndPassword(
+        this.auth,
         email,
         password
       );
-      const user = userCredentialSignUp.user;
+      const user = userCredential.user;
       const userRef = doc(this.firestore, 'users', user.uid);
       await setDoc(userRef, {
         email: email,
@@ -442,3 +441,5 @@ export class FirestoreService {
     return this.newDate;
   }
 }
+
+

@@ -27,10 +27,10 @@ export class LogInComponent implements OnInit {
   ngOnInit(): void {
     this.firestoreService.createTimeStamp();
     const currentAuthStatus = this.firestoreService.currentAuth()
-    // console.log('AUTH im login bereich',currentAuthStatus);
-    this.firestoreService.observeAuthState()
-    const allVariabeln = this.firestoreService.getAllVariables()
-    console.log('Alle variabeln',allVariabeln)
+    console.log('AUTH im login bereich',currentAuthStatus);
+    // this.firestoreService.observeAuthState()
+    // const allVariabeln = this.firestoreService.getAllVariables()
+    // console.log('Alle variabeln',allVariabeln)
   }
 
   showPassword() {
@@ -38,12 +38,12 @@ export class LogInComponent implements OnInit {
       this.showPasswordValue = true;
       const passwordInput = document.getElementById('password') as HTMLInputElement;
       passwordInput.type = 'text';
-      // console.log('show password')
+      console.log('show password')
     } else if (this.showPasswordValue) {
       this.showPasswordValue = false;
       const passwordInput = document.getElementById('password') as HTMLInputElement;
       passwordInput.type = 'password';
-      // console.log('hide password')
+      console.log('hide password')
     }
   }
 
