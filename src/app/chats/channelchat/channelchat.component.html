@@ -29,7 +29,14 @@
       <div class="separator-line"></div>
     </div>
 
-    <div class="conversation-container">
+    <div class="conversation-container" (mouseenter)="isHovered = true" 
+    (mouseleave)="isHovered = false">
+    <div class="popup-window" *ngIf="isHovered">
+      <img src="./../../../assets/images/green-tick.png" alt="">
+      <img src="" alt="">
+      <img src="" alt="">
+      <img src="" alt="">
+    </div>
       <img src="../../../assets/images/avatar.png" alt="">
       <div class="conversation">
         <div class="name-timestamp">

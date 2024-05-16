@@ -60,6 +60,7 @@ export class ChannelchatComponent implements OnInit, AfterViewInit {
   currentChannelId: string = '';
   allUsers: any[] = [];
   currentMessageComments: { id: string, comment: string, createdAt: string }[] = [];
+  isHovered: boolean = false;
 
   openMemberDialog() {
     this.dialog.open(DialogMembersComponent);
