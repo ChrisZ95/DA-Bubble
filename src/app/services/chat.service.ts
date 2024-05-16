@@ -35,6 +35,8 @@ export class ChatService {
   allPotentialChatUsers: any[] = [];
   showOwnChat: boolean = true;
 
+  focusOnTextEditor: boolean = false;
+
   constructor(
     private firestore: Firestore,
     public channelService: ChannelService,
@@ -76,6 +78,7 @@ export class ChatService {
         await this.loadMessages(ownChatDocId);
       } else {
         // this.createChatWithTwoUsers();
+
         let slicedOwnUid = this.currentuid.slice(0, 5);
         let slicedOtherUid = userDetails.uid.slice(0, 5);
 
@@ -122,7 +125,6 @@ export class ChatService {
       chatId: combinedShortedId,
       messages: [],
     };
-    console.log('filteredChats', filteredChats);
     if (filteredChats.length == 0) {
       await setDoc(doc(this.firestore, 'chats', combinedShortedId), chatData);
     }
@@ -153,6 +155,7 @@ export class ChatService {
       this.loadedchatInformation.messages.push(message);
       console.log('exist');
     } else {
+      // Fehlt noch
       console.log('DONT exist');
     }
     let chat = await setDoc(

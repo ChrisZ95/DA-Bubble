@@ -55,6 +55,7 @@ export class TextEditorComponent implements OnInit {
   @HostListener('focusin', ['$event'])
   onFocus(event: FocusEvent) {
     if (this.componentName == 'emptyChat') {
+      this.chatService.focusOnTextEditor = true;
       this.chatService.createChatWithUsers();
     }
   }
@@ -67,7 +68,7 @@ export class TextEditorComponent implements OnInit {
   sendMessageToChannel() {
     const currentChannelId = this.channelService.getCurrentChannelId();
     const currentUid = this.firestoreService.currentuid;
-  
+
     if (currentChannelId && currentUid) {
       const timestamp: number = Date.now();
       const timestampString: string = timestamp.toString();
@@ -81,14 +82,16 @@ export class TextEditorComponent implements OnInit {
       this.channelService.messagesWithAuthors.push(message);
       this.message = '';
     } else {
-      console.error('Kein aktueller Kanal ausgewählt oder Benutzer nicht angemeldet.');
+      console.error(
+        'Kein aktueller Kanal ausgewählt oder Benutzer nicht angemeldet.'
+      );
     }
   }
 
   triggerFileInput(): void {
     this.fileInput.nativeElement.click();
   }
-  
+
   async customDataURL() {
     const fileInput = document.getElementById('data-input') as HTMLInputElement;
     const file = fileInput.files?.[0];

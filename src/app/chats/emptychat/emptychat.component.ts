@@ -241,7 +241,11 @@ export class EmptychatComponent implements OnInit {
 
   @HostListener('focusin', ['$event'])
   onFocus(event: FocusEvent) {
-    if (this.eRef.nativeElement.contains(event.target)) {
+    let focusOnTextEditor = this.chatService.focusOnTextEditor;
+    if (
+      this.eRef.nativeElement.contains(event.target) &&
+      focusOnTextEditor == false
+    ) {
       if (
         this.selectedUsers.length === 0 &&
         this.eRef.nativeElement.querySelector('input').value === ''
