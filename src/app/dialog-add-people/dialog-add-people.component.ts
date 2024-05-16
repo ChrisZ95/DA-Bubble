@@ -4,7 +4,7 @@ import { FirestoreService } from '../firestore.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ChannelService } from '../services/channel.service';
-import { Firestore, arrayUnion, doc, addDoc, updateDoc, onSnapshot, collection } from '@angular/fire/firestore';
+import { Firestore, arrayUnion, doc, addDoc, updateDoc, onSnapshot, collection, getDoc } from '@angular/fire/firestore';
 import { Channel } from './../../models/channel.class';
 
 @Component({
@@ -79,10 +79,16 @@ export class DialogAddPeopleComponent implements OnInit {
   async addUserToChannel() {
     try {
       const channelDocRef = this.channelService.getChannelDocByID(this.currentChannelId);
-      const currentUsers = this.channelService.channel.users || [];
-      const updatedUsers = currentUsers.concat(this.selectedUsers.map(user => user.userId)); // Benutze selectedUsers anstatt channelMember
-      await this.channelService.updateChannel(channelDocRef, { users: updatedUsers });
-      this.showUserList = false;
+      const channelDocSnapshot = await getDoc(channelDocRef);
+      if (channelDocSnapshot.exists()) {
+        const currentUsers = channelDocSnapshot.data()?.['users'] || [];
+        const updatedUsers = Array.from(new Set([...currentUsers, ...this.selectedUsers.map(member => member.userId)]));
+        await this.channelService.updateChannel(channelDocRef, { users: updatedUsers });
+        this.channelMember = [];
+        this.showUserList = false;
+      } else {
+        console.error('Dokument existiert nicht.');
+      }
     } catch (error) {
       console.error('Fehler beim Hinzufügen der Benutzer zum Kanal:', error);
     }
