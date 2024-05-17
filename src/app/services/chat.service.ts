@@ -34,6 +34,7 @@ export class ChatService {
   chatDocId: any;
   allPotentialChatUsers: any[] = [];
   showOwnChat: boolean = true;
+  showEmptyChat: boolean = false;
 
   focusOnTextEditor: boolean = false;
 
@@ -77,8 +78,8 @@ export class ChatService {
         }
         await this.loadMessages(ownChatDocId);
       } else {
+        debugger;
         // this.createChatWithTwoUsers();
-
         let slicedOwnUid = this.currentuid.slice(0, 5);
         let slicedOtherUid = userDetails.uid.slice(0, 5);
 
@@ -120,9 +121,14 @@ export class ChatService {
     let filteredChats = existingChatIDs.filter(
       (id) => id === combinedShortedId
     );
+    let ascending = true;
+    let extractedUid = this.allPotentialChatUsers
+      .map((user) => user.uid)
+      .sort((a, b) => (ascending ? a.localeCompare(b) : b.localeCompare(a)));
     const chatData = {
       createdAt: 'date',
       chatId: combinedShortedId,
+      participants: extractedUid,
       messages: [],
     };
     if (filteredChats.length == 0) {

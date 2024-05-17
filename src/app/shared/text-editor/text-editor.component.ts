@@ -56,6 +56,8 @@ export class TextEditorComponent implements OnInit {
   onFocus(event: FocusEvent) {
     if (this.componentName == 'emptyChat') {
       this.chatService.focusOnTextEditor = true;
+      this.chatService.showEmptyChat = false;
+      this.chatService.showOwnChat = true;
       this.chatService.createChatWithUsers();
     }
   }
@@ -77,16 +79,24 @@ export class TextEditorComponent implements OnInit {
         createdAt: timestampString,
         uid: currentUid,
       };
-      this.channelService.getAuthorName(currentUid).then(authorName => {
-        const message = { ...messageWithoutAuthor, authorName: authorName ?? currentUid };
-        this.channelService.messagesWithAuthors.push(message);
-        this.chatService.sendDataToChannel(currentChannelId, message);
-        this.message = '';
-      }).catch(error => {
-        console.error('Error fetching author name:', error);
-      });
+      this.channelService
+        .getAuthorName(currentUid)
+        .then((authorName) => {
+          const message = {
+            ...messageWithoutAuthor,
+            authorName: authorName ?? currentUid,
+          };
+          this.channelService.messagesWithAuthors.push(message);
+          this.chatService.sendDataToChannel(currentChannelId, message);
+          this.message = '';
+        })
+        .catch((error) => {
+          console.error('Error fetching author name:', error);
+        });
     } else {
-      console.error('Kein aktueller Kanal ausgewählt oder Benutzer nicht angemeldet.');
+      console.error(
+        'Kein aktueller Kanal ausgewählt oder Benutzer nicht angemeldet.'
+      );
     }
   }
 

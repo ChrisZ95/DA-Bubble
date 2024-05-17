@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 import { collection, getDocs } from 'firebase/firestore';
 import { ChatService } from '../../services/chat.service';
 import { TimestampPipe } from '../../shared/pipes/timestamp.pipe';
@@ -9,6 +15,8 @@ import { DialogAddPeopleComponent } from '../../dialog-add-people/dialog-add-peo
 import { DialogChannelInfoComponent } from '../../dialog-channel-info/dialog-channel-info.component';
 import { DialogContactInfoComponent } from '../../dialog-contact-info/dialog-contact-info.component';
 import { DialogMembersComponent } from '../../dialog-members/dialog-members.component';
+import { FirestoreService } from '../../firestore.service';
+import { log } from 'console';
 
 @Component({
   selector: 'app-ownchat',
@@ -17,8 +25,12 @@ import { DialogMembersComponent } from '../../dialog-members/dialog-members.comp
   templateUrl: './ownchat.component.html',
   styleUrls: ['./ownchat.component.scss', '../chats.component.scss'],
 })
-export class OwnchatComponent implements OnChanges {
-  constructor(public dialog: MatDialog, public chatsService: ChatService) {}
+export class OwnchatComponent implements OnChanges, OnInit {
+  constructor(
+    public dialog: MatDialog,
+    public chatsService: ChatService,
+    private firestore: FirestoreService
+  ) {}
   @Input() userDetails: any;
   messages: any[] = [];
 
@@ -34,23 +46,41 @@ export class OwnchatComponent implements OnChanges {
     this.dialog.open(DialogContactInfoComponent);
   }
 
+  // let chatInformation = this.chatsService.createChat(userDetails);
   async loadMessages(userDetails: any) {
     this.messages = [];
-    let chatInformation = this.chatsService.createChat(userDetails);
     const chatsRef = collection(this.chatsService.db, 'chats');
     const querySnapshot = await getDocs(chatsRef);
+    console.log('querySnapshot', querySnapshot);
 
     querySnapshot.forEach((doc) => {
-      let message = {
-        ...doc.data(), // alle anderen Eigenschaften des Dokuments einfügen
-      };
-      this.messages.push(message);
+      const data = doc.data();
+      if (
+        data['chatId'] === userDetails.uid &&
+        Array.isArray(data['messages'])
+      ) {
+        this.messages.push(...data['messages']);
+      }
     });
+
+    console.log('Filtered Messages:', this.messages);
+  }
+
+  async loadCurrentUser() {
+    let allUsers = await this.firestore.getAllUsers();
+    let currentUserDetails = allUsers.filter(
+      (user) => user.uid == this.firestore.currentuid
+    );
+    console.log('currentUserDetails', currentUserDetails);
+    this.loadMessages(currentUserDetails);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (this.userDetails != '' && changes['userDetails']) {
       this.loadMessages(this.userDetails);
     }
+  }
+  ngOnInit(): void {
+    this.loadCurrentUser();
   }
 }

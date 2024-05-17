@@ -86,7 +86,6 @@ export class MainComponent implements OnInit {
     public chatService: ChatService
   ) {}
   displayWorkspace: boolean = true;
-  showEmptyChat: boolean = false;
   userDetails: any = '';
   selectedMessageId: string = '';
 
@@ -103,12 +102,12 @@ export class MainComponent implements OnInit {
   }
 
   openEmptyChat() {
-    this.showEmptyChat = !this.showEmptyChat;
+    this.chatService.showEmptyChat = !this.chatService.showEmptyChat;
     this.chatService.showOwnChat = false;
   }
 
   openChat(userDetails: any) {
-    this.showEmptyChat = false;
+    this.chatService.showEmptyChat = false;
     this.chatService.showOwnChat = true;
     this.userDetails = userDetails;
   }
