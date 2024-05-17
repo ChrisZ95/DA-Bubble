@@ -27,11 +27,18 @@
       width: 35px;
     }
   }
-  
+
   .profile {
     display: flex;
     align-items: center;
     gap: 20px;
+
+    .avatar-icon {
+      height: 70px;
+      width: 70px;
+      border-radius: 100%;
+    }
+
     img {
       cursor: pointer;
     }
@@ -40,7 +47,7 @@
 ::ng-deep.cdk-overlay-pane {
     margin-top: 30px !important;
 }
-  
+
   ::ng-deep.mat-mdc-menu-panel {
     border-top-left-radius: 30px !important;
     border-bottom-left-radius: 30px !important;
@@ -50,11 +57,11 @@
     display: flex;
     justify-content: center;
 }
-  
+
 ::ng-deep.mat-mdc-menu-item-text {
     text-align: center !important;
 }
-  
+
 ::ng-deep.mat-mdc-menu-item {
     width: calc(100% - 40px) !important;
     border-radius: 40px !important;
