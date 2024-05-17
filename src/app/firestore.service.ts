@@ -105,22 +105,26 @@ export class FirestoreService {
 
 
   /* Name des Users für die sign-up-choose-avatar.component*/
-  async getUserName(uid: any) {
+  async getUserName(uid: any): Promise<any | null> {
     const userData = doc(this.firestore, 'users', uid);
     try {
       const docSnap = await getDoc(userData);
 
       if (docSnap.exists()) {
-          const userData = docSnap.data();
-           console.log('Der Name lautet:', userData['username']);
-          return userData['username'];
+        const userData = docSnap.data();
+        console.log('Komplettes user formular', userData);
+        console.log('Der Name lautet:', userData['username']);
+        return userData;
       } else {
-           console.log('Benutzerdokument nicht gefunden für UID:', uid);
+        console.log('Benutzerdokument nicht gefunden für UID:', uid);
+        return null;
       }
-  } catch (error) {
+    } catch (error) {
       console.error('Fehler beim Abrufen des Benutzerdokuments:', error);
+      throw error;
+    }
   }
-  }
+
 
   setCurrentUid(logInUid: any) {
     this.logInUid = logInUid;

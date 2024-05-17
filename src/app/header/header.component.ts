@@ -16,12 +16,14 @@ import { Router } from '@angular/router';
 export class HeaderComponent implements OnInit{
   constructor(public dialog: MatDialog,  private router: Router, private firestoreService: FirestoreService) {}
   logInUid: any;
+  userForm: any;
   userName: any;
 
   async ngOnInit() {
     const uid = localStorage.getItem('uid');
-    this.userName = await this.firestoreService.getUserName(uid)
-    console.log('username header (localstorage)',this.userName);
+    this.userForm = await this.firestoreService.getUserName(uid)
+    this.userName = this.userForm['username']
+    console.log('username header (localstorage)',this.userForm['username']);
   }
 
   openProfileDialog() {
