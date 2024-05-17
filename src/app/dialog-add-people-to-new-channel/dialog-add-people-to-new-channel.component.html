@@ -12,13 +12,15 @@
         <label for="certain-people">Bestimmte Leute hinzufügen</label>
     </div>
     <input *ngIf="selectedOption === 'certain'" 
-    type="text" 
-    [(ngModel)]="personName" 
-    placeholder="Name der Person" 
-    (input)="filterUsers()"
-    >
-    <div *ngIf="showUserList" class="user-dropdown">
-       <div *ngFor="let user of filteredUsers" class="user-option" (click)="selectUser(user)"><img src="{{ user.photo }}" alt="">{{ user.username }}</div> 
+           type="text" 
+           [(ngModel)]="personName" 
+           placeholder="Name der Person" 
+           (input)="filterUsers()"
+           [value]="displayedUserNames.join(', ')">
+    <div *ngIf="filteredUsers.length > 0" class="user-dropdown">
+        <div *ngFor="let user of filteredUsers" class="user-option" (click)="selectUser(user)">
+            <img src="{{ user.photo }}" alt="">{{ user.username }}
+        </div> 
     </div>
     <div class="dialog-add-people-to-new-channel-button">
         <button [style.background-color]="buttonColor" (click)="addUserToChannel()">Erstellen</button>

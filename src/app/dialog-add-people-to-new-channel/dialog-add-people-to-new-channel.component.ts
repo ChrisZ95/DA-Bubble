@@ -29,8 +29,8 @@ export class DialogAddPeopleToNewChannelComponent implements OnInit {
   channel: Channel = new Channel(); 
   allChannels: any = [];
   currentChannelId: string = '';
+  displayedUserNames: string[] = [];
   
-
   constructor(private dialogRef: MatDialogRef<DialogAddPeopleToNewChannelComponent>, @Inject(MAT_DIALOG_DATA) public data: { channels: any[] }, private firestoreService: FirestoreService, private channelService: ChannelService, private readonly firestore: Firestore){
     onSnapshot(collection(this.firestore, 'channels'), (list) => {
       this.allChannels = list.docs.map((doc) => doc.data());
@@ -60,9 +60,19 @@ export class DialogAddPeopleToNewChannelComponent implements OnInit {
   }
 
   selectUser(user: any): void {
-    this.personName = user.username;
-    this.channelMember.push({ userId: user.uid });
-    this.showUserList = false;
+    if (!this.selectedUsers.find(u => u.uid === user.uid)) {
+        this.selectedUsers.push(user);
+        this.updateDisplayedUserNames();
+        if (this.selectedUsers.length === 1) { // Check if only one user is selected
+            this.personName = user.username; // Set personName to the username directly
+        } else {
+            this.personName += `, ${user.username}`; // Otherwise append to personName
+        }
+    }
+    console.log('Ausgewählte User:', this.displayedUserNames)
+    // Remove this line to keep the input field populated after selecting a user
+    // this.personName = ''; // Clear input field after selecting user
+    this.showUserList = false; // Close dropdown after selecting user
   }
 
   async addUserToChannel() {
@@ -87,5 +97,18 @@ export class DialogAddPeopleToNewChannelComponent implements OnInit {
         this.filteredUsers = [];
         this.showUserList = false;
     }
+  }
+
+  removeUser(user: any): void {
+    this.selectedUsers = this.selectedUsers.filter(u => u.uid !== user.uid);
+    this.updatePersonName(); // Update the input field value
+  }
+
+  updatePersonName(): void {
+    this.personName = this.selectedUsers.map(u => u.username).join(', ');
+  }
+
+  updateDisplayedUserNames(): void {
+    this.displayedUserNames = this.selectedUsers.map(user => user.username);
   }
 }
