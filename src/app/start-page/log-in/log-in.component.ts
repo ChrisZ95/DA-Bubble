@@ -47,8 +47,10 @@ export class LogInComponent implements OnInit {
     }
   }
 
-  guestLogIn() {
-    this.router.navigate(['/generalView']);
+  async guestLogIn() {
+    const logInDate = await this.firestoreService.createTimeStamp();
+    this.firestoreService.logInUser('gast@DABubble.de', 'password', logInDate)
+    // this.router.navigate(['/generalView']);
   }
 
   openForgetPasswordComponent() {

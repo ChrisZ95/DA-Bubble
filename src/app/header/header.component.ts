@@ -19,12 +19,14 @@ export class HeaderComponent implements OnInit{
   userForm: any;
   userName: any;
   userPhoto: any;
+  userEmail: any;
 
   async ngOnInit() {
     const uid = localStorage.getItem('uid');
     this.userForm = await this.firestoreService.getUserName(uid)
     this.userName = this.userForm['username']
     this.userPhoto = this.userForm['photo'];
+    this.userEmail = this.userForm['email'];
     console.log('username header (localstorage)',this.userForm['username']);
   }
 
