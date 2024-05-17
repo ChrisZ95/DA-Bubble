@@ -68,23 +68,37 @@ export class TextEditorComponent implements OnInit {
   sendMessageToChannel() {
     const currentChannelId = this.channelService.getCurrentChannelId();
     const currentUid = this.firestoreService.currentuid;
-
+  
     if (currentChannelId && currentUid) {
       const timestamp: number = Date.now();
       const timestampString: string = timestamp.toString();
-      const message = {
+  
+      // Nachricht ohne authorName erstellen
+      const messageWithoutAuthor = {
         messageId: this.generateId.generateId(),
         message: this.message,
         createdAt: timestampString,
         uid: currentUid,
       };
-      this.chatService.sendDataToChannel(currentChannelId, message);
-      this.channelService.messagesWithAuthors.push(message);
-      this.message = '';
+  
+      // authorName abrufen
+      this.channelService.getAuthorName(currentUid).then(authorName => {
+        // Nachricht mit authorName aktualisieren
+        const message = { ...messageWithoutAuthor, authorName: authorName ?? currentUid };
+  
+        // Nachricht zur messagesWithAuthors-Liste hinzufügen
+        this.channelService.messagesWithAuthors.push(message);
+  
+        // Nachricht an den Kanal senden
+        this.chatService.sendDataToChannel(currentChannelId, message);
+  
+        // Nachricht leeren
+        this.message = '';
+      }).catch(error => {
+        console.error('Error fetching author name:', error);
+      });
     } else {
-      console.error(
-        'Kein aktueller Kanal ausgewählt oder Benutzer nicht angemeldet.'
-      );
+      console.error('Kein aktueller Kanal ausgewählt oder Benutzer nicht angemeldet.');
     }
   }
 

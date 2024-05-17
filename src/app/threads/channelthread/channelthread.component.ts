@@ -24,8 +24,10 @@ export class ChannelthreadComponent implements OnChanges {
   comments: string[] = [];
   currentChannelId: string = '';
   currentMessageId: string = '';
-  currentMessageComments: { id: string, comment: string, createdAt: string, uid: string }[] = []; 
+  currentMessageComments: any[] = [];
   messages: any[] = [];
+  allUsers: any[] = [];
+  comment: string = '';
 
   constructor(private chatService: ChatService,
     private generateId: GenerateIdsService,
@@ -44,46 +46,57 @@ export class ChannelthreadComponent implements OnChanges {
   }
 
   async ngOnInit(): Promise<void> {
-    this.channelService.currentMessageIdChanged.subscribe(messageId => {
+    this.allUsers = await this.firestoreService.getAllUsers();
+    this.channelService.currentMessageIdChanged.subscribe((messageId) => {
       this.loadCommentsForCurrentMessage(messageId);
     });
     this.currentMessageId = this.channelService.getCurrentMessageId();
     this.loadCommentsForCurrentMessage(this.currentMessageId);
   }
 
-  loadCommentsForCurrentMessage(messageId: string) {
-    const currentMessage = this.channelService.messages.find(message => message.messageId === messageId);
+  async loadCommentsForCurrentMessage(messageId: string) {
+    const currentMessage = this.channelService.messages.find((message: any) => message.messageId === messageId);
     if (currentMessage) {
-      this.currentMessageComments = currentMessage.comments;
+      this.currentMessageComments = await Promise.all(
+        currentMessage.comments.map(async (comment: any) => {
+          const authorName = await this.channelService.getAuthorName(comment.uid);
+          return {
+            ...comment,
+            authorName: authorName ?? comment.uid
+          };
+        })
+      );
     } else {
       this.currentMessageComments = [];
     }
   }
 
-  comment: any = '';
-
-  sendCommentToMessage() {
+  async sendCommentToMessage() {
     const currentMessageId = this.channelService.getCurrentMessageId();
     const currentUid = this.firestoreService.currentuid;
     if (currentMessageId) {
       const timestamp: number = Date.now();
       const timestampString: string = timestamp.toString();
-      const newComment = {
-        id: this.generateId.generateId(),
-        comment: this.comment,
-        createdAt: timestampString,
-        uid: currentUid,
-      };
-      // Überprüfe, ob currentMessageComments initialisiert wurde
+      let newComment: any = { 
+      id: this.generateId.generateId(),
+      comment: this.comment,
+      createdAt: timestampString,
+      uid: currentUid,
+      authorName: '', 
+      authorNameStatus: 'loading' 
+    };
       if (this.currentMessageComments) {
         this.currentMessageComments.push(newComment);
       } else {
-        // Wenn currentMessageComments nicht initialisiert wurde, initialisiere es mit einem leeren Array und füge dann den Kommentar hinzu
         this.currentMessageComments = [newComment];
       }
+      const authorName = await this.channelService.getAuthorName(currentUid);
+      newComment.authorName = authorName ?? currentUid; 
+      newComment.authorNameStatus = 'loaded'; 
       this.chatService.sendCommentToChannel(currentMessageId, newComment);
       this.updateCommentCount(currentMessageId);
       this.updateLastCommentTime(currentMessageId, timestampString);
+      this.channelService.updateMessagesWithAuthors(); 
       this.comment = '';
     } else {
       console.error('Kein aktueller Kanal ausgewählt.');
@@ -92,16 +105,18 @@ export class ChannelthreadComponent implements OnChanges {
   }
 
   updateCommentCount(messageId: string): void {
-    const message = this.channelService.messages.find(msg => msg.messageId === messageId);
+    const message = this.channelService.messages.find((msg) => msg.messageId === messageId);
     if (message) {
       message.commentCount++;
+      this.channelService.updateMessagesWithAuthors(); // Aktualisieren Sie die messagesWithAuthors Liste
     }
   }
 
   updateLastCommentTime(messageId: string, timestamp: string): void {
-    const message = this.channelService.messages.find(msg => msg.messageId === messageId);
+    const message = this.channelService.messages.find((msg) => msg.messageId === messageId);
     if (message) {
       message.lastCommentTime = timestamp;
+      this.channelService.updateMessagesWithAuthors(); // Aktualisieren Sie die messagesWithAuthors Liste
     }
   }
 }

@@ -243,4 +243,16 @@ export class ChannelService {
       throw error;
     }
   }
+
+  async updateMessagesWithAuthors() {
+    this.messagesWithAuthors = await Promise.all(
+      this.messages.map(async (message: any) => {
+        const authorName = await this.getAuthorName(message.uid);
+        return {
+          ...message,
+          authorName: authorName ?? message.uid // Falls kein Benutzername gefunden wurde, zeige die UID an
+        };
+      })
+    );
+  }
 }
