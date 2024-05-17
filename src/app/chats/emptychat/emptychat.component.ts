@@ -47,23 +47,23 @@ export class EmptychatComponent implements OnInit {
       this.showUserChannelPlaceholder = true;
       this.showUserPlaceholder = false;
       this.showChannelPlaceholder = false;
-    } else if (input === '#') {
+    } else if (input === '@') {
       this.filteredEntities = [];
       this.showUserPlaceholder = true;
       this.showChannelPlaceholder = false;
       this.showUserChannelPlaceholder = false;
-    } else if (input === '@') {
+    } else if (input === '#') {
       this.filteredEntities = [];
       this.showUserPlaceholder = false;
       this.showChannelPlaceholder = true;
       this.showUserChannelPlaceholder = false;
-    } else if (input.startsWith('#')) {
+    } else if (input.startsWith('@')) {
       this.filteredEntities = this.allUsers.filter((item: any) => {
         return (
           item.username &&
           item.username.toLowerCase().includes(lowerCaseInput.substring(1)) &&
           item.uid !== this.firestoreService.currentuid &&
-          !this.selectedUsers.includes(`#${item.username}`)
+          !this.selectedUsers.includes(`@${item.username}`)
         );
       });
       this.showUserPlaceholder = false;
@@ -85,7 +85,7 @@ export class EmptychatComponent implements OnInit {
           item.username &&
           item.username.toLowerCase().includes(lowerCaseInput) &&
           item.uid !== this.firestoreService.currentuid &&
-          !this.selectedUsers.includes(`#${item.username}`)
+          !this.selectedUsers.includes(`@${item.username}`)
         );
       });
 
@@ -102,8 +102,8 @@ export class EmptychatComponent implements OnInit {
     this.showDropdown =
       this.filteredEntities.length > 0 ||
       input === '' ||
-      input === '#' ||
-      input === '@';
+      input === '@' ||
+      input === '#';
     console.log('filteredEntities', this.filteredEntities);
   }
 
@@ -138,7 +138,7 @@ export class EmptychatComponent implements OnInit {
         return (
           user.username &&
           user.uid !== this.firestoreService.currentuid &&
-          !this.selectedUsers.includes(`#${user.username}`)
+          !this.selectedUsers.includes(`@${user.username}`)
         );
       }),
       ...this.allChannels.filter((channel: any) => channel.channelName),
@@ -157,7 +157,7 @@ export class EmptychatComponent implements OnInit {
       return (
         item.username &&
         item.uid !== this.firestoreService.currentuid &&
-        !this.selectedUsers.includes(`#${item.username}`)
+        !this.selectedUsers.includes(`@${item.username}`)
       );
     });
     this.filteredEntities.sort((a: any, b: any) => {
@@ -199,9 +199,9 @@ export class EmptychatComponent implements OnInit {
   selectEntity(entity: any) {
     if (
       entity.username &&
-      !this.selectedUsers.includes(`#${entity.username}`)
+      !this.selectedUsers.includes(`@${entity.username}`)
     ) {
-      this.selectedUsers.push(`#${entity.username}`);
+      this.selectedUsers.push(`@${entity.username}`);
       this.chatService.allPotentialChatUsers.push(entity);
 
       this.updateInputField();
@@ -209,7 +209,7 @@ export class EmptychatComponent implements OnInit {
       const inputElement = this.eRef.nativeElement.querySelector(
         '.inputFieldContainer'
       );
-      inputElement.innerHTML = `<span class="channel-tag">@${entity.channelName}</span>`;
+      inputElement.innerHTML = `<span class="channel-tag">#${entity.channelName}</span>`;
       this.selectedUsers = [];
     }
     this.showDropdown = false;
