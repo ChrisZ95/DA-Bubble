@@ -11,13 +11,21 @@
         <input type="radio" [(ngModel)]="selectedOption" value="certain" (change)="toggleButtonColor()">
         <label for="certain-people">Bestimmte Leute hinzufügen</label>
     </div>
-    <input *ngIf="selectedOption === 'certain'" 
-           type="text" 
-           [(ngModel)]="personName" 
-           placeholder="Name der Person" 
-           (input)="filterUsers()"
-           [value]="displayedUserNames.join(', ')">
-    <div *ngIf="filteredUsers.length > 0" class="user-dropdown">
+    <div *ngIf="selectedOption === 'certain'" class="custom-input">
+        <div class="selected-users-container">
+            <div *ngFor="let user of selectedUsers" class="selected-user">
+                <img src="{{ user.photo }}" alt="">
+                <span>{{ user.username }}</span>
+                <button (click)="removeUser(user)">X</button>
+            </div>
+        </div>
+        <input type="text" 
+               [(ngModel)]="personName" 
+               placeholder="Name der Person" 
+               (input)="filterUsers()"
+               (focus)="showUserList = true">
+    </div>
+    <div *ngIf="showUserList && filteredUsers.length > 0" class="user-dropdown">
         <div *ngFor="let user of filteredUsers" class="user-option" (click)="selectUser(user)">
             <img src="{{ user.photo }}" alt="">{{ user.username }}
         </div> 

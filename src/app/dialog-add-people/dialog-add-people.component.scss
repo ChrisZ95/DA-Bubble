@@ -5,10 +5,7 @@
     padding: 40px;
     gap: 20px;
     input{
-        height: 23px;
-        padding: 15px 20px 15px 20px;
-        border-radius: 30px;
-        border: 1px solid #ADB0D9;
+        border: none;
     }
 }
 
@@ -86,4 +83,66 @@
         align-items: center;
         justify-content: center;
     }
+}
+
+.custom-input {
+    position: relative;
+    display: flex;
+    border: 1px solid #ADB0D9;
+    border-radius: 30px;
+    padding: 7.5px 20px 7.5px 20px;
+    height: 38px;
+    gap: 10px;
+}
+
+.selected-users-container {
+    display: flex;
+}
+
+.selected-user {
+    display: flex;
+    align-items: center;
+    background-color: #ECEEFE;
+    border-radius: 35px;
+    padding: 3px 20px 3px 20px;
+    gap: 15px;
+    >img{
+        height: 34px;
+        width: 34px;
+    }
+}
+
+.selected-user span {
+    margin-right: 5px;
+    font-size: 18px;
+}
+
+.selected-user button {
+    background: none;
+    border: none;
+    cursor: pointer;    
+}
+
+.user-dropdown {
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ccc;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    width: 100%;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.user-option {
+    padding: 8px;
+    cursor: pointer;
+}
+
+.user-option:hover {
+    background-color: #f1f1f1;
+}
+
+input[type="text"]:focus {
+    outline: none; /* Entfernt den Rand auch beim Fokus */
 }

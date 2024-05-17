@@ -55,8 +55,11 @@ export class DialogAddPeopleComponent implements OnInit {
   }
 
   selectUser(user: any): void {
-    this.personName = user.username;
-    this.selectedUsers.push({ userId: user.uid });
+    if (!this.selectedUsers.find(u => u.uid === user.uid)) {
+      this.selectedUsers.push(user);
+      this.updatePersonName();
+    }
+    this.personName = '';
     this.showUserList = false;
   }
 
@@ -78,19 +81,36 @@ export class DialogAddPeopleComponent implements OnInit {
 
   async addUserToChannel() {
     try {
-      const channelDocRef = this.channelService.getChannelDocByID(this.currentChannelId);
-      const channelDocSnapshot = await getDoc(channelDocRef);
-      if (channelDocSnapshot.exists()) {
-        const currentUsers = channelDocSnapshot.data()?.['users'] || [];
-        const updatedUsers = Array.from(new Set([...currentUsers, ...this.selectedUsers.map(member => member.userId)]));
+        const channelDocRef = this.channelService.getChannelDocByID(this.currentChannelId);
+        if (!channelDocRef) {
+            throw new Error('Channel Document Reference is invalid.');
+        }
+        const channelSnap = await getDoc(channelDocRef);
+        if (!channelSnap.exists()) {
+            throw new Error('Channel document does not exist.');
+        }
+        const currentChannelData = channelSnap.data();
+        const currentUsers = currentChannelData['users'] || [];
+        console.log('Current Users:', currentUsers);
+        const userIdsToAdd = this.selectedUsers.map(user => user.uid);
+        console.log('User IDs to Add:', userIdsToAdd);
+        const updatedUsers = [...new Set([...currentUsers, ...userIdsToAdd])];
+        console.log('Updated Users:', updatedUsers);
         await this.channelService.updateChannel(channelDocRef, { users: updatedUsers });
-        this.channelMember = [];
-        this.showUserList = false;
-      } else {
-        console.error('Dokument existiert nicht.');
-      }
+        this.selectedUsers = [];
+        this.updatePersonName();
+        console.log('Benutzer erfolgreich zum Kanal hinzugefügt');
     } catch (error) {
-      console.error('Fehler beim Hinzufügen der Benutzer zum Kanal:', error);
+        console.error('Fehler beim Hinzufügen der Benutzer zum Kanal:', error);
     }
+}
+
+  removeUser(user: any): void {
+    this.selectedUsers = this.selectedUsers.filter(u => u.uid !== user.uid);
+    this.updatePersonName();
+  }
+
+  updatePersonName(): void {
+    this.personName = this.selectedUsers.map(u => u.username).join(', ');
   }
 }
