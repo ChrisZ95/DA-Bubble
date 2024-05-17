@@ -91,15 +91,11 @@ export class DialogAddPeopleComponent implements OnInit {
         }
         const currentChannelData = channelSnap.data();
         const currentUsers = currentChannelData['users'] || [];
-        console.log('Current Users:', currentUsers);
         const userIdsToAdd = this.selectedUsers.map(user => user.uid);
-        console.log('User IDs to Add:', userIdsToAdd);
         const updatedUsers = [...new Set([...currentUsers, ...userIdsToAdd])];
-        console.log('Updated Users:', updatedUsers);
         await this.channelService.updateChannel(channelDocRef, { users: updatedUsers });
         this.selectedUsers = [];
         this.updatePersonName();
-        console.log('Benutzer erfolgreich zum Kanal hinzugefügt');
     } catch (error) {
         console.error('Fehler beim Hinzufügen der Benutzer zum Kanal:', error);
     }
