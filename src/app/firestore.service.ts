@@ -54,6 +54,7 @@ export class FirestoreService {
   currentuid: any;
   storageId: any;
   signInuid: any;
+  logInUid: any;
 
 
   constructor(private myFirebaseApp: FirebaseApp, public router: Router) {
@@ -63,6 +64,7 @@ export class FirestoreService {
     const provider = new GoogleAuthProvider();
     // this.observeAuthState();
     this.currentuid = localStorage.getItem('uid');
+    console.log('ausgeloggte uid',this.currentuid)
     // const allVariabeln = this.getAllVariables()
     // console.log('Alle variabeln',allVariabeln)
   }
@@ -71,20 +73,20 @@ export class FirestoreService {
     return this.auth;
   }
 
-  // getAllVariables() {
-  //   return {
-  //     onUserRegistered: this.onUserRegistered,
-  //     resetPasswordUserId$: this.resetPasswordUserId$,
-  //     auth: this.auth,
-  //     firestore: this.firestore,
-  //     storageUserIcon: this.storageUserIcon,
-  //     newDate: this.newDate,
-  //     signUpDate: this.signUpDate,
-  //     currentuid: this.currentuid,
-  //     storageId: this.storageId,
-  //     signInuid: this.signInuid,
-  //   };
-  // }
+  getAllVariables() {
+    return {
+      onUserRegistered: this.onUserRegistered,
+      resetPasswordUserId$: this.resetPasswordUserId$,
+      auth: this.auth,
+      firestore: this.firestore,
+      storageUserIcon: this.storageUserIcon,
+      newDate: this.newDate,
+      signUpDate: this.signUpDate,
+      currentuid: this.currentuid,
+      storageId: this.storageId,
+      signInuid: this.signInuid,
+    };
+  }
 
   logOut() {
     debugger
@@ -118,6 +120,15 @@ export class FirestoreService {
   } catch (error) {
       console.error('Fehler beim Abrufen des Benutzerdokuments:', error);
   }
+  }
+
+  setCurrentUid(logInUid: any) {
+    this.logInUid = logInUid;
+    console.log(this.logInUid)
+  }
+
+  getCurrentUid() {
+    return this.logInUid
   }
 
   /* Speichert die uid  beim signup (function signUpUser)*/
@@ -221,7 +232,7 @@ export class FirestoreService {
        console.log(this.auth)
       if (user) {
         // User ist angemeldet
-         console.log('User is signed in:', user.uid);
+        console.log('User is signed in:', user.uid);
         localStorage.setItem('logedIn', 'true');
         this.router.navigate(['generalView']);
       } else {
@@ -250,6 +261,7 @@ export class FirestoreService {
       );
       const user = userCredential.user;
       const userRef = doc(this.firestore, 'users', user.uid);
+      console.log('Die User id zum sign up lautet',user.uid)
       await setDoc(userRef, {
         email: email,
         username: username,
@@ -300,8 +312,9 @@ export class FirestoreService {
       await updateDoc(userRef, {
         logIndate: logIndate,
       });
+      this.setCurrentUid(userCredential.user.uid);
       localStorage.setItem('uid', userCredential.user.uid);
-       console.log('User log in erfolgreich');
+      console.log('User log in erfolgreich');
       this.observeAuthState();
       return null;
     } catch (error: any) {

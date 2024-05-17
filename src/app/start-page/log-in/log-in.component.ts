@@ -29,8 +29,8 @@ export class LogInComponent implements OnInit {
     const currentAuthStatus = this.firestoreService.currentAuth()
     console.log('AUTH im login bereich',currentAuthStatus);
     // this.firestoreService.observeAuthState()
-    // const allVariabeln = this.firestoreService.getAllVariables()
-    // console.log('Alle variabeln',allVariabeln)
+    const allVariabeln = this.firestoreService.getAllVariables()
+    console.log('Alle variabeln',allVariabeln)
   }
 
   showPassword() {
