@@ -230,15 +230,14 @@ export class FirestoreService {
 
   /* Überwacht den Status des Users (Angemeldet / Abgemeldet) */
   observeAuthState(): void {
-    debugger
     onAuthStateChanged(this.auth, (user) => {
+      debugger
        console.log('Der aktuelle user',user)
        console.log(this.auth)
       if (user) {
         // User ist angemeldet
         console.log('User is signed in:', user.uid);
         localStorage.setItem('logedIn', 'true');
-        this.router.navigate(['generalView']);
       } else {
         // User ist abgemeldet
          console.log('User is signed out');
@@ -320,6 +319,7 @@ export class FirestoreService {
       localStorage.setItem('uid', userCredential.user.uid);
       console.log('User log in erfolgreich');
       this.observeAuthState();
+      this.router.navigate(['generalView']);
       return null;
     } catch (error: any) {
       console.error('Error signing in:', error);
@@ -340,6 +340,7 @@ export class FirestoreService {
         const token = credential.accessToken;
         const user = result.user;
         this.observeAuthState();
+        this.router.navigate(['generalView']);
       } else {
         console.error('Credential is null');
       }
@@ -365,6 +366,7 @@ export class FirestoreService {
         const token = credential.accessToken;
         const user = result.user;
         this.observeAuthState();
+        this.router.navigate(['generalView']);
          console.log(user);
          console.log('Google login user name:', user.displayName);
          console.log('Google login user email:', user.email);
