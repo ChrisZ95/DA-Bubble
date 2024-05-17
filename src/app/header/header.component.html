@@ -6,7 +6,7 @@
       <img class="avatar-icon" src="{{ userPhoto }}" alt="">
       <img [matMenuTriggerFor]="profilMenu" src="./../assets/images/arrow_down.png" alt="">
       <mat-menu #profilMenu="matMenu" class="profile-menu">
-        <button *ngIf="userEmail == 'gast@DABubble.de'" mat-menu-item (click)="openProfileDialog()">Profil</button>
+        <button *ngIf="!guestLogIn" mat-menu-item (click)="openProfileDialog()">Profil</button>
         <button (click)="logOut()" mat-menu-item>Log out</button>
       </mat-menu>
     </div>

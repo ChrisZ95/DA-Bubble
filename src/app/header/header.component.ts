@@ -5,11 +5,12 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
 import { DialogProfileComponent } from '../dialog-profile/dialog-profile.component';
 import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [ MatMenuModule, MatButtonModule ],
+  imports: [ MatMenuModule, MatButtonModule, CommonModule],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })
@@ -19,15 +20,20 @@ export class HeaderComponent implements OnInit{
   userForm: any;
   userName: any;
   userPhoto: any;
-  userEmail: any;
+  userUid: any;
+  guestLogIn = false;
 
   async ngOnInit() {
+    this.guestLogIn = false;
     const uid = localStorage.getItem('uid');
     this.userForm = await this.firestoreService.getUserName(uid)
+    console.log(this.userForm)
     this.userName = this.userForm['username']
     this.userPhoto = this.userForm['photo'];
-    this.userEmail = this.userForm['email'];
-    console.log('username header (localstorage)',this.userForm['username']);
+    this.userUid = this.userForm['uid']
+    if(this.userUid == 'XrnnaoBh8QcgDsAuasrCETBYdsC3') {// ID vom Gast Account
+      this.guestLogIn = true;
+    }
   }
 
   openProfileDialog() {
