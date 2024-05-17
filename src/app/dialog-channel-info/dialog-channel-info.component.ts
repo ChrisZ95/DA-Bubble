@@ -3,8 +3,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ChannelService } from '../services/channel.service';
-import { Firestore, updateDoc, doc } from '@angular/fire/firestore';
+import { Firestore, updateDoc, doc, getDoc } from '@angular/fire/firestore';
 import { Channel } from './../../models/channel.class';
+import { FirestoreService } from '../firestore.service';
 
 @Component({
   selector: 'app-dialog-channel-info',
@@ -24,23 +25,19 @@ export class DialogChannelInfoComponent implements OnInit {
   isEditing: boolean = false;
   authorName!: string;
 
-  constructor(private dialogRef: MatDialogRef<DialogChannelInfoComponent>, public channelService: ChannelService, private readonly firestore: Firestore) {}
+  constructor(private dialogRef: MatDialogRef<DialogChannelInfoComponent>, public channelService: ChannelService, private readonly firestore: Firestore, public firestoreService: FirestoreService) {}
 
   closeChannelInfoDialog(): void {
   this.dialogRef.close();
   }
 
   async ngOnInit(): Promise<void> {
-    // Rufe die channelId aus dem Kanalservice ab
     const channelId = this.channelService.getCurrentChannelId();
-    
-    if (channelId) { // Überprüfe, ob channelId nicht null ist
-      // Rufe den Autor anhand der channelId ab
+    if (channelId) {
       this.channelService.getChannelAuthorUid(channelId).then(authorUid => {
-        if (authorUid) { // Überprüfe, ob authorUid nicht null ist
-          // Rufe den Namen des Autors anhand seiner UID ab
+        if (authorUid) { 
           this.channelService.getAuthorName(authorUid).then(authorName => {
-            if (authorName) { // Überprüfe, ob authorName nicht null ist
+            if (authorName) {
               this.authorName = authorName;
             } else {
               console.error('Benutzername ist null.');
@@ -108,6 +105,27 @@ export class DialogChannelInfoComponent implements OnInit {
       }
     } else {
       console.error('Bearbeitete Kanalbeschreibung ist null.');
+    }
+  }
+
+  async leaveChannel() {
+    try {
+      const channelId = this.channelService.getCurrentChannelId();
+      if (!channelId) {
+        throw new Error('Channel ID is not available.');
+      }
+      const channelDocRef = this.channelService.getChannelDocByID(channelId);
+      const channelSnap = await getDoc(channelDocRef);
+      if (!channelSnap.exists()) {
+        throw new Error('Channel document does not exist.');
+      }
+      const currentChannelData = channelSnap.data() as { users: string[] };
+      const currentUsers = currentChannelData.users || [];
+      const updatedUsers = currentUsers.filter((userId: string) => userId !== this.firestoreService.currentuid);
+      await this.channelService.updateChannel(channelDocRef, { users: updatedUsers });
+      this.dialogRef.close();
+    } catch (error) {
+      console.error('Error leaving the channel:', error);
     }
   }
 }
