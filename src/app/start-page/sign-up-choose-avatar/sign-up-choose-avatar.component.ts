@@ -14,6 +14,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class SignUpChooseAvatarComponent implements OnInit {
   selectedAvatar: string | null = null;
+  userForm: any;
   userName: any;
   userData: any;
   userIconTokenURL: any;
@@ -41,8 +42,11 @@ export class SignUpChooseAvatarComponent implements OnInit {
 
   async ngOnInit() {
     this.uid = await this.firestoreService.getUid();
-    this.userName = await this.firestoreService.getUserName(this.uid);
-    console.log(this.uid);
+    // this.userName = await this.firestoreService.getUserName(this.uid);
+    // console.log(this.uid);
+    this.userForm = await this.firestoreService.getUserName(this.uid)
+    this.userName = this.userForm['username']
+    console.log('username header (localstorage)',this.userForm['username']);
   }
 
   async customUserIconURL() {
