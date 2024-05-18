@@ -29,10 +29,16 @@
     justify-content: center;
     margin-top: 30px;
     margin-bottom: 30px;
+
     img{
         height: 200px;
         width: 200px;
-        border-radius: 500px; 
+        border-radius: 500px;
+
+        &:hover {
+          cursor: pointer;
+          filter: brightness(0.5);
+        }
     }
 }
 
@@ -88,6 +94,45 @@
         height: 17px;
         border: 1px solid #ADB0D9;
     }
+}
+
+.button-area {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+  gap: 20px;
+
+  .safe-button {
+    border: none;
+    background-color: #444DF2;
+    color: white;
+    font-size: 18px;
+    width: 153px;
+    height: 49px;
+    border-radius: 25px;
+    cursor: pointer;
+
+    &:hover {
+      filter: brightness(1.6);
+    }
+  }
+
+  .cancel-button {
+    font-size: 18px;
+    border: 1px solid #797EF3;
+    color: #797EF3;
+    width: 153px;
+    height: 49px;
+    border-radius: 25px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #444DF2;
+      color: white;
+    }
+  }
 }
 
 ::ng-deep.mat-mdc-dialog-surface{

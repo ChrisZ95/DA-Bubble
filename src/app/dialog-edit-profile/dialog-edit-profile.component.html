@@ -1,6 +1,8 @@
 <div class="profile-dialog-container">
     <div class="profile-title"><span class="edit-profile-title">Dein Profil bearbeiten</span><img src="./../../assets/images/close.png" alt="" (click)="closeEditProfileDialog()"></div>
-    <div class="avatar-big"><img src="{{ userPhoto }}" alt=""></div>
+    <div class="avatar-big">
+      <img src="{{ userPhoto }}" alt="">
+    </div>
     <div class="input-area">
         <div class="edit-name">
             <div class="edit-name-title"><img src="./../../assets/images/account_icon.png" alt=""><span class="full-name">Vollständiger Name</span>
@@ -11,5 +13,9 @@
             <div class="edit-email-title"><img src="./../../assets/images/mail.png" alt=""><span class="email-address">E-Mail-Adresse</span></div>
             <input type="text" name="" id="" value="{{ userEmail }}">
         </div>
+    </div>
+    <div class="button-area">
+      <button (click)="closeEditProfileDialog()" class="cancel-button">Abbrechen</button>
+      <button class="safe-button">Speichern</button>
     </div>
 </div>
