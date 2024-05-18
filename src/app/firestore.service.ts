@@ -69,6 +69,28 @@ export class FirestoreService {
     // console.log('Alle variabeln',allVariabeln)
   }
 
+  async changeName(uid: string, name: string): Promise<void> {
+    debugger
+    try {
+      const userDocRef = doc(this.firestore, 'users', uid);
+      await updateDoc(userDocRef, { username: name });
+      console.log('Name erfolgreich geändert');
+    } catch (error) {
+      console.error('Fehler beim Ändern des Namens: ', error);
+    }
+  }
+
+  async changeEmail(uid: string, email: string): Promise<void> {
+    debugger
+    try {
+      const userDocRef = doc(this.firestore, 'users', uid);
+      await updateDoc(userDocRef, { email: email });
+      console.log('email erfolgreich geändert');
+    } catch (error) {
+      console.error('Fehler beim Ändern der email: ', error);
+    }
+  }
+
   currentAuth() {
     return this.auth;
   }

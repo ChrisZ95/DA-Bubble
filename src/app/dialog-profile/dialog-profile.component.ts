@@ -26,6 +26,7 @@ export class DialogProfileComponent implements OnInit{
     this.userName = this.userForm['username'];
     this.userEmail = this.userForm['email'];
     this.userPhoto = this.userForm['photo'];
+    console.log('Komplettes form',this.userForm,'Name', this.userName, 'email', this.userEmail )
   }
 
   closeProfileDialog(): void {

@@ -7,15 +7,15 @@
         <div class="edit-name">
             <div class="edit-name-title"><img src="./../../assets/images/account_icon.png" alt=""><span class="full-name">Vollständiger Name</span>
             </div>
-            <input type="text" name="" id="" value="{{ userName }}">
+            <input type="text" name="" id="userNameInput" value="{{ userName }}">
         </div>
         <div class="edit-email">
             <div class="edit-email-title"><img src="./../../assets/images/mail.png" alt=""><span class="email-address">E-Mail-Adresse</span></div>
-            <input type="text" name="" id="" value="{{ userEmail }}">
+            <input type="text" name="" id="userEmailInput" value="{{ userEmail }}">
         </div>
     </div>
     <div class="button-area">
       <button (click)="closeEditProfileDialog()" class="cancel-button">Abbrechen</button>
-      <button class="safe-button">Speichern</button>
+      <button (click)="safeEditData()" class="safe-button">Speichern</button>
     </div>
 </div>
