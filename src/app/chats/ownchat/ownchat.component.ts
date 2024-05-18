@@ -32,7 +32,7 @@ export class OwnchatComponent implements OnChanges, OnInit {
     private firestore: FirestoreService
   ) {}
   @Input() userDetails: any;
-  messages: any[] = [];
+  messages: any = [];
 
   openMemberDialog() {
     this.dialog.open(DialogMembersComponent);
@@ -47,40 +47,24 @@ export class OwnchatComponent implements OnChanges, OnInit {
   }
 
   // let chatInformation = this.chatsService.createChat(userDetails);
-  async loadMessages(userDetails: any) {
-    this.messages = [];
-    const chatsRef = collection(this.chatsService.db, 'chats');
-    const querySnapshot = await getDocs(chatsRef);
-    console.log('querySnapshot', querySnapshot);
-
-    querySnapshot.forEach((doc) => {
-      const data = doc.data();
-      if (
-        data['chatId'] === userDetails.uid &&
-        Array.isArray(data['messages'])
-      ) {
-        this.messages.push(...data['messages']);
-      }
-    });
-
-    console.log('Filtered Messages:', this.messages);
-  }
 
   async loadCurrentUser() {
     let allUsers = await this.firestore.getAllUsers();
     let currentUserDetails = allUsers.filter(
       (user) => user.uid == this.firestore.currentuid
     );
-    console.log('currentUserDetails', currentUserDetails);
-    this.loadMessages(currentUserDetails);
+    this.chatsService.loadMessages(currentUserDetails);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (this.userDetails != '' && changes['userDetails']) {
-      this.loadMessages(this.userDetails);
+      this.chatsService.loadMessages(this.userDetails);
+      this.messages = this.chatsService.messages;
     }
   }
+
   ngOnInit(): void {
     this.loadCurrentUser();
+    this.messages = this.chatsService.messages;
   }
 }

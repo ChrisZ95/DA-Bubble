@@ -30,7 +30,7 @@ import { Message } from 'protobufjs';
 export class ChatService {
   currentuid: any;
   chatList: any = [];
-  loadedchatInformation: any;
+  loadedchatInformation: any = {};
   chatDocId: any;
   allPotentialChatUsers: any[] = [];
   showOwnChat: boolean = true;
@@ -136,15 +136,36 @@ export class ChatService {
     }
   }
 
-  async loadMessages(docId: any) {
-    try {
-      this.chatDocId = docId;
-      let chatRef = doc(this.chatsCollection, docId[0]);
-      let chatData = await getDoc(chatRef);
-      this.loadedchatInformation = chatData.data();
-    } catch (error) {
-      console.error('Error loading messages:', error);
-    }
+  // async loadMessages(docId: any) {
+  //   try {
+  //     this.chatDocId = docId;
+  //     let chatRef = doc(this.chatsCollection, docId[0]);
+  //     let chatData = await getDoc(chatRef);
+  //     this.loadedchatInformation = chatData.data();
+  //   } catch (error) {
+  //     console.error('Error loading messages:', error);
+  //   }
+  // }
+  messages: any[] = [];
+  async loadMessages(userDetails: any) {
+    this.currentuid = this.FirestoreService.currentuid;
+    this.messages = [];
+    const chatsRef = collection(this.db, 'chats');
+    const querySnapshot = await getDocs(chatsRef);
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      if (Array.isArray(data['messages'])) {
+        userDetails.forEach((user: any) => {
+          if (data['chatId'] === user.uid) {
+            const userMessages = data['messages'].filter((message: any) => {
+              return message.senderId === user.uid;
+            });
+            this.messages.push(...userMessages);
+          }
+        });
+      }
+    });
+    console.log('Filtered Messages:', this.messages);
   }
 
   async sendData(text: any) {
