@@ -31,14 +31,14 @@
     margin-bottom: 30px;
 
     img{
-        height: 200px;
-        width: 200px;
-        border-radius: 500px;
+      height: 200px;
+      width: 200px;
+      border-radius: 500px;
 
-        &:hover {
-          cursor: pointer;
-          filter: brightness(0.5);
-        }
+      &:hover {
+        cursor: pointer;
+        filter: brightness(0.5);
+      }
     }
 }
 
