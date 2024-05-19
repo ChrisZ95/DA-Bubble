@@ -28,6 +28,7 @@ import {
   updateDoc,
   where,
   QueryDocumentSnapshot,
+  deleteField
 } from '@angular/fire/firestore';
 import {
   getStorage,
@@ -35,7 +36,7 @@ import {
   ref,
   uploadBytes,
   getDownloadURL,
-  deleteObject
+  deleteObject,
 } from '@angular/fire/storage';
 import { User } from '../models/user.class';
 import { Channel } from '../models/channel.class';
@@ -74,15 +75,21 @@ export class FirestoreService {
     // console.log('Alle variabeln',allVariabeln)
   }
 
-  deleteUserIcon(currentUserIcon: any) {
+  async deleteUserIcon(currentUserIcon: string, currentUserId: string) {
     const storage = getStorage();
     const desertRef = ref(storage, currentUserIcon);
-    try {
-      deleteObject(desertRef);
-    } catch {
+    const userDocRef = doc(this.firestore, 'users', currentUserId);
 
+    try {
+      await deleteObject(desertRef);
+      await updateDoc(userDocRef, {
+        photo: deleteField()
+      });
+    } catch (error: any) {
+      console.log('Fehler beim Löschen des Benutzericons', error);
     }
   }
+
 
   async changeName(uid: string, name: string): Promise<void> {
     debugger

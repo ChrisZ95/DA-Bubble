@@ -60,6 +60,7 @@ export class DialogEditProfileComponent implements OnInit{
     }
 
     changeUserIcon() {
-      this.firestoreService.deleteUserIcon(this.userPhoto);
+      debugger
+      this.firestoreService.deleteUserIcon(this.userPhoto, this.logInUid);
     }
 }
