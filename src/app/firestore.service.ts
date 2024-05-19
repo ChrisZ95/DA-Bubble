@@ -35,6 +35,7 @@ import {
   ref,
   uploadBytes,
   getDownloadURL,
+  deleteObject
 } from '@angular/fire/storage';
 import { User } from '../models/user.class';
 import { Channel } from '../models/channel.class';
@@ -71,6 +72,16 @@ export class FirestoreService {
     console.log('ausgeloggte uid',this.currentuid)
     // const allVariabeln = this.getAllVariables()
     // console.log('Alle variabeln',allVariabeln)
+  }
+
+  deleteUserIcon(currentUserIcon: any) {
+    const storage = getStorage();
+    const desertRef = ref(storage, currentUserIcon);
+    try {
+      deleteObject(desertRef);
+    } catch {
+
+    }
   }
 
   async changeName(uid: string, name: string): Promise<void> {

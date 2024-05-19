@@ -2,6 +2,9 @@
     <div class="profile-title"><span class="edit-profile-title">Dein Profil bearbeiten</span><img src="./../../assets/images/close.png" alt="" (click)="closeEditProfileDialog()"></div>
     <div class="avatar-big">
       <img src="{{ userPhoto }}" alt="">
+      <button (click)="changeUserIcon()" class="upload-button">
+        <img src="./../../assets/images/upload.png">
+      </button>
     </div>
     <div class="input-area">
         <div class="edit-name">

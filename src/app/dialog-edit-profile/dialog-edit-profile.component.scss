@@ -27,18 +27,34 @@
 .avatar-big{
     display: flex;
     justify-content: center;
+    align-items: center;
     margin-top: 30px;
     margin-bottom: 30px;
+
+    .upload-button {
+      position: absolute;
+      height: 30px;
+      width: 30px;
+      top: 260px;
+      right: 50px;
+      border: none;
+      background-color: transparent;
+      cursor: pointer;
+
+      &:hover {
+        filter: brightness(0.7);
+      }
+
+      img {
+        height: 30px;
+        width: 30px;
+      }
+    }
 
     img{
       height: 200px;
       width: 200px;
       border-radius: 500px;
-
-      &:hover {
-        cursor: pointer;
-        filter: brightness(0.5);
-      }
     }
 }
 
