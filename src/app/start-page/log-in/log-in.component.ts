@@ -58,7 +58,7 @@ export class LogInComponent implements OnInit {
   }
 
   async logInWithGoogle() {
-    debugger
+    // debugger
     const auth = this.firestoreService.auth;
     const provider = new GoogleAuthProvider();
     const logInDate = await this.firestoreService.createTimeStamp();
@@ -87,7 +87,7 @@ export class LogInComponent implements OnInit {
   }
 
   async userLogIn(formData: any) {
-    debugger
+    // debugger
     this.showInputInformationEmail = false;
     this.showInputInformationPassword = false;
     const { email, password } = formData.value;

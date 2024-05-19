@@ -253,7 +253,7 @@ export class FirestoreService {
   /* Überwacht den Status des Users (Angemeldet / Abgemeldet) */
   observeAuthState(): void {
     onAuthStateChanged(this.auth, (user) => {
-      debugger
+      // debugger
        console.log('Der aktuelle user',user)
        console.log(this.auth)
       if (user) {
