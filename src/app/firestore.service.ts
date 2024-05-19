@@ -28,7 +28,7 @@ import {
   updateDoc,
   where,
   QueryDocumentSnapshot,
-  deleteField
+  deleteField,
 } from '@angular/fire/firestore';
 import {
   getStorage,
@@ -92,7 +92,6 @@ export class FirestoreService {
 
 
   async changeName(uid: string, name: string): Promise<void> {
-    debugger
     try {
       const userDocRef = doc(this.firestore, 'users', uid);
       await updateDoc(userDocRef, { username: name });
@@ -103,7 +102,6 @@ export class FirestoreService {
   }
 
   // async changeEmail(uid: string, email: string): Promise<void> {
-  //   debugger
   //   try {
   //     const userDocRef = doc(this.firestore, 'users', uid);
   //     await updateDoc(userDocRef, { email: email });
@@ -117,7 +115,6 @@ export class FirestoreService {
   // }
 
   async changeEmail(uid: string, newEmail: string, currentPassword: string): Promise<void> {
-    debugger
     try {
       const user = this.auth.currentUser;
       console.log(user)
@@ -141,7 +138,6 @@ export class FirestoreService {
   }
 
   async sendVerificationEmail(user: any, newEmail: string): Promise<void> {
-    debugger
     try {
       if (user) {
         await sendEmailVerification(user);
@@ -156,7 +152,6 @@ export class FirestoreService {
   }
 
   // async changeEmail(uid: string, newEmail: string, currentPassword: string): Promise<void> {
-  //   debugger
   //   try {
   //     const user = this.auth.currentUser;
   //     if (user) {
@@ -211,7 +206,6 @@ export class FirestoreService {
   }
 
   logOut() {
-    debugger
     signOut(this.auth)
       .then(() => {
         localStorage.clear();
@@ -227,11 +221,10 @@ export class FirestoreService {
 
 
   /* Name des Users für die sign-up-choose-avatar.component*/
-  async getUserName(uid: any): Promise<any | null> {
+  async getUserData(uid: any): Promise<any | null> {
     const userData = doc(this.firestore, 'users', uid);
     try {
       const docSnap = await getDoc(userData);
-
       if (docSnap.exists()) {
         const userData = docSnap.data();
         console.log('Komplettes user formular', userData);
@@ -376,7 +369,6 @@ export class FirestoreService {
     privacyPolice: boolean,
     signUpdate: string,
   ): Promise<string | null> {
-    debugger
     try {
       const userCredential = await createUserWithEmailAndPassword(
         this.auth,

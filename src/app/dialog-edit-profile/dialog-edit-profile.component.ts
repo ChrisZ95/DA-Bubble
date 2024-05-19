@@ -26,7 +26,7 @@ export class DialogEditProfileComponent implements OnInit{
   async ngOnInit() {
     const uid = localStorage.getItem('uid');
     this.logInUid = uid;
-    this.userForm = await this.firestoreService.getUserName(uid);
+    this.userForm = await this.firestoreService.getUserData(uid);
     this.userName = this.userForm['username'];
     this.userEmail = this.userForm['email'];
     this.userPhoto = this.userForm['photo'];
@@ -59,8 +59,19 @@ export class DialogEditProfileComponent implements OnInit{
       this.closeEditProfileDialog()
     }
 
-    changeUserIcon() {
-      debugger
+    async changeUserIcon() {
       this.firestoreService.deleteUserIcon(this.userPhoto, this.logInUid);
+      const fileInput = document.getElementById('profile-picture-input') as HTMLInputElement;
+      const file = fileInput.files?.[0];
+      if (file) {
+        const icon = file;
+        console.log(icon)
+        console.log('Name des Bildes',icon.name);
+        console.log('Bild wurde erstellt am',icon.lastModified);
+        const userIconTokenURL = await this.firestoreService.uploadUserIconIntoStorage(this.logInUid, icon);
+        await this.firestoreService.uploadUserIconIntoDatabase(this.logInUid, userIconTokenURL);
+      } else {
+        console.log('Kein Bild ausgewählt');
+      }
     }
 }

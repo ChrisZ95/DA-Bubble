@@ -44,7 +44,7 @@ export class SignUpChooseAvatarComponent implements OnInit {
     this.uid = await this.firestoreService.getUid();
     // this.userName = await this.firestoreService.getUserName(this.uid);
     // console.log(this.uid);
-    this.userForm = await this.firestoreService.getUserName(this.uid)
+    this.userForm = await this.firestoreService.getUserData(this.uid)
     this.userName = this.userForm['username']
     console.log('username header (localstorage)',this.userForm['username']);
   }

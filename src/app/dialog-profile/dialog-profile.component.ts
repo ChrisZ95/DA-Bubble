@@ -22,7 +22,7 @@ export class DialogProfileComponent implements OnInit{
 
   async ngOnInit() {
     const uid = localStorage.getItem('uid');
-    this.userForm = await this.firestoreService.getUserName(uid);
+    this.userForm = await this.firestoreService.getUserData(uid);
     this.userName = this.userForm['username'];
     this.userEmail = this.userForm['email'];
     this.userPhoto = this.userForm['photo'];
