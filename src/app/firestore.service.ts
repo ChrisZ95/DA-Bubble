@@ -11,7 +11,11 @@ import {
   sendPasswordResetEmail,
   OAuthProvider,
   Auth,
-  signOut
+  signOut,
+  updateEmail,
+  reauthenticateWithCredential,
+  EmailAuthProvider,
+
 } from '@angular/fire/auth';
 import { FirebaseApp } from '@angular/fire/app';
 import {
@@ -80,15 +84,93 @@ export class FirestoreService {
     }
   }
 
-  async changeEmail(uid: string, email: string): Promise<void> {
+  // async changeEmail(uid: string, email: string): Promise<void> {
+  //   debugger
+  //   try {
+  //     const userDocRef = doc(this.firestore, 'users', uid);
+  //     await updateDoc(userDocRef, { email: email });
+  //     console.log(this.auth.currentUser, email)
+
+  //     await updateEmail(this.auth.currentUser, email);
+  //     console.log('email erfolgreich geändert');
+  //   } catch (error) {
+  //     console.error('Fehler beim Ändern der email: ', error);
+  //   }
+  // }
+
+  async changeEmail(uid: string, newEmail: string, currentPassword: string): Promise<void> {
     debugger
     try {
-      const userDocRef = doc(this.firestore, 'users', uid);
-      await updateDoc(userDocRef, { email: email });
-      console.log('email erfolgreich geändert');
+      const user = this.auth.currentUser;
+      console.log(user)
+      if (user) {
+        const credential = EmailAuthProvider.credential(user.email, currentPassword);
+        await reauthenticateWithCredential(user, credential);
+        await this.sendVerificationEmail(user, newEmail);
+        await this.waitForEmailVerification();
+        if(user.emailVerified) {
+          const userDocRef = doc(this.firestore, 'users', uid);
+          await updateDoc(userDocRef, { email: newEmail });
+          await updateEmail(user, newEmail);
+          console.log('E-Mail erfolgreich in Firestore aktualisiert');
+        }
+      } else {
+        console.error('Kein angemeldeter Benutzer gefunden');
+      }
     } catch (error) {
-      console.error('Fehler beim Ändern der email: ', error);
+      console.error('Fehler beim Ändern der E-Mail: ', error);
     }
+  }
+
+  async sendVerificationEmail(user: any, newEmail: string): Promise<void> {
+    debugger
+    try {
+      if (user) {
+        await sendEmailVerification(user);
+        console.log('Verifizierungs-E-Mail an neue Adresse gesendet');
+        alert('Bitte verifizieren Sie Ihre neue E-Mail-Adresse. Überprüfen Sie Ihren Posteingang und klicken Sie auf den Verifizierungslink.');
+      } else {
+        console.error('Kein angemeldeter Benutzer gefunden');
+      }
+    } catch (error) {
+      console.error('Fehler beim Senden der Verifizierungs-E-Mail: ', error);
+    }
+  }
+
+  // async changeEmail(uid: string, newEmail: string, currentPassword: string): Promise<void> {
+  //   debugger
+  //   try {
+  //     const user = this.auth.currentUser;
+  //     if (user) {
+  //       // Reauthenticate den Benutzer
+  //       const credential = EmailAuthProvider.credential(user.email, currentPassword);
+  //       await reauthenticateWithCredential(user, credential);
+
+  //       // Temporär die E-Mail-Adresse aktualisieren, um Verifizierungs-E-Mail zu senden
+  //       await this.sendVerificationEmail(newEmail);
+
+  //       // Warte auf E-Mail-Verifizierung (dieser Schritt muss in der tatsächlichen Anwendung mit Benutzerinteraktion erfolgen)
+  //       await this.waitForEmailVerification();
+
+  //       // E-Mail-Adresse in Firestore aktualisieren
+  //       const userDocRef = doc(this.firestore, 'users', uid);
+  //       await updateDoc(userDocRef, { email: newEmail });
+  //       console.log('E-Mail erfolgreich in Firestore aktualisiert');
+  //     } else {
+  //       console.error('Kein angemeldeter Benutzer gefunden');
+  //     }
+  //   } catch (error) {
+  //     console.error('Fehler beim Ändern der E-Mail: ', error);
+  //   }
+  // }
+
+  private async waitForEmailVerification(): Promise<void> {
+    return new Promise((resolve) => {
+      // Simulieren Sie eine Wartezeit von 30 Sekunden
+      setTimeout(() => {
+        resolve();
+      }, 30000); // 30 Sekunden Wartezeit als Platzhalter
+    });
   }
 
   currentAuth() {
@@ -253,7 +335,6 @@ export class FirestoreService {
   /* Überwacht den Status des Users (Angemeldet / Abgemeldet) */
   observeAuthState(): void {
     onAuthStateChanged(this.auth, (user) => {
-      debugger
        console.log('Der aktuelle user',user)
        console.log(this.auth)
       if (user) {
@@ -275,7 +356,7 @@ export class FirestoreService {
     password: string,
     username: string,
     privacyPolice: boolean,
-    signUpdate: string
+    signUpdate: string,
   ): Promise<string | null> {
     debugger
     try {
@@ -293,9 +374,11 @@ export class FirestoreService {
         privacyPolice: true,
         uid: user.uid,
         signUpdate: signUpdate,
+        password: password,
       });
 
       this.setuid(user.uid);
+      this.sendEmailAfterSignUp(user)
       return 'auth';
     } catch (error: any) {
       console.error('Error creating user:', error);
@@ -429,14 +512,14 @@ export class FirestoreService {
   }
 
   /* AKTUELL NICHT IN GEBRAUCH / verschickt nach dem sign up eine email an den User */
-  // async sendEmailAfterSignUp(user: any): Promise<void> {
-  //   try {
-  //     await sendEmailVerification(user);
-  //     console.log('E-Mail zur Verifizierung gesendet');
-  //   } catch (error) {
-  //     console.error('Fehler beim Senden der Verifizierungs-E-Mail:', error);
-  //   }
-  // }
+  async sendEmailAfterSignUp(user: any): Promise<void> {
+    try {
+      await sendEmailVerification(user);
+      console.log('E-Mail zur Verifizierung gesendet');
+    } catch (error) {
+      console.error('Fehler beim Senden der Verifizierungs-E-Mail:', error);
+    }
+  }
 
   /* Verschickt eine email an den user zum Passwort ändern */
   async sendEmailResetPasswort(emailData: {

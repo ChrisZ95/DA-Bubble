@@ -18,6 +18,7 @@ export class DialogEditProfileComponent implements OnInit{
   userName: any;
   userEmail: any;
   userPhoto: any;
+  userPassword: any;
 
   inputName: any;
   inputEmail: any;
@@ -29,6 +30,7 @@ export class DialogEditProfileComponent implements OnInit{
     this.userName = this.userForm['username'];
     this.userEmail = this.userForm['email'];
     this.userPhoto = this.userForm['photo'];
+    this.userPassword = this.userForm['password'];
   }
 
   closeEditProfileDialog(){
@@ -52,7 +54,7 @@ export class DialogEditProfileComponent implements OnInit{
       console.log('email ist gleich')
       } else {
        console.log('email ist nicht gleich')
-       this.firestoreService.changeEmail(this.logInUid, inpuEmailValue)
+       this.firestoreService.changeEmail(this.logInUid, inpuEmailValue, this.userPassword)
       }
       this.closeEditProfileDialog()
     }
