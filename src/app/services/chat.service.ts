@@ -19,7 +19,7 @@ import {
 } from 'firebase/firestore';
 import { ChannelService } from './channel.service';
 import { FirestoreService } from '../firestore.service';
-import { log } from 'console';
+import { debug, log } from 'console';
 import { GenerateIdsService } from './generate-ids.service';
 import { DocumentReference } from 'firebase/firestore';
 import { Message } from 'protobufjs';
@@ -56,45 +56,95 @@ export class ChatService {
     return docSnap.docs.map((doc) => doc.id);
   }
 
+  // async createChat(userDetails: any) {
+  //   Array.isArray(userDetails) ? userDetails : [userDetails];
+  //   try {
+  //     let date = new Date().getTime().toString();
+  //     let chatDocIds = await this.getChatsDocumentIDs('chats');
+
+  //     this.currentuid = this.FirestoreService.currentuid;
+
+  //     if (this.currentuid === userDetails.uid) {
+  //       let ownChatDocId = chatDocIds.filter(
+  //         (id: any) => this.currentuid === id
+  //       );
+  //       if (ownChatDocId.length === 0) {
+  //         ownChatDocId = [this.currentuid];
+  //         const chatData = {
+  //           createdAt: date,
+  //           chatId: this.currentuid,
+  //           messages: [],
+  //         };
+  //         await setDoc(doc(this.firestore, 'chats', this.currentuid), chatData);
+  //       }
+  //       await this.loadMessages(ownChatDocId);
+  //     } else {
+  //       // this.createChatWithTwoUsers();
+  //       let slicedOwnUid = this.currentuid.slice(0, 5);
+  //       let slicedOtherUid = userDetails.uid.slice(0, 5);
+  //       let combinedShortedId: any = [];
+  //       combinedShortedId.push(slicedOwnUid);
+  //       combinedShortedId.push(slicedOtherUid);
+  //       combinedShortedId = combinedShortedId.sort().join('-');
+
+  //       const chatData = {
+  //         createdAt: date,
+  //         chatId: combinedShortedId,
+  //         messages: [],
+  //       };
+  //       await setDoc(doc(this.firestore, 'chats', combinedShortedId), chatData);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error creating chat:', error);
+  //   }
+  // }
   async createChat(userDetails: any) {
+    userDetails = Array.isArray(userDetails) ? userDetails : [userDetails];
+
     try {
       let date = new Date().getTime().toString();
       let chatDocIds = await this.getChatsDocumentIDs('chats');
-
       this.currentuid = this.FirestoreService.currentuid;
 
-      if (this.currentuid === userDetails.uid) {
-        let ownChatDocId = chatDocIds.filter(
-          (id: any) => this.currentuid === id
-        );
-        if (ownChatDocId.length === 0) {
-          ownChatDocId = [this.currentuid];
+      userDetails.forEach(async (user: any) => {
+        if (this.currentuid === user.uid) {
+          let ownChatDocId = chatDocIds.filter(
+            (id: any) => this.currentuid === id
+          );
+          if (ownChatDocId.length === 0) {
+            ownChatDocId = [this.currentuid];
+            const chatData = {
+              createdAt: date,
+              chatId: this.currentuid,
+              participants: [this.currentuid],
+              messages: [],
+            };
+            await setDoc(
+              doc(this.firestore, 'chats', this.currentuid),
+              chatData
+            );
+          }
+          // await this.loadMessages(ownChatDocId);
+        } else {
+          let slicedOwnUid = this.currentuid.slice(0, 5);
+          let slicedOtherUid = user.uid.slice(0, 5);
+          let combinedShortedId: any = [];
+          combinedShortedId.push(slicedOwnUid);
+          combinedShortedId.push(slicedOtherUid);
+          combinedShortedId = combinedShortedId.sort().join('-');
+
           const chatData = {
             createdAt: date,
-            chatId: this.currentuid,
+            chatId: combinedShortedId,
+            participants: [this.currentuid, user.uid],
             messages: [],
           };
-          await setDoc(doc(this.firestore, 'chats', this.currentuid), chatData);
+          await setDoc(
+            doc(this.firestore, 'chats', combinedShortedId),
+            chatData
+          );
         }
-        await this.loadMessages(ownChatDocId);
-      } else {
-        debugger;
-        // this.createChatWithTwoUsers();
-        let slicedOwnUid = this.currentuid.slice(0, 5);
-        let slicedOtherUid = userDetails.uid.slice(0, 5);
-
-        let combinedShortedId: any = [];
-        combinedShortedId.push(slicedOwnUid);
-        combinedShortedId.push(slicedOtherUid);
-        combinedShortedId = combinedShortedId.sort().join('-');
-
-        const chatData = {
-          createdAt: date,
-          chatId: combinedShortedId,
-          messages: [],
-        };
-        await setDoc(doc(this.firestore, 'chats', combinedShortedId), chatData);
-      }
+      });
     } catch (error) {
       console.error('Error creating chat:', error);
     }
@@ -148,24 +198,54 @@ export class ChatService {
   // }
   messages: any[] = [];
   async loadMessages(userDetails: any) {
+    this.createChat(userDetails);
     this.currentuid = this.FirestoreService.currentuid;
     this.messages = [];
+
+    const chatDocIds = await this.getUserChatDocuments();
+    console.log('User Chat Document IDs:', chatDocIds);
+
+    const chatsRef = collection(this.db, 'chats');
+    for (const chatDocId of chatDocIds) {
+      const chatDoc = await getDoc(doc(this.firestore, 'chats', chatDocId));
+      if (chatDoc.exists()) {
+        const data = chatDoc.data();
+        console.log('Chat Document Data:', data);
+
+        if (Array.isArray(data['messages'])) {
+          const userMessages = data['messages'].filter((message: any) => {
+            return message.senderId === this.currentuid;
+          });
+          this.messages.push(...userMessages);
+        }
+      }
+    }
+    this.loadedchatInformation = userDetails;
+    console.log('Filtered Messages:', this.messages);
+  }
+
+  getCombinedChatId(uid1: string, uid2: string): string {
+    let slicedUid1 = uid1.slice(0, 5);
+    let slicedUid2 = uid2.slice(0, 5);
+    return [slicedUid1, slicedUid2].sort().join('-');
+  }
+
+  async getUserChatDocuments(): Promise<string[]> {
     const chatsRef = collection(this.db, 'chats');
     const querySnapshot = await getDocs(chatsRef);
+    const chatDocIds: string[] = [];
+
     querySnapshot.forEach((doc) => {
       const data = doc.data();
-      if (Array.isArray(data['messages'])) {
-        userDetails.forEach((user: any) => {
-          if (data['chatId'] === user.uid) {
-            const userMessages = data['messages'].filter((message: any) => {
-              return message.senderId === user.uid;
-            });
-            this.messages.push(...userMessages);
-          }
-        });
+      if (
+        data['participants'] &&
+        data['participants'].includes(this.currentuid)
+      ) {
+        chatDocIds.push(doc.id);
       }
     });
-    console.log('Filtered Messages:', this.messages);
+
+    return chatDocIds;
   }
 
   async sendData(text: any) {
@@ -178,17 +258,40 @@ export class ChatService {
       creator: currentuid,
       createdAt: date,
     };
-    if (this.loadedchatInformation?.messages) {
-      this.loadedchatInformation.messages.push(message);
-      console.log('exist');
+
+    // Fetch the existing document
+    const docRef = doc(this.firestore, 'chats', this.currentuid);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      this.loadedchatInformation = docSnap.data();
     } else {
-      // Fehlt noch
-      console.log('DONT exist');
+      console.log('No such document!');
+      this.loadedchatInformation = {
+        chatId: this.currentuid,
+        createdAt: date,
+        messages: [],
+        participants: [this.currentuid],
+      };
     }
-    let chat = await setDoc(
-      doc(this.chatsCollection, this.currentuid),
-      this.loadedchatInformation
-    );
+
+    // Ensure messages is an array within loadedchatInformation
+    if (!Array.isArray(this.loadedchatInformation.messages)) {
+      this.loadedchatInformation.messages = [];
+    }
+
+    // Push the new message into the messages array
+    this.loadedchatInformation.messages.push(message);
+
+    // Update only the messages field in the Firestore document
+    try {
+      await updateDoc(docRef, {
+        messages: this.loadedchatInformation.messages,
+      });
+      console.log('Message sent and chat document updated');
+    } catch (error) {
+      console.error('Error updating chat document:', error);
+    }
   }
 
   async sendDataToChannel(channelId: string, message: any) {
