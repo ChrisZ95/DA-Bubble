@@ -213,6 +213,48 @@
   }
 }
 
+@media screen and (min-height: 1050px) {
+  .log-in-card-container {
+
+    .log-in-card {
+     height: 650px;
+
+     .card-header-section {
+      padding-top: 30px;
+      gap: 10px;
+
+      h1 {
+        font-size: 34px;
+      }
+
+      span {
+        font-size: 16px;
+      }
+     }
+
+      .card-input-section {
+        margin-top: 20px ;
+
+        .input-container {
+          margin: 10px;
+
+          img {
+            padding-left: 20px;
+          }
+        }
+
+        .card-link {
+          margin-top: 20px;
+        }
+      }
+
+      .seperation-line {
+        margin-top: 20px;
+      }
+    }
+  }
+}
+
 @media screen and (max-height: 1050px) {
   .log-in-card-container {
 
@@ -255,7 +297,7 @@
   }
 }
 
-@media screen and (max-width: 650px) {
+@media screen and (max-width: 650px) and (max-height: 1050px) {
 
   .log-in-card-container {
 
@@ -269,7 +311,15 @@
           height: 60px;
 
           input {
-            width: 60vw;
+            width: 55vw;
+          }
+        }
+
+        .pseudo {
+
+          .input-information {
+
+            width: 70vw;
           }
         }
       }
@@ -307,7 +357,7 @@
   }
 }
 
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 480px) and (max-height:  1050px){
 
   .log-in-card-container {
 
@@ -323,6 +373,142 @@
           span {
             font-size: 14px;
           }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 400px) and (max-height: 1050px){
+
+  .log-in-card-container {
+
+    .log-in-card {
+
+      .card-header-section {
+
+          h1 {
+            font-size: 28px;
+          }
+
+          span {
+            font-size: 12px;
+          }
+      }
+
+      .card-input-section {
+
+        .input-container {
+
+          input {
+            font-size: 14px;
+          }
+        }
+
+        .pseudo {
+
+          .input-information {
+          font-size: 10px;
+          }
+        }
+      }
+    }
+  }
+}
+
+
+@media screen and (max-width: 340px) and (max-height:  1050px){
+
+  .log-in-card-container {
+
+    .log-in-card {
+
+      .card-header-section {
+
+          h1 {
+            font-size: 28px;
+          }
+
+          span {
+            font-size: 10px;
+          }
+      }
+
+      .card-input-section {
+
+        .input-container {
+
+          input {
+            font-size: 14px;
+          }
+        }
+      }
+
+      .login-button-container {
+
+        .user-login {
+          font-size: 16px;
+        }
+
+        .guest-login {
+          font-size: 16px;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-height: 940px) {
+  .log-in-card-container {
+
+    .log-in-card {
+      height: 550px;
+
+      .card-header-section {
+        padding-top: 10px;
+        gap: 10px;
+
+
+          h1 {
+            font-size: 38px;
+          }
+
+          span {
+            font-size: 16px;
+          }
+      }
+
+      .card-input-section {
+        margin-top: 20px;
+
+        .input-container {
+          height: 45px;
+
+          input {
+            font-size: 16px;
+            height: 35px;
+          }
+        }
+
+        .card-link {
+          margin-top: 10px;
+        }
+      }
+
+      .google-login-container {
+        gap: 10px;
+
+        .google-button {
+          height: 50px;
+
+          img {
+            height: 30px;
+            width: 30px;
+          }
+        }
+      }
+
+      .login-button-container {
+        margin-top: 20px;
       }
     }
   }

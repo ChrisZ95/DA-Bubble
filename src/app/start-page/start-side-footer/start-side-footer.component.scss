@@ -33,6 +33,13 @@ footer {
   }
 }
 
+@media screen and (max-height: 980px) {
+
+  footer{
+    margin-top: 20px;
+  }
+}
+
 @media screen and (max-width: 850px) {
 
   footer {
