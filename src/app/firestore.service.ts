@@ -222,6 +222,7 @@ export class FirestoreService {
 
   /* Dokument des Users */
   async getUserData(uid: any): Promise<any | null> {
+    debugger
     const userData = doc(this.firestore, 'users', uid);
     try {
       const docSnap = await getDoc(userData);
@@ -481,7 +482,6 @@ export class FirestoreService {
         const token = credential.accessToken;
         const user = result.user;
         this.observeAuthState();
-        this.router.navigate(['generalView']);
          console.log(user);
          console.log('Google login user name:', user.displayName);
          console.log('Google login user email:', user.email);
@@ -510,8 +510,9 @@ export class FirestoreService {
           logInDate: logInDate,
           signUpdate: signUpDateUnixTimestamp,
         });
-        this.setCurrentUid(user.uid);
-        localStorage.setItem('uid', user.uid);
+        await this.setCurrentUid(user.uid);
+        await localStorage.setItem('uid', user.uid);
+        this.router.navigate(['generalView']);
       } else {
         console.error('Credential is null');
       }

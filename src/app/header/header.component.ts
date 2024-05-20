@@ -24,9 +24,10 @@ export class HeaderComponent implements OnInit{
   guestLogIn = false;
 
   async ngOnInit() {
+    debugger
     this.guestLogIn = false;
     const uid = localStorage.getItem('uid');
-    this.userForm = await this.firestoreService.getUserData(uid)
+    this.userForm = await this.firestoreService.getUserData(uid);
     console.log(this.userForm)
     this.userName = this.userForm['username']
     this.userPhoto = this.userForm['photo'];
