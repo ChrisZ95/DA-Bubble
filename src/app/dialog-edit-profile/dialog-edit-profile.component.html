@@ -1,7 +1,8 @@
 <div class="profile-dialog-container">
     <div class="profile-title"><span class="edit-profile-title">Dein Profil bearbeiten</span><img class="back-button" src="./../../assets/images/close.png" alt="" (click)="closeEditProfileDialog()"></div>
     <div class="avatar-big">
-      <img class="user-icon" src="{{ userPhoto }}" alt="">
+      <img class="user-icon" [src]="userPhoto" alt="User Photo">
+
         <div class="choose-image-container">
           <div>
             <button  (click)="changeUserIcon()" class="upload-button">

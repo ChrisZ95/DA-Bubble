@@ -220,7 +220,7 @@ export class FirestoreService {
   }
 
 
-  /* Name des Users für die sign-up-choose-avatar.component*/
+  /* Dokument des Users */
   async getUserData(uid: any): Promise<any | null> {
     const userData = doc(this.firestore, 'users', uid);
     try {
@@ -510,6 +510,8 @@ export class FirestoreService {
           logInDate: logInDate,
           signUpdate: signUpDateUnixTimestamp,
         });
+        this.setCurrentUid(user.uid);
+        localStorage.setItem('uid', user.uid);
       } else {
         console.error('Credential is null');
       }
