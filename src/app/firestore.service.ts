@@ -222,7 +222,7 @@ export class FirestoreService {
 
   /* Dokument des Users */
   async getUserData(uid: any): Promise<any | null> {
-    debugger
+    //debugger
     const userData = doc(this.firestore, 'users', uid);
     try {
       const docSnap = await getDoc(userData);
