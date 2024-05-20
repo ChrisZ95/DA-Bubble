@@ -20,4 +20,45 @@ footer {
       filter: brightness(1.05);
     }
   }
+
+  .footer-sign-up {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 850px) {
+
+  footer {
+    flex-direction: column;
+    align-items: center;
+
+    .footer-buttons {
+      display: none;
+    }
+
+    .footer-sign-up {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      button {
+        text-decoration: none;
+        color: #797EF3;
+        background-color: transparent;
+        font-size: 18px;
+        border: 1px solid #797EF3;
+        border-radius: 25px;
+        width: 160px;
+        height: 40px;
+
+        &:hover {
+          cursor: pointer;
+          background-color:#797EF3;
+          color: white;
+          filter: brightness(1.3);
+        }
+      }
+    }
+  }
 }

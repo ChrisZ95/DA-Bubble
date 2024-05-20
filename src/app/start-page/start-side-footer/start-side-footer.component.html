@@ -1,4 +1,13 @@
 <footer>
-  <button (click)="openImpressumComponent()">Impressum</button>
-  <button (click)="openPrivacyPoliceComponent()">Datenschutz</button>
+
+  <div class="footer-buttons">
+    <button (click)="openImpressumComponent()">Impressum</button>
+    <button (click)="openPrivacyPoliceComponent()">Datenschutz</button>
+  </div>
+
+  <div *ngIf="!showSignUp && !showChooseAvatar" class="footer-sign-up">
+    <h4>Neu bei DABubble?</h4>
+    <button (click)="emitSignUpClicked()">Konto erstellen</button>
+  </div>
+
 </footer>
