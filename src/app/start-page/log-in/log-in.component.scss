@@ -254,3 +254,76 @@
     }
   }
 }
+
+@media screen and (max-width: 650px) {
+
+  .log-in-card-container {
+
+    .log-in-card {
+     width: 90vw;
+
+      .card-input-section {
+
+        .input-container {
+          width: 80vw;
+          height: 60px;
+
+          input {
+            width: 60vw;
+          }
+        }
+      }
+
+      .seperation-line {
+
+        .line {
+          width: 30vw;
+        }
+      }
+
+      .google-login-container {
+
+        .google-button {
+          width: 80vw;
+
+          img {
+            height: 34px;
+            width: 34px;
+          }
+        }
+      }
+
+      .login-button-container {
+
+        .user-login {
+          width: 35vw;
+        }
+
+        .guest-login {
+          width: 35vw;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 480px) {
+
+  .log-in-card-container {
+
+    .log-in-card {
+
+      .card-header-section {
+        padding-top: 20px;
+
+          h1 {
+            font-size: 30px;
+          }
+
+          span {
+            font-size: 14px;
+          }
+      }
+    }
+  }
+}
