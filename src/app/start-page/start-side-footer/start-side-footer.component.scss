@@ -26,6 +26,13 @@ footer {
   }
 }
 
+@media screen and (max-height: 1050px) {
+
+  footer{
+    margin-top: 60px;
+  }
+}
+
 @media screen and (max-width: 850px) {
 
   footer {
@@ -41,6 +48,11 @@ footer {
       flex-direction: column;
       justify-content: center;
       align-items: center;
+
+      h4 {
+        font-size: 20px;
+        font-family: Nunito-Light;
+      }
 
       button {
         text-decoration: none;

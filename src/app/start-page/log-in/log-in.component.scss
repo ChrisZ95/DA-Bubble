@@ -213,6 +213,44 @@
   }
 }
 
-@media screen and (max-width: 1440px) {
+@media screen and (max-height: 1050px) {
+  .log-in-card-container {
 
+    .log-in-card {
+     height: 650px;
+
+     .card-header-section {
+      padding-top: 30px;
+      gap: 10px;
+
+      h1 {
+        font-size: 34px;
+      }
+
+      span {
+        font-size: 16px;
+      }
+     }
+
+      .card-input-section {
+        margin-top: 20px ;
+
+        .input-container {
+          margin: 10px;
+
+          img {
+            padding-left: 20px;
+          }
+        }
+
+        .card-link {
+          margin-top: 20px;
+        }
+      }
+
+      .seperation-line {
+        margin-top: 20px;
+      }
+    }
+  }
 }
