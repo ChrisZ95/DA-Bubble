@@ -26,7 +26,7 @@ export class DialogEditProfileComponent implements OnInit{
   chooseIcon = true;
 
   async ngOnInit() {
-    debugger
+    // debugger
     const uid = localStorage.getItem('uid');
     this.logInUid = uid;
     this.userForm = await this.firestoreService.getUserData(uid);
@@ -42,7 +42,7 @@ export class DialogEditProfileComponent implements OnInit{
   }
 
   safeEditData() {
-    debugger
+    // debugger
     console.log('die uid lautet', this.logInUid)
     this.inputName = document.getElementById('userNameInput');
     this.inputEmail = document.getElementById('userEmailInput');

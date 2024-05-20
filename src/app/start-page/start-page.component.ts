@@ -76,7 +76,7 @@ export class StartPageComponent implements OnInit {
   }
 
   continueToChooseAvatar() {
-    debugger
+    // debugger
     console.log('Choose avatar open')
     this.showChooseAvatarComponent = true;
     this.showLoginComponent = false;
