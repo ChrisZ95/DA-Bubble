@@ -22,12 +22,15 @@ import { FirestoreService } from '../firestore.service';
 import { debug, log } from 'console';
 import { GenerateIdsService } from './generate-ids.service';
 import { DocumentReference } from 'firebase/firestore';
-import { Message } from 'protobufjs';
+// import { Message } from 'protobufjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ChatService {
+  private messagesSubject = new BehaviorSubject<any[]>([]);
+  public messages$: Observable<any[]> = this.messagesSubject.asObservable();
   currentuid: any;
   chatList: any = [];
   loadedchatInformation: any = {};
@@ -100,12 +103,10 @@ export class ChatService {
   // }
   async createChat(userDetails: any) {
     userDetails = Array.isArray(userDetails) ? userDetails : [userDetails];
-
     try {
       let date = new Date().getTime().toString();
       let chatDocIds = await this.getChatsDocumentIDs('chats');
       this.currentuid = this.FirestoreService.currentuid;
-
       userDetails.forEach(async (user: any) => {
         if (this.currentuid === user.uid) {
           let ownChatDocId = chatDocIds.filter(
@@ -198,30 +199,37 @@ export class ChatService {
   // }
   messages: any[] = [];
   async loadMessages(userDetails: any) {
-    this.createChat(userDetails);
-    this.currentuid = this.FirestoreService.currentuid;
-    this.messages = [];
+    await this.createChat(userDetails);
+    const currentuid = this.FirestoreService.currentuid;
+    const messages: any[] = [];
 
-    const chatDocIds = await this.getUserChatDocuments();
+    const chatDocIds = await this.getUserChatDocuments(currentuid);
     console.log('User Chat Document IDs:', chatDocIds);
 
-    const chatsRef = collection(this.db, 'chats');
     for (const chatDocId of chatDocIds) {
+      console.log('Fetching chat document with ID:', chatDocId);
       const chatDoc = await getDoc(doc(this.firestore, 'chats', chatDocId));
       if (chatDoc.exists()) {
         const data = chatDoc.data();
         console.log('Chat Document Data:', data);
 
         if (Array.isArray(data['messages'])) {
+          console.log('Messages array:', data['messages']);
           const userMessages = data['messages'].filter((message: any) => {
-            return message.senderId === this.currentuid;
+            console.log('Message:', message);
+            return message.creator === currentuid;
           });
-          this.messages.push(...userMessages);
+          console.log('User Messages:', userMessages);
+          messages.push(...userMessages);
+        } else {
+          console.log('No messages array found in document:', chatDocId);
         }
+      } else {
+        console.log('Chat document does not exist:', chatDocId);
       }
     }
-    this.loadedchatInformation = userDetails;
-    console.log('Filtered Messages:', this.messages);
+
+    this.messagesSubject.next(messages);
   }
 
   getCombinedChatId(uid1: string, uid2: string): string {
@@ -230,21 +238,20 @@ export class ChatService {
     return [slicedUid1, slicedUid2].sort().join('-');
   }
 
-  async getUserChatDocuments(): Promise<string[]> {
-    const chatsRef = collection(this.db, 'chats');
+  async getUserChatDocuments(currentuid: string): Promise<string[]> {
+    const chatsRef = collection(this.firestore, 'chats');
     const querySnapshot = await getDocs(chatsRef);
     const chatDocIds: string[] = [];
 
     querySnapshot.forEach((doc) => {
       const data = doc.data();
-      if (
-        data['participants'] &&
-        data['participants'].includes(this.currentuid)
-      ) {
+      console.log('Chat Document from Query:', data);
+      if (data['participants'] && data['participants'].includes(currentuid)) {
         chatDocIds.push(doc.id);
       }
     });
 
+    console.log('Filtered Chat Document IDs:', chatDocIds);
     return chatDocIds;
   }
 
@@ -258,11 +265,8 @@ export class ChatService {
       creator: currentuid,
       createdAt: date,
     };
-
-    // Fetch the existing document
     const docRef = doc(this.firestore, 'chats', this.currentuid);
     const docSnap = await getDoc(docRef);
-
     if (docSnap.exists()) {
       this.loadedchatInformation = docSnap.data();
     } else {
@@ -274,16 +278,10 @@ export class ChatService {
         participants: [this.currentuid],
       };
     }
-
-    // Ensure messages is an array within loadedchatInformation
     if (!Array.isArray(this.loadedchatInformation.messages)) {
       this.loadedchatInformation.messages = [];
     }
-
-    // Push the new message into the messages array
     this.loadedchatInformation.messages.push(message);
-
-    // Update only the messages field in the Firestore document
     try {
       await updateDoc(docRef, {
         messages: this.loadedchatInformation.messages,
@@ -299,7 +297,6 @@ export class ChatService {
       const chatsRef = collection(this.firestore, 'chats');
       const q = query(chatsRef, where('channelId', '==', channelId));
       const querySnapshot = await getDocs(q);
-
       if (!querySnapshot.empty) {
         const doc = querySnapshot.docs[0];
         const chatDocRef = doc.ref;
