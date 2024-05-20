@@ -23,6 +23,8 @@ export class DialogEditProfileComponent implements OnInit{
   inputName: any;
   inputEmail: any;
 
+  chooseIcon = true;
+
   async ngOnInit() {
     const uid = localStorage.getItem('uid');
     this.logInUid = uid;

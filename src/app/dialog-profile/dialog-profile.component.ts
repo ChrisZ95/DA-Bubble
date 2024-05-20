@@ -19,6 +19,8 @@ export class DialogProfileComponent implements OnInit{
   userName: any;
   userEmail: any;
   userPhoto: any;
+  userSignUpDate: any;
+  formattedDate: any;
 
   async ngOnInit() {
     const uid = localStorage.getItem('uid');
@@ -26,9 +28,22 @@ export class DialogProfileComponent implements OnInit{
     this.userName = this.userForm['username'];
     this.userEmail = this.userForm['email'];
     this.userPhoto = this.userForm['photo'];
-    console.log('Komplettes form',this.userForm,'Name', this.userName, 'email', this.userEmail )
+    this.userSignUpDate = this.userForm['signUpdate'];
+    console.log('Komplettes form',this.userForm,'Name', this.userName, 'email', this.userEmail );
+    this.convertSignUpDate(this.userSignUpDate);
   }
 
+  convertSignUpDate(unixTimestamp:any) {
+    if (unixTimestamp.toString().length === 13) {
+        this.userSignUpDate = new Date(unixTimestamp);
+    } else {
+        this.userSignUpDate = new Date(unixTimestamp * 1000);
+    }
+    const year = this.userSignUpDate.getFullYear();
+    const month = this.userSignUpDate.getMonth() + 1;
+    const day = this.userSignUpDate.getDate();
+    this.formattedDate = `${day}.${month}.${year}`;
+}
   closeProfileDialog(): void {
     this.dialogRef.close();
   }

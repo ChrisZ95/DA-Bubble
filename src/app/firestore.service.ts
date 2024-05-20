@@ -571,7 +571,7 @@ export class FirestoreService {
   /* Erstellt einen Timestamp , wird beim login / signup benutzt */
   createTimeStamp(): Promise<string> {
     this.newDate = Date.now();
-     console.log(this.newDate);
+    console.log(this.newDate);
     return this.newDate;
   }
 }
