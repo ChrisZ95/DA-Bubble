@@ -22,6 +22,7 @@ import { FirestoreService } from '../firestore.service';
 import { debug, log } from 'console';
 import { GenerateIdsService } from './generate-ids.service';
 import { DocumentReference } from 'firebase/firestore';
+// import { Message } from 'protobufjs';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
@@ -33,7 +34,7 @@ export class ChatService {
   currentuid: any;
   chatList: any = [];
   loadedchatInformation: any = {};
-  chatDocId: string | null = null;
+  chatDocId: any;
   allPotentialChatUsers: any[] = [];
   showOwnChat: boolean = true;
   showEmptyChat: boolean = false;
@@ -51,6 +52,7 @@ export class ChatService {
   chatsCollection = collection(this.db, 'chats');
   usersCollection = collection(this.db, 'users');
 
+  // Function to get documents from a collection
   async getChatsDocumentIDs(collectionName: string) {
     const docRef = collection(this.db, collectionName);
     const docSnap = await getDocs(docRef);
@@ -64,7 +66,7 @@ export class ChatService {
       let chatDocIds = await this.getChatsDocumentIDs('chats');
       this.currentuid = this.FirestoreService.currentuid;
 
-      for (const user of userDetails) {
+      userDetails.forEach(async (user: any) => {
         if (this.currentuid === user.uid) {
           let ownChatDocId = chatDocIds.filter(
             (id: any) => this.currentuid === id
@@ -83,14 +85,18 @@ export class ChatService {
             );
           }
         } else {
-          const combinedShortedId = this.getCombinedChatId(
-            this.currentuid,
-            user.uid
-          );
+          // Change Here
+          let slicedOwnUid = this.currentuid.slice(0, 5);
+          let slicedOtherUid = user.uid.slice(0, 5);
+          let combinedShortedId: any = [];
+          combinedShortedId.push(slicedOwnUid);
+          combinedShortedId.push(slicedOtherUid);
+          combinedShortedId = combinedShortedId.sort().join('-');
 
           const chatDocRef = doc(this.firestore, 'chats', combinedShortedId);
           const chatDoc = await getDoc(chatDocRef);
 
+          // Check if the chat document already exists
           if (!chatDoc.exists()) {
             const chatData = {
               createdAt: date,
@@ -101,7 +107,7 @@ export class ChatService {
             await setDoc(chatDocRef, chatData);
           }
         }
-      }
+      });
     } catch (error) {
       console.error('Error creating chat:', error);
     }
@@ -145,44 +151,39 @@ export class ChatService {
 
   messages: any[] = [];
   async loadMessages(userDetails: any) {
-    if (Array.isArray(userDetails)) {
-      userDetails = userDetails[0];
-    }
     await this.createChat(userDetails);
     const currentuid = this.FirestoreService.currentuid;
     const messages: any[] = [];
+    let chatDocIds: string[] = [];
 
+    // Check if userDetails contains another user
     if (userDetails.uid && userDetails.uid !== currentuid) {
-      const combinedShortedId = this.getCombinedChatId(
-        currentuid,
-        userDetails.uid
-      );
-      this.chatDocId = combinedShortedId;
+      // Generate combined document ID for two-user chat
+      const slicedOwnUid = currentuid.slice(0, 5);
+      const slicedOtherUid = userDetails.uid.slice(0, 5);
+      const combinedShortedId = [slicedOwnUid, slicedOtherUid].sort().join('-');
+      chatDocIds = [combinedShortedId];
     } else {
-      this.chatDocId = currentuid;
+      // Get chat document IDs for single-user chat
+      chatDocIds = await this.getUserChatDocuments(currentuid);
     }
 
-    if (this.chatDocId) {
-      const chatDoc = await getDoc(
-        doc(this.firestore, 'chats', this.chatDocId)
-      );
+    for (const chatDocId of chatDocIds) {
+      const chatDoc = await getDoc(doc(this.firestore, 'chats', chatDocId));
       if (chatDoc.exists()) {
         const data = chatDoc.data();
         if (Array.isArray(data['messages'])) {
           const userMessages = data['messages'].filter((message: any) => {
-            if (this.chatDocId === currentuid) {
-              return message.creator === currentuid;
-            } else {
-              return (
-                message.creator === currentuid ||
-                (userDetails.uid && message.creator === userDetails.uid)
-              );
-            }
+            return (
+              message.creator === currentuid ||
+              message.creator === userDetails.uid
+            );
           });
           messages.push(...userMessages);
         }
       }
     }
+
     this.messagesSubject.next(messages);
   }
 
@@ -203,7 +204,6 @@ export class ChatService {
         chatDocIds.push(doc.id);
       }
     });
-
     return chatDocIds;
   }
 
@@ -217,19 +217,16 @@ export class ChatService {
       creator: currentuid,
       createdAt: date,
     };
-
-    const docId = this.chatDocId || currentuid;
-    const docRef = doc(this.firestore, 'chats', docId);
-
+    const docRef = doc(this.firestore, 'chats', this.currentuid);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
       this.loadedchatInformation = docSnap.data();
     } else {
       this.loadedchatInformation = {
-        chatId: docId,
+        chatId: this.currentuid,
         createdAt: date,
         messages: [],
-        participants: [currentuid],
+        participants: [this.currentuid],
       };
     }
     if (!Array.isArray(this.loadedchatInformation.messages)) {
@@ -271,14 +268,17 @@ export class ChatService {
   async sendCommentToChannel(messageId: string, comment: any) {
     try {
       const chatsRef = collection(this.firestore, 'chats');
-      const q = query(chatsRef);
+      const q = query(chatsRef); // keine spezifische Abfrage, um die gesamte Sammlung zu erhalten
       const querySnapshot = await getDocs(q);
+      console.log('Query Snapshot:', querySnapshot.docs);
+
       querySnapshot.forEach(async (doc) => {
         const messages = doc.data()['messages'] || [];
         const message = messages.find(
           (message: any) => message.messageId === messageId
         );
         if (message) {
+          // Nachricht mit der gesuchten messageId gefunden
           const chatDocRef = doc.ref;
           const updatedMessages = messages.map((msg: any) => {
             if (msg.messageId === messageId) {
@@ -307,6 +307,7 @@ export class ChatService {
         id: chatId,
       };
       await setDoc(doc(this.firestore, 'chats', chatId), chatData);
+      console.log('Chat erfolgreich erstellt für Kanal:', channelId);
     } catch (error) {
       console.error(
         'Fehler beim Erstellen des Chats für Kanal:',

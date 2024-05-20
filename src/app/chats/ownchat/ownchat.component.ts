@@ -65,15 +65,10 @@ export class OwnchatComponent implements OnChanges, OnInit {
 
   ngOnInit(): void {
     this.loadCurrentUser();
-    // this.messages = this.chatsService.messages;
-
     this.chatsService.messages$.subscribe((messages) => {
       this.messages = messages;
       console.log('Filtered Messages in Component:', this.messages);
     });
-
-    // Load messages for a specific user (adjust userDetails as needed)
     const userDetails = { uid: 'someUserId' };
-    this.chatsService.loadMessages(userDetails);
   }
 }
