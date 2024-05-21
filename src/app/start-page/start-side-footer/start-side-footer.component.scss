@@ -40,6 +40,31 @@ footer {
   }
 }
 
+@media screen and (max-height: 750px) {
+
+  footer{
+    margin-top: 0px;
+  }
+}
+
+@media screen and (max-width: 850px) and (max-height: 730px) {
+  footer {
+    padding-top: 10px;
+
+    .footer-sign-up {
+
+      h4 {
+        font-size: 16px !important;
+      }
+
+      button {
+        font-size: 16px !important;
+        height: 30px !important;
+      }
+    }
+  }
+}
+
 @media screen and (max-width: 850px) {
 
   footer {
