@@ -26,6 +26,8 @@ export class DialogEditProfileComponent implements OnInit{
   emailVerified: any;
   user: any;
 
+  emailIsNotUpToDate = false;
+
   chooseIcon = true;
 
   async ngOnInit() {
@@ -39,8 +41,22 @@ export class DialogEditProfileComponent implements OnInit{
     this.userPhoto = this.userForm['photo'];
     this.userPassword = this.userForm['password'];
     this.user = this.firestoreService.auth.currentUser;
-    this.emailVerified = this.firestoreService.auth.currentUser.emailVerified
-    console.log(this.emailVerified)
+    this.emailVerified = this.firestoreService.auth.currentUser.emailVerified;
+    console.log(this.user)
+    this.checkEmailVerification();
+  }
+
+  checkEmailVerification() {
+    debugger
+    const userEmailFirestoreDatabase = this.userEmail.toLowerCase();
+    const authEmailAuthentification = this.firestoreService.auth.currentUser.email.toLowerCase();
+    if(userEmailFirestoreDatabase == authEmailAuthentification) {
+     console.log('email in databse und auth sind gleich');
+     this.emailIsNotUpToDate = false;
+    } else {
+      console.log('email in databse und auth sind nicht gleich')
+      this.emailIsNotUpToDate = true;
+    }
   }
 
   closeEditProfileDialog(){
@@ -64,7 +80,7 @@ export class DialogEditProfileComponent implements OnInit{
       console.log('email ist gleich')
       } else {
        console.log('email ist nicht gleich')
-       this.firestoreService.changeEmail(this.logInUid, inpuEmailValue, this.userPassword)
+       this.firestoreService.changeEmail(this.logInUid, inpuEmailValue)
       }
       this.closeEditProfileDialog()
     }
@@ -85,8 +101,11 @@ export class DialogEditProfileComponent implements OnInit{
       }
     }
 
-    async verificationMail() {
-      debugger
+    async sendNewVerificationMail() {
       await this.firestoreService.sendVerificationEmail(this.user, this.userEmail);
+    }
+
+    async verificationMail() {
+     await this.firestoreService.verifiedEmail( this.userPassword)
     }
 }
