@@ -26,6 +26,13 @@ footer {
   }
 }
 
+@media screen and (min-height: 1050px) {
+
+  footer{
+    margin-top: 60px;
+  }
+}
+
 @media screen and (max-height: 1050px) {
 
   footer{
@@ -47,6 +54,18 @@ footer {
   }
 }
 
+@media screen and (max-height: 520px) {
+
+  footer{
+
+    button {
+      font-size: 14px;
+      height: 30px;
+      width: 100px;
+    }
+  }
+}
+
 @media screen and (max-width: 850px) and (max-height: 730px) {
   footer {
     padding-top: 10px;
@@ -60,6 +79,24 @@ footer {
       button {
         font-size: 16px !important;
         height: 30px !important;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 850px) and (max-height: 590px) {
+  footer {
+    padding-top: 10px;
+
+    .footer-sign-up {
+
+      h4 {
+        font-size: 14px !important;
+        margin-bottom: 0;
+      }
+
+      button {
+        font-size: 14px !important;
       }
     }
   }

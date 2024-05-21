@@ -213,6 +213,12 @@
   }
 }
 
+@media screen and (min-height: 1100px) {
+  .log-in-card-container {
+    margin-top: 100px;
+  }
+}
+
 @media screen and (min-height: 1050px) {
   .log-in-card-container {
 
@@ -821,6 +827,243 @@
             font-size: 12px;
           }
         }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 400px) and (max-height: 680px) {
+  .log-in-card-container {
+
+    .log-in-card {
+
+      .card-header-section {
+
+          h1 {
+            font-size: 32px;
+          }
+
+          span {
+            font-size: 12px;
+          }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 350px) and (max-height: 680px) {
+  .log-in-card-container {
+
+    .log-in-card {
+
+      .card-header-section {
+
+          span {
+            font-size: 11px;
+          }
+      }
+    }
+  }
+}
+
+
+@media screen and (max-height: 630px) {
+  .log-in-card-container {
+
+    .log-in-card {
+     height: 400px;
+
+     .card-header-section {
+      gap: 0;
+
+      h1 {
+        font-size: 28px;
+        margin-bottom: 5px;
+      }
+
+      span {
+        font-size: 14px;
+      }
+     }
+
+      .card-input-section {
+
+        .input-container {
+          margin-bottom: 0;
+
+          img {
+            height: 20px;
+            width: 20px;
+          }
+        }
+
+        .pseudo {
+          height: 10px;
+
+          .input-information {
+            font-size: 10px;
+            align-items: center;
+          }
+        }
+
+        .card-link {
+
+          a {
+            font-size: 14px;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 400px) and (max-height: 630px) {
+  .log-in-card-container {
+
+    .log-in-card {
+
+      .card-header-section {
+
+          h1 {
+            font-size: 32px;
+          }
+
+          span {
+            font-size: 12px;
+          }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 350px) and (max-height: 630px) {
+  .log-in-card-container {
+
+    .log-in-card {
+
+      .card-header-section {
+
+          span {
+            font-size: 11px;
+          }
+      }
+    }
+  }
+}
+
+@media screen and (max-height: 570px) {
+  .log-in-card-container {
+
+    .log-in-card {
+     height: 350px;
+
+     .card-header-section {
+      gap: 0;
+
+      h1 {
+        font-size: 28px;
+        margin-bottom: 5px;
+      }
+
+      span {
+        font-size: 14px;
+      }
+     }
+
+      .card-input-section {
+
+        .input-container {
+          margin-bottom: 0;
+
+          img {
+            height: 20px;
+            width: 20px;
+          }
+        }
+
+        .pseudo {
+          height: 10px;
+
+          .input-information {
+            font-size: 10px;
+            align-items: center;
+          }
+        }
+
+        .card-link {
+          margin-top: 5px;
+          width: 200px;
+          height: 16px;
+
+          a {
+            font-size: 10px;
+          }
+        }
+      }
+
+      .seperation-line {
+
+        span {
+          font-size: 12px;
+        }
+      }
+
+      .google-login-container {
+
+        .google-button {
+          height: 30px;
+          margin-top: 0;
+
+          img {
+            height: 20px;
+            width: 20px;
+          }
+        }
+      }
+
+      .login-button-container {
+
+        .user-login {
+          height: 30px;
+        }
+
+        .guest-login {
+          height: 30px;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 400px) and (max-height: 570px) {
+  .log-in-card-container {
+
+    .log-in-card {
+
+      .card-header-section {
+
+          h1 {
+            font-size: 32px;
+          }
+
+          span {
+            font-size: 12px;
+          }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 350px) and (max-height: 570px) {
+  .log-in-card-container {
+
+    .log-in-card {
+
+      .card-header-section {
+
+          span {
+            font-size: 11px;
+          }
       }
     }
   }
