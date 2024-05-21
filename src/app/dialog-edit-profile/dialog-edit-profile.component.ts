@@ -1,12 +1,13 @@
+import { FirestoreService } from './../firestore.service';
 import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { FirestoreService } from '../firestore.service';
 import { doc } from '@angular/fire/firestore';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-dialog-edit-profile',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './dialog-edit-profile.component.html',
   styleUrl: './dialog-edit-profile.component.scss'
 })
@@ -22,6 +23,8 @@ export class DialogEditProfileComponent implements OnInit{
 
   inputName: any;
   inputEmail: any;
+  emailVerified: any;
+  user: any;
 
   chooseIcon = true;
 
@@ -35,6 +38,9 @@ export class DialogEditProfileComponent implements OnInit{
     this.userEmail = this.userForm['email'];
     this.userPhoto = this.userForm['photo'];
     this.userPassword = this.userForm['password'];
+    this.user = this.firestoreService.auth.currentUser;
+    this.emailVerified = this.firestoreService.auth.currentUser.emailVerified
+    console.log(this.emailVerified)
   }
 
   closeEditProfileDialog(){
@@ -77,5 +83,10 @@ export class DialogEditProfileComponent implements OnInit{
       } else {
         console.log('Kein Bild ausgewählt');
       }
+    }
+
+    async verificationMail() {
+      debugger
+      await this.firestoreService.sendVerificationEmail(this.user, this.userEmail);
     }
 }

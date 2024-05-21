@@ -115,6 +115,7 @@ export class FirestoreService {
   // }
 
   async changeEmail(uid: string, newEmail: string, currentPassword: string): Promise<void> {
+    debugger
     try {
       const user = this.auth.currentUser;
       console.log(user)
@@ -138,6 +139,7 @@ export class FirestoreService {
   }
 
   async sendVerificationEmail(user: any, newEmail: string): Promise<void> {
+    debugger
     try {
       if (user) {
         await sendEmailVerification(user);

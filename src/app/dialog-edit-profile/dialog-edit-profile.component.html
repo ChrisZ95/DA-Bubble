@@ -26,6 +26,10 @@
         <div class="edit-email">
             <div class="edit-email-title"><img src="./../../assets/images/mail.png" alt=""><span class="email-address">E-Mail-Adresse</span></div>
             <input type="text" name="" id="userEmailInput" value="{{ userEmail }}">
+            <div *ngIf="!emailVerified">
+             <span> Bitte bestätigen Sie Ihre Email. </span>
+             <button (click)="verificationMail()">Send mail</button>
+            </div>
         </div>
     </div>
     <div class="button-area">
