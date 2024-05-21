@@ -80,7 +80,7 @@ export class DialogEditProfileComponent implements OnInit{
       console.log('email ist gleich')
       } else {
        console.log('email ist nicht gleich')
-      this.firestoreService.updateEmail(inpuEmailValue, this.logInUid)
+       this.firestoreService.updateEmail(inpuEmailValue, this.logInUid)
       }
       this.closeEditProfileDialog()
     }
@@ -109,5 +109,9 @@ export class DialogEditProfileComponent implements OnInit{
       if (this.user) {
         await this.firestoreService.sendVerificationEmail(this.user, this.userEmail);
       }
+    }
+
+    async deleteAccount() {
+
     }
 }

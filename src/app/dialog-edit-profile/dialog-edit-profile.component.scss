@@ -188,39 +188,63 @@
 
 .button-area {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   margin-top: 20px;
   gap: 20px;
 
-  .safe-button {
-    border: none;
-    background-color: #444DF2;
-    color: white;
-    font-size: 18px;
-    width: 153px;
-    height: 49px;
-    border-radius: 25px;
-    cursor: pointer;
+  .button-section-1 {
 
-    &:hover {
-      filter: brightness(1.6);
+    .delete-button {
+      border: none;
+      background-color: #ed120e;
+      color: white;
+      font-size: 18px;
+      width: 153px;
+      height: 49px;
+      border-radius: 25px;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #f36b69;
+      }
     }
   }
 
-  .cancel-button {
-    font-size: 18px;
-    border: 1px solid #797EF3;
-    color: #797EF3;
-    width: 153px;
-    height: 49px;
-    border-radius: 25px;
-    cursor: pointer;
+  .button-section-2 {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
 
-    &:hover {
+    .safe-button {
+      border: none;
       background-color: #444DF2;
       color: white;
+      font-size: 18px;
+      width: 153px;
+      height: 49px;
+      border-radius: 25px;
+      cursor: pointer;
+
+      &:hover {
+        filter: brightness(1.6);
+      }
+    }
+
+    .cancel-button {
+      font-size: 18px;
+      border: 1px solid #797EF3;
+      color: #797EF3;
+      width: 153px;
+      height: 49px;
+      border-radius: 25px;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #444DF2;
+        color: white;
+      }
     }
   }
 }
