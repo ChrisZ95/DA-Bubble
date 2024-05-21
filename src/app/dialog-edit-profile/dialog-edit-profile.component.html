@@ -27,15 +27,10 @@
             <div class="edit-email-title"><img src="./../../assets/images/mail.png" alt=""><span class="email-address">E-Mail-Adresse</span></div>
             <input type="text" name="" id="userEmailInput" value="{{ userEmail }}">
 
-            <div *ngIf="!emailVerified">
-             <span> Neuen link zum bestätigen anfordern</span>
-              <button (click)="sendNewVerificationMail()">Send mail</button>
+            <div class="email-input-information" *ngIf="!emailVerified">
+              <span>Email noch nicht bestätigt.</span>
+              <a (click)="sendNewVerificationMail()">Send mail</a>
             </div>
-
-            <div *ngIf="emailIsNotUpToDate">
-              <span> Bitte bestätigen Sie Ihre Email. </span>
-               <button (click)="verificationMail()">bestätigen</button>
-             </div>
         </div>
     </div>
     <div class="button-area">

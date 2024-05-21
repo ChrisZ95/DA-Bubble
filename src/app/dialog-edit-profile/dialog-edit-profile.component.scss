@@ -165,6 +165,25 @@
         height: 17px;
         border: 1px solid #ADB0D9;
     }
+
+    .email-input-information {
+
+      span{
+        color: red;
+      }
+
+      a {
+        cursor: pointer;
+        text-decoration: underline;
+        color: #797EF3;
+        margin-left: 10px;
+
+        &:hover {
+          text-decoration: underline;
+          color: #565bf4;
+        }
+      }
+    }
 }
 
 .button-area {

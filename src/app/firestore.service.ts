@@ -15,7 +15,8 @@ import {
   updateEmail,
   reauthenticateWithCredential,
   EmailAuthProvider,
-  fetchSignInMethodsForEmail
+  fetchSignInMethodsForEmail,
+  verifyBeforeUpdateEmail
 } from '@angular/fire/auth';
 import { FirebaseApp } from '@angular/fire/app';
 import {
@@ -65,14 +66,12 @@ export class FirestoreService {
 
   constructor(private myFirebaseApp: FirebaseApp, public router: Router) {
     this.auth = getAuth(myFirebaseApp);
+    console.log('Auth dokument',this.auth)
     this.auth.languageCode = 'de';
     this.firestore = getFirestore(myFirebaseApp);
     const provider = new GoogleAuthProvider();
-    // this.observeAuthState();
     this.currentuid = localStorage.getItem('uid');
     console.log('ausgeloggte uid',this.currentuid)
-    // const allVariabeln = this.getAllVariables()
-    // console.log('Alle variabeln',allVariabeln)
   }
 
   async deleteUserIcon(currentUserIcon: string, currentUserId: string) {
@@ -101,72 +100,23 @@ export class FirestoreService {
     }
   }
 
-  async changeEmail(uid: string, newEmail: string): Promise<void> {
-    debugger
+  async updateEmail(newMail: any, uid: any) {
+    const auth = getAuth();
     try {
-      const user = this.auth.currentUser;
-      console.log(user)
-      if (user) {
-        debugger
-        await this.sendVerificationEmail(user, newEmail);
-        const userDocRef = doc(this.firestore, 'users', uid);
-        await updateDoc(userDocRef, { email: newEmail });
-      } else {
-        console.error('Kein angemeldeter Benutzer gefunden');
-      }
-    } catch (error) {
-      console.error('Fehler beim Ändern der E-Mail: ', error);
-    }
-  }
-
-  async verifiedEmail(currentPassword: any) {
-    try {
-        const user = this.auth.currentUser;
-        const newEmail: any = await this.getUserEmail(user.uid);
-
-        // Überprüfe, ob die neue E-Mail-Adresse bereits verifiziert wurde
-        const isEmailVerified = await this.isEmailVerified(newEmail);
-
-        if (isEmailVerified) {
-            const credential = EmailAuthProvider.credential(user.email, currentPassword);
-            await reauthenticateWithCredential(user, credential);
-            await updateEmail(user, newEmail);
-            console.log('E-Mail erfolgreich in Firestore aktualisiert');
+        const user = auth.currentUser;
+        if (user) {
+            console.log(user);
+            await verifyBeforeUpdateEmail(user, newMail);
+            const userDocRef = doc(this.firestore, 'users', uid);
+            await updateDoc(userDocRef, { email: newMail });
+            this.router.navigate(['']);
         } else {
-            console.error('Die neue E-Mail-Adresse muss vor der Aktualisierung verifiziert werden.');
+            console.error('Es ist kein Benutzer angemeldet');
         }
-    } catch(error: any) {
-        console.error('Fehler beim Verifizieren oder Aktualisieren der E-Mail-Adresse: ', error);
+    } catch (error) {
+        console.error('Fehler beim Aktualisieren der E-Mail', error);
     }
 }
-
-async isEmailVerified(email: string): Promise<boolean> {
-  const auth = getAuth();
-  try {
-      const methods = await fetchSignInMethodsForEmail(auth, email);
-      return methods.length > 0;
-  } catch (error) {
-      console.error("Fehler beim Abrufen der Anmeldearten für die E-Mail-Adresse:", error);
-      return false;
-  }
-}
-
-  // async verifiedEmail(currentPassword: any) {
-  //   debugger
-  //   try {
-  //     const user = this.auth.currentUser;
-  //     const credential = EmailAuthProvider.credential(user.email, currentPassword);
-  //       await reauthenticateWithCredential(user, credential);
-  //     const newEmail: any = await this.getUserEmail(user.uid);
-  //     console.log(newEmail)
-  //     if(user.emailVerified) {
-  //       await updateEmail(user, newEmail);
-  //       console.log('E-Mail erfolgreich in Firestore aktualisiert');
-  //     }
-  //   } catch(error: any) {
-  //     console.log('fehler in verifiedEmail', error)
-  //   }
-  // }
 
   async getUserEmail(userId: any) {
     try {
@@ -186,7 +136,6 @@ async isEmailVerified(email: string): Promise<boolean> {
 }
 
   async sendVerificationEmail(user: any, newEmail: string): Promise<void> {
-    debugger
     try {
       if (user) {
         await sendEmailVerification(user);
@@ -198,41 +147,6 @@ async isEmailVerified(email: string): Promise<boolean> {
     } catch (error) {
       console.error('Fehler beim Senden der Verifizierungs-E-Mail: ', error);
     }
-  }
-
-  // async changeEmail(uid: string, newEmail: string, currentPassword: string): Promise<void> {
-  //   try {
-  //     const user = this.auth.currentUser;
-  //     if (user) {
-  //       // Reauthenticate den Benutzer
-  //       const credential = EmailAuthProvider.credential(user.email, currentPassword);
-  //       await reauthenticateWithCredential(user, credential);
-
-  //       // Temporär die E-Mail-Adresse aktualisieren, um Verifizierungs-E-Mail zu senden
-  //       await this.sendVerificationEmail(newEmail);
-
-  //       // Warte auf E-Mail-Verifizierung (dieser Schritt muss in der tatsächlichen Anwendung mit Benutzerinteraktion erfolgen)
-  //       await this.waitForEmailVerification();
-
-  //       // E-Mail-Adresse in Firestore aktualisieren
-  //       const userDocRef = doc(this.firestore, 'users', uid);
-  //       await updateDoc(userDocRef, { email: newEmail });
-  //       console.log('E-Mail erfolgreich in Firestore aktualisiert');
-  //     } else {
-  //       console.error('Kein angemeldeter Benutzer gefunden');
-  //     }
-  //   } catch (error) {
-  //     console.error('Fehler beim Ändern der E-Mail: ', error);
-  //   }
-  // }
-
-  private async waitForEmailVerification(): Promise<void> {
-    return new Promise((resolve) => {
-      // Simulieren Sie eine Wartezeit von 30 Sekunden
-      setTimeout(() => {
-        resolve();
-      }, 30000); // 30 Sekunden Wartezeit als Platzhalter
-    });
   }
 
   currentAuth() {
@@ -259,9 +173,6 @@ async isEmailVerified(email: string): Promise<boolean> {
       .then(() => {
         localStorage.clear();
         this.router.navigate(['']);
-        // this.currentuid = null;
-        // this.signInuid = null;
-        // console.log(this.currentuid)
       })
       .catch((error) => {
         console.error('Error signing out:', error);
@@ -271,7 +182,6 @@ async isEmailVerified(email: string): Promise<boolean> {
 
   /* Dokument des Users */
   async getUserData(uid: any): Promise<any | null> {
-    //debugger
     const userData = doc(this.firestore, 'users', uid);
     try {
       const docSnap = await getDoc(userData);

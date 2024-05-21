@@ -23,7 +23,7 @@ export class DialogEditProfileComponent implements OnInit{
 
   inputName: any;
   inputEmail: any;
-  emailVerified: any;
+  emailVerified = false;
   user: any;
 
   emailIsNotUpToDate = false;
@@ -31,7 +31,7 @@ export class DialogEditProfileComponent implements OnInit{
   chooseIcon = true;
 
   async ngOnInit() {
-    // debugger
+    console.log(this.firestoreService.auth)
     const uid = localStorage.getItem('uid');
     this.logInUid = uid;
     this.userForm = await this.firestoreService.getUserData(uid);
@@ -42,12 +42,12 @@ export class DialogEditProfileComponent implements OnInit{
     this.userPassword = this.userForm['password'];
     this.user = this.firestoreService.auth.currentUser;
     this.emailVerified = this.firestoreService.auth.currentUser.emailVerified;
+    console.log(this.emailVerified)
     console.log(this.user)
     this.checkEmailVerification();
   }
 
   checkEmailVerification() {
-    debugger
     const userEmailFirestoreDatabase = this.userEmail.toLowerCase();
     const authEmailAuthentification = this.firestoreService.auth.currentUser.email.toLowerCase();
     if(userEmailFirestoreDatabase == authEmailAuthentification) {
@@ -80,7 +80,7 @@ export class DialogEditProfileComponent implements OnInit{
       console.log('email ist gleich')
       } else {
        console.log('email ist nicht gleich')
-       this.firestoreService.changeEmail(this.logInUid, inpuEmailValue)
+      this.firestoreService.updateEmail(inpuEmailValue, this.logInUid)
       }
       this.closeEditProfileDialog()
     }
@@ -101,11 +101,13 @@ export class DialogEditProfileComponent implements OnInit{
       }
     }
 
-    async sendNewVerificationMail() {
-      await this.firestoreService.sendVerificationEmail(this.user, this.userEmail);
+    async changeEmail() {
+      this.firestoreService.updateEmail(this.userEmail, this.logInUid)
     }
 
-    async verificationMail() {
-     await this.firestoreService.verifiedEmail( this.userPassword)
+    async sendNewVerificationMail() {
+      if (this.user) {
+        await this.firestoreService.sendVerificationEmail(this.user, this.userEmail);
+      }
     }
 }
