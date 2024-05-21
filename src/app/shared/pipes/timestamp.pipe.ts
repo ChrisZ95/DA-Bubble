@@ -32,7 +32,7 @@ export class TimestampPipe implements PipeTransform {
   formatTime(date: Date): string {
     const hours = this.padZero(date.getHours());
     const minutes = this.padZero(date.getMinutes());
-    return `${hours}:${minutes} Uhr`;
+    return `${hours}:${minutes}`;
   }
 
   padZero(value: number): string {

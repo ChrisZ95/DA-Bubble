@@ -28,7 +28,7 @@
             <div class="conversation">
                 <div class="name-timestamp">
                     <h5 (click)="openContactInfoDialog()"><strong>FullName</strong></h5>
-                    <p>00:00Uhr</p>
+                    {{message.createdAt | timestamp: 'time' }} Uhr
                 </div>
                 {{ message.message }}
 
