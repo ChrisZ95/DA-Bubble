@@ -35,6 +35,7 @@ export class StartPageComponent implements OnInit {
 
   accountCreate = false;
   emailSend = false;
+  updateEmail = false;
 
   constructor() { }
 
@@ -42,7 +43,22 @@ export class StartPageComponent implements OnInit {
     this.showStartScreen();
     this.showLoginComponent = true;
     this.startScreen = true;
+    this.informationAfterEmailChanged();
     console.log('1', this.showLoginComponent, '2', this.showSignUpComponent, '3', this.showChooseAvatarComponent)
+  }
+
+  informationAfterEmailChanged() {
+    debugger
+    const storage = localStorage.getItem('resetEmail')
+    if(storage) {
+      this.updateEmail = true
+      setTimeout(() => {
+        this.updateEmail = false
+        localStorage.removeItem('resetEmail')
+      }, 10000);
+    } else {
+      this.updateEmail = false
+    }
   }
 
   showStartScreen() {

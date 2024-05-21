@@ -31,6 +31,9 @@ export class LogInComponent implements OnInit {
     // this.firestoreService.observeAuthState()
     const allVariabeln = this.firestoreService.getAllVariables()
     console.log('Alle variabeln',allVariabeln)
+    setTimeout(() => {
+      localStorage.removeItem('resetEmail')
+    }, 10000);
   }
 
   showPassword() {

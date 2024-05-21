@@ -46,6 +46,10 @@
     <span>E-Mail gesendet</span>
   </div>
 
+  <div *ngIf="updateEmail" class="email-send-container">
+    <span>Bitte bestätigen Sie die neue <br> Email-Adresse</span>
+  </div>
+
   <ng-template [ngIf]="showLoginComponent || showSignUpComponent || showChooseAvatarComponent || showForgetPasswordComponent || showChangePasswordComponent || showImpressumComponent || showPrivacyPoliceComponent">
     <app-start-side-footer [showSignUp]="showSignUpComponent"  [showChooseAvatar]="showChooseAvatarComponent" (openImpressum)="openImpressum()" (openPrivacyPolice)="openPrivacyPolice()" (signUpClicked)="signUpClicked()"></app-start-side-footer>
   </ng-template>

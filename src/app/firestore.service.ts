@@ -109,6 +109,7 @@ export class FirestoreService {
             await verifyBeforeUpdateEmail(user, newMail);
             const userDocRef = doc(this.firestore, 'users', uid);
             await updateDoc(userDocRef, { email: newMail });
+            localStorage.setItem('resetEmail', 'true')
             this.router.navigate(['']);
         } else {
             console.error('Es ist kein Benutzer angemeldet');
