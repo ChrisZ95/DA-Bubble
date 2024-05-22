@@ -1,8 +1,7 @@
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import {
   Firestore,
   getFirestore,
-  provideFirestore,
   onSnapshot,
   DocumentData,
 } from '@angular/fire/firestore';
@@ -19,9 +18,7 @@ import {
 } from 'firebase/firestore';
 import { ChannelService } from './channel.service';
 import { FirestoreService } from '../firestore.service';
-import { debug, log } from 'console';
 import { GenerateIdsService } from './generate-ids.service';
-import { DocumentReference } from 'firebase/firestore';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
@@ -45,7 +42,30 @@ export class ChatService {
     public channelService: ChannelService,
     public FirestoreService: FirestoreService,
     public generateIdServie: GenerateIdsService
-  ) {}
+  ) {
+    this.initializeService();
+  }
+
+  async initializeService() {
+    this.currentuid = await this.getCurrentUid();
+    if (!this.currentuid) {
+      console.error('Failed to get currentuid');
+    }
+  }
+
+  async getCurrentUid(): Promise<string | null> {
+    return new Promise((resolve) => {
+      const checkUid = () => {
+        const uid = this.FirestoreService.currentuid;
+        if (uid) {
+          resolve(uid);
+        } else {
+          setTimeout(checkUid, 100);
+        }
+      };
+      checkUid();
+    });
+  }
 
   db = getFirestore();
   chatsCollection = collection(this.db, 'chats');
@@ -57,12 +77,20 @@ export class ChatService {
     return docSnap.docs.map((doc) => doc.id);
   }
 
-  async createChat(userDetails: any) {
+  async createChat(userDetails: any, retryCount: number = 0) {
     userDetails = Array.isArray(userDetails) ? userDetails : [userDetails];
     try {
       let date = new Date().getTime().toString();
       let chatDocIds = await this.getChatsDocumentIDs('chats');
-      this.currentuid = this.FirestoreService.currentuid;
+
+      if (!this.currentuid) {
+        if (retryCount < 3) {
+          setTimeout(() => this.createChat(userDetails, retryCount + 1), 1000);
+        } else {
+          console.error('currentuid is undefined after 3 retries');
+        }
+        return;
+      }
 
       for (const user of userDetails) {
         if (this.currentuid === user.uid) {
@@ -87,7 +115,6 @@ export class ChatService {
             this.currentuid,
             user.uid
           );
-
           const chatDocRef = doc(this.firestore, 'chats', combinedShortedId);
           const chatDoc = await getDoc(chatDocRef);
 
@@ -107,8 +134,18 @@ export class ChatService {
     }
   }
 
-  async createChatWithUsers(): Promise<void> {
-    this.currentuid = this.FirestoreService.currentuid;
+  async createChatWithUsers(retryCount: number = 0): Promise<void> {
+    // this.currentuid = this.FirestoreService.currentuid;
+
+    if (!this.currentuid) {
+      if (retryCount < 3) {
+        setTimeout(() => this.createChatWithUsers(retryCount + 1), 1000);
+      } else {
+        console.error('currentuid is undefined after 3 retries');
+      }
+      return;
+    }
+
     let allUsers = await this.FirestoreService.getAllUsers();
     const currentUser = allUsers.find((user) => user.uid === this.currentuid);
     if (currentUser) {
@@ -144,12 +181,25 @@ export class ChatService {
   }
 
   messages: any[] = [];
-  async loadMessages(userDetails: any) {
+  async loadMessages(userDetails: any, retryCount: number = 0) {
     if (Array.isArray(userDetails)) {
       userDetails = userDetails[0];
     }
     await this.createChat(userDetails);
-    const currentuid = this.FirestoreService.currentuid;
+    let currentuid = this.FirestoreService.currentuid;
+
+    if (!currentuid) {
+      if (retryCount < 3) {
+        setTimeout(() => {
+          currentuid = this.FirestoreService.currentuid;
+          this.loadMessages(userDetails, retryCount + 1);
+        }, 1000);
+      } else {
+        console.error('currentuid is undefined after 3 retries');
+      }
+      return;
+    }
+
     const messages: any[] = [];
 
     if (userDetails.uid && userDetails.uid !== currentuid) {
@@ -207,10 +257,23 @@ export class ChatService {
     return chatDocIds;
   }
 
-  async sendData(text: any) {
+  async sendData(text: any, retryCount: number = 0) {
     let id = this.generateIdServie.generateId();
     let date = new Date().getTime().toString();
     let currentuid = this.FirestoreService.currentuid;
+
+    if (!currentuid) {
+      if (retryCount < 3) {
+        setTimeout(() => {
+          currentuid = this.FirestoreService.currentuid;
+          this.sendData(text, retryCount + 1);
+        }, 1000);
+      } else {
+        console.error('currentuid is undefined after 3 retries');
+      }
+      return;
+    }
+
     let message = {
       message: text,
       id: id,
