@@ -32,7 +32,6 @@ export class DialogDeleteProfileComponent implements OnInit{
   }
 
   async deleteUserAccount() {
-    debugger
     try {
       const result = await this.firestoreService.deleteAccount(this.logInUid);
       this.showInputInformationEmail = false;

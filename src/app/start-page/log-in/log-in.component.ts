@@ -22,6 +22,7 @@ export class LogInComponent implements OnInit {
   ) {}
   showInputInformationEmail: boolean = false;
   showInputInformationPassword: boolean = false;
+  showEmailVerification: boolean = false;
   showPasswordValue = false;
 
   ngOnInit(): void {
@@ -90,9 +91,9 @@ export class LogInComponent implements OnInit {
   }
 
   async userLogIn(formData: any) {
-    // debugger
     this.showInputInformationEmail = false;
     this.showInputInformationPassword = false;
+    this.showEmailVerification = false;
     const { email, password } = formData.value;
     if (!formData.valid) {
       if (formData.controls['email'].invalid) {
@@ -105,6 +106,10 @@ export class LogInComponent implements OnInit {
       // console.log(logInDate);
       this.firestoreService.logInUser(email, password, logInDate)
         .then((result) => {
+          debugger
+          if(result === 'auth/email-not-verified') {
+            this.showEmailVerification = true;
+          }
           if (result === 'auth/invalid-credential') {
             this.showInputInformationPassword = true;
             // console.log('Invalid credentials error occurred.');
@@ -116,6 +121,11 @@ export class LogInComponent implements OnInit {
           console.error('Error logging in:', error);
         });
     }
+}
+
+async resendverificationEmail() {
+  const user = this.firestoreService.getCurrentAuth();
+  this.firestoreService.sendVerificationEmail(user)
 }
 
 }

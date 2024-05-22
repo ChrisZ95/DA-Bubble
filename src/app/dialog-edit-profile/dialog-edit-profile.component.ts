@@ -74,7 +74,6 @@ export class DialogEditProfileComponent implements OnInit{
   }
 
   safeEditData() {
-    debugger
     console.log('die uid lautet', this.logInUid)
     this.inputName = document.getElementById('userNameInput');
     this.inputEmail = document.getElementById('userEmailInput');
@@ -112,7 +111,6 @@ export class DialogEditProfileComponent implements OnInit{
     }
 
     async changeEmail(inpuEmailValue: any) {
-      debugger
       try {
         const result = await this.firestoreService.updateEmail(inpuEmailValue, this.logInUid);
         this.showInputInformationEmail = false;
@@ -135,7 +133,7 @@ export class DialogEditProfileComponent implements OnInit{
 
     async sendNewVerificationMail() {
       if (this.user) {
-        await this.firestoreService.sendVerificationEmail(this.user, this.userEmail);
+        await this.firestoreService.sendVerificationEmail(this.user);
       }
     }
 

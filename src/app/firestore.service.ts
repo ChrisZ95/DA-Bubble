@@ -76,8 +76,13 @@ export class FirestoreService {
     console.log('ausgeloggte uid',this.currentuid)
   }
 
+  getCurrentAuth() {
+    const auth = getAuth();
+    const user: any = auth.currentUser;
+    return user;
+  }
+
   async deleteAccount(uid: any): Promise<string> {
-    debugger
    try {
     const auth = getAuth();
     const user: any = auth.currentUser;
@@ -163,7 +168,7 @@ export class FirestoreService {
     }
 }
 
-  async sendVerificationEmail(user: any, newEmail: string): Promise<void> {
+  async sendVerificationEmail(user: any): Promise<void> {
     try {
       if (user) {
         await sendEmailVerification(user);
@@ -419,12 +424,16 @@ export class FirestoreService {
     password: string,
     logIndate: string
   ): Promise<string | null> {
+    debugger
     try {
       const userCredential = await signInWithEmailAndPassword(
         this.auth,
         email,
         password
       );
+      if(!this.auth.currentUser.emailVerified) {
+        return 'auth/email-not-verified'
+      }
       const userRef = doc(this.firestore, 'users', userCredential.user.uid);
       await updateDoc(userRef, {
         logIndate: logIndate,

@@ -41,7 +41,6 @@ export class StartPageComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    debugger
     this.showStartScreen();
     this.showLoginComponent = true;
     this.startScreen = true;
@@ -51,7 +50,6 @@ export class StartPageComponent implements OnInit {
   }
 
   informationAfterEmailChanged() {
-    debugger
     const storage = localStorage.getItem('resetEmail')
     if(storage) {
       this.updateEmail = true
@@ -65,7 +63,6 @@ export class StartPageComponent implements OnInit {
   }
 
   informationAfterDeleteAccount() {
-    debugger
     const storage = localStorage.getItem('userDelete')
     if(storage) {
       this.deleteAccount = true
@@ -107,7 +104,6 @@ export class StartPageComponent implements OnInit {
   }
 
   continueToChooseAvatar() {
-    // debugger
     console.log('Choose avatar open')
     this.showChooseAvatarComponent = true;
     this.showLoginComponent = false;
@@ -158,7 +154,6 @@ export class StartPageComponent implements OnInit {
   }
 
   // PasswordSuccesfullyChanged() {
-  //   debugger
   //   this.changedPassword = true;
   //   console.log("Passwort zurückgesetzt");
   //  setTimeout(() => {

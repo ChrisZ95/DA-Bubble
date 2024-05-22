@@ -25,7 +25,6 @@ export class HeaderComponent implements OnInit{
   userIsVerified = false;
 
   async ngOnInit() {
-    //debugger
     this.guestLogIn = false;
     const uid = localStorage.getItem('uid');
     this.userForm = await this.firestoreService.getUserData(uid);

@@ -80,6 +80,16 @@
           display: flex;
           justify-content: flex-start;
           width: 450px;
+
+          a {
+            color: #444DF2;
+            text-decoration: underline;
+            cursor: pointer;
+
+            &:hover {
+              color: #797EF3;
+            }
+          }
         }
       }
 
