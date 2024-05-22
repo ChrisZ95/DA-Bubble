@@ -17,7 +17,7 @@ import {
   EmailAuthProvider,
   fetchSignInMethodsForEmail,
   verifyBeforeUpdateEmail,
-  deleteUser,
+  deleteUser
 } from '@angular/fire/auth';
 import { FirebaseApp } from '@angular/fire/app';
 import {
@@ -65,15 +65,15 @@ export class FirestoreService {
   signInuid: any;
   logInUid: any;
 
+
   constructor(private myFirebaseApp: FirebaseApp, public router: Router) {
     this.auth = getAuth(myFirebaseApp);
-    console.log('Auth dokument', this.auth);
+    console.log('Auth dokument',this.auth)
     this.auth.languageCode = 'de';
     this.firestore = getFirestore(myFirebaseApp);
     const provider = new GoogleAuthProvider();
     this.currentuid = localStorage.getItem('uid');
-    console.log('ausgeloggte uid', this.currentuid);
-    this.initializeAuthState();
+    console.log('ausgeloggte uid',this.currentuid)
   }
 
   getCurrentAuth() {
@@ -82,33 +82,22 @@ export class FirestoreService {
     return user;
   }
 
-  initializeAuthState() {
-    onAuthStateChanged(this.auth, (user) => {
-      if (user) {
-        this.currentuid = user.uid;
-        localStorage.setItem('uid', this.currentuid);
-      } else {
-        localStorage.removeItem('uid');
-      }
-    });
-  }
-
   async deleteAccount(uid: any): Promise<string> {
-    try {
-      const auth = getAuth();
-      const user: any = auth.currentUser;
-      localStorage.clear;
-      localStorage.setItem('userDelete', 'true');
-      await deleteDoc(doc(this.firestore, 'users', uid));
-      await deleteUser(user);
-      return 'auth/correct';
-    } catch (error: any) {
-      console.error('Fehler beim löschen des Accounts', error);
-      if (error.code === 'auth/requires-recent-login') {
-        return 'auth/requires-recent-login';
-      }
-      return 'auth/false';
+   try {
+    const auth = getAuth();
+    const user: any = auth.currentUser;
+    localStorage.clear;
+    localStorage.setItem('userDelete', 'true');
+    await deleteDoc(doc(this.firestore, "users", uid))
+    await deleteUser(user)
+    return 'auth/correct';
+   } catch(error: any) {
+    console.error('Fehler beim löschen des Accounts', error);
+    if(error.code === 'auth/requires-recent-login') {
+      return 'auth/requires-recent-login'
     }
+    return 'auth/false';
+   }
   }
 
   async deleteUserIcon(currentUserIcon: string, currentUserId: string) {
@@ -119,12 +108,13 @@ export class FirestoreService {
     try {
       await deleteObject(desertRef);
       await updateDoc(userDocRef, {
-        photo: deleteField(),
+        photo: deleteField()
       });
     } catch (error: any) {
       console.log('Fehler beim Löschen des Benutzericons', error);
     }
   }
+
 
   async changeName(uid: string, name: string): Promise<void> {
     try {
@@ -139,53 +129,51 @@ export class FirestoreService {
   async updateEmail(newMail: any, uid: any): Promise<string> {
     const auth = getAuth();
     try {
-      const user = auth.currentUser;
-      if (user) {
-        console.log(user);
-        await verifyBeforeUpdateEmail(user, newMail);
-        const userDocRef = doc(this.firestore, 'users', uid);
-        await updateDoc(userDocRef, { email: newMail });
-        localStorage.setItem('resetEmail', 'true');
-        this.router.navigate(['']);
-        return 'auth/correct';
-      } else {
-        console.error('Es ist kein Benutzer angemeldet');
-        return 'auth/false';
-      }
+        const user = auth.currentUser;
+        if (user) {
+            console.log(user);
+            await verifyBeforeUpdateEmail(user, newMail);
+            const userDocRef = doc(this.firestore, 'users', uid);
+            await updateDoc(userDocRef, { email: newMail });
+            localStorage.setItem('resetEmail', 'true')
+            this.router.navigate(['']);
+            return 'auth/correct';
+        } else {
+            console.error('Es ist kein Benutzer angemeldet');
+            return 'auth/false';
+        }
     } catch (error: any) {
       console.error('Fehler beim Aktualisieren der E-Mail', error);
-      if (error.code === 'auth/requires-recent-login') {
-        return 'auth/requires-recent-login';
+      if(error.code === 'auth/requires-recent-login') {
+        return 'auth/requires-recent-login'
       }
     }
     return 'auth/false';
-  }
+}
 
   async getUserEmail(userId: any) {
     try {
-      const userDocRef = doc(this.firestore, 'users', userId);
-      const docSnap = await getDoc(userDocRef);
+        const userDocRef = doc(this.firestore, "users", userId);
+        const docSnap = await getDoc(userDocRef);
 
-      if (docSnap.exists()) {
-        const userEmail = docSnap.data()['email'];
-        return userEmail;
-      } else {
-        console.log('No such document!');
-        return null;
-      }
+        if (docSnap.exists()) {
+            const userEmail = docSnap.data()['email'];
+            return userEmail;
+        } else {
+            console.log("No such document!");
+            return null;
+        }
     } catch (error) {
-      console.error('Error getting document:', error);
+        console.error("Error getting document:", error);
     }
-  }
+}
 
   async sendVerificationEmail(user: any): Promise<void> {
     try {
       if (user) {
         await sendEmailVerification(user);
         console.log('Verifizierungs-E-Mail an neue Adresse gesendet');
-        alert(
-          'Bitte verifizieren Sie Ihre neue E-Mail-Adresse. Überprüfen Sie Ihren Posteingang und klicken Sie auf den Verifizierungslink.'
-        );
+        alert('Bitte verifizieren Sie Ihre neue E-Mail-Adresse. Überprüfen Sie Ihren Posteingang und klicken Sie auf den Verifizierungslink.');
       } else {
         console.error('Kein angemeldeter Benutzer gefunden');
       }
@@ -235,6 +223,7 @@ export class FirestoreService {
       });
   }
 
+
   /* Dokument des Users */
   async getUserData(uid: any): Promise<any | null> {
     const userData = doc(this.firestore, 'users', uid);
@@ -255,27 +244,20 @@ export class FirestoreService {
     }
   }
 
-  async getCurrentUid(): Promise<string | null> {
-    const user = this.auth.currentUser;
-    if (user) {
-      this.currentuid = user.uid;
-      localStorage.setItem('uid', this.currentuid);
-      return this.currentuid;
-    } else {
-      this.currentuid = localStorage.getItem('uid');
-      return this.currentuid;
-    }
+
+  setCurrentUid(logInUid: any) {
+    this.logInUid = logInUid;
+    console.log(this.logInUid)
   }
 
-  setCurrentUid(uid: string) {
-    this.currentuid = uid;
-    localStorage.setItem('uid', uid);
+  getCurrentUid() {
+    return this.logInUid
   }
 
   /* Speichert die uid  beim signup (function signUpUser)*/
   setuid(uid: string) {
     this.signInuid = uid;
-    console.log(this.signInuid);
+     console.log(this.signInuid)
   }
 
   /* Gibt die in setuid gespeicherte uid zurück */
@@ -289,12 +271,9 @@ export class FirestoreService {
   }
 
   /* Wird in der  sign-up-choose-avatar.component aufgerufen und speichert die URL des icons in der Datenbank*/
-  async uploadUserIconIntoDatabase(
-    uid: string,
-    userIconTokenURL: string
-  ): Promise<void> {
-    console.log(uid);
-    console.log(userIconTokenURL);
+  async uploadUserIconIntoDatabase(uid: string, userIconTokenURL: string): Promise<void> {
+     console.log(uid)
+     console.log(userIconTokenURL)
     try {
       const userRef = doc(this.firestore, 'users', uid);
       await updateDoc(userRef, {
@@ -311,15 +290,15 @@ export class FirestoreService {
       const docSnap = await getDoc(userData);
 
       if (docSnap.exists()) {
-        const userData = docSnap.data();
-        console.log('Die URL des Bildes lautet:', userData['photo']);
-        return userData['photo'];
+          const userData = docSnap.data();
+           console.log('Die URL des Bildes lautet:', userData['photo']);
+          return userData['photo'];
       } else {
-        console.log('Benutzerdokument nicht gefunden für UID:', uid);
+           console.log('Benutzerdokument nicht gefunden für UID:', uid);
       }
-    } catch (error) {
+  } catch (error) {
       console.error('Fehler beim Abrufen des Benutzerdokuments:', error);
-    }
+  }
   }
 
   /* Speichert das Bild im Storage Ordner user-icon/ */
@@ -328,12 +307,12 @@ export class FirestoreService {
     const storageRef = ref(storage, 'user-icon/' + file.name);
     await uploadBytes(storageRef, file);
     const token = await getDownloadURL(storageRef);
-    console.log('Die URL zum Bild lautet', token);
-    console.log('User icon uploaded and access token saved.');
+     console.log('Die URL zum Bild lautet',token)
+     console.log('User icon uploaded and access token saved.');
     return token;
   }
 
-  async uploadDataIntoStorage(file: any) {
+  async uploadDataIntoStorage(file: any){
     const storage = getStorage();
     const storageRef = ref(storage, 'testData/' + file.name);
     await uploadBytes(storageRef, file);
@@ -371,15 +350,15 @@ export class FirestoreService {
   /* Überwacht den Status des Users (Angemeldet / Abgemeldet) */
   observeAuthState(): void {
     onAuthStateChanged(this.auth, (user) => {
-      console.log('Der aktuelle user', user);
-      console.log(this.auth);
+       console.log('Der aktuelle user',user)
+       console.log(this.auth)
       if (user) {
         // User ist angemeldet
         console.log('User is signed in:', user.uid);
         localStorage.setItem('logedIn', 'true');
       } else {
         // User ist abgemeldet
-        console.log('User is signed out');
+         console.log('User is signed out');
         localStorage.clear();
         this.router.navigate(['']);
       }
@@ -392,7 +371,7 @@ export class FirestoreService {
     password: string,
     username: string,
     privacyPolice: boolean,
-    signUpdate: string
+    signUpdate: string,
   ): Promise<string | null> {
     try {
       const userCredential = await createUserWithEmailAndPassword(
@@ -402,7 +381,7 @@ export class FirestoreService {
       );
       const user = userCredential.user;
       const userRef = doc(this.firestore, 'users', user.uid);
-      console.log('Die User id zum sign up lautet', user.uid);
+      console.log('Die User id zum sign up lautet',user.uid)
       await setDoc(userRef, {
         email: email,
         username: username,
@@ -413,7 +392,7 @@ export class FirestoreService {
       });
 
       this.setuid(user.uid);
-      this.sendEmailAfterSignUp(user);
+      this.sendEmailAfterSignUp(user)
       return 'auth';
     } catch (error: any) {
       console.error('Error creating user:', error);
@@ -421,21 +400,23 @@ export class FirestoreService {
         error.code === 'auth/invalid-recipient-email' ||
         error.code === 'auth/invalid-email'
       ) {
-        console.log('Email-Adresse entspricht nicht den gültigen Vorlagen.');
+         console.log('Email-Adresse entspricht nicht den gültigen Vorlagen.');
         return 'auth/invalid-recipient-email';
       }
       if (error.code === 'auth/email-already-in-use') {
-        console.log('Email-Adresse wird bereits verwendet.');
+         console.log('Email-Adresse wird bereits verwendet.');
         return 'auth/email-already-in-use';
       }
       if (error.code === 'auth/weak-password') {
-        console.log('Das Passwort ist zu schwach.');
+         console.log('Das Passwort ist zu schwach.');
         return 'weak-password';
       } else {
         return null;
       }
     }
   }
+
+
 
   /* Nutzer wird eingeloggt */
   async logInUser(
@@ -449,8 +430,8 @@ export class FirestoreService {
         email,
         password
       );
-      if (!this.auth.currentUser.emailVerified) {
-        return 'auth/email-not-verified';
+      if(!this.auth.currentUser.emailVerified) {
+        return 'auth/email-not-verified'
       }
       const userRef = doc(this.firestore, 'users', userCredential.user.uid);
       await updateDoc(userRef, {
@@ -465,7 +446,7 @@ export class FirestoreService {
     } catch (error: any) {
       console.error('Error signing in:', error);
       if (error.code === 'auth/invalid-credential') {
-        console.log('Email-Adresse entspricht nicht den gültigen Vorlagen.');
+         console.log('Email-Adresse entspricht nicht den gültigen Vorlagen.');
         return 'auth/invalid-credential';
       }
       throw error;
@@ -490,7 +471,7 @@ export class FirestoreService {
       const errorMessage = error.message;
       const email = error.customData.email;
       const credential = OAuthProvider.credentialFromError(error);
-      console.log(errorCode);
+       console.log(errorCode);
     }
   }
 
@@ -507,20 +488,20 @@ export class FirestoreService {
         const token = credential.accessToken;
         const user = result.user;
         this.observeAuthState();
-        console.log(user);
-        console.log('Google login user name:', user.displayName);
-        console.log('Google login user email:', user.email);
-        console.log('Google login user photo:', user.photoURL);
-        console.log('Google login user uid:', user.uid);
-        console.log(
-          'Google user wurde erstellt am',
-          user.metadata.creationTime
-        );
-        console.log(
-          'Google user wurde zuletzt gesehen am',
-          user.metadata.lastSignInTime
-        );
-        console.log('Google login user handy nummer', user.phoneNumber);
+         console.log(user);
+         console.log('Google login user name:', user.displayName);
+         console.log('Google login user email:', user.email);
+         console.log('Google login user photo:', user.photoURL);
+         console.log('Google login user uid:', user.uid);
+         console.log(
+           'Google user wurde erstellt am',
+           user.metadata.creationTime
+         );
+         console.log(
+           'Google user wurde zuletzt gesehen am',
+           user.metadata.lastSignInTime
+         );
+         console.log('Google login user handy nummer', user.phoneNumber);
         const userRef = doc(this.firestore, 'users', user.uid);
         const signUpDate = user.metadata.creationTime
           ? new Date(user.metadata.creationTime)
@@ -574,7 +555,7 @@ export class FirestoreService {
       };
 
       await sendPasswordResetEmail(auth, email, actionCodeSettings);
-      console.log('E-Mail zum Zurücksetzen des Passworts gesendet');
+       console.log('E-Mail zum Zurücksetzen des Passworts gesendet');
     } catch (error) {
       console.error(
         'Fehler beim Senden der E-Mail zum Zurücksetzen des Passworts:',
@@ -585,11 +566,11 @@ export class FirestoreService {
 
   /* Funktionalität um das Passwort zu ändern */
   async changePassword(userId: any, newPassword: string): Promise<void> {
-    console.log(userId, newPassword);
+     console.log(userId, newPassword);
     try {
       await updatePassword(this.auth.currentUser, newPassword);
       this.router.navigate(['']);
-      console.log('Passwort erfolgreich aktualisiert');
+       console.log('Passwort erfolgreich aktualisiert');
     } catch (error) {
       console.error('Fehler beim Aktualisieren des Passworts:', error);
       throw error;
@@ -603,3 +584,5 @@ export class FirestoreService {
     return this.newDate;
   }
 }
+
+
