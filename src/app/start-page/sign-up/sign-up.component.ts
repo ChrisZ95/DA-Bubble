@@ -48,7 +48,6 @@ export class SignUpComponent implements  OnInit{
 
 
   async userSignUp(formData: NgForm): Promise<void> {
-    debugger
     this.showInputInformationUserName = false;
     this.showInputInformationEmailInputEmpty = false;
     this.showInputInformationEmailforgive = false;
@@ -68,7 +67,6 @@ export class SignUpComponent implements  OnInit{
         this.showInputInformationPrivacyPolice = true;
       }
       } else {
-        debugger
         const signUpDate = await this.firestoreService.createTimeStamp();
         console.log(signUpDate);
         const registrationSuccess = await this.firestoreService.signUpUser(email, password, username, privacyPolice, signUpDate);

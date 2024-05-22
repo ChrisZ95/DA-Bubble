@@ -4,7 +4,7 @@
     <div class="profile">
       <span>{{ userName }}</span>
       <div *ngIf="userIsVerified">
-        <img class="user-verified" src="./../../assets/images/verified-user.png">
+        <img title="Das Konto ist verifiziert" class="user-verified" src="./../../assets/images/verified-user.png">
       </div>
       <img class="avatar-icon" src="{{ userPhoto }}" alt="">
       <img [matMenuTriggerFor]="profilMenu" src="./../assets/images/arrow_down.png" alt="">

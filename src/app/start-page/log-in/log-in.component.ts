@@ -62,7 +62,6 @@ export class LogInComponent implements OnInit {
   }
 
   async logInWithGoogle() {
-    // debugger
     const auth = this.firestoreService.auth;
     const provider = new GoogleAuthProvider();
     const logInDate = await this.firestoreService.createTimeStamp();
@@ -106,7 +105,6 @@ export class LogInComponent implements OnInit {
       // console.log(logInDate);
       this.firestoreService.logInUser(email, password, logInDate)
         .then((result) => {
-          debugger
           if(result === 'auth/email-not-verified') {
             this.showEmailVerification = true;
           }

@@ -36,6 +36,8 @@
     .user-verified {
       height: 20px;
       width: auto;
+      transform: scale(1.1);
+      animation: verified-logo 1.5s ease-in-out infinite;
     }
 
     .avatar-icon {
@@ -78,4 +80,14 @@
       background-color: rgb(236, 238, 254) !important;
       color: rgb(83, 90, 241) !important;
     }
+}
+
+@keyframes verified-logo {
+  0% {
+    transform: scale(1.1);
+  } 50% {
+    transform: scale(1);
+  } 100% {
+    transform: scale(1.1);
+  }
 }

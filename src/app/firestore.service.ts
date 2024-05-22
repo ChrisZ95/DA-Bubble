@@ -88,8 +88,8 @@ export class FirestoreService {
     const user: any = auth.currentUser;
     localStorage.clear;
     localStorage.setItem('userDelete', 'true');
-    await deleteUser(user)
     await deleteDoc(doc(this.firestore, "users", uid))
+    await deleteUser(user)
     return 'auth/correct';
    } catch(error: any) {
     console.error('Fehler beim löschen des Accounts', error);
@@ -424,7 +424,6 @@ export class FirestoreService {
     password: string,
     logIndate: string
   ): Promise<string | null> {
-    debugger
     try {
       const userCredential = await signInWithEmailAndPassword(
         this.auth,
