@@ -67,7 +67,6 @@ export class OwnchatComponent implements OnChanges, OnInit {
     this.loadCurrentUser();
     this.chatsService.messages$.subscribe((messages) => {
       this.messages = messages;
-      console.log('Filtered Messages in Component:', this.messages);
     });
     const userDetails = { uid: 'someUserId' };
   }
