@@ -49,7 +49,7 @@ export class ChatService {
   async initializeService() {
     this.currentuid = await this.getCurrentUid();
     if (!this.currentuid) {
-      console.error('Failed to get currentuid');
+      console.error('Currentuid nicht gefunden');
     }
   }
 
@@ -87,7 +87,7 @@ export class ChatService {
         if (retryCount < 3) {
           setTimeout(() => this.createChat(userDetails, retryCount + 1), 1000);
         } else {
-          console.error('currentuid is undefined after 3 retries');
+          console.error('Currentuid nicht gefunden');
         }
         return;
       }
@@ -130,7 +130,7 @@ export class ChatService {
         }
       }
     } catch (error) {
-      console.error('Error creating chat:', error);
+      console.error('Error createChat:', error);
     }
   }
 
@@ -141,7 +141,7 @@ export class ChatService {
       if (retryCount < 3) {
         setTimeout(() => this.createChatWithUsers(retryCount + 1), 1000);
       } else {
-        console.error('currentuid is undefined after 3 retries');
+        console.error('Currentuid nicht gefunden');
       }
       return;
     }
@@ -195,7 +195,7 @@ export class ChatService {
           this.loadMessages(userDetails, retryCount + 1);
         }, 1000);
       } else {
-        console.error('currentuid is undefined after 3 retries');
+        console.error('Currentuid nicht gefunden');
       }
       return;
     }
@@ -269,7 +269,7 @@ export class ChatService {
           this.sendData(text, retryCount + 1);
         }, 1000);
       } else {
-        console.error('currentuid is undefined after 3 retries');
+        console.error('Currentuid nicht gefunden');
       }
       return;
     }
@@ -308,7 +308,7 @@ export class ChatService {
       );
       this.messagesSubject.next(filteredMessages);
     } catch (error) {
-      console.error('Error updating chat document:', error);
+      console.error('Error sendData:', error);
     }
   }
 
@@ -324,7 +324,7 @@ export class ChatService {
         const updatedMessages = [...currentMessages, message];
         await updateDoc(chatDocRef, { messages: updatedMessages });
       } else {
-        console.error('Chat document not found for channelId:', channelId);
+        console.error('Error channelId:', channelId);
       }
     } catch (error) {
       console.error('Error sending message:', error);
