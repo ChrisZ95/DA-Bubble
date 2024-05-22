@@ -1,3 +1,6 @@
+<div class="loading-screen">
+  <mat-progress-bar *ngIf="loadingScreen" mode="indeterminate"></mat-progress-bar>
+</div>
 <div class="profile-dialog-container">
   <div class="profile-title"><span class="edit-profile-title">Konto löschen</span><img class="back-button" src="./../../assets/images/close.png" (click)="closeDeleteProfileDialog()" alt=""></div>
   <span class="dialog-information">Ihre Daten werden unwiderruflich gelöscht und können nicht wiederhergestellt werden.</span>

@@ -5,12 +5,13 @@ import { doc } from '@angular/fire/firestore';
 import { CommonModule } from '@angular/common';
 import { DialogDeleteProfileComponent } from '../dialog-delete-profile/dialog-delete-profile.component';
 import { Router } from '@angular/router';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 
 @Component({
   selector: 'app-dialog-edit-profile',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MatProgressBarModule],
   templateUrl: './dialog-edit-profile.component.html',
   styleUrl: './dialog-edit-profile.component.scss'
 })
@@ -37,6 +38,7 @@ export class DialogEditProfileComponent implements OnInit{
 
   emailIsNotUpToDate = false;
   showInputInformationEmail = false;
+  loadingScreen = false;
 
   chooseIcon = true;
 
@@ -58,14 +60,17 @@ export class DialogEditProfileComponent implements OnInit{
   }
 
   checkEmailVerification() {
+    this.loadingScreen = true;
     const userEmailFirestoreDatabase = this.userEmail.toLowerCase();
     const authEmailAuthentification = this.firestoreService.auth.currentUser.email.toLowerCase();
     if(userEmailFirestoreDatabase == authEmailAuthentification) {
      console.log('email in databse und auth sind gleich');
      this.emailIsNotUpToDate = false;
+     this.loadingScreen = false;
     } else {
       console.log('email in databse und auth sind nicht gleich')
       this.emailIsNotUpToDate = true;
+      this.loadingScreen = false;
     }
   }
 
@@ -74,7 +79,9 @@ export class DialogEditProfileComponent implements OnInit{
   }
 
   safeEditData() {
+    debugger
     console.log('die uid lautet', this.logInUid)
+    this.loadingScreen = true;
     this.inputName = document.getElementById('userNameInput');
     this.inputEmail = document.getElementById('userEmailInput');
     const inputNameValue = this.inputName.value;
@@ -92,9 +99,11 @@ export class DialogEditProfileComponent implements OnInit{
        console.log('email ist nicht gleich')
        this.changeEmail(inpuEmailValue)
       }
+      this.loadingScreen = false;
     }
 
     async changeUserIcon() {
+      this.loadingScreen = true;
       this.firestoreService.deleteUserIcon(this.userPhoto, this.logInUid);
       const fileInput = document.getElementById('profile-picture-input') as HTMLInputElement;
       const file = fileInput.files?.[0];
@@ -108,6 +117,7 @@ export class DialogEditProfileComponent implements OnInit{
       } else {
         console.log('Kein Bild ausgewählt');
       }
+      this.loadingScreen = false;
     }
 
     async changeEmail(inpuEmailValue: any) {
@@ -132,9 +142,11 @@ export class DialogEditProfileComponent implements OnInit{
 
 
     async sendNewVerificationMail() {
+      this.loadingScreen = true;
       if (this.user) {
         await this.firestoreService.sendVerificationEmail(this.user);
       }
+      this.loadingScreen = false;
     }
 
     async deleteUserAccount() {

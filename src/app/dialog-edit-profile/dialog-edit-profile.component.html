@@ -1,3 +1,6 @@
+<div class="loading-screen">
+  <mat-progress-bar *ngIf="loadingScreen" mode="indeterminate"></mat-progress-bar>
+</div>
 <div class="profile-dialog-container">
     <div class="profile-title"><span class="edit-profile-title">Dein Profil bearbeiten</span><img class="back-button" src="./../../assets/images/close.png" alt="" (click)="closeEditProfileDialog()"></div>
     <div class="avatar-big">

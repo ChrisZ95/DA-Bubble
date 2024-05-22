@@ -3,12 +3,13 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { FirestoreService } from '../firestore.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 
 @Component({
   selector: 'app-dialog-delete-profile',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MatProgressBarModule],
   templateUrl: './dialog-delete-profile.component.html',
   styleUrl: './dialog-delete-profile.component.scss'
 })
@@ -19,6 +20,7 @@ export class DialogDeleteProfileComponent implements OnInit{
   private router: Router) {}
 
   succesDelete = false;
+  loadingScreen = false;
   logInUid: any;
   showInputInformationEmail: any;
 
@@ -32,6 +34,7 @@ export class DialogDeleteProfileComponent implements OnInit{
   }
 
   async deleteUserAccount() {
+    this.loadingScreen = true;
     try {
       const result = await this.firestoreService.deleteAccount(this.logInUid);
       this.showInputInformationEmail = false;
@@ -49,6 +52,7 @@ export class DialogDeleteProfileComponent implements OnInit{
     } catch (error) {
       console.error('Error logging in:', error);
     }
+    this.loadingScreen = false;
   }
 
   logOut() {
