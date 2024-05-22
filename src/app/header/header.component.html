@@ -3,6 +3,9 @@
     <div class="search-input"><input type="text" name="" id=""><img src="./../assets/images/search.png" alt=""></div>
     <div class="profile">
       <span>{{ userName }}</span>
+      <div *ngIf="userIsVerified">
+        <img class="user-verified" src="./../../assets/images/verified-user.png">
+      </div>
       <img class="avatar-icon" src="{{ userPhoto }}" alt="">
       <img [matMenuTriggerFor]="profilMenu" src="./../assets/images/arrow_down.png" alt="">
       <mat-menu #profilMenu="matMenu" class="profile-menu">

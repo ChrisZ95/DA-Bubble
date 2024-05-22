@@ -22,6 +22,7 @@ export class HeaderComponent implements OnInit{
   userPhoto: any;
   userUid: any;
   guestLogIn = false;
+  userIsVerified = false;
 
   async ngOnInit() {
     //debugger
@@ -32,6 +33,7 @@ export class HeaderComponent implements OnInit{
     this.userName = this.userForm['username']
     this.userPhoto = this.userForm['photo'];
     this.userUid = this.userForm['uid']
+    this.userIsVerified = this.firestoreService.auth.currentUser.emailVerified;
     if(this.userUid == 'XrnnaoBh8QcgDsAuasrCETBYdsC3') {// ID vom Gast Account
       this.guestLogIn = true;
     }

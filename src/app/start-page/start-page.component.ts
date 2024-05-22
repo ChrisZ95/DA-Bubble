@@ -36,6 +36,7 @@ export class StartPageComponent implements OnInit {
   accountCreate = false;
   emailSend = false;
   updateEmail = false;
+  delteAccount = false;
 
   constructor() { }
 
@@ -44,11 +45,11 @@ export class StartPageComponent implements OnInit {
     this.showLoginComponent = true;
     this.startScreen = true;
     this.informationAfterEmailChanged();
+    this.informationAfterDeleteAccount();
     console.log('1', this.showLoginComponent, '2', this.showSignUpComponent, '3', this.showChooseAvatarComponent)
   }
 
   informationAfterEmailChanged() {
-    debugger
     const storage = localStorage.getItem('resetEmail')
     if(storage) {
       this.updateEmail = true
@@ -58,6 +59,19 @@ export class StartPageComponent implements OnInit {
       }, 10000);
     } else {
       this.updateEmail = false
+    }
+  }
+
+  informationAfterDeleteAccount() {
+    const storage = localStorage.getItem('userDelete')
+    if(storage) {
+      this.delteAccount = true
+      setTimeout(() => {
+        this.delteAccount = false
+        localStorage.removeItem('userDelete')
+      }, 10000);
+    } else {
+      this.delteAccount = false
     }
   }
 

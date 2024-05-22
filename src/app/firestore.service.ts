@@ -76,17 +76,20 @@ export class FirestoreService {
     console.log('ausgeloggte uid',this.currentuid)
   }
 
-  async deleteAccount(uid: any): Promise<boolean> {
+  async deleteAccount(uid: any): Promise<string> {
    try {
     const auth = getAuth();
     const user: any = auth.currentUser;
     await deleteUser(user)
     await deleteDoc(doc(this.firestore, "users", uid))
     localStorage.clear;
-    return true;
+    return 'auth/correct';
    } catch(error: any) {
     console.error('Fehler beim löschen des Accounts', error);
-    return false;
+    if(error.code === 'auth/requires-recent-login') {
+      return 'auth/requires-recent-login'
+    }
+    return 'auth/false';
    }
   }
 

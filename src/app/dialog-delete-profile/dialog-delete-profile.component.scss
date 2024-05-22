@@ -6,6 +6,27 @@
   a{
       margin-top: 30px;
   }
+
+  .dialog-information {
+    margin-top: 10px;
+  }
+
+  .pseudo {
+    margin-top: 20px;
+    height: 20px;
+    color: red;
+    margin-bottom: 20px;
+
+    a {
+      color: #444DF2;
+      text-decoration: underline;
+      cursor: pointer;
+
+      &:hover {
+        color: #797EF3;
+      }
+    }
+  }
 }
 
 .profile-title{

@@ -31,7 +31,12 @@
   .profile {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 10px;
+
+    .user-verified {
+      height: 20px;
+      width: auto;
+    }
 
     .avatar-icon {
       height: 70px;
