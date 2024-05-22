@@ -3,6 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { doc } from '@angular/fire/firestore';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-dialog-edit-profile',
@@ -12,7 +14,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './dialog-edit-profile.component.scss'
 })
 export class DialogEditProfileComponent implements OnInit{
-  constructor(private dialogRef: MatDialogRef<DialogEditProfileComponent>, private firestoreService: FirestoreService) {}
+  constructor(private dialogRef: MatDialogRef<DialogEditProfileComponent>, private firestoreService: FirestoreService, public router: Router) {}
 
   logInUid: any;
   userForm: any;
@@ -27,6 +29,7 @@ export class DialogEditProfileComponent implements OnInit{
   user: any;
 
   emailIsNotUpToDate = false;
+  succesDelete = false;
 
   chooseIcon = true;
 
@@ -111,7 +114,14 @@ export class DialogEditProfileComponent implements OnInit{
       }
     }
 
-    async deleteAccount() {
-
+    async deleteUserAccount() {
+      this.succesDelete = await this.firestoreService.deleteAccount(this.logInUid);
+      if (this.succesDelete === true) {
+        this.closeEditProfileDialog()
+        this.router.navigate(['']);
+      } else {
+        console.log('User konnte nicht gelöscht werden')
+      }
     }
+
 }

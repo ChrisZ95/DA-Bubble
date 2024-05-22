@@ -16,7 +16,8 @@ import {
   reauthenticateWithCredential,
   EmailAuthProvider,
   fetchSignInMethodsForEmail,
-  verifyBeforeUpdateEmail
+  verifyBeforeUpdateEmail,
+  deleteUser
 } from '@angular/fire/auth';
 import { FirebaseApp } from '@angular/fire/app';
 import {
@@ -30,6 +31,7 @@ import {
   where,
   QueryDocumentSnapshot,
   deleteField,
+  deleteDoc,
 } from '@angular/fire/firestore';
 import {
   getStorage,
@@ -72,6 +74,20 @@ export class FirestoreService {
     const provider = new GoogleAuthProvider();
     this.currentuid = localStorage.getItem('uid');
     console.log('ausgeloggte uid',this.currentuid)
+  }
+
+  async deleteAccount(uid: any): Promise<boolean> {
+   try {
+    const auth = getAuth();
+    const user: any = auth.currentUser;
+    await deleteUser(user)
+    await deleteDoc(doc(this.firestore, "users", uid))
+    localStorage.clear;
+    return true;
+   } catch(error: any) {
+    console.error('Fehler beim löschen des Accounts', error);
+    return false;
+   }
   }
 
   async deleteUserIcon(currentUserIcon: string, currentUserId: string) {
