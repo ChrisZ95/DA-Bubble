@@ -1,9 +1,9 @@
 import { FirestoreService } from './../firestore.service';
 import { Component, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { doc } from '@angular/fire/firestore';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { DialogDeleteProfileComponent } from '../dialog-delete-profile/dialog-delete-profile.component';
 
 
 @Component({
@@ -14,7 +14,12 @@ import { Router } from '@angular/router';
   styleUrl: './dialog-edit-profile.component.scss'
 })
 export class DialogEditProfileComponent implements OnInit{
-  constructor(private dialogRef: MatDialogRef<DialogEditProfileComponent>, private firestoreService: FirestoreService, public router: Router) {}
+  constructor(
+    private dialogRef: MatDialogRef<DialogEditProfileComponent>,
+    private dialog: MatDialog,
+    private firestoreService: FirestoreService,
+  ) {}
+
 
   logInUid: any;
   userForm: any;
@@ -29,7 +34,6 @@ export class DialogEditProfileComponent implements OnInit{
   user: any;
 
   emailIsNotUpToDate = false;
-  succesDelete = false;
 
   chooseIcon = true;
 
@@ -115,13 +119,8 @@ export class DialogEditProfileComponent implements OnInit{
     }
 
     async deleteUserAccount() {
-      this.succesDelete = await this.firestoreService.deleteAccount(this.logInUid);
-      if (this.succesDelete === true) {
-        this.closeEditProfileDialog()
-        this.router.navigate(['']);
-      } else {
-        console.log('User konnte nicht gelöscht werden')
-      }
+      this.dialog.open(DialogDeleteProfileComponent);
+      this.dialogRef.close();
     }
 
 }
