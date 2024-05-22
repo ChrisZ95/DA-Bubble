@@ -4,6 +4,7 @@ import { MatDialog, MatDialogRef, MatDialogModule } from '@angular/material/dial
 import { doc } from '@angular/fire/firestore';
 import { CommonModule } from '@angular/common';
 import { DialogDeleteProfileComponent } from '../dialog-delete-profile/dialog-delete-profile.component';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -18,6 +19,7 @@ export class DialogEditProfileComponent implements OnInit{
     private dialogRef: MatDialogRef<DialogEditProfileComponent>,
     private dialog: MatDialog,
     private firestoreService: FirestoreService,
+    private router: Router
   ) {}
 
 
@@ -34,6 +36,7 @@ export class DialogEditProfileComponent implements OnInit{
   user: any;
 
   emailIsNotUpToDate = false;
+  showInputInformationEmail = false;
 
   chooseIcon = true;
 
@@ -71,7 +74,7 @@ export class DialogEditProfileComponent implements OnInit{
   }
 
   safeEditData() {
-    // debugger
+    debugger
     console.log('die uid lautet', this.logInUid)
     this.inputName = document.getElementById('userNameInput');
     this.inputEmail = document.getElementById('userEmailInput');
@@ -85,11 +88,11 @@ export class DialogEditProfileComponent implements OnInit{
       }
     if (inpuEmailValue === this.userEmail) {
       console.log('email ist gleich')
+      this.closeEditProfileDialog()
       } else {
        console.log('email ist nicht gleich')
-       this.firestoreService.updateEmail(inpuEmailValue, this.logInUid)
+       this.changeEmail(inpuEmailValue)
       }
-      this.closeEditProfileDialog()
     }
 
     async changeUserIcon() {
@@ -108,9 +111,27 @@ export class DialogEditProfileComponent implements OnInit{
       }
     }
 
-    async changeEmail() {
-      this.firestoreService.updateEmail(this.userEmail, this.logInUid)
+    async changeEmail(inpuEmailValue: any) {
+      debugger
+      try {
+        const result = await this.firestoreService.updateEmail(inpuEmailValue, this.logInUid);
+        this.showInputInformationEmail = false;
+
+        if (result === 'auth/correct') {
+          await this.firestoreService.logOut();
+          localStorage.setItem('resetEmail', 'true');
+          this.closeEditProfileDialog()
+        } else if (result === 'auth/requires-recent-login') {
+          this.showInputInformationEmail = true;
+        } else if (result === 'auth/false') {
+          this.showInputInformationEmail = true;
+        }
+      } catch (error) {
+        console.error('Error change email:', error);
+      }
     }
+
+
 
     async sendNewVerificationMail() {
       if (this.user) {
@@ -123,4 +144,9 @@ export class DialogEditProfileComponent implements OnInit{
       this.dialogRef.close();
     }
 
+    logOut() {
+      this.closeEditProfileDialog();
+      this.router.navigate(['']);
+      this.firestoreService.logOut()
+    }
 }

@@ -77,12 +77,14 @@ export class FirestoreService {
   }
 
   async deleteAccount(uid: any): Promise<string> {
+    debugger
    try {
     const auth = getAuth();
     const user: any = auth.currentUser;
+    localStorage.clear;
+    localStorage.setItem('userDelete', 'true');
     await deleteUser(user)
     await deleteDoc(doc(this.firestore, "users", uid))
-    localStorage.clear;
     return 'auth/correct';
    } catch(error: any) {
     console.error('Fehler beim löschen des Accounts', error);
@@ -119,7 +121,7 @@ export class FirestoreService {
     }
   }
 
-  async updateEmail(newMail: any, uid: any) {
+  async updateEmail(newMail: any, uid: any): Promise<string> {
     const auth = getAuth();
     try {
         const user = auth.currentUser;
@@ -130,12 +132,18 @@ export class FirestoreService {
             await updateDoc(userDocRef, { email: newMail });
             localStorage.setItem('resetEmail', 'true')
             this.router.navigate(['']);
+            return 'auth/correct';
         } else {
             console.error('Es ist kein Benutzer angemeldet');
+            return 'auth/false';
         }
-    } catch (error) {
-        console.error('Fehler beim Aktualisieren der E-Mail', error);
+    } catch (error: any) {
+      console.error('Fehler beim Aktualisieren der E-Mail', error);
+      if(error.code === 'auth/requires-recent-login') {
+        return 'auth/requires-recent-login'
+      }
     }
+    return 'auth/false';
 }
 
   async getUserEmail(userId: any) {
@@ -192,6 +200,17 @@ export class FirestoreService {
     signOut(this.auth)
       .then(() => {
         localStorage.clear();
+        this.router.navigate(['']);
+      })
+      .catch((error) => {
+        console.error('Error signing out:', error);
+      });
+  }
+
+  logOutAfterDeleteAccount() {
+    signOut(this.auth)
+      .then(() => {
+        localStorage.setItem('userDelete', 'true');
         this.router.navigate(['']);
       })
       .catch((error) => {

@@ -32,14 +32,14 @@ export class DialogDeleteProfileComponent implements OnInit{
   }
 
   async deleteUserAccount() {
+    debugger
     try {
       const result = await this.firestoreService.deleteAccount(this.logInUid);
       this.showInputInformationEmail = false;
 
       if (result === 'auth/correct') {
         this.closeDeleteProfileDialog();
-        await this.firestoreService.logOut();
-        localStorage.setItem('userDelete', 'true');
+        await this.firestoreService.logOutAfterDeleteAccount();
         console.log('Der User wurde gelöscht');
       } else if (result === 'auth/requires-recent-login') {
         this.showInputInformationEmail = true;

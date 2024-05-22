@@ -31,6 +31,13 @@
               <span>Email noch nicht bestätigt.</span>
               <a (click)="sendNewVerificationMail()">Send mail</a>
             </div>
+
+            <div class="email-input-information">
+              <div *ngIf="showInputInformationEmail">
+                <span>Vor dem ändern der Email musst du dich erneut anmelden. Log dich <a (click)="logOut()">hier</a> aus.</span>
+              </div>
+             </div>
+
         </div>
     </div>
     <div class="button-area">

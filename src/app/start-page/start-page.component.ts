@@ -36,11 +36,12 @@ export class StartPageComponent implements OnInit {
   accountCreate = false;
   emailSend = false;
   updateEmail = false;
-  delteAccount = false;
+  deleteAccount = false;
 
   constructor() { }
 
   ngOnInit(): void {
+    debugger
     this.showStartScreen();
     this.showLoginComponent = true;
     this.startScreen = true;
@@ -50,6 +51,7 @@ export class StartPageComponent implements OnInit {
   }
 
   informationAfterEmailChanged() {
+    debugger
     const storage = localStorage.getItem('resetEmail')
     if(storage) {
       this.updateEmail = true
@@ -63,15 +65,14 @@ export class StartPageComponent implements OnInit {
   }
 
   informationAfterDeleteAccount() {
+    debugger
     const storage = localStorage.getItem('userDelete')
     if(storage) {
-      this.delteAccount = true
+      this.deleteAccount = true
       setTimeout(() => {
-        this.delteAccount = false
+        this.deleteAccount = false
         localStorage.removeItem('userDelete')
       }, 10000);
-    } else {
-      this.delteAccount = false
     }
   }
 
