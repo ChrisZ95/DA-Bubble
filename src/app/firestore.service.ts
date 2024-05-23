@@ -99,12 +99,12 @@ export class FirestoreService {
    try {
     const auth = getAuth();
     const user: any = auth.currentUser;
-    localStorage.clear;
-    localStorage.setItem('userDelete', 'true');
     await deleteUser(user)
     if(auth) {
       await deleteDoc(doc(this.firestore, "users", uid))
     }
+    localStorage.clear;
+    localStorage.setItem('userDelete', 'true');
     return 'auth/correct';
    } catch(error: any) {
     console.error('Fehler beim löschen des Accounts', error);
@@ -141,16 +141,26 @@ export class FirestoreService {
     }
   }
 
-  async updateEmail(newMail: any, uid: any): Promise<string> {
+  async updateEmail(newMail: string, uid: string): Promise<string> {
     const auth = getAuth();
     try {
         const user = auth.currentUser;
+        const allUsers = await this.getAllUsers(); // Stellen Sie sicher, dass getAllUsers() ein Promise zurückgibt
+        console.log(allUsers);
+
+        // Prüfen, ob die neue E-Mail-Adresse bereits vergeben ist
+        const emailExists = allUsers.some((user: any) => user.email === newMail);
+        if (emailExists) {
+            console.error('Die E-Mail-Adresse ist bereits vergeben');
+            return 'auth/email-already-in-use';
+        }
+
         if (user) {
             console.log(user);
             await verifyBeforeUpdateEmail(user, newMail);
             const userDocRef = doc(this.firestore, 'users', uid);
             await updateDoc(userDocRef, { email: newMail });
-            localStorage.setItem('resetEmail', 'true')
+            localStorage.setItem('resetEmail', 'true');
             this.router.navigate(['']);
             return 'auth/correct';
         } else {
@@ -158,10 +168,10 @@ export class FirestoreService {
             return 'auth/false';
         }
     } catch (error: any) {
-      console.error('Fehler beim Aktualisieren der E-Mail', error);
-      if(error.code === 'auth/requires-recent-login') {
-        return 'auth/requires-recent-login'
-      }
+        console.error('Fehler beim Aktualisieren der E-Mail', error);
+        if (error.code === 'auth/requires-recent-login') {
+            return 'auth/requires-recent-login';
+        }
     }
     return 'auth/false';
 }
@@ -344,8 +354,10 @@ export class FirestoreService {
   }
 
   async getAllUsers(): Promise<User[]> {
+    debugger
     try {
       const usersCollection = collection(this.firestore, 'users');
+      console.log(usersCollection)
       const usersSnapshot = await getDocs(usersCollection);
       const users: User[] = usersSnapshot.docs.map((doc) => doc.data() as User);
       return users;

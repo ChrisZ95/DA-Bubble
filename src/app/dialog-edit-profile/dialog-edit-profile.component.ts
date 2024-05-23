@@ -38,6 +38,7 @@ export class DialogEditProfileComponent implements OnInit{
 
   emailIsNotUpToDate = false;
   showInputInformationEmail = false;
+  showInputInformationEmailInUse = false;
   loadingScreen = false;
 
   chooseIcon = true;
@@ -124,6 +125,7 @@ export class DialogEditProfileComponent implements OnInit{
       try {
         const result = await this.firestoreService.updateEmail(inpuEmailValue, this.logInUid);
         this.showInputInformationEmail = false;
+        this.showInputInformationEmailInUse = false;
 
         if (result === 'auth/correct') {
           await this.firestoreService.logOut();
@@ -133,6 +135,8 @@ export class DialogEditProfileComponent implements OnInit{
           this.showInputInformationEmail = true;
         } else if (result === 'auth/false') {
           this.showInputInformationEmail = true;
+        } else if (result == 'auth/email-already-in-use') {
+          this.showInputInformationEmailInUse = true;
         }
       } catch (error) {
         console.error('Error change email:', error);

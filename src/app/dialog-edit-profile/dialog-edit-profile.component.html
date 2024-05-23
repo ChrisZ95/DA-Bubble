@@ -39,6 +39,9 @@
               <div *ngIf="showInputInformationEmail">
                 <span>Vor dem ändern der Email musst du dich erneut anmelden. Log dich<a (click)="logOut()">hier</a> aus.</span>
               </div>
+              <div *ngIf="showInputInformationEmailInUse">
+                <span>Die Email wird bereits von einen anderen Konto benutzt.</span>
+              </div>
              </div>
 
         </div>
