@@ -1,39 +1,73 @@
 import {
+  AfterViewInit,
   Component,
   ElementRef,
   HostListener,
   Input,
   OnInit,
-  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../services/chat.service';
-import { log } from 'console';
 import { GenerateIdsService } from '../../services/generate-ids.service';
 import {
   Firestore,
-  doc,
   collection,
-  addDoc,
   onSnapshot,
   query,
 } from '@angular/fire/firestore';
 import { ChannelService } from '../../services/channel.service';
 import { FirestoreService } from '../../firestore.service';
-import { EventEmitter } from 'stream';
+import { QuillModule } from 'ngx-quill';
+import { log } from 'console';
 
 @Component({
   selector: 'app-text-editor',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, QuillModule],
   templateUrl: './text-editor.component.html',
-  styleUrl: './text-editor.component.scss',
+  styleUrls: ['./text-editor.component.scss'],
 })
-export class TextEditorComponent implements OnInit {
+export class TextEditorComponent implements OnInit, AfterViewInit {
   @ViewChild('fileInput', { static: true })
   fileInput!: ElementRef<HTMLInputElement>;
   message: string = '';
+
+  quillConfig = {
+    toolbar: {
+      container: [
+        ['link', 'image'],
+        ['send'], // Custom button
+      ],
+      handlers: {
+        send: this.submit.bind(this), // Bind the sendMessage method to the custom button
+      },
+    },
+  };
+  ngAfterViewInit() {
+    const customButton = document.querySelector('.ql-send') as HTMLElement;
+    if (customButton) {
+      customButton.innerHTML = 'Send'; // Change button text to 'Send'
+      customButton.style.backgroundColor = '#007bff'; // Set button background color
+      customButton.style.color = '#fff'; // Set button text color
+      customButton.style.border = 'none'; // Remove button border
+      customButton.style.borderRadius = '5px'; // Add border radius
+      customButton.style.padding = '5px 10px'; // Add padding
+      customButton.style.cursor = 'pointer'; // Add pointer cursor on hover
+      customButton.style.marginLeft = '10px'; // Adjust margin if needed
+    }
+  }
+  // ngAfterViewInit() {
+  //   // Move the toolbar to the bottom
+  //   const editorElement = document.querySelector('.ql-container');
+  //   const toolbarElement = document.querySelector('.ql-toolbar');
+  //   if (editorElement && toolbarElement) {
+  //     editorElement.parentNode?.insertBefore(
+  //       toolbarElement,
+  //       editorElement.nextSibling
+  //     );
+  //   }
+  // }
 
   constructor(
     private chatService: ChatService,
@@ -42,19 +76,20 @@ export class TextEditorComponent implements OnInit {
     public channelService: ChannelService,
     private firestoreService: FirestoreService
   ) {}
+
   @Input() componentName!: string;
 
   submit() {
-    if (this.componentName == 'ownChat') {
+    if (this.componentName === 'ownChat') {
       this.sendMessage();
-    }
-    if (this.componentName == 'channel') {
+    } else if (this.componentName === 'channel') {
       this.sendMessageToChannel();
     }
   }
+
   @HostListener('focusin', ['$event'])
   onFocus(event: FocusEvent) {
-    if (this.componentName == 'emptyChat') {
+    if (this.componentName === 'emptyChat') {
       this.chatService.focusOnTextEditor = true;
       this.chatService.showEmptyChat = false;
       this.chatService.showOwnChat = true;
@@ -105,7 +140,7 @@ export class TextEditorComponent implements OnInit {
   }
 
   async customDataURL() {
-    const fileInput = document.getElementById('data-input') as HTMLInputElement;
+    const fileInput = this.fileInput.nativeElement;
     const file = fileInput.files?.[0];
     if (file) {
       try {
