@@ -17,7 +17,7 @@ import {
   EmailAuthProvider,
   fetchSignInMethodsForEmail,
   verifyBeforeUpdateEmail,
-  deleteUser
+  deleteUser,
 } from '@angular/fire/auth';
 import { FirebaseApp } from '@angular/fire/app';
 import {
@@ -74,6 +74,18 @@ export class FirestoreService {
     const provider = new GoogleAuthProvider();
     this.currentuid = localStorage.getItem('uid');
     console.log('ausgeloggte uid',this.currentuid)
+    this.initializeAuthState()
+  }
+
+  initializeAuthState() {
+    onAuthStateChanged(this.auth, (user) => {
+      if (user) {
+        this.currentuid = user.uid;
+        localStorage.setItem('uid', this.currentuid);
+      } else {
+        localStorage.removeItem('uid');
+      }
+    });
   }
 
   getCurrentAuth() {
@@ -83,13 +95,16 @@ export class FirestoreService {
   }
 
   async deleteAccount(uid: any): Promise<string> {
+    debugger
    try {
     const auth = getAuth();
     const user: any = auth.currentUser;
     localStorage.clear;
     localStorage.setItem('userDelete', 'true');
-    await deleteDoc(doc(this.firestore, "users", uid))
     await deleteUser(user)
+    if(auth) {
+      await deleteDoc(doc(this.firestore, "users", uid))
+    }
     return 'auth/correct';
    } catch(error: any) {
     console.error('Fehler beim löschen des Accounts', error);
@@ -245,13 +260,21 @@ export class FirestoreService {
   }
 
 
-  setCurrentUid(logInUid: any) {
-    this.logInUid = logInUid;
-    console.log(this.logInUid)
+  setCurrentUid(uid: string) {
+    this.currentuid = uid;
+    localStorage.setItem('uid', uid);
   }
 
-  getCurrentUid() {
-    return this.logInUid
+  async getCurrentUid(): Promise<string | null> {
+    const user = this.auth.currentUser;
+    if (user) {
+      this.currentuid = user.uid;
+      localStorage.setItem('uid', this.currentuid);
+      return this.currentuid;
+    } else {
+      this.currentuid = localStorage.getItem('uid');
+      return this.currentuid;
+    }
   }
 
   /* Speichert die uid  beim signup (function signUpUser)*/
