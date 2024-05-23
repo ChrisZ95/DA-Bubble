@@ -11,7 +11,7 @@
     <div class="card-input-section">
       <div class="input-container">
         <img src="./../../../assets/images/mail.svg">
-        <input ngModel required name="email" #email="ngModel" autocomplete="current-email" placeholder="MaxMustermann@gmail.com">
+        <input [(ngModel)]="signUpUserEmail" ngModel id="emailInput" required name="email" #email="ngModel" autocomplete="current-email" placeholder="E-Mail-Adresse">
       </div>
       <div class="pseudo">
         <span *ngIf="showInputInformationEmail" class="input-information">Diese E-Mail-Adresse ist leider ungultig.</span>
@@ -20,7 +20,7 @@
       <div class="input-container">
         <img class="show-password-button" *ngIf="!showPasswordValue" (click)="showPassword()" src="./../../../assets/images/lock.svg">
         <img class="show-password-button" *ngIf="showPasswordValue" (click)="showPassword()" src="./../../../assets/images/lock_open_20dp_FILL0_wght400_GRAD0_opsz20.svg">
-        <input ngModel required id="password" type="password" name="password" #password="ngModel" autocomplete="current-password" placeholder="Passwort">
+        <input [(ngModel)]="signUpUserPassword" ngModel required id="passwordInput" type="password" name="password" #password="ngModel" autocomplete="current-password" placeholder="Passwort">
       </div>
       <div class="pseudo">
         <span *ngIf="showInputInformationPassword" class="input-information">Dieses Passwort ist leider ungultig.</span>

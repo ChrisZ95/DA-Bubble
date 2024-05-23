@@ -16,6 +16,8 @@ export class SignUpChooseAvatarComponent implements OnInit {
   selectedAvatar: string | null = null;
   userForm: any;
   userName: any;
+  userEmail: any;
+  userPassword: any;
   userData: any;
   userIconTokenURL: any;
   uid: any;
@@ -46,6 +48,8 @@ export class SignUpChooseAvatarComponent implements OnInit {
     // console.log(this.uid);
     this.userForm = await this.firestoreService.getUserData(this.uid)
     this.userName = this.userForm['username']
+    this.userEmail = this.userForm['email']
+    this.userPassword = this.userForm['password']
     console.log('username header (localstorage)',this.userForm['username']);
   }
 
@@ -96,7 +100,9 @@ export class SignUpChooseAvatarComponent implements OnInit {
     this.showInputInformationUserIcon = false;
     if ([0, 1, 2, 3, 4, 5, 6].includes(this.iconIndex)) {
       this.accountCreated.emit();
-      console.log('account wurde erstellt')
+      console.log('account wurde erstellt');
+      localStorage.setItem('userEmail', this.userEmail)
+      localStorage.setItem('userPassword', this.userPassword)
     } else {
       this.showInputInformationUserIcon = true;
       console.log('Bitte ein User Icon wählen');

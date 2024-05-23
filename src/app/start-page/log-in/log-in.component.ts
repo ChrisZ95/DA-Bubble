@@ -25,6 +25,9 @@ export class LogInComponent implements OnInit {
   showEmailVerification: boolean = false;
   showPasswordValue = false;
 
+  signUpUserEmail: any;
+  signUpUserPassword: any;
+
   ngOnInit(): void {
     this.firestoreService.createTimeStamp();
     const currentAuthStatus = this.firestoreService.currentAuth()
@@ -35,17 +38,21 @@ export class LogInComponent implements OnInit {
     setTimeout(() => {
       localStorage.removeItem('resetEmail')
     }, 10000);
+    this.signUpUserEmail = localStorage.getItem('userEmail');
+    this.signUpUserPassword = localStorage.getItem('userPassword');
+    localStorage.removeItem('userEmail')
+    localStorage.removeItem('userPassword')
   }
 
   showPassword() {
     if(!this.showPasswordValue) {
       this.showPasswordValue = true;
-      const passwordInput = document.getElementById('password') as HTMLInputElement;
+      const passwordInput = document.getElementById('passwordInput') as HTMLInputElement;
       passwordInput.type = 'text';
       console.log('show password')
     } else if (this.showPasswordValue) {
       this.showPasswordValue = false;
-      const passwordInput = document.getElementById('password') as HTMLInputElement;
+      const passwordInput = document.getElementById('passwordInput') as HTMLInputElement;
       passwordInput.type = 'password';
       console.log('hide password')
     }
