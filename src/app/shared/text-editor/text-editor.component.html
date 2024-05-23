@@ -1,13 +1,15 @@
-<form (submit)="submit()" class="container">
+<!-- <form (submit)="submit()" class="container">
     <div class="chat-input-container">
-        <textarea id="textArea" cols="30" rows="10" placeholder="Nachricht an #Entwicklerteam" [(ngModel)]="message"
-            name="message"></textarea>
+        <quill-editor id="textArea" [(ngModel)]="message" name="message" [modules]="quillConfig"
+            placeholder="Nachricht an #Entwicklerteam">
+        </quill-editor>
         <div id="imageDisplay" style="min-height: 100px; border: 1px solid #ccc; padding: 10px;"></div>
         <div class="img-container">
             <div class="images">
                 <div class="img">
                     <img src="../../../assets/images/add.png" alt="Add" (click)="triggerFileInput()">
-                    <input type="file" accept="image/*" id="data-input" style="display: none;" #fileInput (change)="customDataURL()">
+                    <input type="file" accept="image/*" id="data-input" style="display: none;" #fileInput
+                        (change)="customDataURL()">
                 </div>
                 <div class="chat-input-line"></div>
                 <div class="img">
@@ -20,4 +22,18 @@
             <button type="submit"><img src="../../../assets/images/send.png" alt="Send"></button>
         </div>
     </div>
-</form>
+</form> -->
+<div class="quill-container">
+    <quill-editor customToolbarPosition="bottom" id="textArea" [(ngModel)]="message" name="message" [modules]="quillConfig"
+        placeholder="Nachricht an #Entwicklerteam">
+    </quill-editor>
+</div>
+
+
+<!-- <div class="quill-container">
+    <quill-editor id="textArea" [(ngModel)]="message" name="message" [modules]="quillConfig"
+        placeholder="Nachricht an #Entwicklerteam">
+    </quill-editor>
+    <div class="ql-toolbar ql-snow">
+    </div>
+</div> -->

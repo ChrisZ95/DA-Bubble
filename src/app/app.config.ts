@@ -10,6 +10,10 @@ import { getDatabase, provideDatabase } from '@angular/fire/database';
 import { getStorage, provideStorage } from '@angular/fire/storage';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
+import { provideHttpClient } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
+import { QuillModule } from 'ngx-quill';
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
@@ -34,5 +38,8 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(provideStorage(() => getStorage())),
     provideAnimationsAsync('noop'),
     provideAnimationsAsync(),
+    provideHttpClient(),
+    importProvidersFrom(QuillModule.forRoot()), // Import QuillModule here
+    importProvidersFrom(FormsModule),
   ],
 };
