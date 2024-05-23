@@ -40,6 +40,8 @@ export class DialogEditProfileComponent implements OnInit{
   showInputInformationEmail = false;
   showInputInformationEmailInUse = false;
   loadingScreen = false;
+  imageSelected: boolean = false;
+  imageSrc:any;
 
   chooseIcon = true;
 
@@ -58,6 +60,18 @@ export class DialogEditProfileComponent implements OnInit{
     console.log(this.emailVerified)
     console.log(this.user)
     this.checkEmailVerification();
+  }
+
+  onImageSelected(event: any): void {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.imageSrc = e.target?.result;
+        this.imageSelected = true;
+      };
+      reader.readAsDataURL(file);
+    }
   }
 
   checkEmailVerification() {
@@ -80,13 +94,13 @@ export class DialogEditProfileComponent implements OnInit{
   }
 
   safeEditData() {
-    debugger
     console.log('die uid lautet', this.logInUid)
     this.loadingScreen = true;
     this.inputName = document.getElementById('userNameInput');
     this.inputEmail = document.getElementById('userEmailInput');
     const inputNameValue = this.inputName.value;
     const inpuEmailValue = this.inputEmail.value;
+    this.changeUserIcon();
     if (inputNameValue === this.userName) {
      console.log('Name ist gleich')
       } else {

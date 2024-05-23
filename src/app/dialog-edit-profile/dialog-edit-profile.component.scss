@@ -63,23 +63,6 @@
       top: 260px;
       right: 50px;
 
-      .upload-button {
-        height: 30px;
-        width: 30px;
-        border: none;
-        background-color: transparent;
-        cursor: pointer;
-
-        &:hover {
-          filter: brightness(0.7);
-        }
-
-        img {
-          height: 30px;
-          width: 30px;
-        }
-      }
-
       .choose-image-label {
         cursor: pointer;
         padding: 10px 20px;
@@ -97,9 +80,9 @@
         }
       }
 
-      .choose-image-input {
-        display: none;
-      }
+      // .choose-image-input {
+      //   // display: none;
+      // }
 
       .image-preview {
         max-width: 100%;

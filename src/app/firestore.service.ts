@@ -95,7 +95,6 @@ export class FirestoreService {
   }
 
   async deleteAccount(uid: any): Promise<string> {
-    debugger
    try {
     const auth = getAuth();
     const user: any = auth.currentUser;
@@ -354,7 +353,6 @@ export class FirestoreService {
   }
 
   async getAllUsers(): Promise<User[]> {
-    debugger
     try {
       const usersCollection = collection(this.firestore, 'users');
       console.log(usersCollection)

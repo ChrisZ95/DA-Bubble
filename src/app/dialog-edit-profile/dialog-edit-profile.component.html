@@ -4,19 +4,14 @@
 <div class="profile-dialog-container">
     <div class="profile-title"><span class="edit-profile-title">Dein Profil bearbeiten</span><img class="back-button" src="./../../assets/images/close.png" alt="" (click)="closeEditProfileDialog()"></div>
     <div class="avatar-big">
-      <img class="user-icon" [src]="userPhoto" alt="User Photo">
+      <img *ngIf="!imageSelected" class="user-icon" [src]="userPhoto" alt="User Photo">
+      <img *ngIf="imageSelected" class="image" id="profile-picture-preview" [src]="imageSrc" alt="Ihr Bild" style="height: 200px; width: 200px; border-radius: 500px;"/>
 
         <div class="choose-image-container">
           <div>
-            <button  (click)="changeUserIcon()" class="upload-button">
-              <img src="./../../assets/images/upload.png">
-            </button>
-          </div>
-          <div>
             <label class="choose-image-label" for="profile-picture-input">
-              <img src="./../../assets/images/add_a_photo_24dp_FILL0_wght400_GRAD0_opsz24 (2).png">
             </label>
-            <input class="choose-image-input" type="file" name="profile-picture" accept="image/*" id="profile-picture-input">
+            <input class="choose-image-input" type="file" name="profile-picture" accept="image/*" id="profile-picture-input" (change)="onImageSelected($event)">
           </div>
         </div>
     </div>
