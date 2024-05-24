@@ -10,8 +10,9 @@
         <div class="choose-image-container">
           <div>
             <label class="choose-image-label" for="profile-picture-input">
+              <img src="./../../assets/images/upload.png" alt="Bild auswählen">
+              <input style="cursor: pointer;" class="choose-image-input" type="file" name="profile-picture" accept="image/*" id="profile-picture-input" (change)="onImageSelected($event)">
             </label>
-            <input class="choose-image-input" type="file" name="profile-picture" accept="image/*" id="profile-picture-input" (change)="onImageSelected($event)">
           </div>
         </div>
     </div>
