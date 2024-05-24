@@ -9,7 +9,8 @@
     </div>
 
     <div class="chosen-avatar">
-      <img class="user-icon" id="userIcon" src="./../../../assets/images/Property 1=Default (8).png">
+      <img *ngIf="!imageSelected" class="user-icon" id="userIcon" src="./../../../assets/images/Property 1=Default (8).png">
+      <img *ngIf="imageSelected" class="image" id="profile-picture-preview" [src]="imageSrc" alt="Ihr Bild" style="height: 200px; width: 200px; border-radius: 500px;"/>
       <h1>{{ userName }}</h1>
     </div>
 
@@ -26,16 +27,13 @@
         </div>
       </div>
 
-      <form (ngSubmit)="customUserIconURL()" #ngform="ngForm" enctype="multipart/form-data">
-        <div class="upload-own-img-container">
-          <span>eigenes Bild verwenden</span>
-          <input ngModel #icon="ngModel" type="file" name="profile-picture" accept="image/*" id="profile-picture-input"
-          placeholder="kein Bild ausgewählt">
-          <!-- <label for="profile-picture-input" class="upload-img-button">Datei auswählen</label> -->
-          <button class="upload-img-button" type="submit">Datei hochladen</button>
-        </div>
-      </form>
-
+      <div class="upload-custom-image">
+        <span> Eigenes Bild verwenden</span>
+        <label class="choose-image-label" for="profile-picture-input">
+          Datei hochladen
+          <input class="choose-image-input" type="file" name="profile-picture" accept="image/*" id="profile-picture-input" (change)="onImageSelected($event)">
+        </label>
+      </div>
 
     </div>
 

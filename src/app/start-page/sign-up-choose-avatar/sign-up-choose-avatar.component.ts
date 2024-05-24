@@ -26,6 +26,8 @@ export class SignUpChooseAvatarComponent implements OnInit {
   downloadedUserIcon: any;
   showInputInformationUserIcon = false;
   img: any;
+  imageSelected: boolean = false;
+  imageSrc:any;
 
 
   @Output() backToSignUpClicked: EventEmitter<any> = new EventEmitter();
@@ -44,8 +46,7 @@ export class SignUpChooseAvatarComponent implements OnInit {
 
   async ngOnInit() {
     this.uid = await this.firestoreService.getUid();
-    // this.userName = await this.firestoreService.getUserName(this.uid);
-    // console.log(this.uid);
+    console.log(this.uid);
     this.userForm = await this.firestoreService.getUserData(this.uid)
     this.userName = this.userForm['username']
     this.userEmail = this.userForm['email']
@@ -53,19 +54,24 @@ export class SignUpChooseAvatarComponent implements OnInit {
     console.log('username header (localstorage)',this.userForm['username']);
   }
 
-  async customUserIconURL() {
-    const fileInput = document.getElementById('profile-picture-input') as HTMLInputElement;
-    const file = fileInput.files?.[0];
+  async onImageSelected(event: any):Promise<void> {
+    debugger
+    const file = event.target.files[0];
     if (file) {
-      this.iconIndex = 6;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.imageSrc = e.target?.result;
+        this.imageSelected = true;
+        this.iconIndex = 6;
+        const icon = file;
+        console.log(icon)
+        console.log('Name des Bildes',icon.name);
+        console.log('Bild wurde erstellt am',icon.lastModified);
+      };
+      reader.readAsDataURL(file);
       const icon = file;
-      console.log(icon)
-      console.log('Name des Bildes',icon.name);
-      console.log('Bild wurde erstellt am',icon.lastModified);
       const userIconTokenURL = await this.firestoreService.uploadUserIconIntoStorage(this.uid, icon);
-      this.uploadUserIcon(this.uid, userIconTokenURL);
-    } else {
-      console.log('Kein Bild ausgewählt');
+      await this.uploadUserIconCustom(this.uid, userIconTokenURL);
     }
   }
 
@@ -94,6 +100,7 @@ export class SignUpChooseAvatarComponent implements OnInit {
     console.log('Avatar ausgewählt:', index ,this.userIconTokenURL);
     this.iconIndex = index;
     this.uploadUserIcon(this.uid, this.userIconTokenURL);
+    this.imageSelected = false;
   }
 
   createAccount() {
@@ -115,4 +122,10 @@ export class SignUpChooseAvatarComponent implements OnInit {
     this.img = document.getElementById('userIcon');
     this.img.setAttribute('src', this.downloadedUserIcon);
   }
+
+  async uploadUserIconCustom(uid: string, userIconTokenURL: any) {
+    this.userData = await this.firestoreService.uploadUserIconIntoDatabase(uid, userIconTokenURL);
+    this.downloadedUserIcon = await  this.firestoreService.downloadUserIcon(uid);
+  }
 }
+
