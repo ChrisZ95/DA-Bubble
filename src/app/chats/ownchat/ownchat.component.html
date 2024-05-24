@@ -31,7 +31,9 @@
                     {{message.createdAt | timestamp: 'time' }} Uhr
                 </div>
                 {{ message.message }}
-
+                <ng-container *ngIf="message.image">
+                    <img [src]='message.image' alt="">
+                </ng-container>
                 <div class="reply">
                     <a> 0 Antworten</a>
                     <p> Letzte Antwort 00:00Uhr

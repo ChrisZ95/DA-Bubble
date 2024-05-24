@@ -36,6 +36,8 @@ export class ChatService {
   showEmptyChat: boolean = false;
 
   focusOnTextEditor: boolean = false;
+  messages: any[] = [];
+  dataURL: any;
 
   constructor(
     private firestore: Firestore,
@@ -180,7 +182,6 @@ export class ChatService {
     }
   }
 
-  messages: any[] = [];
   async loadMessages(userDetails: any, retryCount: number = 0) {
     if (Array.isArray(userDetails)) {
       userDetails = userDetails[0];
@@ -276,6 +277,7 @@ export class ChatService {
 
     let message = {
       message: text,
+      image: this.dataURL,
       id: id,
       creator: currentuid,
       createdAt: date,
