@@ -32,6 +32,7 @@ import {
   QueryDocumentSnapshot,
   deleteField,
   deleteDoc,
+  onSnapshot,
 } from '@angular/fire/firestore';
 import {
   getStorage,
@@ -64,6 +65,8 @@ export class FirestoreService {
   storageId: any;
   signInuid: any;
   logInUid: any;
+
+  allUsers: any;
 
 
   constructor(private myFirebaseApp: FirebaseApp, public router: Router) {
@@ -139,6 +142,9 @@ export class FirestoreService {
     }
   }
 
+  getUserDocRef(uid: any) {
+    return doc(this.firestore, 'users', uid);
+  }
 
   async changeName(uid: string, name: string): Promise<void> {
     try {
@@ -259,24 +265,64 @@ export class FirestoreService {
 
 
   /* Dokument des Users */
+  // async getUserData(uid: any): Promise<any | null> {
+  //   const userData = doc(this.firestore, 'users', uid);
+  //   try {
+  //     const docSnap = await getDoc(userData);
+  //     if (docSnap.exists()) {
+  //       const userData = docSnap.data();
+  //       console.log('Komplettes user formular', userData);
+  //       console.log('Der Name lautet:', userData['username']);
+  //       return userData;
+  //     } else {
+  //       console.log('Benutzerdokument nicht gefunden für UID:', uid);
+  //       return null;
+  //     }
+  //   } catch (error) {
+  //     console.error('Fehler beim Abrufen des Benutzerdokuments:', error);
+  //     throw error;
+  //   }
+  // }
+
+
+  // async getUserData(uid: any): Promise<any | null> {
+  //   return new Promise((resolve, reject) => {
+  //     const docRef = doc(this.firestore, "users", uid);
+  //     const unsubscribe = onSnapshot(docRef, (doc) => {
+  //       if (doc.exists()) {
+  //         const source = doc.metadata.hasPendingWrites ? "Local" : "Server";
+  //         console.log(source, " data: ", doc.data());
+  //         resolve(doc.data());
+  //       } else {
+  //         resolve(null);
+  //       }
+  //     }, (error) => {
+  //       reject(error);
+  //     });
+  //   });
+  // }
+
   async getUserData(uid: any): Promise<any | null> {
-    const userData = doc(this.firestore, 'users', uid);
+    debugger
+    const userDocRef = doc(this.firestore, 'users', uid); // Zugriff auf das Dokument mit der entsprechenden ID
+
     try {
-      const docSnap = await getDoc(userData);
-      if (docSnap.exists()) {
-        const userData = docSnap.data();
-        console.log('Komplettes user formular', userData);
-        console.log('Der Name lautet:', userData['username']);
-        return userData;
+      const userDocSnapshot = await getDoc(userDocRef); // Abrufen des Dokument-Snapshots
+
+      if (userDocSnapshot.exists()) {
+        const userData = userDocSnapshot.data(); // Daten des Dokuments extrahieren
+        console.log(userData)
+        return { id: userDocSnapshot.id, ...userData }; // ID hinzufügen und Daten zurückgeben
       } else {
-        console.log('Benutzerdokument nicht gefunden für UID:', uid);
-        return null;
+        console.log("Das Benutzerdokument existiert nicht.");
+        return null; // Wenn das Dokument nicht existiert, null zurückgeben
       }
     } catch (error) {
-      console.error('Fehler beim Abrufen des Benutzerdokuments:', error);
-      throw error;
+      console.error("Fehler beim Abrufen des Benutzerdokuments:", error);
+      return null; // Bei Fehlern null zurückgeben
     }
   }
+
 
 
   setCurrentUid(uid: string) {

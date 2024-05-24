@@ -6,6 +6,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { DialogProfileComponent } from '../dialog-profile/dialog-profile.component';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { doc, onSnapshot } from "firebase/firestore";
 
 @Component({
   selector: 'app-header',
@@ -27,15 +28,24 @@ export class HeaderComponent implements OnInit{
   async ngOnInit() {
     this.guestLogIn = false;
     const uid = localStorage.getItem('uid');
-    this.userForm = await this.firestoreService.getUserData(uid);
-    console.log(this.userForm)
-    this.userName = this.userForm['username']
-    this.userPhoto = this.userForm['photo'];
-    this.userUid = this.userForm['uid']
-    this.userIsVerified = this.firestoreService.auth.currentUser.emailVerified;
-    if(this.userUid == 'XrnnaoBh8QcgDsAuasrCETBYdsC3') {// ID vom Gast Account
-      this.guestLogIn = true;
-    }
+
+    const userDocRef = this.firestoreService.getUserDocRef(uid);
+    onSnapshot(userDocRef, (doc) => {
+      if (doc.exists()) {
+        const userData = doc.data();
+        this.userForm = { id: doc.id, ...userData };
+        this.userName = this.userForm['username'];
+        this.userPhoto = this.userForm['photo'];
+        this.userUid = this.userForm['uid'];
+        this.userIsVerified = this.firestoreService.auth.currentUser.emailVerified;
+
+        if (this.userUid === 'XrnnaoBh8QcgDsAuasrCETBYdsC3') {
+          this.guestLogIn = true;
+        }
+      } else {
+        console.log("Das Benutzerdokument existiert nicht.");
+      }
+    });
   }
 
   openProfileDialog() {
