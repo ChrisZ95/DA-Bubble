@@ -5,11 +5,12 @@ import { FormsModule } from '@angular/forms';
 import { FirestoreService } from '../../firestore.service';
 import { CommonModule } from '@angular/common';
 import { GoogleAuthProvider, OAuthProvider, getAuth } from '@angular/fire/auth';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-log-in',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, MatProgressSpinnerModule],
   templateUrl: './log-in.component.html',
   styleUrl: './log-in.component.scss',
 })
@@ -24,11 +25,14 @@ export class LogInComponent implements OnInit {
   showInputInformationPassword: boolean = false;
   showEmailVerification: boolean = false;
   showPasswordValue = false;
+  loadingScreen = false;
 
   signUpUserEmail: any;
   signUpUserPassword: any;
 
   ngOnInit(): void {
+    debugger
+    this.loadingScreen = false;
     this.firestoreService.createTimeStamp();
     const currentAuthStatus = this.firestoreService.currentAuth()
     console.log('AUTH im login bereich',currentAuthStatus);
@@ -39,8 +43,11 @@ export class LogInComponent implements OnInit {
       localStorage.removeItem('resetEmail')
     }, 10000);
     this.signUpUserEmail = localStorage.getItem('userEmail');
-    this.signUpUserEmail = localStorage.getItem('resetPasswortEmail');
-    this.signUpUserPassword = localStorage.getItem('userPassword');
+    if(this.signUpUserEmail) {
+      this.signUpUserPassword = localStorage.getItem('userPassword');
+    } else {
+      this.signUpUserEmail = localStorage.getItem('resetPasswortEmail');
+    }
     localStorage.removeItem('userEmail');
     localStorage.removeItem('resetPasswortEmail');
     localStorage.removeItem('userPassword');
@@ -61,6 +68,7 @@ export class LogInComponent implements OnInit {
   }
 
   async guestLogIn() {
+    this.loadingScreen = true;
     const logInDate = await this.firestoreService.createTimeStamp();
     this.firestoreService.logInUser('gast@DABubble.de', 'password', logInDate)
     // this.router.navigate(['/generalView']);
@@ -71,6 +79,7 @@ export class LogInComponent implements OnInit {
   }
 
   async logInWithGoogle() {
+    this.loadingScreen = true;
     const auth = this.firestoreService.auth;
     const provider = new GoogleAuthProvider();
     const logInDate = await this.firestoreService.createTimeStamp();
@@ -78,6 +87,7 @@ export class LogInComponent implements OnInit {
     this.firestoreService
       .signInWithGoogle(auth, provider, logInDate)
       .then((result) => {
+        this.loadingScreen = false;
         // console.log('Google-Anmeldung erfolgreich:', result);
       })
       .catch((error) => {
@@ -85,29 +95,19 @@ export class LogInComponent implements OnInit {
       });
   }
 
-  logInWithApple() {
-    const auth = this.firestoreService.auth;
-    const provider = new OAuthProvider('apple.com');
-    this.firestoreService
-      .signInWithApple(auth, provider)
-      .then((result) => {
-        // console.log('Apple-Anmeldung erfolgreich:', result);
-      })
-      .catch((error) => {
-        console.error('Fehler bei der Apple-Anmeldung:', error);
-      });
-  }
-
   async userLogIn(formData: any) {
     this.showInputInformationEmail = false;
     this.showInputInformationPassword = false;
     this.showEmailVerification = false;
+    this.loadingScreen = true;
     const { email, password } = formData.value;
     if (!formData.valid) {
       if (formData.controls['email'].invalid) {
         this.showInputInformationEmail = true;
+        this.loadingScreen = false;
       } else if (formData.controls['password'].invalid) {
         this.showInputInformationPassword = true;
+        this.loadingScreen = false;
       }
     } else {
       const logInDate = await this.firestoreService.createTimeStamp();
@@ -116,11 +116,14 @@ export class LogInComponent implements OnInit {
         .then((result) => {
           if(result === 'auth/email-not-verified') {
             this.showEmailVerification = true;
+            this.loadingScreen = false;
           }
           if (result === 'auth/invalid-credential') {
             this.showInputInformationPassword = true;
+            this.loadingScreen = false;
             // console.log('Invalid credentials error occurred.');
           } else {
+            this.loadingScreen = false;
             // console.log('User logged in successfully');
           }
         })
@@ -131,8 +134,12 @@ export class LogInComponent implements OnInit {
 }
 
 async resendverificationEmail() {
+  this.loadingScreen = true;
   const user = this.firestoreService.getCurrentAuth();
   this.firestoreService.sendVerificationEmail(user)
+  setTimeout(() => {
+    this.loadingScreen = false;
+  }, 500);
 }
 
 }

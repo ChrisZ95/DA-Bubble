@@ -3,11 +3,12 @@ import { NgForm } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FirestoreService } from '../../firestore.service';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-forget-password',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MatProgressSpinnerModule],
   templateUrl: './forget-password.component.html',
   styleUrl: './forget-password.component.scss'
 })
@@ -19,6 +20,7 @@ export class ForgetPasswordComponent {
 
   showInputInformationEmailInputInvalid: boolean = false;
   showInputInformationEmailInputEmpty: boolean = false;
+  loadingScreen = false;
 
   backToLogIn() {
     this.backToLoginClicked.emit();
@@ -27,6 +29,7 @@ export class ForgetPasswordComponent {
 
   sendMail(formData: any) {
     debugger
+    this.loadingScreen = true;
     this.showInputInformationEmailInputInvalid = false;
     this.showInputInformationEmailInputEmpty = false;
 
@@ -36,6 +39,7 @@ export class ForgetPasswordComponent {
       if (!formData.valid) {
         if (formData.controls['email'].invalid) {
           this.showInputInformationEmailInputEmpty = true;
+          this.loadingScreen = false;
         }
       } else {
         const userWithEmail = users.find(user => user.email === email);
@@ -46,16 +50,15 @@ export class ForgetPasswordComponent {
           console.log('E-Mail zum Zurücksetzen des Passworts gesendet');
           this.emailSended.emit();
           localStorage.setItem('resetPasswortEmail',email)
+          this.loadingScreen = false;
         } else {
           this.showInputInformationEmailInputInvalid = true;
           console.log('E-Mail-Adresse nicht gefunden');
+          this.loadingScreen = false;
         }
       }
     }).catch(error => {
       console.error('Fehler beim Abrufen der Benutzer:', error);
     });
   }
-
-
-
 }

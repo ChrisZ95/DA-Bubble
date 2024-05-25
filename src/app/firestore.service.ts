@@ -118,7 +118,6 @@ export class FirestoreService {
   }
 
   async deleteUserIcon(currentUserIcon: string, currentUserId: string) {
-    debugger
     console.log(currentUserIcon)
     if(currentUserIcon === 'https://firebasestorage.googleapis.com/v0/b/dabubble-180.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(0).png?alt=media&token=084e1046-d86a-492a-9d3a-d067185b78b3'
      || 'https://firebasestorage.googleapis.com/v0/b/dabubble-180.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(1).png?alt=media&token=d4ce52b2-3bc9-48fd-9021-912002d298ee'
@@ -263,7 +262,6 @@ export class FirestoreService {
   }
 
   async getUserData(uid: any): Promise<any | null> {
-    debugger
     const userDocRef = doc(this.firestore, 'users', uid);
 
     try {

@@ -10,7 +10,6 @@ import { ForgetPasswordComponent } from './forget-password/forget-password.compo
 import { ChangePasswortComponent } from './change-passwort/change-passwort.component';
 import { ImprintComponent } from './imprint/imprint.component';
 import { PrivacyPoliceComponent } from './privacy-police/privacy-police.component';
-
 @Component({
   selector: 'app-start-page',
   standalone: true,
