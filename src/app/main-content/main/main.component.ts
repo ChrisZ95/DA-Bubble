@@ -17,6 +17,7 @@ import {
 } from '@angular/animations';
 import { DialogChannelInfoComponent } from '../../dialog-channel-info/dialog-channel-info.component';
 import { DialogMembersComponent } from '../../dialog-members/dialog-members.component';
+import { ThreadComponent } from '../../threads/thread/thread.component';
 import { ChannelthreadComponent } from '../../threads/channelthread/channelthread.component';
 import { HeaderComponent } from '../../header/header.component';
 import { ChannelService } from '../../services/channel.service';
@@ -24,6 +25,7 @@ import { OwnchatComponent } from '../../chats/ownchat/ownchat.component';
 import { EmptychatComponent } from '../../chats/emptychat/emptychat.component';
 import { FirestoreService } from '../../firestore.service';
 import { ChatService } from '../../services/chat.service';
+import { ThreadService } from '../../services/thread.service';
 
 @Component({
   selector: 'app-main',
@@ -35,6 +37,7 @@ import { ChatService } from '../../services/chat.service';
     CommonModule,
     WorkspaceComponent,
     ChannelchatComponent,
+    ThreadComponent,
     ChannelthreadComponent,
     EmptychatComponent,
     OwnchatComponent,
@@ -83,9 +86,11 @@ export class MainComponent implements OnInit {
   constructor(
     private channelService: ChannelService,
     public firestoreService: FirestoreService,
-    public chatService: ChatService
+    public chatService: ChatService,
+    public threadService: ThreadService
   ) {}
   displayWorkspace: boolean = true;
+  displayThread: boolean = false;
   userDetails: any = '';
   selectedMessageId: string = '';
 

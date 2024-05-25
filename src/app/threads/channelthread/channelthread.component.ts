@@ -1,20 +1,32 @@
-import { Component, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { ChannelService } from '../../services/channel.service';
 import { ChatService } from '../../services/chat.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { GenerateIdsService } from '../../services/generate-ids.service';
-import { Firestore, query, collection, onSnapshot } from '@angular/fire/firestore';
+import {
+  Firestore,
+  query,
+  collection,
+  onSnapshot,
+} from '@angular/fire/firestore';
 import { TimestampPipe } from '../../shared/pipes/timestamp.pipe';
 import { ChannelchatComponent } from '../../chats/channelchat/channelchat.component';
 import { Subscription } from 'rxjs';
 import { EventEmitter } from 'node:stream';
 import { FirestoreService } from '../../firestore.service';
+import { ThreadService } from '../../services/thread.service';
 
 @Component({
   selector: 'app-channelthread',
   standalone: true,
-  imports: [ FormsModule, CommonModule, TimestampPipe ],
+  imports: [FormsModule, CommonModule, TimestampPipe],
   templateUrl: './channelthread.component.html',
   styleUrls: ['./channelthread.component.scss', '../threads.component.scss'],
 })
@@ -29,19 +41,23 @@ export class ChannelthreadComponent implements OnChanges {
   allUsers: any[] = [];
   comment: string = '';
 
-  constructor(private chatService: ChatService,
+  constructor(
+    private chatService: ChatService,
     private generateId: GenerateIdsService,
     private firestore: Firestore,
     public channelService: ChannelService,
-    public firestoreService: FirestoreService) {}
+    public firestoreService: FirestoreService
+  ) {}
 
-  closeThreadWindow(){
+  closeThreadWindow() {
     this.channelService.showThreadWindow = false;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['currentMessageId']) {
-      this.loadCommentsForCurrentMessage(changes['currentMessageId'].currentValue);
+      this.loadCommentsForCurrentMessage(
+        changes['currentMessageId'].currentValue
+      );
     }
   }
 
@@ -55,14 +71,18 @@ export class ChannelthreadComponent implements OnChanges {
   }
 
   async loadCommentsForCurrentMessage(messageId: string) {
-    const currentMessage = this.channelService.messages.find((message: any) => message.messageId === messageId);
+    const currentMessage = this.channelService.messages.find(
+      (message: any) => message.messageId === messageId
+    );
     if (currentMessage) {
       this.currentMessageComments = await Promise.all(
         currentMessage.comments.map(async (comment: any) => {
-          const authorName = await this.channelService.getAuthorName(comment.uid);
+          const authorName = await this.channelService.getAuthorName(
+            comment.uid
+          );
           return {
             ...comment,
-            authorName: authorName ?? comment.uid
+            authorName: authorName ?? comment.uid,
           };
         })
       );
@@ -77,26 +97,26 @@ export class ChannelthreadComponent implements OnChanges {
     if (currentMessageId) {
       const timestamp: number = Date.now();
       const timestampString: string = timestamp.toString();
-      let newComment: any = { 
-      id: this.generateId.generateId(),
-      comment: this.comment,
-      createdAt: timestampString,
-      uid: currentUid,
-      authorName: '', 
-      authorNameStatus: 'loading' 
-    };
+      let newComment: any = {
+        id: this.generateId.generateId(),
+        comment: this.comment,
+        createdAt: timestampString,
+        uid: currentUid,
+        authorName: '',
+        authorNameStatus: 'loading',
+      };
       if (this.currentMessageComments) {
         this.currentMessageComments.push(newComment);
       } else {
         this.currentMessageComments = [newComment];
       }
       const authorName = await this.channelService.getAuthorName(currentUid);
-      newComment.authorName = authorName ?? currentUid; 
-      newComment.authorNameStatus = 'loaded'; 
+      newComment.authorName = authorName ?? currentUid;
+      newComment.authorNameStatus = 'loaded';
       this.chatService.sendCommentToChannel(currentMessageId, newComment);
       this.updateCommentCount(currentMessageId);
       this.updateLastCommentTime(currentMessageId, timestampString);
-      this.channelService.updateMessagesWithAuthors(); 
+      this.channelService.updateMessagesWithAuthors();
       this.comment = '';
     } else {
       console.error('Kein aktueller Kanal ausgewählt.');
@@ -105,7 +125,9 @@ export class ChannelthreadComponent implements OnChanges {
   }
 
   updateCommentCount(messageId: string): void {
-    const message = this.channelService.messages.find((msg) => msg.messageId === messageId);
+    const message = this.channelService.messages.find(
+      (msg) => msg.messageId === messageId
+    );
     if (message) {
       message.commentCount++;
       this.channelService.updateMessagesWithAuthors(); // Aktualisieren Sie die messagesWithAuthors Liste
@@ -113,7 +135,9 @@ export class ChannelthreadComponent implements OnChanges {
   }
 
   updateLastCommentTime(messageId: string, timestamp: string): void {
-    const message = this.channelService.messages.find((msg) => msg.messageId === messageId);
+    const message = this.channelService.messages.find(
+      (msg) => msg.messageId === messageId
+    );
     if (message) {
       message.lastCommentTime = timestamp;
       this.channelService.updateMessagesWithAuthors(); // Aktualisieren Sie die messagesWithAuthors Liste

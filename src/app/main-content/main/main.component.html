@@ -20,6 +20,10 @@
         <app-ownchat [userDetails]="userDetails" />
       </div>
 
+      <div *ngIf="threadService.displayThread" class="thread">
+        <app-thread />
+      </div>
+
       <div *ngIf="showThreadWindow" class="thread">
         <app-channelthread></app-channelthread>
       </div>

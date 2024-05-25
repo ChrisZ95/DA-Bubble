@@ -16,8 +16,8 @@ import { DialogChannelInfoComponent } from '../../dialog-channel-info/dialog-cha
 import { DialogContactInfoComponent } from '../../dialog-contact-info/dialog-contact-info.component';
 import { DialogMembersComponent } from '../../dialog-members/dialog-members.component';
 import { FirestoreService } from '../../firestore.service';
-import { log } from 'console';
 import { ChannelService } from '../../services/channel.service';
+import { ThreadService } from '../../services/thread.service';
 
 @Component({
   selector: 'app-ownchat',
@@ -29,8 +29,8 @@ import { ChannelService } from '../../services/channel.service';
 export class OwnchatComponent implements OnChanges, OnInit {
   constructor(
     public dialog: MatDialog,
-    public chatsService: ChatService,
-    public channelService: ChannelService,
+    public chatService: ChatService,
+    public threadService: ThreadService,
     private firestore: FirestoreService
   ) {}
   @Input() userDetails: any;
@@ -47,30 +47,31 @@ export class OwnchatComponent implements OnChanges, OnInit {
   openContactInfoDialog() {
     this.dialog.open(DialogContactInfoComponent);
   }
-  openThread() {
-    this.channelService.showThreadWindow = true;
+  openThread(messageInformation: any) {
+    this.threadService.displayThread = true;
+    this.threadService.getMessageDocId(this.chatService.chatDocId);
   }
 
-  // let chatInformation = this.chatsService.createChat(userDetails);
+  // let chatInformation = this.chatService.createChat(userDetails);
 
   async loadCurrentUser() {
     let allUsers = await this.firestore.getAllUsers();
     let currentUserDetails = allUsers.filter(
       (user) => user.uid == this.firestore.currentuid
     );
-    this.chatsService.loadMessages(currentUserDetails);
+    this.chatService.loadMessages(currentUserDetails);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (this.userDetails != '' && changes['userDetails']) {
-      this.chatsService.loadMessages(this.userDetails);
-      this.messages = this.chatsService.messages;
+      this.chatService.loadMessages(this.userDetails);
+      this.messages = this.chatService.messages;
     }
   }
 
   ngOnInit(): void {
     this.loadCurrentUser();
-    this.chatsService.messages$.subscribe((messages) => {
+    this.chatService.messages$.subscribe((messages) => {
       this.messages = messages;
     });
     const userDetails = { uid: 'someUserId' };

@@ -137,8 +137,6 @@ export class ChatService {
   }
 
   async createChatWithUsers(retryCount: number = 0): Promise<void> {
-    // this.currentuid = this.FirestoreService.currentuid;
-
     if (!this.currentuid) {
       if (retryCount < 3) {
         setTimeout(() => this.createChatWithUsers(retryCount + 1), 1000);
@@ -147,7 +145,6 @@ export class ChatService {
       }
       return;
     }
-
     let allUsers = await this.FirestoreService.getAllUsers();
     const currentUser = allUsers.find((user) => user.uid === this.currentuid);
     if (currentUser) {
@@ -183,6 +180,7 @@ export class ChatService {
   }
 
   async loadMessages(userDetails: any, retryCount: number = 0) {
+    // debugger;
     if (Array.isArray(userDetails)) {
       userDetails = userDetails[0];
     }
