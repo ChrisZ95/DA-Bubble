@@ -26,6 +26,7 @@ export class ForgetPasswordComponent {
   }
 
   sendMail(formData: any) {
+    debugger
     this.showInputInformationEmailInputInvalid = false;
     this.showInputInformationEmailInputEmpty = false;
 
@@ -44,6 +45,7 @@ export class ForgetPasswordComponent {
           console.log(email, uid)
           console.log('E-Mail zum Zurücksetzen des Passworts gesendet');
           this.emailSended.emit();
+          localStorage.setItem('resetPasswortEmail',email)
         } else {
           this.showInputInformationEmailInputInvalid = true;
           console.log('E-Mail-Adresse nicht gefunden');

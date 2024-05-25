@@ -39,9 +39,11 @@ export class LogInComponent implements OnInit {
       localStorage.removeItem('resetEmail')
     }, 10000);
     this.signUpUserEmail = localStorage.getItem('userEmail');
+    this.signUpUserEmail = localStorage.getItem('resetPasswortEmail');
     this.signUpUserPassword = localStorage.getItem('userPassword');
-    localStorage.removeItem('userEmail')
-    localStorage.removeItem('userPassword')
+    localStorage.removeItem('userEmail');
+    localStorage.removeItem('resetPasswortEmail');
+    localStorage.removeItem('userPassword');
   }
 
   showPassword() {
