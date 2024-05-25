@@ -17,6 +17,7 @@ import { DialogContactInfoComponent } from '../../dialog-contact-info/dialog-con
 import { DialogMembersComponent } from '../../dialog-members/dialog-members.component';
 import { FirestoreService } from '../../firestore.service';
 import { log } from 'console';
+import { ChannelService } from '../../services/channel.service';
 
 @Component({
   selector: 'app-ownchat',
@@ -29,6 +30,7 @@ export class OwnchatComponent implements OnChanges, OnInit {
   constructor(
     public dialog: MatDialog,
     public chatsService: ChatService,
+    public channelService: ChannelService,
     private firestore: FirestoreService
   ) {}
   @Input() userDetails: any;
@@ -44,6 +46,9 @@ export class OwnchatComponent implements OnChanges, OnInit {
 
   openContactInfoDialog() {
     this.dialog.open(DialogContactInfoComponent);
+  }
+  openThread() {
+    this.channelService.showThreadWindow = true;
   }
 
   // let chatInformation = this.chatsService.createChat(userDetails);
