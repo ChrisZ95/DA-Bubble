@@ -31,7 +31,6 @@ export class LogInComponent implements OnInit {
   signUpUserPassword: any;
 
   ngOnInit(): void {
-    debugger
     this.loadingScreen = false;
     this.firestoreService.createTimeStamp();
     const currentAuthStatus = this.firestoreService.currentAuth()
