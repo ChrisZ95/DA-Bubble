@@ -4,10 +4,10 @@
     <div class="profile">
       <span>{{ userName }}</span>
       <div *ngIf="userIsVerified">
-        <img title="Das Konto ist verifiziert" class="user-verified" src="./../../assets/images/verified-user.png">
+        <img title="Konto verifiziert" class="user-verified" src="./../../assets/images/verified-user.png">
       </div>
       <img class="avatar-icon" src="{{ userPhoto }}" alt="">
-      <img [matMenuTriggerFor]="profilMenu" src="./../assets/images/arrow_down.png" alt="">
+      <img class="open-dialog" [matMenuTriggerFor]="profilMenu" src="./../assets/images/arrow_down.png" alt="">
       <mat-menu #profilMenu="matMenu" class="profile-menu">
         <button *ngIf="!guestLogIn" mat-menu-item (click)="openProfileDialog()">Profil</button>
         <button (click)="logOut()" mat-menu-item>Log out</button>

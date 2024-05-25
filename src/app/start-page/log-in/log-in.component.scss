@@ -1,6 +1,8 @@
 .log-in-card-container {
   display: flex;
   justify-content: center;
+  flex-direction: column;
+  align-items:center ;
 
   .log-in-card {
     height: 769px;
@@ -12,12 +14,25 @@
     align-items: center;
     // justify-content: flex-start;
 
+    .loading-screen {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: absolute;
+      background-color: rgba(128, 128, 128, 0.666);
+      height: 649px;
+      width: 606px;
+      border-radius: 30px;
+    }
+
     .card-header-section {
       display: flex;
       flex-direction: column;
       align-items: center;
       padding-top: 60px;
       gap: 30px;
+
+
 
         h1 {
           color: #797EF3;

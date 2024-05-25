@@ -2,6 +2,10 @@
 
   <div class="log-in-card">
 
+    <div *ngIf="loadingScreen" class="loading-screen">
+      <mat-spinner></mat-spinner>
+    </div>
+
     <div class="card-header-section">
       <h1>Anmeldung</h1>
       <span>Wir empfehlen dir, die E-Mail-Adresse zu nutzen, die <br> du bei der Arbeit verwendest.</span>

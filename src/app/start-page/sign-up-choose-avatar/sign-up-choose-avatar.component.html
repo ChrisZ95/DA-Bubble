@@ -1,6 +1,11 @@
 <div class="log-in-card-container">
 
   <div class="log-in-card">
+
+    <div *ngIf="loadingScreen" class="loading-screen">
+      <mat-spinner></mat-spinner>
+    </div>
+
     <div class="card-header-section">
       <button class="back-to-log-in-button" (click)="backToSignUp()">
         <img src="./../../../assets/images/arrow_back.png">

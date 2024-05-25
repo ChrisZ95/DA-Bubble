@@ -4,11 +4,13 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FirestoreService } from '../../firestore.service';
 import { NgForm } from '@angular/forms';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+
 
 @Component({
   selector: 'app-sign-up',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, MatProgressSpinnerModule],
   templateUrl: './sign-up.component.html',
   styleUrl: './sign-up.component.scss'
 })
@@ -25,8 +27,10 @@ export class SignUpComponent implements  OnInit{
   showInputInformationPrivacyPolice: boolean = false;
   newDate: any;
   showPasswordValue = false;
+  loadingScreen = false;
 
   ngOnInit(): void {
+    this.loadingScreen = false;
     const allVariabels = this.firestoreService.getAllVariables()
     console.log('Alle Variabeln',allVariabels)
   }
@@ -48,6 +52,7 @@ export class SignUpComponent implements  OnInit{
 
 
   async userSignUp(formData: NgForm): Promise<void> {
+    this.loadingScreen = true;
     this.showInputInformationUserName = false;
     this.showInputInformationEmailInputEmpty = false;
     this.showInputInformationEmailforgive = false;
@@ -59,12 +64,16 @@ export class SignUpComponent implements  OnInit{
     if (!formData.valid) {
       if (formData.controls['username'].invalid) {
         this.showInputInformationUserName = true;
+        this.loadingScreen = false;
       } else if (formData.controls['email'].invalid) {
         this.showInputInformationEmailInputEmpty = true;
+        this.loadingScreen = false;
       }  else if (formData.controls['password'].invalid) {
         this.showInputInformationPassword = true;
+        this.loadingScreen = false;
       }  else if(formData.controls['privacyPolice'].invalid) {
         this.showInputInformationPrivacyPolice = true;
+        this.loadingScreen = false;
       }
       } else {
         const signUpDate = await this.firestoreService.createTimeStamp();
@@ -73,17 +82,21 @@ export class SignUpComponent implements  OnInit{
         if(registrationSuccess === 'auth') {
           console.log('userSignUp wurde aufgerufen');
           this.toChooseAvatar();
+          this.loadingScreen = false;
         }
         if (registrationSuccess === 'auth/invalid-recipient-email'|| registrationSuccess === 'auth/invalid-email') {
           this.showInputInformationEmailInputEmpty = true;
+          this.loadingScreen = false;
           return;
         }
          if (registrationSuccess === 'weak-password') {
           this.showInputInformationPassword = true;
+          this.loadingScreen = false;
           return;
         }
         if (registrationSuccess === 'auth/email-already-in-use') {
           this.showInputInformationEmailforgive = true;
+          this.loadingScreen = false;
           return;
         }
       }
@@ -95,6 +108,7 @@ export class SignUpComponent implements  OnInit{
   }
 
   toChooseAvatar() {
+    this.loadingScreen = true;
     this.continueToChooseAvatar.emit();
     console.log('button continue')
   }
@@ -104,7 +118,11 @@ export class SignUpComponent implements  OnInit{
   }
 
   isValidEmail(email: string): boolean {
+    this.loadingScreen = true;
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    setTimeout(() => {
+      this.loadingScreen = false;
+    }, 100);
     return emailRegex.test(email);
   }
 

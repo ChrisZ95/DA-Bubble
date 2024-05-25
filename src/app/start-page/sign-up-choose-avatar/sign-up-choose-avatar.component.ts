@@ -4,11 +4,12 @@ import { FirestoreService } from '../../firestore.service';
 import { User } from '../../../models/user.class';
 import { NgForm } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-sign-up-choose-avatar',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MatProgressSpinnerModule],
   templateUrl: './sign-up-choose-avatar.component.html',
   styleUrl: './sign-up-choose-avatar.component.scss'
 })
@@ -28,6 +29,7 @@ export class SignUpChooseAvatarComponent implements OnInit {
   img: any;
   imageSelected: boolean = false;
   imageSrc:any;
+  loadingScreen = false;
 
 
   @Output() backToSignUpClicked: EventEmitter<any> = new EventEmitter();
@@ -45,6 +47,7 @@ export class SignUpChooseAvatarComponent implements OnInit {
   ]
 
   async ngOnInit() {
+    this.loadingScreen = false;
     this.uid = await this.firestoreService.getUid();
     console.log(this.uid);
     this.userForm = await this.firestoreService.getUserData(this.uid)
@@ -55,7 +58,6 @@ export class SignUpChooseAvatarComponent implements OnInit {
   }
 
   async onImageSelected(event: any):Promise<void> {
-    debugger
     const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
@@ -104,6 +106,7 @@ export class SignUpChooseAvatarComponent implements OnInit {
   }
 
   createAccount() {
+    this.loadingScreen = true;
     this.showInputInformationUserIcon = false;
     if ([0, 1, 2, 3, 4, 5, 6].includes(this.iconIndex)) {
       this.accountCreated.emit();
@@ -114,13 +117,16 @@ export class SignUpChooseAvatarComponent implements OnInit {
       this.showInputInformationUserIcon = true;
       console.log('Bitte ein User Icon wählen');
     }
+    this.loadingScreen = false;
   }
 
   async uploadUserIcon(uid: string, userIconTokenURL: any) {
+    this.loadingScreen = true;
     this.userData = await this.firestoreService.uploadUserIconIntoDatabase(uid, userIconTokenURL);
     this.downloadedUserIcon = await  this.firestoreService.downloadUserIcon(uid);
     this.img = document.getElementById('userIcon');
     this.img.setAttribute('src', this.downloadedUserIcon);
+    this.loadingScreen = false;
   }
 
   async uploadUserIconCustom(uid: string, userIconTokenURL: any) {
