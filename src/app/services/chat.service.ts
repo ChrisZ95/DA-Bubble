@@ -197,9 +197,7 @@ export class ChatService {
       }
       return;
     }
-
     const messages: any[] = [];
-
     if (userDetails.uid && userDetails.uid !== currentuid) {
       const combinedShortedId = this.getCombinedChatId(
         currentuid,
@@ -233,6 +231,31 @@ export class ChatService {
     }
     this.messagesSubject.next(messages);
   }
+
+  // async loadUser(userDetails: any) {
+  //   if (Array.isArray(userDetails)) {
+  //     userDetails = userDetails[0];
+  //   }
+  //   let currentuid = this.FirestoreService.currentuid;
+  //   if (userDetails.uid && userDetails.uid !== currentuid) {
+  //     const combinedShortedId = this.getCombinedChatId(
+  //       currentuid,
+  //       userDetails.uid
+  //     );
+  //     this.chatDocId = combinedShortedId;
+  //   } else {
+  //     this.chatDocId = currentuid;
+  //   }
+  //   if (this.chatDocId) {
+  //     const chatDoc = await getDoc(
+  //       doc(this.firestore, 'users', this.chatDocId)
+  //     );
+  //     if (chatDoc.exists()) {
+  //       const data = chatDoc.data();
+  //       console.log('data', data);
+  //     }
+  //   }
+  // }
 
   getCombinedChatId(uid1: string, uid2: string): string {
     let slicedUid1 = uid1.slice(0, 5);
