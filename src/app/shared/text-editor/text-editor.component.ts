@@ -19,6 +19,7 @@ import {
 import { ChannelService } from '../../services/channel.service';
 import { FirestoreService } from '../../firestore.service';
 import { log } from 'console';
+import { ThreadService } from '../../services/thread.service';
 @Component({
   selector: 'app-text-editor',
   standalone: true,
@@ -33,6 +34,7 @@ export class TextEditorComponent implements OnInit {
 
   constructor(
     private chatService: ChatService,
+    private threadService: ThreadService,
     private generateId: GenerateIdsService,
     private firestore: Firestore,
     public channelService: ChannelService,
@@ -44,6 +46,8 @@ export class TextEditorComponent implements OnInit {
   submit() {
     if (this.componentName === 'ownChat') {
       this.sendMessage();
+    } else if (this.componentName === 'thread') {
+      this.sendReply();
     } else if (this.componentName === 'channel') {
       this.sendMessageToChannel();
     }
@@ -62,6 +66,10 @@ export class TextEditorComponent implements OnInit {
   sendMessage() {
     this.chatService.sendData(this.message);
     this.message = '';
+  }
+  
+  sendReply() {
+    this.threadService.sendReply(this.message);
   }
 
   sendMessageToChannel() {

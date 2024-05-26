@@ -10,10 +10,13 @@ export class ThreadService {
   displayThread: boolean = false;
   messageInformation: any;
 
-  getMessageDocId(info: any) {
+  getMessage(info: any) {
     this.messageInformationSubject.next(info);
   }
   getMessageInformation() {
     return this.messageInformationSubject.asObservable();
+  }
+  sendReply(reply: any) {
+    console.log(reply);
   }
 }

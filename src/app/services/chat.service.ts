@@ -256,7 +256,6 @@ export class ChatService {
   }
 
   async sendData(text: any, retryCount: number = 0) {
-    // debugger;
     let id = this.generateIdServie.generateId();
     let date = new Date().getTime().toString();
     let currentuid = this.FirestoreService.currentuid;
