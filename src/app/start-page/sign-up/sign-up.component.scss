@@ -165,3 +165,158 @@
     }
   }
 }
+
+
+@media screen and (max-width: 650px) {
+  .log-in-card-container {
+
+    .log-in-card {
+      width: 90vw;
+
+      .loading-screen {
+        width: 90vw;
+      }
+
+      .back-to-log-in-button {
+        right: 35vw;
+      }
+
+      .card-header-section {
+
+          h1 {
+            font-size: 40px;
+          }
+
+          span {
+            font-size: 16px;
+          }
+      }
+
+      .card-input-section {
+
+        .input-container {
+          width: 80vw;
+
+          input {
+            width: 65vw;
+          }
+        }
+
+        .input-information-checkbox,
+        .input-information {
+          width: 80vw;
+        }
+
+        .input-checkbox-container {
+          right: 0;
+
+          span {
+            font-size: 16px;
+          }
+        }
+      }
+
+      .continue-button-container {
+        width: 80vw;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 450px) {
+  .log-in-card-container {
+
+    .log-in-card {
+
+      .card-header-section {
+
+          h1 {
+            font-size: 34px;
+          }
+
+          span {
+            font-size: 14px;
+          }
+      }
+
+      .card-input-section {
+
+        .input-container {
+          width: 80vw;
+
+          input {
+            width: 60vw;
+          }
+        }
+
+        .input-checkbox-container {
+
+          span {
+            font-size: 14px;
+          }
+        }
+      }
+
+      .continue-button-container {
+        width: 80vw;
+
+        .continue-button {
+          font-size: 16px;
+          width: 40vw;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 390px) {
+  .log-in-card-container {
+
+    .log-in-card {
+
+      .card-header-section {
+
+          h1 {
+            font-size: 34px;
+          }
+
+          span {
+            font-size: 14px;
+          }
+      }
+
+      .card-input-section {
+
+        .input-container {
+
+          img {
+            height: 20px;
+            width: 20px;
+          }
+
+
+          input {
+            font-size: 12px;
+          }
+        }
+
+        .input-checkbox-container {
+
+          span {
+            font-size: 12px;
+            padding-left: 10px;
+          }
+        }
+      }
+
+      .continue-button-container {
+        width: 80vw;
+
+        .continue-button {
+          font-size: 16px;
+          width: 40vw;
+        }
+      }
+    }
+  }
+}

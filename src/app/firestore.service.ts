@@ -596,8 +596,8 @@ export class FirestoreService {
       const { email, uid } = emailData;
       const actionCodeSettings = {
         url: `http://localhost:4200/ChangePasswort?userId=${uid}&mode=resetPassword`,
-        handleCodeInApp: false,
-        expiresIn: 60 * 60 * 1,
+        // url: `http://localhost:4200`,
+        handleCodeInApp: true,
       };
 
       await sendPasswordResetEmail(auth, email, actionCodeSettings);

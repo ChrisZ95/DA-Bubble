@@ -28,7 +28,6 @@ export class ForgetPasswordComponent {
   }
 
   sendMail(formData: any) {
-    debugger
     this.loadingScreen = true;
     this.showInputInformationEmailInputInvalid = false;
     this.showInputInformationEmailInputEmpty = false;
