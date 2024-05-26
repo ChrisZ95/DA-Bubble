@@ -103,6 +103,7 @@
           outline: none;
         }
       }
+
       .input-information-checkbox,
       .input-information {
         color: red;
@@ -603,6 +604,224 @@
 
         .continue-button {
           height: 40px;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-height: 670px) and (max-width: 650px) {
+  .log-in-card-container {
+
+    .log-in-card {
+      height: 500px;
+
+      .loading-screen {
+        height: 500px;
+      }
+
+      .back-to-log-in-button {
+       top: 10px;
+      }
+
+      .card-header-section {
+        padding-top: 0px;
+        gap: 0px;
+
+          h1 {
+            font-size: 34px;
+          }
+
+          span {
+            font-size: 14px;
+          }
+      }
+
+      .card-input-section {
+        margin-top: 0px;
+
+        .input-checkbox-container {
+          margin-top: 0px;
+
+          span {
+            font-size: 14px;
+          }
+        }
+
+        .input-information {
+          font-size: 14px;
+        }
+      }
+
+      .continue-button-container {
+        margin-top: 0px;
+
+        .continue-button {
+          height: 40px;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-height: 670px) and (max-width: 400px) {
+  .log-in-card-container {
+
+    .log-in-card {
+
+      .card-header-section {
+        padding-top: 0px;
+        gap: 0px;
+
+          h1 {
+            font-size: 30px;
+          }
+
+          span {
+            font-size: 12px;
+          }
+      }
+
+      .card-input-section {
+        margin-top: 0px;
+
+        .input-container {
+
+          input {
+            font-size: 14px;
+          }
+        }
+
+        .input-checkbox-container {
+          margin-top: 0px;
+
+          span {
+            font-size: 14px;
+          }
+        }
+
+        .input-information {
+          font-size: 14px;
+        }
+      }
+
+      .continue-button-container {
+        margin-top: 0px;
+
+        .continue-button {
+          height: 40px;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-height: 670px) and (max-width: 350px) {
+  .log-in-card-container {
+
+    .log-in-card {
+
+      .card-header-section {
+        padding-top: 0px;
+        gap: 0px;
+
+          h1 {
+            font-size: 30px;
+          }
+
+          span {
+            font-size: 11px;
+          }
+      }
+    }
+  }
+}
+
+@media screen and (max-height: 620px) and (max-width: 650px) {
+  .log-in-card-container {
+
+    .log-in-card {
+      height: 450px;
+
+      .loading-screen {
+        height: 450px;
+      }
+
+      .back-to-log-in-button {
+       top: 10px;
+      }
+
+      .card-header-section {
+        padding-top: 0px;
+        gap: 0px;
+
+          h1 {
+            font-size: 30px;
+          }
+
+          span {
+            font-size: 14px;
+          }
+      }
+      .card-input-section {
+
+        .input-container {
+          height: 40px;
+
+          input {
+            height: 35px;
+            font-size: 14px;
+          }
+        }
+      }
+
+      .continue-button-container {
+        margin-top: 0px;
+
+        .continue-button {
+          height: 30px;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-height: 620px) and (max-width: 400px) {
+  .log-in-card-container {
+
+    .log-in-card {
+
+      .card-header-section {
+
+          h1 {
+            font-size: 30px;
+          }
+
+          span {
+            font-size: 11px;
+          }
+      }
+
+      .card-input-section {
+
+        .input-container {
+
+          input {
+            width: 50vw;
+            font-size: 12px;
+          }
+        }
+
+        .input-information {
+          font-size: 12px;
+        }
+
+        .input-checkbox-container {
+
+          span {
+            font-size: 12px;
+            padding-left: 10px;
+          }
         }
       }
     }
