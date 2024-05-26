@@ -45,6 +45,7 @@ export class ThreadComponent implements OnInit {
     this.messageInfoSubscription = this.threadService
       .getMessageInformation()
       .subscribe((docID) => {
+        console.log('docID', docID);
         this.documentID = docID;
       });
     const chatDocRef = doc(this.firestore, 'chats', this.documentID);

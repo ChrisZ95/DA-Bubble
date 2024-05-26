@@ -180,7 +180,6 @@ export class ChatService {
   }
 
   async loadMessages(userDetails: any, retryCount: number = 0) {
-    // debugger;
     if (Array.isArray(userDetails)) {
       userDetails = userDetails[0];
     }
@@ -257,6 +256,7 @@ export class ChatService {
   }
 
   async sendData(text: any, retryCount: number = 0) {
+    // debugger;
     let id = this.generateIdServie.generateId();
     let date = new Date().getTime().toString();
     let currentuid = this.FirestoreService.currentuid;
@@ -275,7 +275,7 @@ export class ChatService {
 
     let message = {
       message: text,
-      image: this.dataURL,
+      image: this.dataURL ? this.dataURL : '',
       id: id,
       creator: currentuid,
       createdAt: date,

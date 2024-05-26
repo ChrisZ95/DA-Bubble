@@ -48,6 +48,8 @@ export class OwnchatComponent implements OnChanges, OnInit {
     this.dialog.open(DialogContactInfoComponent);
   }
   openThread(messageInformation: any) {
+    console.log('messageInformation', messageInformation);
+
     this.threadService.displayThread = true;
     this.threadService.getMessageDocId(this.chatService.chatDocId);
   }
