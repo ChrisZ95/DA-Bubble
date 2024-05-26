@@ -18,7 +18,7 @@
                 <div class="user-timestamp">
                     <div class="user">
                         <h5>AuthorName</h5>
-                        <p>CreatedAt</p>
+                        <p>{{ message.createdAt | timestamp: 'time' }}Uhr</p>
                     </div>
                     <div class="text">
                         <p>{{ message.message}}</p>
@@ -31,27 +31,22 @@
             <div class="line"></div>
         </div>
     </div>
-    <app-text-editor [componentName]="'thread'" />
 
-    <!-- <form (ngSubmit)="sendCommentToMessage()" class="container">
-        <div class="chat-input-container">
-            <textarea name="" id="" cols="3" rows="3" placeholder="Nachricht an #Entwicklerteam" [(ngModel)]="comment"
-                name="message"></textarea>
-            <div class="img-container">
-                <div class="images">
-                    <div class="img">
-                        <img src="../../../assets/images/add.png" alt="">
-                    </div>
-                    <div class="chat-input-line"></div>
-                    <div class="img">
-                        <img src="../../../assets/images/smiley.png" alt="">
-                    </div>
-                    <div class="img">
-                        <img src="../../../assets/images/atsign.png" alt="">
-                    </div>
+    <ng-container *ngFor="let reply of replies">
+        <div class="reply-container">
+            <div>
+                <img src="../../../assets/images/avatar.png" alt="">
+            </div>
+            <div class="replies">
+                <div class="name-timestamp">
+                    <h5>FullName</h5>
+                    <p>{{ reply.createdAt | timestamp: 'time' }}Uhr</p>
                 </div>
-                <button type="submit"><img src="../../../assets/images/send.png" alt=""></button>
+                <div class="replies-text">
+                    <p>{{ reply.reply }}</p>
+                </div>
             </div>
         </div>
-    </form> -->
+    </ng-container>
+    <app-text-editor [componentName]="'thread'" />
 </div>

@@ -8,13 +8,13 @@ import {
   onSnapshot,
   DocumentData,
 } from '@angular/fire/firestore';
-
 import { TextEditorComponent } from '../../shared/text-editor/text-editor.component';
+import { TimestampPipe } from '../../shared/pipes/timestamp.pipe';
 
 @Component({
   selector: 'app-thread',
   standalone: true,
-  imports: [TextEditorComponent],
+  imports: [CommonModule, TextEditorComponent, TimestampPipe],
   templateUrl: './thread.component.html',
   styleUrls: ['./thread.component.scss', '../threads.component.scss'],
 })
@@ -27,6 +27,7 @@ export class ThreadComponent implements OnInit {
   documentID: any;
   messageDetail: any;
   message: any = {};
+  replies: any = [];
 
   closeThreadWindow() {
     this.threadService.displayThread = false;
@@ -34,8 +35,8 @@ export class ThreadComponent implements OnInit {
 
   async loadMessages() {
     this.threadService.getMessageInformation().subscribe((info) => {
-      console.log('info', info);
       this.message = info;
+      this.replies = info.replies;
     });
   }
 
