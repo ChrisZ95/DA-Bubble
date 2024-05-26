@@ -8,17 +8,7 @@ import {
   onSnapshot,
   DocumentData,
 } from '@angular/fire/firestore';
-// import {
-//   doc,
-//   setDoc,
-//   addDoc,
-//   collection,
-//   getDoc,
-//   getDocs,
-//   updateDoc,
-//   query,
-//   where,
-// } from 'firebase/firestore';
+
 import { TextEditorComponent } from '../../shared/text-editor/text-editor.component';
 
 @Component({
@@ -44,6 +34,7 @@ export class ThreadComponent implements OnInit {
 
   async loadMessages() {
     this.threadService.getMessageInformation().subscribe((info) => {
+      console.log('info', info);
       this.message = info;
     });
   }
