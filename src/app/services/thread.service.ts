@@ -18,6 +18,8 @@ import {
   where,
 } from 'firebase/firestore';
 import { log } from 'console';
+import { GenerateIdsService } from './generate-ids.service';
+import { FirestoreService } from '../firestore.service';
 interface MessageObject {
   id: string;
   image: string;
@@ -36,7 +38,11 @@ interface ChatDocument {
 })
 export class ThreadService {
   private messageInformationSubject = new BehaviorSubject<any>(null);
-  constructor(private firestore: Firestore) {}
+  constructor(
+    private firestore: Firestore,
+    private generateId: GenerateIdsService,
+    private firestoreService: FirestoreService
+  ) {}
   displayThread: boolean = false;
   messageInformation: any;
   chatDocId: string = '';
@@ -50,21 +56,6 @@ export class ThreadService {
   getMessageInformation() {
     return this.messageInformationSubject.asObservable();
   }
-  // try {
-  //   const docRef = doc(this.firestore, 'messages', this.chatDocId);
-  //   const docSnap = await getDoc(docRef);
-  //   if (docSnap.exists()) {
-  //     const data = docSnap.data() as MessageObject;
-  //     const replies = data.replies || [];
-  //     replies.push(messageReply);
-  //     await updateDoc(docRef, { replies });
-  //     console.log('Message reply updated successfully');
-  //   } else {
-  //     console.log('No such document!');
-  //   }
-  // } catch (error) {
-  //   console.error('Error updating document: ', error);
-  // }
 
   async sendReply(messageReply: any) {
     try {
@@ -77,11 +68,19 @@ export class ThreadService {
           message.id.includes(this.messageInformation.id)
         );
         if (messageIndex !== -1) {
+          const timestamp = new Date().getTime();
+          const id = this.generateId.generateId();
+          let reply = {
+            createdAt: timestamp,
+            creator: this.firestoreService.currentuid,
+            id: id,
+            reply: messageReply,
+          };
           const message = messages[messageIndex];
           if (!message.replies) {
             message.replies = [];
           }
-          message.replies.push(messageReply);
+          message.replies.push(reply);
           await updateDoc(docRef, { messages });
         } else {
           console.log('No such message!');

@@ -28,17 +28,22 @@
             <div class="conversation">
                 <div class="name-timestamp">
                     <h5 (click)="openContactInfoDialog()"><strong>FullName</strong></h5>
-                    {{message.createdAt | timestamp: 'time' }} Uhr
+                    {{message.createdAt | timestamp: 'time' }}Uhr
                 </div>
                 {{ message.message }}
                 <ng-container *ngIf="message.image">
                     <img [src]='message.image' alt="">
                 </ng-container>
                 <div class="reply">
-                    <a (click)="openThread(message)"> 0 Antworten</a>
-                    <p> Letzte Antwort 00:00Uhr
+                    <a (click)="openThread(message)">
+                        {{ message.replies ? message.replies.length + ' Antworten' : 'Jetzt Antworten' }}
+                    </a>
+                    <p>
+                        {{ message.replies && message.replies.length ? (message.replies[message.replies.length -
+                        1].createdAt | timestamp: 'time') + ' Uhr' : '' }}
                     </p>
                 </div>
+
 
             </div>
         </div>

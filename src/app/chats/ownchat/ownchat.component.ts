@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import {
   Component,
   Input,
@@ -22,7 +22,7 @@ import { ThreadService } from '../../services/thread.service';
 @Component({
   selector: 'app-ownchat',
   standalone: true,
-  imports: [TextEditorComponent, TimestampPipe, CommonModule],
+  imports: [TextEditorComponent, TimestampPipe, CommonModule, TimestampPipe],
   templateUrl: './ownchat.component.html',
   styleUrls: ['./ownchat.component.scss', '../chats.component.scss'],
 })
@@ -49,14 +49,10 @@ export class OwnchatComponent implements OnChanges, OnInit {
   }
 
   openThread(messageInformation: any) {
-    console.log('messageInformation', messageInformation);
-
     let chatDocId = this.chatService.chatDocId;
     this.threadService.displayThread = true;
     this.threadService.getMessage(messageInformation, chatDocId);
   }
-
-  // let chatInformation = this.chatService.createChat(userDetails);
 
   async loadCurrentUser() {
     let allUsers = await this.firestore.getAllUsers();
