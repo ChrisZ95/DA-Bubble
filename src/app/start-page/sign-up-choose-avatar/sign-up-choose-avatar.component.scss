@@ -630,7 +630,61 @@
   }
 }
 
-@media screen and (max-height: 950px) and (max-width: 850px){
+@media screen and (max-height: 950px) and (min-width: 650px){
+  .log-in-card-container {
+
+    .log-in-card {
+      height: 600px;
+      width: 606px;
+
+      .loading-screen {
+        height: 600px;
+        width: 606px;
+      }
+
+      .card-header-section {
+        padding-top: 10px;
+        gap: 0px;
+      }
+
+      .chosen-avatar {
+        padding-top: 0px;
+
+        h1 {
+          font-size: 28px;
+        }
+      }
+
+      .choose-avatar-list {
+        width: 530px;
+
+        .input-information {
+          width: 450px;
+        }
+
+        .pseudo {
+          height: 10px;
+        }
+
+        .input-information {
+          font-size: 14px;
+        }
+
+        span {
+          font-size: 16px;
+          padding-top: 20px;
+        }
+      }
+
+      .continue-button-container {
+        margin-top: 15px;
+      }
+    }
+  }
+}
+
+
+@media screen and (max-height: 950px) and (max-width: 650px){
   .log-in-card-container {
 
     .log-in-card {
@@ -660,6 +714,152 @@
 
         .input-information {
           width: 70vw;
+        }
+
+        .pseudo {
+          height: 10px;
+        }
+
+        .input-information {
+          font-size: 14px;
+        }
+
+        span {
+          font-size: 16px;
+          padding-top: 20px;
+        }
+      }
+
+      .continue-button-container {
+        margin-top: 15px;
+      }
+    }
+  }
+}
+
+@media screen and (max-height: 900px) and (max-width: 650px){
+  .log-in-card-container {
+
+    .log-in-card {
+      height: 550px;
+      width: 90vw;
+
+      .loading-screen {
+        height: 550px;
+        width: 90vw;
+      }
+
+      .card-header-section {
+        padding-top: 10px;
+        gap: 0px;
+
+        h1 {
+          font-size: 30px;
+        }
+      }
+
+      .chosen-avatar {
+        padding-top: 0px;
+
+        h1 {
+          font-size: 28px;
+        }
+      }
+
+      .choose-avatar-list {
+        width: 80vw;
+
+        .input-information {
+          width: 70vw;
+        }
+
+        .avatar-list {
+          height: 60px;
+
+          .avatar-item {
+
+            img {
+              height: 50px;
+              width: auto;
+            }
+          }
+        }
+
+        .upload-custom-image {
+          margin-top: 10px;
+        }
+
+        .pseudo {
+          height: 10px;
+        }
+
+        .input-information {
+          font-size: 14px;
+        }
+
+        span {
+          font-size: 16px;
+          padding-top: 20px;
+        }
+      }
+
+      .continue-button-container {
+        margin-top: 15px;
+      }
+    }
+  }
+}
+
+@media screen and (max-height: 900px) and (max-width: 400px){
+  .log-in-card-container {
+
+    .log-in-card {
+      height: 550px;
+      width: 90vw;
+
+      .loading-screen {
+        height: 550px;
+        width: 90vw;
+      }
+
+      .card-header-section {
+        padding-top: 10px;
+        gap: 0px;
+
+        h1 {
+          font-size: 26px;
+        }
+      }
+
+      .chosen-avatar {
+        padding-top: 0px;
+
+        h1 {
+          font-size: 28px;
+        }
+      }
+
+      .choose-avatar-list {
+        width: 80vw;
+
+        .input-information {
+          width: 70vw;
+        }
+
+        .avatar-list {
+          height: 60px;
+
+          .avatar-item {
+
+            img {
+              height: 40px;
+              width: auto;
+            }
+          }
+        }
+
+        .upload-custom-image {
+          margin-top: 10px;
         }
 
         .pseudo {
