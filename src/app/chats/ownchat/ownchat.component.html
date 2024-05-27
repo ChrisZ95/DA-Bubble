@@ -27,7 +27,8 @@
             <img src="../../../assets/images/avatar.png" alt="">
             <div class="conversation">
                 <div class="name-timestamp">
-                    <h5 (click)="openContactInfoDialog()"><strong>{{message.creator}}</strong></h5>
+                    <h5 (click)="openContactInfoDialog()"><strong>
+                            {{displayName(message.creator)}}</strong></h5>
                     {{message.createdAt | timestamp: 'time' }}Uhr
                 </div>
                 {{ message.message }}

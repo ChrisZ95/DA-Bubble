@@ -90,7 +90,6 @@ export class WorkspaceComponent implements OnInit {
       });
     this.channelService.getChannels().then((channels) => {
       this.allChannels = channels;
-      console.log('Channels', channels);
       this.filterChannels();
     });
     console.log('Aktueller User ist:', this.firestoreService.currentuid);
@@ -98,8 +97,9 @@ export class WorkspaceComponent implements OnInit {
 
   filterChannels() {
     const currentUserId = this.firestoreService.currentuid;
-    this.filteredChannels = this.allChannels.filter((channel: Channel) => 
-      channel.users && channel.users.includes(currentUserId)
+    this.filteredChannels = this.allChannels.filter(
+      (channel: Channel) =>
+        channel.users && channel.users.includes(currentUserId)
     );
   }
 }

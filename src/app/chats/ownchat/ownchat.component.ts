@@ -35,6 +35,7 @@ export class OwnchatComponent implements OnChanges, OnInit {
   ) {}
   @Input() userDetails: any;
   messages: any = [];
+  allUsers: any = [];
 
   openMemberDialog() {
     this.dialog.open(DialogMembersComponent);
@@ -62,6 +63,19 @@ export class OwnchatComponent implements OnChanges, OnInit {
     this.chatService.loadMessages(currentUserDetails);
   }
 
+  displayName(id: any) {
+    let user = this.allUsers.filter((user: any) => {
+      if (id == user.uid) {
+        return user;
+      }
+    });
+    return user[0].username;
+  }
+
+  async loadAllUsers() {
+    this.allUsers = await this.chatService.loadUser();
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
     if (this.userDetails != '' && changes['userDetails']) {
       this.chatService.loadMessages(this.userDetails);
@@ -75,5 +89,6 @@ export class OwnchatComponent implements OnChanges, OnInit {
       this.messages = messages;
     });
     const userDetails = { uid: 'someUserId' };
+    this.loadAllUsers();
   }
 }
