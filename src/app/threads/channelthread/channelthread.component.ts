@@ -75,17 +75,21 @@ export class ChannelthreadComponent implements OnChanges {
       (message: any) => message.messageId === messageId
     );
     if (currentMessage) {
-      this.currentMessageComments = await Promise.all(
-        currentMessage.comments.map(async (comment: any) => {
-          const authorName = await this.channelService.getAuthorName(
-            comment.uid
-          );
-          return {
-            ...comment,
-            authorName: authorName ?? comment.uid,
-          };
-        })
-      );
+      if (currentMessage.comments && currentMessage.comments.length > 0) {
+        this.currentMessageComments = await Promise.all(
+          currentMessage.comments.map(async (comment: any) => {
+            const authorName = await this.channelService.getAuthorName(
+              comment.uid
+            );
+            return {
+              ...comment,
+              authorName: authorName ?? comment.uid,
+            };
+          })
+        );
+      } else {
+        this.currentMessageComments = [];
+      }
     } else {
       this.currentMessageComments = [];
     }
@@ -117,10 +121,23 @@ export class ChannelthreadComponent implements OnChanges {
       this.updateCommentCount(currentMessageId);
       this.updateLastCommentTime(currentMessageId, timestampString);
       this.channelService.updateMessagesWithAuthors();
+      this.updateMessageInMessagesList(currentMessageId, newComment); // Fügen Sie diese Zeile hinzu
       this.comment = '';
     } else {
       console.error('Kein aktueller Kanal ausgewählt.');
-      // Fehlerfall, falls kein aktueller Kanal ausgewählt ist
+    }
+  }
+
+  updateMessageInMessagesList(messageId: string, newComment: any): void {
+    const messageIndex = this.channelService.messages.findIndex(
+      (msg) => msg.messageId === messageId
+    );
+    if (messageIndex > -1) {
+      if (!this.channelService.messages[messageIndex].comments) {
+        this.channelService.messages[messageIndex].comments = [];
+      }
+      this.channelService.messages[messageIndex].comments.push(newComment);
+      this.channelService.updateMessagesWithAuthors();
     }
   }
 

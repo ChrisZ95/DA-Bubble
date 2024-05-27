@@ -83,6 +83,9 @@ export class TextEditorComponent implements OnInit {
         message: this.message,
         createdAt: timestampString,
         uid: currentUid,
+        comments: [], // Initialisiere leere Kommentare
+        commentCount: 0, // Initialisiere Kommentaranzahl
+        lastCommentTime: null // Initialisiere letzte Kommentarzeit
       };
       this.channelService
         .getAuthorName(currentUid)
@@ -92,6 +95,7 @@ export class TextEditorComponent implements OnInit {
             authorName: authorName ?? currentUid,
           };
           this.channelService.messagesWithAuthors.push(message);
+          this.channelService.messages.push(message); // Synchronisieren Sie die Nachrichtenliste
           this.chatService.sendDataToChannel(currentChannelId, message);
           this.message = '';
         })
@@ -99,9 +103,7 @@ export class TextEditorComponent implements OnInit {
           console.error('Error fetching author name:', error);
         });
     } else {
-      console.error(
-        'Kein aktueller Kanal ausgewählt oder Benutzer nicht angemeldet.'
-      );
+      console.error('Kein aktueller Kanal ausgewählt oder Benutzer nicht angemeldet.');
     }
   }
 
