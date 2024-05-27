@@ -33,16 +33,25 @@
       (mouseenter)="updateHoverState(i, true)" 
       (mouseleave)="updateHoverState(i, false)"
       [ngClass]="{'justify-end': message.uid === this.firestoreService.currentuid, 'justify-start': message.uid !== this.firestoreService.currentuid}">
-      <div class="popup-window" *ngIf="isHoveredArray[i]">
+      <div class="popup-window" *ngIf="isHoveredArray[i] && message.uid === firestoreService.currentuid">
         <img src="./../../../assets/images/green-tick.png" alt="">
         <img src="./../../../assets/images/hands-emoji.png" alt="">
         <img src="./../../../assets/images/add_reaction.png" alt="">
         <img (click)="openThreadWindow(message.messageId)" src="./../../../assets/images/comment.png" alt="">
-        <button mat-icon-button aria-label="Example icon button with a vertical three dot icon">
+        <button [matMenuTriggerFor]="editMessage" mat-icon-button (menuOpened)="menuOpened(i)">
           <mat-icon>more_vert</mat-icon>
         </button>
+        <mat-menu #editMessage="matMenu" class="profile-menu" (closed)="menuClosed()">
+          <button mat-menu-item>Nachricht bearbeiten</button>
+        </mat-menu>
       </div>
-      <img src="../../../assets/images/avatar.png" alt="">
+      <div class="popup-window" *ngIf="isHoveredArray[i] && message.uid !== firestoreService.currentuid">
+        <img src="./../../../assets/images/green-tick.png" alt="">
+        <img src="./../../../assets/images/hands-emoji.png" alt="">
+        <img src="./../../../assets/images/add_reaction.png" alt="">
+        <img (click)="openThreadWindow(message.messageId)" src="./../../../assets/images/comment.png" alt="">
+      </div>
+      <img [src]="getMemberAvatar(message.uid)" alt="" class="user-avatar">
       <div class="conversation">
         <div class="name-timestamp">
           <h5 (click)="openContactInfoDialog()"><strong>{{ message.authorName }}</strong></h5>
@@ -64,4 +73,4 @@
   </div>
 </div>
 
-  <app-text-editor [componentName]="'channel'" />
+<app-text-editor [componentName]="'channel'" />

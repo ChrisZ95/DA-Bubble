@@ -28,11 +28,12 @@ import { EventEmitter } from 'stream';
 import { Subscription } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import  { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 
 @Component({
   selector: 'app-channelchat',
   standalone: true,
-  imports: [TextEditorComponent, NgFor, TimestampPipe, CommonModule, MatButtonModule, MatIconModule],
+  imports: [TextEditorComponent, NgFor, TimestampPipe, CommonModule, MatButtonModule, MatIconModule, MatMenuModule],
   templateUrl: './channelchat.component.html',
   styleUrls: ['./channelchat.component.scss', '../chats.component.scss'],
 })
@@ -59,7 +60,9 @@ export class ChannelchatComponent implements OnInit, AfterViewInit {
   }
 
   updateHoverState(index: number, isHovered: boolean) {
-    this.isHoveredArray[index] = isHovered;
+    if (!this.menuClicked) {
+      this.isHoveredArray[index] = isHovered;
+    }
   }
 
   @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
@@ -74,6 +77,8 @@ export class ChannelchatComponent implements OnInit, AfterViewInit {
   currentMessageComments: { id: string, comment: string, createdAt: string }[] = [];
   isHoveredArray: boolean[] = [];
   private channelSubscription: Subscription | undefined;
+  menuClicked = false;
+  currentMessageIndex: number | null = null;
 
   openMemberDialog() {
     this.dialog.open(DialogMembersComponent);
@@ -141,5 +146,19 @@ export class ChannelchatComponent implements OnInit, AfterViewInit {
   getMemberAvatar(memberId: string): string {
     const member = this.allUsers.find(user => user.uid === memberId);
     return member ? member.photo : '';
+  }
+
+  menuClosed() {
+    if (this.currentMessageIndex !== null && !this.menuClicked) {
+      this.isHoveredArray[this.currentMessageIndex] = true;
+    }
+    this.menuClicked = false;
+    this.currentMessageIndex = null;
+  }
+
+  menuOpened(index: number) {
+    this.menuClicked = true;
+    this.currentMessageIndex = index;
+    this.isHoveredArray[index] = true;
   }
 }

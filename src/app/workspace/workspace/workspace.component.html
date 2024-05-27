@@ -5,7 +5,6 @@
         <img src="../assets/images/editSquare.svg" alt="" (click)="openEmptyChat()">
     </div>
 
-
     <div class="channels-container">
         <div class="channels-overview">
             <img src="../assets/images/arrowDropDown.svg" alt="" class="channels-dropdown">
@@ -13,11 +12,11 @@
             <div>channels</div>
             <img (click)="openCreateChannelDialog()" src="../assets/images/add.svg" alt="" class="channels-add">
         </div>
-        <div class="active-channel" *ngFor="let channel of allChannels">
+        <div class="active-channel" *ngFor="let channel of filteredChannels">
             <div (click)="channelService.getChannelName(channel.channelName)"
                 (click)="channelService.getDescription(channel.description)"
                 (click)="channelService.getUserName(channel.users)" (click)="channelService.getAuthor(channel.author)"
-                (click)="openChannelChat(this.channel['channelId'])"># {{ channel.channelName }}</div>
+                (click)="openChannelChat(channel.channelId)"># {{ channel.channelName }}</div>
         </div>
     </div>
 </div>
