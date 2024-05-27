@@ -26,11 +26,13 @@ import { FirestoreService } from '../../firestore.service';
 import { query, where, Query, DocumentData } from 'firebase/firestore';
 import { EventEmitter } from 'stream';
 import { Subscription } from 'rxjs';
+import { MatButtonModule } from '@angular/material/button';
+import  { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-channelchat',
   standalone: true,
-  imports: [TextEditorComponent, NgFor, TimestampPipe, CommonModule],
+  imports: [TextEditorComponent, NgFor, TimestampPipe, CommonModule, MatButtonModule, MatIconModule],
   templateUrl: './channelchat.component.html',
   styleUrls: ['./channelchat.component.scss', '../chats.component.scss'],
 })

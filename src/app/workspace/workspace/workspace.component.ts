@@ -35,6 +35,7 @@ export class WorkspaceComponent implements OnInit {
   displayUsers: boolean = true;
   channel = new Channel();
   allChannels: any = [];
+  filteredChannels: any[] = [];
   allUsers: any[] = [];
   selectedChannelName: string | null = null;
   currentChannelId: string = '';
@@ -48,6 +49,7 @@ export class WorkspaceComponent implements OnInit {
   ) {
     onSnapshot(collection(this.firestore, 'channels'), (list) => {
       this.allChannels = list.docs.map((doc) => doc.data());
+      this.filterChannels();
     });
   }
 
@@ -89,7 +91,15 @@ export class WorkspaceComponent implements OnInit {
     this.channelService.getChannels().then((channels) => {
       this.allChannels = channels;
       console.log('Channels', channels);
+      this.filterChannels();
     });
-    console.log('Aktueller User ist:', this.firestoreService.currentuid)
+    console.log('Aktueller User ist:', this.firestoreService.currentuid);
+  }
+
+  filterChannels() {
+    const currentUserId = this.firestoreService.currentuid;
+    this.filteredChannels = this.allChannels.filter((channel: Channel) => 
+      channel.users && channel.users.includes(currentUserId)
+    );
   }
 }
