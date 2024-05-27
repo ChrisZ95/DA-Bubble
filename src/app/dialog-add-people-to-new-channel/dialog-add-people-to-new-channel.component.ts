@@ -88,6 +88,7 @@ export class DialogAddPeopleToNewChannelComponent implements OnInit {
       this.selectedUsers = [];
       this.updatePersonName();
       this.checkButtonStatus();
+      this.dialogRef.close();
     } catch (error) {
       console.error('Fehler beim Hinzufügen der Benutzer zum Kanal:', error);
     }
