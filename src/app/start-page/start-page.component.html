@@ -12,9 +12,11 @@
     <app-log-in (forgotPassword)="forgotPassword()"></app-log-in>
   </ng-template>
 
+  <!-- <ng-template [ngIf]="showLoginComponent && !showSignUpComponent && !showChooseAvatarComponent && !showForgetPasswordComponent && !showChangePasswordComponent&& !showImpressumComponent && !showPrivacyPoliceComponent"> -->
   <ng-template [ngIf]="showSignUpComponent && !showLoginComponent && !showChooseAvatarComponent  && !showForgetPasswordComponent && !showChangePasswordComponent && !showImpressumComponent && !showPrivacyPoliceComponent">
     <app-sign-up (backToLoginClicked)="backToLoginClicked()" (continueToChooseAvatar)="continueToChooseAvatar()" (openPrivacyPolice)="openPrivacyPolice()"></app-sign-up>
   </ng-template>
+
   <!-- <ng-template [ngIf]="showLoginComponent && !showSignUpComponent && !showChooseAvatarComponent && !showForgetPasswordComponent && !showChangePasswordComponent&& !showImpressumComponent && !showPrivacyPoliceComponent"> -->
   <ng-template [ngIf]="showChooseAvatarComponent && !showLoginComponent && !showSignUpComponent  && !showForgetPasswordComponent && !showChangePasswordComponent && !showImpressumComponent && !showPrivacyPoliceComponent">
     <app-sign-up-choose-avatar (accountCreated)="accountCreated()" (backToSignUpClicked)="backToSignUpClicked()"></app-sign-up-choose-avatar>
