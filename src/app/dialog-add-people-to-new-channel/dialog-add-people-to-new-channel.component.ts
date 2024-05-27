@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, Input, Inject } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { Firestore, collection, getDocs, doc, updateDoc, onSnapshot } from '@angular/fire/firestore';
 import { FormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -11,24 +11,24 @@ import { ChannelService } from '../services/channel.service';
 @Component({
   selector: 'app-dialog-add-people-to-new-channel',
   standalone: true,
-  imports: [ FormsModule, CommonModule ],
+  imports: [FormsModule, CommonModule],
   templateUrl: './dialog-add-people-to-new-channel.component.html',
-  styleUrl: './dialog-add-people-to-new-channel.component.scss'
+  styleUrls: ['./dialog-add-people-to-new-channel.component.scss']
 })
-
 export class DialogAddPeopleToNewChannelComponent implements OnInit {
   selectedOption: string = '';
   buttonColor: string = '#686868';
+  isButtonDisabled: boolean = true;
   personName: string = '';
   allUsers: any[] = [];
   filteredUsers: any[] = [];
   channelMember: { userId: string }[] = [];
   selectedUsers: any[] = [];
-  channel: Channel = new Channel(); 
+  channel: Channel = new Channel();
   allChannels: any = [];
   currentChannelId: string = '';
   showUserList: boolean = false;
-  
+
   constructor(private dialogRef: MatDialogRef<DialogAddPeopleToNewChannelComponent>, @Inject(MAT_DIALOG_DATA) public data: { channels: any[] }, private firestoreService: FirestoreService, private channelService: ChannelService, private readonly firestore: Firestore) {
     onSnapshot(collection(this.firestore, 'channels'), (list) => {
       this.allChannels = list.docs.map((doc) => doc.data());
@@ -53,10 +53,6 @@ export class DialogAddPeopleToNewChannelComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  toggleButtonColor(): void {
-    this.buttonColor = this.selectedOption ? '#444DF2' : '#686868';
-  }
-
   selectUser(user: any): void {
     if (!this.selectedUsers.find(u => u.uid === user.uid)) {
       this.selectedUsers.push(user);
@@ -64,6 +60,19 @@ export class DialogAddPeopleToNewChannelComponent implements OnInit {
     }
     this.personName = '';
     this.showUserList = false;
+    this.checkButtonStatus();
+  }
+
+  filterUsers(): void {
+    if (this.personName.trim() !== '') {
+      this.filteredUsers = this.allUsers.filter(user => 
+        user.username.toLowerCase().includes(this.personName.toLowerCase())
+      );
+      this.showUserList = true;
+    } else {
+      this.filteredUsers = [];
+      this.showUserList = false;
+    }
   }
 
   async addUserToChannel() {
@@ -78,29 +87,32 @@ export class DialogAddPeopleToNewChannelComponent implements OnInit {
       await this.channelService.updateChannel(channelDocRef, { users: updatedUsers });
       this.selectedUsers = [];
       this.updatePersonName();
+      this.checkButtonStatus();
     } catch (error) {
       console.error('Fehler beim Hinzufügen der Benutzer zum Kanal:', error);
-    }
-  }
-
-  filterUsers(): void {
-    if (this.personName.trim() !== '') {
-      this.filteredUsers = this.allUsers.filter(user => 
-        user.username.toLowerCase().includes(this.personName.toLowerCase())
-      );
-      this.showUserList = true;  // Dropdown anzeigen
-    } else {
-      this.filteredUsers = [];
-      this.showUserList = false;  // Dropdown ausblenden
     }
   }
 
   removeUser(user: any): void {
     this.selectedUsers = this.selectedUsers.filter(u => u.uid !== user.uid);
     this.updatePersonName();
+    this.checkButtonStatus();
   }
 
   updatePersonName(): void {
     this.personName = this.selectedUsers.map(u => u.username).join(', ');
+  }
+
+  checkButtonStatus(): void {
+    if (this.selectedOption === 'office') {
+      this.buttonColor = '#444DF2';
+      this.isButtonDisabled = false;
+    } else if (this.selectedOption === 'certain' && this.selectedUsers.length > 0) {
+      this.buttonColor = '#444DF2';
+      this.isButtonDisabled = false;
+    } else {
+      this.buttonColor = '#686868';
+      this.isButtonDisabled = true;
+    }
   }
 }

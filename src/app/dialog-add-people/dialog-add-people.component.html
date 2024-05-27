@@ -1,26 +1,36 @@
 <div class="dialog-add-people-container">
-    <div class="dialog-add-people-title"><span>Leute hinzufügen</span><img src="./../../assets/images/close.png" alt="" (click)="closeAddPeopleDialog()"></div>
-    <div class="channel-name"><span>#</span><span>{{ channelService.channelName }}</span></div>
+    <div class="dialog-add-people-title">
+      <span>Leute hinzufügen</span>
+      <img src="./../../assets/images/close.png" alt="" (click)="closeAddPeopleDialog()">
+    </div>
+    <div class="channel-name">
+      <span>#</span><span>{{ channelService.channelName }}</span>
+    </div>
     <div class="custom-input">
-        <div class="selected-users-container">
-            <div *ngFor="let user of selectedUsers" class="selected-user">
-                <img src="{{ user.photo }}" alt="">
-                <span>{{ user.username }}</span>
-                <button (click)="removeUser(user)">X</button>
-            </div>
+      <div class="selected-users-container">
+        <div *ngFor="let user of selectedUsers" class="selected-user">
+          <img src="{{ user.photo }}" alt="">
+          <span>{{ user.username }}</span>
+          <button (click)="removeUser(user)">X</button>
         </div>
-        <input type="text" 
-               [(ngModel)]="personName" 
-               placeholder="Name der Person" 
-               (input)="filterUsers()"
-               (focus)="showUserList = true">
+      </div>
+      <input type="text" 
+             [(ngModel)]="personName" 
+             placeholder="Name der Person" 
+             (input)="filterUsers()"
+             (focus)="showUserList = true">
     </div>
     <div *ngIf="showUserList && filteredUsers.length > 0" class="user-dropdown">
-        <div *ngFor="let user of filteredUsers" class="user-option" (click)="selectUser(user)">
-            <img src="{{ user.photo }}" alt="">{{ user.username }}
-        </div> 
+      <div *ngFor="let user of filteredUsers" class="user-option" (click)="selectUser(user)">
+        <img src="{{ user.photo }}" alt="">{{ user.username }}
+      </div> 
     </div>
     <div class="dialog-add-people-to-new-channel-button">
-        <button [style.background-color]="buttonColor" (click)="addUserToChannel()">Hinzufügen</button>
+      <button 
+        [style.background-color]="buttonColor" 
+        (click)="addUserToChannel()" 
+        [disabled]="selectedUsers.length === 0">
+        Hinzufügen
+      </button>
     </div>
-</div>
+  </div>

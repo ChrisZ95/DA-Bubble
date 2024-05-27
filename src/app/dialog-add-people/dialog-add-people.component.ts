@@ -10,9 +10,9 @@ import { Channel } from './../../models/channel.class';
 @Component({
   selector: 'app-dialog-add-people',
   standalone: true,
-  imports: [ FormsModule, CommonModule ],
+  imports: [FormsModule, CommonModule],
   templateUrl: './dialog-add-people.component.html',
-  styleUrl: './dialog-add-people.component.scss'
+  styleUrls: ['./dialog-add-people.component.scss']
 })
 export class DialogAddPeopleComponent implements OnInit {
   selectedOption: string = '';
@@ -30,7 +30,12 @@ export class DialogAddPeopleComponent implements OnInit {
   currentChannelId: string = '';
   allChannels: any = [];
 
-  constructor(private dialogRef: MatDialogRef<DialogAddPeopleComponent>, private firestoreService: FirestoreService, public channelService: ChannelService, private readonly firestore: Firestore) {
+  constructor(
+    private dialogRef: MatDialogRef<DialogAddPeopleComponent>, 
+    private firestoreService: FirestoreService, 
+    public channelService: ChannelService, 
+    private readonly firestore: Firestore
+  ) {
     onSnapshot(collection(this.firestore, 'channels'), (list) => {
       this.allChannels = list.docs.map((doc) => doc.data());
     });
@@ -61,52 +66,56 @@ export class DialogAddPeopleComponent implements OnInit {
     }
     this.personName = '';
     this.showUserList = false;
+    this.checkButtonStatus();
   }
 
   filterUsers(): void {
     if (this.personName.trim() !== '') {
-        this.filteredUsers = this.allUsers.filter(user => {
-            return user.username.toLowerCase().includes(this.personName.toLowerCase());
-        });
-        this.showUserList = true;
+      this.filteredUsers = this.allUsers.filter(user => {
+        return user.username.toLowerCase().includes(this.personName.toLowerCase());
+      });
+      this.showUserList = true;
     } else {
-        this.filteredUsers = [];
-        this.showUserList = false;
+      this.filteredUsers = [];
+      this.showUserList = false;
     }
-  }
-
-  toggleButtonColor(): void {
-    this.buttonColor = !this.selectedOption ? '#686868' : '#444DF2';
   }
 
   async addUserToChannel() {
     try {
-        const channelDocRef = this.channelService.getChannelDocByID(this.currentChannelId);
-        if (!channelDocRef) {
-            throw new Error('Channel Document Reference is invalid.');
-        }
-        const channelSnap = await getDoc(channelDocRef);
-        if (!channelSnap.exists()) {
-            throw new Error('Channel document does not exist.');
-        }
-        const currentChannelData = channelSnap.data();
-        const currentUsers = currentChannelData['users'] || [];
-        const userIdsToAdd = this.selectedUsers.map(user => user.uid);
-        const updatedUsers = [...new Set([...currentUsers, ...userIdsToAdd])];
-        await this.channelService.updateChannel(channelDocRef, { users: updatedUsers });
-        this.selectedUsers = [];
-        this.updatePersonName();
+      const channelDocRef = this.channelService.getChannelDocByID(this.currentChannelId);
+      if (!channelDocRef) {
+        throw new Error('Channel Document Reference is invalid.');
+      }
+      const channelSnap = await getDoc(channelDocRef);
+      if (!channelSnap.exists()) {
+        throw new Error('Channel document does not exist.');
+      }
+      const currentChannelData = channelSnap.data();
+      const currentUsers = currentChannelData['users'] || [];
+      const userIdsToAdd = this.selectedUsers.map(user => user.uid);
+      const updatedUsers = [...new Set([...currentUsers, ...userIdsToAdd])];
+      await this.channelService.updateChannel(channelDocRef, { users: updatedUsers });
+      this.selectedUsers = [];
+      this.updatePersonName();
+      this.checkButtonStatus();
+      this.dialogRef.close();
     } catch (error) {
-        console.error('Fehler beim Hinzufügen der Benutzer zum Kanal:', error);
+      console.error('Fehler beim Hinzufügen der Benutzer zum Kanal:', error);
     }
-}
+  }
 
   removeUser(user: any): void {
     this.selectedUsers = this.selectedUsers.filter(u => u.uid !== user.uid);
     this.updatePersonName();
+    this.checkButtonStatus();
   }
 
   updatePersonName(): void {
     this.personName = this.selectedUsers.map(u => u.username).join(', ');
+  }
+
+  checkButtonStatus(): void {
+    this.buttonColor = this.selectedUsers.length > 0 ? '#444DF2' : '#686868';
   }
 }
