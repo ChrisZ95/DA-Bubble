@@ -329,6 +329,166 @@
   }
 }
 
+@media screen and (max-width: 650px) and (min-height: 1050px) {
+
+  .log-in-card-container {
+
+    .log-in-card {
+     width: 90vw;
+
+      .card-input-section {
+
+        .input-container {
+          width: 80vw;
+          height: 60px;
+
+          input {
+            width: 55vw;
+          }
+        }
+
+        .pseudo {
+
+          .input-information {
+
+            width: 70vw;
+          }
+        }
+      }
+
+      .seperation-line {
+
+        .line {
+          width: 30vw;
+        }
+      }
+
+      .google-login-container {
+
+        .google-button {
+          width: 80vw;
+
+          img {
+            height: 34px;
+            width: 34px;
+          }
+        }
+      }
+
+      .login-button-container {
+
+        .user-login {
+          width: 35vw;
+        }
+
+        .guest-login {
+          width: 35vw;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 480px) and (min-height:  1050px){
+
+  .log-in-card-container {
+
+    .log-in-card {
+
+      .card-header-section {
+        padding-top: 20px;
+
+          h1 {
+            font-size: 30px;
+          }
+
+          span {
+            font-size: 14px;
+          }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 400px) and (min-height: 1050px){
+
+  .log-in-card-container {
+
+    .log-in-card {
+
+      .card-header-section {
+
+          h1 {
+            font-size: 28px;
+          }
+
+          span {
+            font-size: 12px;
+          }
+      }
+
+      .card-input-section {
+
+        .input-container {
+
+          input {
+            font-size: 14px;
+          }
+        }
+
+        .pseudo {
+
+          .input-information {
+          font-size: 10px;
+          }
+        }
+      }
+    }
+  }
+}
+
+
+@media screen and (max-width: 340px) and (min-height:  1050px){
+
+  .log-in-card-container {
+
+    .log-in-card {
+
+      .card-header-section {
+
+          h1 {
+            font-size: 28px;
+          }
+
+          span {
+            font-size: 10px;
+          }
+      }
+
+      .card-input-section {
+
+        .input-container {
+
+          input {
+            font-size: 14px;
+          }
+        }
+      }
+
+      .login-button-container {
+
+        .user-login {
+          font-size: 16px;
+        }
+
+        .guest-login {
+          font-size: 16px;
+        }
+      }
+    }
+  }
+}
+
 @media screen and (max-width: 650px) and (max-height: 1050px) {
 
   .log-in-card-container {

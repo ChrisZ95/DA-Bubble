@@ -578,3 +578,107 @@
     }
   }
 }
+
+@media screen and (max-height: 950px) and (min-width: 850px){
+  .log-in-card-container {
+
+    .log-in-card {
+      height: 600px;
+
+      .loading-screen {
+        height: 600px;
+      }
+
+      .card-header-section {
+        padding-top: 10px;
+        gap: 0px;
+
+          h1 {
+            font-size: 40px;
+          }
+      }
+
+      .chosen-avatar {
+        padding-top: 0px;
+
+        h1 {
+          font-size: 28px;
+        }
+      }
+
+      .choose-avatar-list {
+        width: 530px;
+
+        .pseudo {
+          height: 10px;
+        }
+
+        .input-information {
+          font-size: 14px;
+        }
+
+        span {
+          font-size: 16px;
+          padding-top: 20px;
+        }
+      }
+
+      .continue-button-container {
+        margin-top: 0px;
+      }
+    }
+  }
+}
+
+@media screen and (max-height: 950px) and (max-width: 850px){
+  .log-in-card-container {
+
+    .log-in-card {
+      height: 600px;
+      width: 90vw;
+
+      .loading-screen {
+        height: 600px;
+        width: 90vw;
+      }
+
+      .card-header-section {
+        padding-top: 10px;
+        gap: 0px;
+      }
+
+      .chosen-avatar {
+        padding-top: 0px;
+
+        h1 {
+          font-size: 28px;
+        }
+      }
+
+      .choose-avatar-list {
+        width: 80vw;
+
+        .input-information {
+          width: 70vw;
+        }
+
+        .pseudo {
+          height: 10px;
+        }
+
+        .input-information {
+          font-size: 14px;
+        }
+
+        span {
+          font-size: 16px;
+          padding-top: 20px;
+        }
+      }
+
+      .continue-button-container {
+        margin-top: 15px;
+      }
+    }
+  }
+}
