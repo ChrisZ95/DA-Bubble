@@ -46,7 +46,14 @@ import { User } from '../models/user.class';
 import { Channel } from '../models/channel.class';
 import { Router } from '@angular/router';
 import { log } from 'console';
-import { BehaviorSubject } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  debounceTime,
+  fromEvent,
+  switchMap,
+  timer,
+} from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -69,13 +76,69 @@ export class FirestoreService {
   allUsers: any;
   constructor(private myFirebaseApp: FirebaseApp, public router: Router) {
     this.auth = getAuth(myFirebaseApp);
-    console.log('Auth dokument', this.auth);
+    // console.log('Auth dokument', this.auth);
     this.auth.languageCode = 'de';
     this.firestore = getFirestore(myFirebaseApp);
     const provider = new GoogleAuthProvider();
     this.currentuid = localStorage.getItem('uid');
-    console.log('ausgeloggte uid', this.currentuid);
+    // console.log('ausgeloggte uid', this.currentuid);
     this.initializeAuthState();
+
+    //Adrian
+    const mouseMove$ = fromEvent(document, 'mousemove');
+    this.idleTimer$ = mouseMove$.pipe(
+      debounceTime(500),
+      switchMap(() => timer(500))
+    );
+    this.mouseMoveAfterIdle$ = this.idleTimer$.pipe(
+      switchMap(() => mouseMove$),
+      debounceTime(100)
+    );
+    this.noMouseMoveIdle$ = mouseMove$.pipe(
+      debounceTime(300000),
+      switchMap(() => timer(500))
+    );
+    const keyPress$ = fromEvent(document, 'keydown');
+    this.idleTimer$ = keyPress$.pipe(
+      debounceTime(500),
+      switchMap(() => timer(500))
+    );
+    this.keyPressAfterIdle$ = this.idleTimer$.pipe(
+      switchMap(() => keyPress$),
+      debounceTime(100)
+    );
+    this.noKeyPressIdle$ = keyPress$.pipe(
+      debounceTime(300000),
+      switchMap(() => timer(500))
+    );
+    // this.usersRef = realTimedb.list('users');
+    // this.users = this.usersRef
+    //   .snapshotChanges()
+    //   .pipe(
+    //     map((changes) =>
+    //       changes.map((c) => ({ key: c.payload.key, ...c.payload.val() }))
+    //     )
+    //   ); // Chaining
+  }
+  idleTimer$: Observable<any>;
+  mouseMoveAfterIdle$: Observable<any>;
+  noMouseMoveIdle$: Observable<any>;
+  keyPressAfterIdle$: Observable<any>;
+  noKeyPressIdle$: Observable<any>;
+  isUserIdle(): Observable<any> {
+    return this.idleTimer$;
+  }
+  onMouseMoveAfterIdle(): Observable<void> {
+    return this.mouseMoveAfterIdle$;
+  }
+  noMouseMoveAfterIdle(): Observable<void> {
+    return this.noMouseMoveIdle$;
+  }
+  onKeyPressAfterIdle(): Observable<void> {
+    return this.keyPressAfterIdle$;
+  }
+  noKeyPressAfterIdle(): Observable<void> {
+    return this.noKeyPressIdle$;
   }
 
   initializeAuthState() {
@@ -116,13 +179,16 @@ export class FirestoreService {
   }
 
   async deleteUserIcon(currentUserIcon: string, currentUserId: string) {
-    console.log(currentUserIcon)
-    if(currentUserIcon === 'https://firebasestorage.googleapis.com/v0/b/dabubble-180.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(0).png?alt=media&token=084e1046-d86a-492a-9d3a-d067185b78b3'
-     || 'https://firebasestorage.googleapis.com/v0/b/dabubble-180.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(1).png?alt=media&token=d4ce52b2-3bc9-48fd-9021-912002d298ee'
-     || 'https://firebasestorage.googleapis.com/v0/b/dabubble-180.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(2).png?alt=media&token=e8f80f22-1fef-49ad-91a1-818223fb0d69'
-     || 'https://firebasestorage.googleapis.com/v0/b/dabubble-180.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(3).png?alt=media&token=41950865-ed8c-4797-bf85-942d72833899'
-     || 'https://firebasestorage.googleapis.com/v0/b/dabubble-180.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(4).png?alt=media&token=84f4dfc3-08ba-469e-8792-783b1a504d4b'
-     || 'https://firebasestorage.googleapis.com/v0/b/dabubble-180.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(5).png?alt=media&token=3acc0648-eff2-422a-80c6-a0400a7c0351') {
+    console.log(currentUserIcon);
+    if (
+      currentUserIcon ===
+        'https://firebasestorage.googleapis.com/v0/b/dabubble-180.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(0).png?alt=media&token=084e1046-d86a-492a-9d3a-d067185b78b3' ||
+      'https://firebasestorage.googleapis.com/v0/b/dabubble-180.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(1).png?alt=media&token=d4ce52b2-3bc9-48fd-9021-912002d298ee' ||
+      'https://firebasestorage.googleapis.com/v0/b/dabubble-180.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(2).png?alt=media&token=e8f80f22-1fef-49ad-91a1-818223fb0d69' ||
+      'https://firebasestorage.googleapis.com/v0/b/dabubble-180.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(3).png?alt=media&token=41950865-ed8c-4797-bf85-942d72833899' ||
+      'https://firebasestorage.googleapis.com/v0/b/dabubble-180.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(4).png?alt=media&token=84f4dfc3-08ba-469e-8792-783b1a504d4b' ||
+      'https://firebasestorage.googleapis.com/v0/b/dabubble-180.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(5).png?alt=media&token=3acc0648-eff2-422a-80c6-a0400a7c0351'
+    ) {
     } else {
       const storage = getStorage();
       const desertRef = ref(storage, currentUserIcon);
@@ -370,7 +436,6 @@ export class FirestoreService {
   async getAllUsers(): Promise<User[]> {
     try {
       const usersCollection = collection(this.firestore, 'users');
-      console.log(usersCollection);
       const usersSnapshot = await getDocs(usersCollection);
       const users: User[] = usersSnapshot.docs.map((doc) => doc.data() as User);
       return users;
@@ -628,5 +693,9 @@ export class FirestoreService {
     this.newDate = Date.now();
     console.log(this.newDate);
     return this.newDate;
+  }
+  
+  updateActiveStatus(key: string, value: any): void {
+    // this.usersRef.update(key, { activeStatus: value });
   }
 }

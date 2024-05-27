@@ -82,8 +82,7 @@ export class WorkspaceComponent implements OnInit {
     this.firestoreService
       .getAllUsers()
       .then((users) => {
-        this.allUsers = users;
-        console.log('allUsers', this.allUsers);
+        this.allUsers = users;;
       })
       .catch((error) => {
         console.error('Error fetching users:', error);

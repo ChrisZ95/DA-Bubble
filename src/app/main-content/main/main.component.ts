@@ -26,6 +26,7 @@ import { EmptychatComponent } from '../../chats/emptychat/emptychat.component';
 import { FirestoreService } from '../../firestore.service';
 import { ChatService } from '../../services/chat.service';
 import { ThreadService } from '../../services/thread.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-main',
@@ -117,5 +118,52 @@ export class MainComponent implements OnInit {
     this.userDetails = userDetails;
   }
 
-  ngOnInit(): void {}
+  handleIdle() {
+    let key = this.firestoreService.currentuid;
+    let status = 'away';
+    this.firestoreService.updateActiveStatus(key, status);
+  }
+  handleActive() {
+    let key = this.firestoreService.currentuid;
+    let status = 'active';
+    this.firestoreService.updateActiveStatus(key, status);
+  }
+
+  isIdle: number = 0;
+  idleSubscription!: Subscription;
+  activityAfterIdleSubscription!: Subscription;
+  mouseMoveSubscription!: Subscription;
+  noMouseMove!: Subscription;
+  keyPressSubscription!: Subscription;
+  noKeyPress!: Subscription;
+  ngOnInit(): void {
+    this.idleSubscription = this.firestoreService
+      .isUserIdle()
+      .subscribe((idle) => {});
+    this.noMouseMove = this.firestoreService
+      .noMouseMoveAfterIdle()
+      .subscribe(() => {
+        this.handleIdle();
+      });
+    this.mouseMoveSubscription = this.firestoreService
+      .onMouseMoveAfterIdle()
+      .subscribe(() => {
+        this.handleActive();
+      });
+
+    this.noKeyPress = this.firestoreService
+      .noKeyPressAfterIdle()
+      .subscribe(() => {
+        this.handleIdle();
+      });
+    this.keyPressSubscription = this.firestoreService
+      .onKeyPressAfterIdle()
+      .subscribe(() => {
+        this.handleActive();
+      });
+  }
+  ngOnDestroy(): void {
+    this.idleSubscription.unsubscribe();
+    // this.activityAfterIdleSubscription.unsubscribe();
+  }
 }

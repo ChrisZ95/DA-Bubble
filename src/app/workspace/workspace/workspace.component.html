@@ -31,7 +31,9 @@
         <div *ngFor="let user of allUsers, let i = index">
             <div class="user" (click)="openChat(user)">
                 <img src="./../../../assets/images/avatar.png" alt="Avatar">
-                <div>{{ user.username }}</div>
+                <div>{{ user.username }}
+                <div class="active-circle"></div>
+                </div>
             </div>
         </div>
     </div>
