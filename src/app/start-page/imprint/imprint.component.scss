@@ -77,3 +77,209 @@
     }
   }
 }
+
+@media screen and (min-height: 1100px) {
+  .forgot-password-card-container {
+    margin-top: 100px;
+  }
+}
+
+@media screen and (max-width: 850px) {
+  .imprint-card-container {
+
+    .imprint-card {
+      width: 90vw;
+      height: 400px;
+
+      .back-to-log-in-button {
+        right: 35vw;
+      }
+
+      .info-container-one {
+        margin-top: 60px;
+        margin-left: 80px;
+
+        h1 {
+          font-size: 46px;
+        }
+
+        span {
+          font-size: 18px;
+        }
+      }
+
+      .info-container-two {
+        margin-top: 60px;
+        margin-left: 80px;
+
+        h1 {
+          font-size: 46px;
+        }
+
+        span {
+          font-size: 18px;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .imprint-card-container {
+
+    .imprint-card {
+      width: 90vw;
+      height: 300px;
+
+      .back-to-log-in-button {
+        right: 35vw;
+      }
+
+      .info-container-one {
+        margin-top: 20px;
+        margin-left: 80px;
+
+        h1 {
+          font-size: 40px;
+        }
+
+        span {
+          font-size: 14px;
+        }
+      }
+
+      .info-container-two {
+        margin-top: 20px;
+        margin-left: 80px;
+
+        h1 {
+          font-size: 40px;
+        }
+
+        span {
+          font-size: 14px;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .imprint-card-container {
+
+    .imprint-card {
+      width: 90vw;
+      height: 300px;
+
+      .back-to-log-in-button {
+        right: 35vw;
+      }
+
+      .info-container-one {
+        margin-top: 20px;
+        margin-left: 80px;
+
+        h1 {
+          font-size: 30px;
+        }
+
+        span {
+          font-size: 12px;
+        }
+      }
+
+      .info-container-two {
+        margin-top: 20px;
+        margin-left: 80px;
+
+        h1 {
+          font-size: 30px;
+        }
+
+        span {
+          font-size: 12px;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 440px) {
+  .imprint-card-container {
+
+    .imprint-card {
+      width: 90vw;
+      height: 300px;
+
+      .back-to-log-in-button {
+        right: 35vw;
+      }
+
+      .info-container-one {
+        margin-top: 20px;
+        margin-left: 20px;
+
+        h1 {
+          font-size: 30px;
+        }
+
+        span {
+          font-size: 12px;
+        }
+      }
+
+      .info-container-two {
+        margin-top: 20px;
+        margin-left: 20px;
+
+        h1 {
+          font-size: 30px;
+        }
+
+        span {
+          font-size: 12px;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 380px) {
+  .imprint-card-container {
+
+    .imprint-card {
+      width: 90vw;
+      height: 300px;
+
+      .back-to-log-in-button {
+        right: 35vw;
+      }
+
+      .info-container-one {
+        margin-top: 20px;
+        margin-left: 20px;
+
+        h1 {
+          font-size: 26px;
+        }
+
+        span {
+          font-size: 10px;
+        }
+      }
+
+      .info-container-two {
+        margin-top: 20px;
+        margin-left: 20px;
+
+        h1 {
+          font-size: 26px;
+        }
+
+        span {
+          font-size: 10px;
+        }
+      }
+    }
+  }
+}

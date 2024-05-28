@@ -8,14 +8,14 @@
   </div> -->
   <app-start-side-header [showSignUp]="showSignUpComponent"  [showChooseAvatar]="showChooseAvatarComponent"  (signUpClicked)="signUpClicked()" (backToLoginClicked)="backToLoginClicked()"></app-start-side-header>
 
-  <ng-template [ngIf]="showLoginComponent && !showSignUpComponent && !showChooseAvatarComponent && !showForgetPasswordComponent && !showChangePasswordComponent&& !showImpressumComponent && !showPrivacyPoliceComponent">
+  <!-- <ng-template [ngIf]="showLoginComponent && !showSignUpComponent && !showChooseAvatarComponent && !showForgetPasswordComponent && !showChangePasswordComponent&& !showImpressumComponent && !showPrivacyPoliceComponent">
     <app-log-in (forgotPassword)="forgotPassword()"></app-log-in>
-  </ng-template>
+  </ng-template> -->
 
   <!-- <ng-template [ngIf]="showLoginComponent && !showSignUpComponent && !showChooseAvatarComponent && !showForgetPasswordComponent && !showChangePasswordComponent&& !showImpressumComponent && !showPrivacyPoliceComponent"> -->
-  <ng-template [ngIf]="showSignUpComponent && !showLoginComponent && !showChooseAvatarComponent  && !showForgetPasswordComponent && !showChangePasswordComponent && !showImpressumComponent && !showPrivacyPoliceComponent">
+  <!-- <ng-template [ngIf]="showSignUpComponent && !showLoginComponent && !showChooseAvatarComponent  && !showForgetPasswordComponent && !showChangePasswordComponent && !showImpressumComponent && !showPrivacyPoliceComponent">
     <app-sign-up (backToLoginClicked)="backToLoginClicked()" (continueToChooseAvatar)="continueToChooseAvatar()" (openPrivacyPolice)="openPrivacyPolice()"></app-sign-up>
-  </ng-template>
+  </ng-template> -->
 
   <!-- <ng-template [ngIf]="showLoginComponent && !showSignUpComponent && !showChooseAvatarComponent && !showForgetPasswordComponent && !showChangePasswordComponent&& !showImpressumComponent && !showPrivacyPoliceComponent"> -->
   <ng-template [ngIf]="showChooseAvatarComponent && !showLoginComponent && !showSignUpComponent  && !showForgetPasswordComponent && !showChangePasswordComponent && !showImpressumComponent && !showPrivacyPoliceComponent">
@@ -31,7 +31,8 @@
     <app-change-passwort (forgotPassword)="forgotPassword()"></app-change-passwort>
   </ng-template>
 
-  <ng-template [ngIf]="showImpressumComponent && !showChangePasswordComponent && !showForgetPasswordComponent && !showLoginComponent && !showSignUpComponent && !showChooseAvatarComponent && !showPrivacyPoliceComponent">
+  <!-- <ng-template [ngIf]="showImpressumComponent && !showChangePasswordComponent && !showForgetPasswordComponent && !showLoginComponent && !showSignUpComponent && !showChooseAvatarComponent && !showPrivacyPoliceComponent"> -->
+    <ng-template [ngIf]="showLoginComponent && !showSignUpComponent && !showChooseAvatarComponent && !showForgetPasswordComponent && !showChangePasswordComponent&& !showImpressumComponent && !showPrivacyPoliceComponent">
     <app-imprint (backToLoginClicked)="backToLoginClicked()"></app-imprint>
   </ng-template>
 
