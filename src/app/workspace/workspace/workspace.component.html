@@ -32,10 +32,15 @@
         <div class="user" (click)="openChat(currentUser)">
             <img src="./../../../assets/images/avatar.png" alt="Avatar">
             <div>{{ currentUser?.username }} (you)
-                <div class="active-circle" [ngClass]="userStatus"></div>
+                <div class="active-circle" [ngClass]="userStatus">
+                    <select (change)="changeStatus($event)">
+                        <option value="active" [selected]="userStatus === 'active'">Active</option>
+                        <option value="away" [selected]="userStatus === 'away'">Away</option>
+                        <option value="busy" [selected]="userStatus === 'busy'">Busy</option>
+                    </select>
+                </div>
             </div>
         </div>
-
 
         <div *ngFor="let user of otherUsers, let i = index">
             <div class="user" (click)="openChat(user)">

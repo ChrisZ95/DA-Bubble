@@ -105,6 +105,16 @@ export class WorkspaceComponent implements OnInit {
       });
   }
 
+  changeStatus(event: Event) {
+    const newStatus = (event.target as HTMLSelectElement).value;
+    this.firestoreService
+      .setUserStatus(this.firestoreService.currentuid, newStatus)
+      .then(() => {
+        this.userStatus = newStatus;
+        console.log('Status updated to:', newStatus);
+      });
+  }
+
   ngOnInit(): void {
     this.getallUsers();
     this.channelService.getChannels().then((channels) => {
@@ -112,12 +122,12 @@ export class WorkspaceComponent implements OnInit {
       this.filterChannels();
     });
 
-    let currentuid = this.firestoreService.currentuid;
-    this.userStatus$ = this.firestoreService.getUserStatus(currentuid);
+    this.userStatus$ = this.firestoreService.getUserStatus(
+      this.firestoreService.currentuid
+    );
 
     this.userStatus$.subscribe((status: any) => {
       this.userStatus = status;
-      console.log('userStatus', this.userStatus);
     });
   }
 

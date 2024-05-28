@@ -541,6 +541,7 @@ export class FirestoreService {
       }
     }
   }
+  //Formeln werden noch verschoben
   userStatus$!: Observable<string>;
   setData(path: string, data: any) {
     const dbRef = reference(this.rdb, path);
@@ -558,6 +559,10 @@ export class FirestoreService {
         observer.next(snapshot.val());
       });
     });
+  }
+  setUserStatus(uid: string, status: string) {
+    const statusRef = reference(this.rdb, `users/${uid}/active`);
+    return set(statusRef, status);
   }
 
   /* Nutzer wird eingeloggt */
