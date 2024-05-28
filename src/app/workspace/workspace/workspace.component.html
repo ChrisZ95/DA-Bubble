@@ -30,8 +30,8 @@
     <div class="users scrollbar">
 
         <div class="user" (click)="openChat(currentUser)">
-            <img src="./../../../assets/images/avatar.png" alt="Avatar">
-            <div>{{ currentUser?.username }} (you)
+            <img class="user-icon" src="{{ currentUser.photo }}">
+            <div>{{ currentUser?.username }} ( Du )
                 <div class="active-circle" [ngClass]="userStatus">
                     <select (change)="changeStatus($event)">
                         <option value="active" [selected]="userStatus === 'active'">Active</option>
@@ -44,7 +44,7 @@
 
         <div *ngFor="let user of otherUsers, let i = index">
             <div class="user" (click)="openChat(user)">
-                <img src="./../../../assets/images/avatar.png" alt="Avatar">
+              <img id="user-icon" class="user-icon" src="{{ user.photo }}" alt="User Icon" onerror="this.onerror=null;this.src='./../../../assets/images/Property 1=Default (8).png'">
                 <div>{{ user.username }}
                     <!-- <div class="active-circle"></div> -->
                 </div>

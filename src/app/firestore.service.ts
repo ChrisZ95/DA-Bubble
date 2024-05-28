@@ -546,7 +546,7 @@ export class FirestoreService {
   setData(path: string, data: any) {
     const dbRef = reference(this.rdb, path);
     return from(set(dbRef, data));
-    
+
   }
   pushData(path: string, data: any) {
     const dbRef = reference(this.rdb, path);
