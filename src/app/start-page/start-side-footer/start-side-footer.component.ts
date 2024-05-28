@@ -15,6 +15,7 @@ export class StartSideFooterComponent {
 
   @Input() showSignUp: boolean = true;
   @Input() showChooseAvatar: boolean = true;
+  @Input() showForgetPassword: boolean = true;
 
   openImpressumComponent() {
     this.openImpressum.emit();

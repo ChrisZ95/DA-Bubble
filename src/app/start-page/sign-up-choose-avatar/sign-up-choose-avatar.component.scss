@@ -1196,14 +1196,14 @@
   }
 }
 
-@media screen and (max-height: 780px) and (max-width: 850px){
+@media screen and (max-height: 780px) and (min-width: 850px){
   .log-in-card-container {
 
     .log-in-card {
-      height: 550px;
+      height: 500px;
 
       .loading-screen {
-        height: 550px;
+        height: 500px;
       }
 
       .card-header-section {
@@ -1273,6 +1273,175 @@
 
       .continue-button-container {
         margin-top: 20px;
+
+        .continue-button {
+          font-size: 16px;
+          width: 120px;
+          height: 40px;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-height: 690px) and (min-width: 850px){
+  .log-in-card-container {
+
+    .log-in-card {
+      height: 450px;
+
+      .loading-screen {
+        height: 450px;
+      }
+
+      .card-header-section {
+        padding-top: 10px;
+        gap: 0px;
+
+        h1 {
+          font-size: 22px;
+        }
+      }
+
+      .chosen-avatar {
+        padding-top: 0px;
+
+        .user-icon {
+          height: 90px;
+          width: 90px;
+        }
+
+        .custom-user-icon {
+          height: 90px;
+          width: 90px;
+        }
+      }
+
+      .choose-avatar-list {
+        padding-top: 10px;
+
+        .avatar-list {
+          height: 60px;
+          padding-top: 20px;
+
+          .avatar-item {
+
+            img {
+              height: 60px;
+              width: auto;
+            }
+          }
+        }
+
+        .upload-custom-image {
+          margin-top: 35px;
+
+          .choose-image-label {
+            padding: 5px 10px;
+            font-size: 16px;
+          }
+        }
+
+        .pseudo {
+          height: 10px;
+        }
+
+        .input-information {
+          font-size: 14px;
+        }
+
+        span {
+          font-size: 16px;
+          padding-top: 20px;
+        }
+      }
+
+      .continue-button-container {
+        margin-top: 10px;
+
+        .continue-button {
+          font-size: 16px;
+          width: 120px;
+          height: 40px;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-height: 640px) and (min-width: 850px){
+  .log-in-card-container {
+
+    .log-in-card {
+      height: 400px;
+
+      .loading-screen {
+        height: 400px;
+      }
+
+      .card-header-section {
+        padding-top: 0px;
+        gap: 0px;
+
+        h1 {
+          font-size: 20px;
+        }
+      }
+
+      .chosen-avatar {
+        padding-top: 0px;
+
+        .user-icon {
+          height: 80px;
+          width: 80px;
+        }
+
+        .custom-user-icon {
+          height: 80px;
+          width: 80px;
+        }
+      }
+
+      .choose-avatar-list {
+
+        .avatar-list {
+          height: 60px;
+          padding-top: 20px;
+
+          .avatar-item {
+
+            img {
+              height: 60px;
+              width: auto;
+            }
+          }
+        }
+
+        .upload-custom-image {
+          margin-top: 35px;
+
+          .choose-image-label {
+            padding: 5px 5px;
+            font-size: 14px;
+          }
+        }
+
+        .pseudo {
+          height: 0px;
+        }
+
+        .input-information {
+          font-size: 14px;
+        }
+
+        span {
+          font-size: 12px;
+          padding-top: 20px;
+        }
+      }
+
+      .continue-button-container {
+        margin-top: 0px;
 
         .continue-button {
           font-size: 16px;
