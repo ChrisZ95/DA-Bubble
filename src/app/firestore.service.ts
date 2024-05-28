@@ -116,7 +116,7 @@ export class FirestoreService {
       debounceTime(100)
     );
     this.noMouseMoveIdle$ = mouseMove$.pipe(
-      debounceTime(300),
+      debounceTime(30000),
       switchMap(() => timer(500))
     );
     const keyPress$ = fromEvent(document, 'keydown');
@@ -129,25 +129,16 @@ export class FirestoreService {
       debounceTime(100)
     );
     this.noKeyPressIdle$ = keyPress$.pipe(
-      debounceTime(300),
+      debounceTime(30000),
       switchMap(() => timer(500))
     );
 
-    // this.usersRef = realTimedb.list('users');
-    // this.allUsers = this.usersRef
-    //   .snapshotChanges()
-    //   .pipe(
-    //     map((changes: any) =>
-    //       changes.map((c: any) => ({ key: c.payload.key, ...c.payload.val() }))
-    //     )
-    //   ); // Chaining
   }
   idleTimer$: Observable<any>;
   mouseMoveAfterIdle$: Observable<any>;
   noMouseMoveIdle$: Observable<any>;
   keyPressAfterIdle$: Observable<any>;
   noKeyPressIdle$: Observable<any>;
-  usersRef: any;
   isUserIdle(): Observable<any> {
     return this.idleTimer$;
   }
