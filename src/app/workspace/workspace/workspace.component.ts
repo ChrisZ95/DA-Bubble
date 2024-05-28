@@ -58,6 +58,8 @@ export class WorkspaceComponent implements OnInit {
 
   @Output() userDetails = new EventEmitter<string>();
   @Output() disyplayEmptyChat = new EventEmitter<boolean>();
+  userStatus$: any;
+  userStatus: any = 'active';
 
   openCreateChannelDialog() {
     this.dialog.open(DialogCreateChannelComponent);
@@ -109,7 +111,14 @@ export class WorkspaceComponent implements OnInit {
       this.allChannels = channels;
       this.filterChannels();
     });
-    console.log('Aktueller User ist:', this.firestoreService.currentuid);
+
+    let currentuid = this.firestoreService.currentuid;
+    this.userStatus$ = this.firestoreService.getUserStatus(currentuid);
+
+    this.userStatus$.subscribe((status: any) => {
+      this.userStatus = status;
+      console.log('userStatus', this.userStatus);
+    });
   }
 
   filterChannels() {

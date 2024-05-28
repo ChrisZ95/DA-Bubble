@@ -105,7 +105,7 @@ export class FirestoreService {
     // console.log('ausgeloggte uid', this.currentuid);
     this.initializeAuthState();
 
-    //Adrian
+    //Adrian wird noch in einen anderen Service verschoben
     const mouseMove$ = fromEvent(document, 'mousemove');
     this.idleTimer$ = mouseMove$.pipe(
       debounceTime(500),
@@ -132,7 +132,6 @@ export class FirestoreService {
       debounceTime(30000),
       switchMap(() => timer(500))
     );
-
   }
   idleTimer$: Observable<any>;
   mouseMoveAfterIdle$: Observable<any>;
@@ -542,18 +541,24 @@ export class FirestoreService {
       }
     }
   }
+  userStatus$!: Observable<string>;
   setData(path: string, data: any) {
     const dbRef = reference(this.rdb, path);
     return from(set(dbRef, data));
+    
   }
   pushData(path: string, data: any) {
     const dbRef = reference(this.rdb, path);
     return from(push(dbRef, data));
   }
-  testObject = {
-    name: 'name',
-    age: 123,
-  };
+  getUserStatus(uid: string): Observable<any> {
+    const statusRef = reference(this.rdb, `users/${uid}/active`);
+    return new Observable((observer) => {
+      onValue(statusRef, (snapshot) => {
+        observer.next(snapshot.val());
+      });
+    });
+  }
 
   /* Nutzer wird eingeloggt */
   async logInUser(

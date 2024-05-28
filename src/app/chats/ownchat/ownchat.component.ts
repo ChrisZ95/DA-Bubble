@@ -37,6 +37,7 @@ export class OwnchatComponent implements OnChanges, OnInit {
   messages: any = [];
   allUsers: any = [];
 
+
   openMemberDialog() {
     this.dialog.open(DialogMembersComponent);
   }
