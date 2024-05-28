@@ -51,9 +51,26 @@ import {
   Observable,
   debounceTime,
   fromEvent,
+  map,
   switchMap,
   timer,
+  from,
 } from 'rxjs';
+// import {
+//   AngularFireDatabase,
+//   AngularFireList,
+// } from '@angular/fire/compat/database';
+import {
+  Database,
+  ref as reference,
+  set,
+  get,
+  child,
+  onValue,
+  push,
+  update,
+  remove,
+} from '@angular/fire/database';
 
 @Injectable({
   providedIn: 'root',
@@ -74,7 +91,11 @@ export class FirestoreService {
   logInUid: any;
 
   allUsers: any;
-  constructor(private myFirebaseApp: FirebaseApp, public router: Router) {
+  constructor(
+    private myFirebaseApp: FirebaseApp,
+    public router: Router, // private realTimedb: AngularFireDatabase
+    private rdb: Database
+  ) {
     this.auth = getAuth(myFirebaseApp);
     // console.log('Auth dokument', this.auth);
     this.auth.languageCode = 'de';
@@ -95,7 +116,7 @@ export class FirestoreService {
       debounceTime(100)
     );
     this.noMouseMoveIdle$ = mouseMove$.pipe(
-      debounceTime(300000),
+      debounceTime(300),
       switchMap(() => timer(500))
     );
     const keyPress$ = fromEvent(document, 'keydown');
@@ -108,15 +129,16 @@ export class FirestoreService {
       debounceTime(100)
     );
     this.noKeyPressIdle$ = keyPress$.pipe(
-      debounceTime(300000),
+      debounceTime(300),
       switchMap(() => timer(500))
     );
+
     // this.usersRef = realTimedb.list('users');
-    // this.users = this.usersRef
+    // this.allUsers = this.usersRef
     //   .snapshotChanges()
     //   .pipe(
-    //     map((changes) =>
-    //       changes.map((c) => ({ key: c.payload.key, ...c.payload.val() }))
+    //     map((changes: any) =>
+    //       changes.map((c: any) => ({ key: c.payload.key, ...c.payload.val() }))
     //     )
     //   ); // Chaining
   }
@@ -125,6 +147,7 @@ export class FirestoreService {
   noMouseMoveIdle$: Observable<any>;
   keyPressAfterIdle$: Observable<any>;
   noKeyPressIdle$: Observable<any>;
+  usersRef: any;
   isUserIdle(): Observable<any> {
     return this.idleTimer$;
   }
@@ -528,6 +551,18 @@ export class FirestoreService {
       }
     }
   }
+  setData(path: string, data: any) {
+    const dbRef = reference(this.rdb, path);
+    return from(set(dbRef, data));
+  }
+  pushData(path: string, data: any) {
+    const dbRef = reference(this.rdb, path);
+    return from(push(dbRef, data));
+  }
+  testObject = {
+    name: 'name',
+    age: 123,
+  };
 
   /* Nutzer wird eingeloggt */
   async logInUser(
@@ -549,6 +584,10 @@ export class FirestoreService {
         logIndate: logIndate,
       });
       this.setCurrentUid(userCredential.user.uid);
+      this.setData(`users/${userCredential.user.uid}`, {
+        uid: userCredential.user.uid,
+        active: 'active',
+      });
       localStorage.setItem('uid', userCredential.user.uid);
       console.log('User log in erfolgreich');
       this.observeAuthState();
@@ -694,8 +733,13 @@ export class FirestoreService {
     console.log(this.newDate);
     return this.newDate;
   }
-  
+
   updateActiveStatus(key: string, value: any): void {
+    let status = {
+      uid: key,
+      active: value,
+    };
+    this.setData(`users/${key}`, status);
     // this.usersRef.update(key, { activeStatus: value });
   }
 }

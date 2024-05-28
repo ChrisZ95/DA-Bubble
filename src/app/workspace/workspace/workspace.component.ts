@@ -37,6 +37,9 @@ export class WorkspaceComponent implements OnInit {
   allChannels: any = [];
   filteredChannels: any[] = [];
   allUsers: any[] = [];
+  currentUid: any;
+  currentUser: any;
+  otherUsers: any = [];
   selectedChannelName: string | null = null;
   currentChannelId: string = '';
 
@@ -78,15 +81,30 @@ export class WorkspaceComponent implements OnInit {
     this.userDetails.emit(user);
   }
 
-  ngOnInit(): void {
+  getallUsers() {
     this.firestoreService
       .getAllUsers()
       .then((users) => {
-        this.allUsers = users;;
+        this.allUsers = users;
+        this.currentUid = this.firestoreService.currentuid;
+        for (let user of this.allUsers) {
+          if (user.uid === this.currentUid) {
+            this.currentUser = user;
+          } else {
+            this.otherUsers.push(user);
+          }
+        }
+        if (!this.currentUser) {
+          console.error('Current user not found');
+        }
       })
       .catch((error) => {
         console.error('Error fetching users:', error);
       });
+  }
+
+  ngOnInit(): void {
+    this.getallUsers();
     this.channelService.getChannels().then((channels) => {
       this.allChannels = channels;
       this.filterChannels();

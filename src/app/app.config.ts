@@ -13,24 +13,14 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { provideHttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { QuillModule } from 'ngx-quill';
+import { environment } from './enviroment';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
     provideClientHydration(),
     importProvidersFrom(
-      provideFirebaseApp(() =>
-        initializeApp({
-          projectId: 'dabubble-180',
-          appId: '1:1063885758156:web:55d61b46dbc48905ac6c69',
-          storageBucket: 'dabubble-180.appspot.com',
-          apiKey: 'AIzaSyD1QIosifbrMmf2Cis-tPblgDMk1JJmgGE',
-          authDomain: 'dabubble-180.firebaseapp.com',
-          messagingSenderId: '1063885758156',
-          databaseURL:
-            'https://dabubble-180-default-rtdb.europe-west1.firebasedatabase.app',
-        })
-      )
+      provideFirebaseApp(() => initializeApp(environment.firebase))
     ),
     importProvidersFrom(provideAuth(() => getAuth())),
     importProvidersFrom(provideFirestore(() => getFirestore())),

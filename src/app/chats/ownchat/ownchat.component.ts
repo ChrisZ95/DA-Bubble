@@ -69,7 +69,7 @@ export class OwnchatComponent implements OnChanges, OnInit {
         return user;
       }
     });
-    return user[0].username;
+    return user[0]?.username;
   }
 
   async loadAllUsers() {
