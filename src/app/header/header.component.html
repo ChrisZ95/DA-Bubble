@@ -1,6 +1,11 @@
 <div class="header">
     <div><img src="./../assets/images/dabubble-logo.png" alt=""></div>
-    <div class="search-input"><input type="text" name="" id=""><img src="./../assets/images/search.png" alt=""></div>
+    <div class="search-input">
+      <input class="serach-bar" type="text" placeholder="Code learning durchsuchen" id="">
+      <button class="search-button">
+        <img src="./../assets/images/search.png">
+      </button>
+    </div>
     <div class="profile">
       <span>{{ userName }}</span>
       <div *ngIf="userIsVerified">
