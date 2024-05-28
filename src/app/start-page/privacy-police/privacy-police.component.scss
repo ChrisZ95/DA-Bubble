@@ -46,6 +46,9 @@
       justify-content: flex-start;
       margin-top: 60px;
       margin-left: 80px;
+      overflow-y: auto;
+      overflow-x: hidden;
+
 
       h1 {
         font-size: 46px;
@@ -73,6 +76,135 @@
 
       span {
         font-size: 18px;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 850px) {
+  .imprint-card-container {
+
+    .imprint-card {
+      width: 90vw;
+
+      .back-to-log-in-button {
+        right: 35vw;
+      }
+
+      .info-container-one {
+        padding-top: 50px;
+        margin-top: 0;
+        margin-left: 60px;
+        margin-right: 20px;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 650px) {
+  .imprint-card-container {
+
+    .imprint-card {
+      width: 90vw;
+
+      .back-to-log-in-button {
+        right: 35vw;
+      }
+
+      .info-container-one {
+       max-width: 80vw;
+        h1 {
+          font-size: 40px;
+        }
+
+        span {
+          font-size: 16px;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 520px) {
+  .imprint-card-container {
+
+    .imprint-card {
+      width: 90vw;
+
+      .back-to-log-in-button {
+        right: 35vw;
+      }
+
+      .info-container-one {
+       max-width: 80vw;
+        h1 {
+          font-size: 34px;
+        }
+
+        span {
+          font-size: 14px;
+        }
+      }
+    }
+  }
+}
+
+
+@media screen and (max-width: 460px) {
+  .imprint-card-container {
+
+    .imprint-card {
+      width: 90vw;
+
+      .back-to-log-in-button {
+        right: 35vw;
+      }
+
+      .info-container-one {
+        padding-top: 30px;
+        margin-top: 0;
+        margin-left: 30px;
+        margin-right: 20px;
+
+        h1 {
+          font-size: 28px;
+        }
+
+        span {
+          font-size: 12px;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .imprint-card-container {
+
+    .imprint-card {
+      width: 90vw;
+
+      .back-to-log-in-button {
+        right: 35vw;
+      }
+
+      .info-container-one {
+        padding-top: 30px;
+        margin-top: 0;
+        margin-left: 30px;
+        margin-right: 20px;
+
+        h1 {
+          font-size: 22px;
+        }
+
+        h2 {
+          font-size: 16px;
+        }
+
+        span {
+          font-size: 10px;
+        }
       }
     }
   }
