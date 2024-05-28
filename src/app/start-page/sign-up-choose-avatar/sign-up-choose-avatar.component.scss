@@ -70,6 +70,12 @@
         border-radius: 100%;
       }
 
+      .custom-user-icon {
+        height: 168px;
+        width: 168px;
+        border-radius: 100%;
+      }
+
       h1 {
 
         font-size: 32px;
@@ -143,7 +149,6 @@
           opacity: 0;
           cursor: pointer;
         }
-
       }
     }
 
@@ -246,7 +251,7 @@
         }
 
         .avatar-list {
-          padding-top: 10px;
+          padding-top: 20px;
 
           .avatar-item {
 
@@ -878,6 +883,402 @@
 
       .continue-button-container {
         margin-top: 15px;
+      }
+    }
+  }
+}
+
+@media screen and (max-height: 870px) and (min-width: 850px){
+  .log-in-card-container {
+
+    .log-in-card {
+      height: 550px;
+
+      .loading-screen {
+        height: 550px;
+      }
+
+      .card-header-section {
+        padding-top: 0px;
+        gap: 0px;
+
+        h1 {
+          font-size: 24px;
+        }
+      }
+
+      .chosen-avatar {
+        padding-top: 0px;
+
+        .user-icon {
+          height: 128px;
+          width: 128px;
+        }
+
+        .custom-user-icon {
+          height: 128px;
+          width: 128px;
+        }
+
+        h1 {
+          font-size: 24px;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-height: 800px) and (min-width: 850px){
+  .log-in-card-container {
+
+    .log-in-card {
+      height: 500px;
+
+      .loading-screen {
+        height: 500px;
+      }
+
+      .card-header-section {
+        padding-top: 0px;
+        gap: 0px;
+
+        h1 {
+          font-size: 24px;
+        }
+      }
+
+      .chosen-avatar {
+        padding-top: 0px;
+
+        .user-icon {
+          height: 128px;
+          width: 128px;
+        }
+
+        .custom-user-icon {
+          height: 128px;
+          width: 128px;
+        }
+
+        h1 {
+          font-size: 24px;
+        }
+      }
+
+      .choose-avatar-list {
+
+        .avatar-list {
+          height: 40px;
+
+          .avatar-item {
+
+            img {
+              height: 50px;
+              width: auto;
+            }
+          }
+        }
+
+        .upload-custom-image {
+          margin-top: 40px;
+
+          .choose-image-label {
+            padding: 5px 5px;
+            font-size: 12px;
+          }
+        }
+      }
+
+      .continue-button-container {
+        margin-top: 10px;
+
+        .continue-button {
+          font-size: 14px;
+          width: 100px;
+          height: 30px;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-height: 780px) and (min-width: 850px){
+  .log-in-card-container {
+
+    .log-in-card {
+      height: 450px;
+
+      .loading-screen {
+        height: 450px;
+      }
+
+      .card-header-section {
+        padding-top: 0px;
+        gap: 0px;
+
+        h1 {
+          font-size: 24px;
+        }
+      }
+
+      .chosen-avatar {
+        padding-top: 0px;
+
+        .user-icon {
+          height: 120px;
+          width: 120px;
+        }
+
+        .custom-user-icon {
+          height: 120px;
+          width: 120px;
+        }
+
+        h1 {
+          display: none;
+        }
+      }
+
+      .choose-avatar-list {
+        padding-top: 30px;
+
+        .avatar-list {
+          height: 40px;
+
+          .avatar-item {
+
+            img {
+              height: 50px;
+              width: auto;
+            }
+          }
+        }
+
+        .upload-custom-image {
+          margin-top: 40px;
+
+          .choose-image-label {
+            padding: 5px 5px;
+            font-size: 12px;
+          }
+        }
+      }
+
+      .continue-button-container {
+        margin-top: 10px;
+
+        .continue-button {
+          font-size: 14px;
+          width: 100px;
+          height: 30px;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-height: 820px) and (max-width: 650px){
+  .log-in-card-container {
+
+    .log-in-card {
+      height: 500px;
+
+      .loading-screen {
+        height: 500px;
+      }
+
+      .card-header-section {
+        padding-top: 0px;
+        gap: 0px;
+
+        h1 {
+          font-size: 24px;
+        }
+      }
+
+      .chosen-avatar {
+        padding-top: 0px;
+
+        .user-icon {
+          height: 128px;
+          width: 128px;
+        }
+
+        .custom-user-icon {
+          height: 128px;
+          width: 128px;
+        }
+
+        h1 {
+          font-size: 24px;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-height: 760px) and (max-width: 650px){
+  .log-in-card-container {
+
+    .log-in-card {
+      height: 500px;
+
+      .loading-screen {
+        height: 500px;
+      }
+
+      .card-header-section {
+        padding-top: 10px;
+        gap: 0px;
+
+        h1 {
+          font-size: 24px;
+        }
+      }
+
+      .chosen-avatar {
+        padding-top: 0px;
+        gap: 5px;
+
+        h1 {
+          font-size: 24px;
+        }
+      }
+
+      .choose-avatar-list {
+
+        .avatar-list {
+          height: 60px;
+          padding-top: 20px;
+
+          .avatar-item {
+
+            img {
+              height: 40px;
+              width: auto;
+            }
+          }
+        }
+
+        .upload-custom-image {
+          margin-top: 5px;
+
+          .choose-image-label {
+            padding: 5px 5px;
+            font-size: 12px;
+          }
+        }
+
+        .pseudo {
+          height: 10px;
+        }
+
+        .input-information {
+          font-size: 14px;
+        }
+
+        span {
+          font-size: 16px;
+          padding-top: 20px;
+        }
+      }
+
+      .continue-button-container {
+        margin-top: 20px;
+
+        .continue-button {
+          font-size: 14px;
+          width: 100px;
+          height: 30px;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-height: 780px) and (max-width: 850px){
+  .log-in-card-container {
+
+    .log-in-card {
+      height: 550px;
+
+      .loading-screen {
+        height: 550px;
+      }
+
+      .card-header-section {
+        padding-top: 10px;
+        gap: 0px;
+
+        h1 {
+          font-size: 28px;
+        }
+      }
+
+      .chosen-avatar {
+        padding-top: 0px;
+
+        .user-icon {
+          height: 128px;
+          width: 128px;
+        }
+
+        .custom-user-icon {
+          height: 128px;
+          width: 128px;
+        }
+
+        h1 {
+          font-size: 28px;
+        }
+      }
+
+      .choose-avatar-list {
+
+        .avatar-list {
+          height: 60px;
+          padding-top: 20px;
+
+          .avatar-item {
+
+            img {
+              height: 50px;
+              width: auto;
+            }
+          }
+        }
+
+        .upload-custom-image {
+          margin-top: 35px;
+
+          .choose-image-label {
+            padding: 5px 10px;
+            font-size: 16px;
+          }
+        }
+
+        .pseudo {
+          height: 10px;
+        }
+
+        .input-information {
+          font-size: 14px;
+        }
+
+        span {
+          font-size: 16px;
+          padding-top: 20px;
+        }
+      }
+
+      .continue-button-container {
+        margin-top: 20px;
+
+        .continue-button {
+          font-size: 16px;
+          width: 120px;
+          height: 40px;
+        }
       }
     }
   }

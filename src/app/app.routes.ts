@@ -7,9 +7,9 @@ import { authGuard } from './guard/auth.guard';
 import { ChangePasswortComponent } from './start-page/change-passwort/change-passwort.component';
 
 export const routes: Routes = [
-  // { path: '', component: StartPageComponent },
+  { path: '', component: StartPageComponent },
   { path: 'generalView', component: MainComponent },
   { path: 'ChangePasswort', component: ChangePasswortComponent }, //, canActivate: [authGuard]
   // {path: 'signUp' , component: SignUpComponent},
-  {path: '', component: LogInComponent },
+  // {path: '', component: LogInComponent },
 ];

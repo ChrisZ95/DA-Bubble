@@ -15,7 +15,7 @@
 
     <div class="chosen-avatar">
       <img *ngIf="!imageSelected" class="user-icon" id="userIcon" src="./../../../assets/images/Property 1=Default (8).png">
-      <img *ngIf="imageSelected" class="user-icon" id="profile-picture-preview" [src]="imageSrc" alt="Ihr Bild" style=" height: 168px; width: 168px; border-radius: 100%;"/>
+      <img *ngIf="imageSelected" class="custom-user-icon" id="profile-picture-preview" [src]="imageSrc" alt="Ihr Bild" />
       <!-- <h1>{{ userName }}</h1> -->
       <h1>Lars Thönnes</h1>
     </div>
@@ -24,7 +24,7 @@
       <span>Aus der Liste wählen</span>
       <div class="pseudo">
         <span class="input-information" *ngIf="showInputInformationUserIcon">Bitte wähle ein Icon.</span>
-       </div>
+      </div>
       <div class="avatar-list" >
         <div class="avatar-list">
           <div *ngFor="let img of avatar; let i = index" class="avatar-item" [id]="'avatar-' + i" (click)="chooseAvatar(i)">
