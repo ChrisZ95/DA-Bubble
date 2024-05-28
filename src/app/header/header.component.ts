@@ -39,7 +39,7 @@ export class HeaderComponent implements OnInit{
         this.userUid = this.userForm['uid'];
         this.userIsVerified = this.firestoreService.auth.currentUser.emailVerified;
 
-        if (this.userUid === 'XrnnaoBh8QcgDsAuasrCETBYdsC3') {
+        if (this.userUid === 'ghNGds2D5lTMSsFWIdNP1O6kPk13') {
           this.guestLogIn = true;
         }
       } else {

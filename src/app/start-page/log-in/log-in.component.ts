@@ -69,7 +69,7 @@ export class LogInComponent implements OnInit {
   async guestLogIn() {
     this.loadingScreen = true;
     const logInDate = await this.firestoreService.createTimeStamp();
-    this.firestoreService.logInUser('gast@DABubble.de', 'password', logInDate)
+    this.firestoreService.logInUser('gast@dabubble.lars-thoennes.de', 'password', logInDate)
     // this.router.navigate(['/generalView']);
   }
 
