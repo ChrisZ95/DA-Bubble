@@ -1,28 +1,15 @@
 import {
   Component,
-  Input,
   OnChanges,
-  Output,
   SimpleChanges,
+  OnInit,
 } from '@angular/core';
 import { ChannelService } from '../../services/channel.service';
-import { ChatService } from '../../services/chat.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { GenerateIdsService } from '../../services/generate-ids.service';
-import {
-  Firestore,
-  query,
-  collection,
-  onSnapshot,
-} from '@angular/fire/firestore';
 import { TimestampPipe } from '../../shared/pipes/timestamp.pipe';
-import { ChannelchatComponent } from '../../chats/channelchat/channelchat.component';
-import { Subscription } from 'rxjs';
-import { EventEmitter } from 'node:stream';
-import { FirestoreService } from '../../firestore.service';
-import { ThreadService } from '../../services/thread.service';
 import { TextEditorComponent } from '../../shared/text-editor/text-editor.component';
+import { FirestoreService } from '../../firestore.service';
 
 @Component({
   selector: 'app-channelthread',
@@ -31,20 +18,12 @@ import { TextEditorComponent } from '../../shared/text-editor/text-editor.compon
   templateUrl: './channelthread.component.html',
   styleUrls: ['./channelthread.component.scss', '../threads.component.scss'],
 })
-export class ChannelthreadComponent implements OnChanges {
-  channelId: string = '';
-  messageId: string = '';
-  comments: string[] = [];
-  currentChannelId: string = '';
+export class ChannelthreadComponent implements OnInit, OnChanges {
   currentMessageId: string = '';
   currentMessageComments: any[] = [];
-  messages: any[] = [];
   allUsers: any[] = [];
 
   constructor(
-    private chatService: ChatService,
-    private generateId: GenerateIdsService,
-    private firestore: Firestore,
     public channelService: ChannelService,
     public firestoreService: FirestoreService
   ) {}
@@ -53,21 +32,21 @@ export class ChannelthreadComponent implements OnChanges {
     this.channelService.showThreadWindow = false;
   }
 
+  async ngOnInit(): Promise<void> {
+    this.allUsers = await this.firestoreService.getAllUsers();
+    this.channelService.currentMessageCommentsChanged.subscribe((comments) => {
+      this.currentMessageComments = comments;
+    });
+    this.currentMessageId = this.channelService.getCurrentMessageId();
+    this.loadCommentsForCurrentMessage(this.currentMessageId);
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['currentMessageId']) {
       this.loadCommentsForCurrentMessage(
         changes['currentMessageId'].currentValue
       );
     }
-  }
-
-  async ngOnInit(): Promise<void> {
-    this.allUsers = await this.firestoreService.getAllUsers();
-    this.channelService.currentMessageIdChanged.subscribe((messageId) => {
-      this.loadCommentsForCurrentMessage(messageId);
-    });
-    this.currentMessageId = this.channelService.getCurrentMessageId();
-    this.loadCommentsForCurrentMessage(this.currentMessageId);
   }
 
   async loadCommentsForCurrentMessage(messageId: string) {

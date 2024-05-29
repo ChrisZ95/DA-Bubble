@@ -41,11 +41,26 @@ export class ChannelService {
   commentsWithAuthors: any[] = [];
   currentMessageIdChanged: EventEmitter<string> = new EventEmitter<string>();
   currentChannelIdChanged: EventEmitter<string> = new EventEmitter<string>();
+  currentMessageCommentsChanged: EventEmitter<any[]> = new EventEmitter<any[]>();
 
   constructor(
     private readonly firestore: Firestore,
     private FirestoreService: FirestoreService
   ) {}
+
+  updateMessageInMessagesList(messageId: string, newComment: any): void {
+    const messageIndex = this.messages.findIndex(
+      (msg) => msg.messageId === messageId
+    );
+    if (messageIndex > -1) {
+      if (!this.messages[messageIndex].comments) {
+        this.messages[messageIndex].comments = [];
+      }
+      this.messages[messageIndex].comments.push(newComment);
+      this.updateMessagesWithAuthors();
+      this.currentMessageCommentsChanged.emit(this.messages[messageIndex].comments); // Emit the updated comments
+    }
+  }
 
   getChannelRef() {
     return collection(this.firestore, 'channels');

@@ -125,19 +125,13 @@ export class TextEditorComponent implements OnInit {
         authorName: '',
         authorNameStatus: 'loading',
       };
-      if (this.currentMessageComments) {
-        this.currentMessageComments.push(newComment);
-      } else {
-        this.currentMessageComments = [newComment];
-      }
       const authorName = await this.channelService.getAuthorName(currentUid);
       newComment.authorName = authorName ?? currentUid;
       newComment.authorNameStatus = 'loaded';
       this.chatService.sendCommentToChannel(currentMessageId, newComment);
+      this.channelService.updateMessageInMessagesList(currentMessageId, newComment);
       this.updateCommentCount(currentMessageId);
       this.updateLastCommentTime(currentMessageId, timestampString);
-      this.channelService.updateMessagesWithAuthors();
-      this.updateMessageInMessagesList(currentMessageId, newComment); // Fügen Sie diese Zeile hinzu
       this.comment = '';
     } else {
       console.error('Kein aktueller Kanal ausgewählt.');
