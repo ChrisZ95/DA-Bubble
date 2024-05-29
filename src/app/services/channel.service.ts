@@ -250,7 +250,7 @@ export class ChannelService {
         const authorName = await this.getAuthorName(message.uid);
         return {
           ...message,
-          authorName: authorName ?? message.uid // Falls kein Benutzername gefunden wurde, zeige die UID an
+          authorName: authorName ?? message.uid
         };
       })
     );
@@ -260,16 +260,12 @@ export class ChannelService {
     try {
       const chatsRef = collection(this.firestore, 'chats');
       const querySnapshot = await getDocs(chatsRef);
-  
       let messageFound = false;
-  
       for (const chatDoc of querySnapshot.docs) {
         const chatData = chatDoc.data();
-  
         if (chatData['messages'] && Array.isArray(chatData['messages'])) {
           const messages = chatData['messages'];
           const messageIndex = messages.findIndex((msg: any) => msg.messageId === messageId);
-  
           if (messageIndex !== -1) {
             messages[messageIndex].message = newMessageText;
             await updateDoc(doc(this.firestore, 'chats', chatDoc.id), {
@@ -281,7 +277,6 @@ export class ChannelService {
           }
         }
       }
-  
       if (!messageFound) {
         console.error('No chat document found containing the specified message.');
       }

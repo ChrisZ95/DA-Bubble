@@ -22,11 +22,12 @@ import { Subscription } from 'rxjs';
 import { EventEmitter } from 'node:stream';
 import { FirestoreService } from '../../firestore.service';
 import { ThreadService } from '../../services/thread.service';
+import { TextEditorComponent } from '../../shared/text-editor/text-editor.component';
 
 @Component({
   selector: 'app-channelthread',
   standalone: true,
-  imports: [FormsModule, CommonModule, TimestampPipe],
+  imports: [FormsModule, CommonModule, TimestampPipe, TextEditorComponent],
   templateUrl: './channelthread.component.html',
   styleUrls: ['./channelthread.component.scss', '../threads.component.scss'],
 })
@@ -39,7 +40,6 @@ export class ChannelthreadComponent implements OnChanges {
   currentMessageComments: any[] = [];
   messages: any[] = [];
   allUsers: any[] = [];
-  comment: string = '';
 
   constructor(
     private chatService: ChatService,
@@ -92,72 +92,6 @@ export class ChannelthreadComponent implements OnChanges {
       }
     } else {
       this.currentMessageComments = [];
-    }
-  }
-
-  async sendCommentToMessage() {
-    const currentMessageId = this.channelService.getCurrentMessageId();
-    const currentUid = this.firestoreService.currentuid;
-    if (currentMessageId) {
-      const timestamp: number = Date.now();
-      const timestampString: string = timestamp.toString();
-      let newComment: any = {
-        id: this.generateId.generateId(),
-        comment: this.comment,
-        createdAt: timestampString,
-        uid: currentUid,
-        authorName: '',
-        authorNameStatus: 'loading',
-      };
-      if (this.currentMessageComments) {
-        this.currentMessageComments.push(newComment);
-      } else {
-        this.currentMessageComments = [newComment];
-      }
-      const authorName = await this.channelService.getAuthorName(currentUid);
-      newComment.authorName = authorName ?? currentUid;
-      newComment.authorNameStatus = 'loaded';
-      this.chatService.sendCommentToChannel(currentMessageId, newComment);
-      this.updateCommentCount(currentMessageId);
-      this.updateLastCommentTime(currentMessageId, timestampString);
-      this.channelService.updateMessagesWithAuthors();
-      this.updateMessageInMessagesList(currentMessageId, newComment); // Fügen Sie diese Zeile hinzu
-      this.comment = '';
-    } else {
-      console.error('Kein aktueller Kanal ausgewählt.');
-    }
-  }
-
-  updateMessageInMessagesList(messageId: string, newComment: any): void {
-    const messageIndex = this.channelService.messages.findIndex(
-      (msg) => msg.messageId === messageId
-    );
-    if (messageIndex > -1) {
-      if (!this.channelService.messages[messageIndex].comments) {
-        this.channelService.messages[messageIndex].comments = [];
-      }
-      this.channelService.messages[messageIndex].comments.push(newComment);
-      this.channelService.updateMessagesWithAuthors();
-    }
-  }
-
-  updateCommentCount(messageId: string): void {
-    const message = this.channelService.messages.find(
-      (msg) => msg.messageId === messageId
-    );
-    if (message) {
-      message.commentCount++;
-      this.channelService.updateMessagesWithAuthors(); // Aktualisieren Sie die messagesWithAuthors Liste
-    }
-  }
-
-  updateLastCommentTime(messageId: string, timestamp: string): void {
-    const message = this.channelService.messages.find(
-      (msg) => msg.messageId === messageId
-    );
-    if (message) {
-      message.lastCommentTime = timestamp;
-      this.channelService.updateMessagesWithAuthors(); // Aktualisieren Sie die messagesWithAuthors Liste
     }
   }
 }
