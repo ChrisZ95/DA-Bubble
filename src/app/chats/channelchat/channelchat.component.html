@@ -32,7 +32,7 @@
     <div class="conversation-container"
       (mouseenter)="updateHoverState(i, true)" 
       (mouseleave)="updateHoverState(i, false)"
-      [ngClass]="{'justify-end': message.uid === this.firestoreService.currentuid, 'justify-start': message.uid !== this.firestoreService.currentuid}">
+      [ngClass]="{'justify-end': message.uid === firestoreService.currentuid, 'justify-start': message.uid !== firestoreService.currentuid}">
       <div class="popup-window" *ngIf="isHoveredArray[i] && message.uid === firestoreService.currentuid">
         <img src="./../../../assets/images/green-tick.png" alt="">
         <img src="./../../../assets/images/hands-emoji.png" alt="">
@@ -42,7 +42,7 @@
           <mat-icon>more_vert</mat-icon>
         </button>
         <mat-menu #editMessage="matMenu" class="profile-menu" (closed)="menuClosed()">
-          <button mat-menu-item>Nachricht bearbeiten</button>
+          <button mat-menu-item (click)="startEditingMessage(i, message.message)">Nachricht bearbeiten</button>
         </mat-menu>
       </div>
       <div class="popup-window" *ngIf="isHoveredArray[i] && message.uid !== firestoreService.currentuid">
@@ -59,8 +59,18 @@
         </div>
 
         <div class="messages-container">
-          <div class="speechbubble">
+          <div class="speechbubble" *ngIf="editingMessageIndex !== i">
             <p>{{ message.message }}</p>
+          </div>
+          <div class="edit-message-container" *ngIf="editingMessageIndex === i">
+            <textarea class="edit-textarea" [(ngModel)]="editedMessageText"></textarea>
+            <div class="edit-message-buttons">
+              <div class="smiley"><img src="./../../../assets/images/smiley.png" alt=""></div>
+              <div class="buttons">
+                <button class="cancel" (click)="cancelEditingMessage()">Abbrechen</button>
+                <button class="save" (click)="saveEditedMessage(i)">Speichern</button>
+              </div>
+            </div>
           </div>
         </div>
 

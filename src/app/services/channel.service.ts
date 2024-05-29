@@ -255,4 +255,39 @@ export class ChannelService {
       })
     );
   }
+
+  async updateMessage(messageId: string, newMessageText: string): Promise<void> {
+    try {
+      const chatsRef = collection(this.firestore, 'chats');
+      const querySnapshot = await getDocs(chatsRef);
+  
+      let messageFound = false;
+  
+      for (const chatDoc of querySnapshot.docs) {
+        const chatData = chatDoc.data();
+  
+        if (chatData['messages'] && Array.isArray(chatData['messages'])) {
+          const messages = chatData['messages'];
+          const messageIndex = messages.findIndex((msg: any) => msg.messageId === messageId);
+  
+          if (messageIndex !== -1) {
+            messages[messageIndex].message = newMessageText;
+            await updateDoc(doc(this.firestore, 'chats', chatDoc.id), {
+              messages: messages,
+            });
+            messageFound = true;
+            console.log('Message updated successfully in chat document with ID:', chatDoc.id);
+            break;
+          }
+        }
+      }
+  
+      if (!messageFound) {
+        console.error('No chat document found containing the specified message.');
+      }
+    } catch (error) {
+      console.error('Error updating message:', error);
+      throw error;
+    }
+  }
 }

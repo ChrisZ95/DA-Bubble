@@ -29,11 +29,12 @@ import { Subscription } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import  { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-channelchat',
   standalone: true,
-  imports: [TextEditorComponent, NgFor, TimestampPipe, CommonModule, MatButtonModule, MatIconModule, MatMenuModule],
+  imports: [TextEditorComponent, NgFor, TimestampPipe, CommonModule, MatButtonModule, MatIconModule, MatMenuModule, FormsModule],
   templateUrl: './channelchat.component.html',
   styleUrls: ['./channelchat.component.scss', '../chats.component.scss'],
 })
@@ -79,6 +80,8 @@ export class ChannelchatComponent implements OnInit, AfterViewInit {
   private channelSubscription: Subscription | undefined;
   menuClicked = false;
   currentMessageIndex: number | null = null;
+  editingMessageIndex: number | null = null;
+  editedMessageText: string = '';
 
   openMemberDialog() {
     this.dialog.open(DialogMembersComponent);
@@ -160,5 +163,24 @@ export class ChannelchatComponent implements OnInit, AfterViewInit {
     this.menuClicked = true;
     this.currentMessageIndex = index;
     this.isHoveredArray[index] = true;
+  }
+
+  startEditingMessage(index: number, message: string) {
+    this.editingMessageIndex = index;
+    this.editedMessageText = message;
+  }
+
+  saveEditedMessage(index: number) {
+    if (this.editedMessageText.trim()) {
+      this.channelService.messagesWithAuthors[index].message = this.editedMessageText;
+      this.channelService.updateMessage(this.channelService.messagesWithAuthors[index].messageId, this.editedMessageText);
+    }
+    this.editingMessageIndex = null;
+    this.editedMessageText = '';
+  }
+
+  cancelEditingMessage() {
+    this.editingMessageIndex = null;
+    this.editedMessageText = '';
   }
 }
