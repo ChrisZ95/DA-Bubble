@@ -172,6 +172,7 @@ export class FirestoreService {
   }
 
   async deleteAccount(uid: any): Promise<string> {
+    debugger
     try {
       const auth = getAuth();
       const user: any = auth.currentUser;
@@ -332,7 +333,6 @@ export class FirestoreService {
   logOutAfterDeleteAccount() {
     signOut(this.auth)
       .then(() => {
-        localStorage.setItem('userDelete', 'true');
         this.router.navigate(['']);
       })
       .catch((error) => {

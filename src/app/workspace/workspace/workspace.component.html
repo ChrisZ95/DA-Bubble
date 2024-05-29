@@ -30,7 +30,7 @@
     <div class="users scrollbar">
 
         <div class="user" (click)="openChat(currentUser)">
-            <img class="user-icon" src="{{ currentUser.photo }}">
+            <img class="user-icon" src="{{ currentUser?.photo }}">
             <div>{{ currentUser?.username }} ( Du )
                 <div class="active-circle" [ngClass]="userStatus">
                     <select (change)="changeStatus($event)">

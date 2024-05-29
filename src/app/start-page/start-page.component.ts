@@ -62,6 +62,7 @@ export class StartPageComponent implements OnInit {
   }
 
   informationAfterDeleteAccount() {
+    debugger
     const storage = localStorage.getItem('userDelete')
     if(storage) {
       this.deleteAccount = true
