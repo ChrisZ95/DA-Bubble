@@ -21,6 +21,13 @@ import { ChannelService } from '../../services/channel.service';
 import { ChatService } from '../../services/chat.service';
 import { ChannelchatComponent } from '../../chats/channelchat/channelchat.component';
 import { log } from 'console';
+import {
+  trigger,
+  state,
+  style,
+  transition,
+  animate,
+} from '@angular/animations';
 
 @Component({
   selector: 'app-workspace',
@@ -28,6 +35,27 @@ import { log } from 'console';
   imports: [CommonModule],
   templateUrl: './workspace.component.html',
   styleUrl: './workspace.component.scss',
+  animations: [
+    trigger('toggleUsers', [
+      state(
+        'open',
+        style({
+          height: '*',
+          opacity: 1,
+          overflow: 'hidden',
+        })
+      ),
+      state(
+        'closed',
+        style({
+          height: '0',
+          opacity: 0,
+          overflow: 'hidden',
+        })
+      ),
+      transition('open <=> closed', [animate('0.5s ease-in-out')]),
+    ]),
+  ],
 })
 export class WorkspaceComponent implements OnInit {
   @ViewChild(ChannelchatComponent) channelchatComponent!: ChannelchatComponent;

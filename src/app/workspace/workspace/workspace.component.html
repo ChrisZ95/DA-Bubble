@@ -27,8 +27,7 @@
         <img src="../assets/images/accountCircle.svg" alt="">
         <div>Direktnachrichten</div>
     </div>
-    <div class="users scrollbar">
-
+    <div class="users scrollbar" [@toggleUsers]="displayUsers ? 'open' : 'closed'">
         <div class="user" (click)="openChat(currentUser)">
             <img class="user-icon" src="{{ currentUser?.photo }}">
             <div>{{ currentUser?.username }} ( Du )
@@ -41,13 +40,11 @@
                 </div>
             </div>
         </div>
-
         <div *ngFor="let user of otherUsers, let i = index">
             <div class="user" (click)="openChat(user)">
-              <img id="user-icon" class="user-icon" src="{{ user.photo }}" alt="User Icon" onerror="this.onerror=null;this.src='./../../../assets/images/Property 1=Default (8).png'">
-                <div>{{ user.username }}
-                    <!-- <div class="active-circle"></div> -->
-                </div>
+                <img id="user-icon" class="user-icon" src="{{ user.photo }}" alt="User Icon"
+                    onerror="this.onerror=null;this.src='./../../../assets/images/Property 1=Default (8).png'">
+                <div>{{ user.username }}</div>
             </div>
         </div>
     </div>
