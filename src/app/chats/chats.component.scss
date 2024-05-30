@@ -16,28 +16,26 @@
 }
 
 .images-participants {
-  position: relative;
+  display: flex;
+  align-items: center;
   img {
     height: 42px;
-    position: absolute;
   }
   img:nth-child(1) {
-    right: 60px;
     border-radius: 100%;
     height: 40px;
     width: 40px;
     object-fit: cover;
   }
   img:nth-child(2) {
-    right: 30px;
+    margin-left: -10px;
     border-radius: 100%;
     height: 40px;
     width: 40px;
     object-fit: cover;
   }
   img:nth-child(3) {
-    right: 0;
-    top: 0;
+    margin-left: -10px;
     border-radius: 100%;
     height: 40px;
     width: 40px;
@@ -45,10 +43,21 @@
   }
 }
 
+.additional-members {
+  font-size: 20px;
+  font-weight: 600;
+}
+
 .add-participants {
   display: flex;
   justify-content: center;
   align-items: center;
+  >img {
+    padding: 8px;
+    border-radius: 20px;
+    background-color: #ECEEFE;
+    cursor: pointer;
+  }
 }
 
 .separator {
@@ -82,7 +91,10 @@
   gap: 20px;
   padding: 6px 75px;
   img {
-    height: 75px;
+    height: 70px;
+    width: 70px;
+    border-radius: 100%;
+    object-fit: cover;
   }
   &:hover {
     background-color: rgba(236, 238, 254, 1);
@@ -102,7 +114,7 @@
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  gap: 15px;
+  gap: 20px;
   h5 {
     cursor: pointer;
     &:hover {

@@ -1,5 +1,13 @@
 .d-flex{
     display: flex;
+    gap: 10px;
+    padding: 3px 10px 3px 10px;
+    align-items: center;
+    cursor: pointer;
+    &:hover {
+        background-color: #ECEEFE;
+        border-radius: 30px;
+    }
 }
 
 .justify-end {
@@ -25,8 +33,29 @@
     gap: 10px;
     font-size: 24px;
     font-weight: 700;
+    padding: 6px 10px 6px 10px;
+    cursor: pointer;
+    &:hover {
+        background-color: #ECEEFE;
+        border-radius: 100px;
+    }
     >img {
         height: 8.19px;
         width: 14px;
     }
+}
+
+.name {
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    &:hover {
+      color: rgba(83, 90, 241, 1);
+    }
+}
+
+.time {
+    font-size: 14px;
+    font-weight: 400;
+    color: #686868;
 }

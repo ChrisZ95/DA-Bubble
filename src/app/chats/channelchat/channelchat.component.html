@@ -12,7 +12,7 @@
         </ng-container>
       </div>
       <ng-container *ngIf="channelService.UserName.length > 3">
-        <div class="additional-members">+{{ channelService.UserName.length - 3 }}</div>
+        <div class="additional-members">{{ channelService.UserName.length  }}</div>
       </ng-container>
     </div>
     <div class="add-participants">
@@ -56,8 +56,8 @@
       <img [src]="getMemberAvatar(message.uid)" alt="" class="user-avatar">
       <div class="conversation">
         <div class="name-timestamp">
-          <h5 (click)="openContactInfoDialog()"><strong>{{ message.authorName }}</strong></h5>
-          <span>{{ message.createdAt | timestamp: 'time' }}</span>
+          <span class="name" (click)="openContactInfoDialog()">{{ message.authorName }}</span>
+          <span class="time">{{ message.createdAt | timestamp: 'time' }} Uhr</span>
         </div>
 
         <div class="messages-container">
