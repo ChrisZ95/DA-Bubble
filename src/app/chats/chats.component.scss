@@ -100,14 +100,13 @@
 }
 
 .speechbubble {
-  background-color: rgba(236, 238, 254, 1);
   padding: 12px;
   border-radius: 0px 30px 30px 30px;
 }
 
 .reply {
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
   gap: 15px;
   a {
@@ -195,4 +194,9 @@
 .buttons {
   display: flex;
   gap: 32px;
+}
+
+.answers {
+  color: #535AF1;
+  cursor: pointer;
 }

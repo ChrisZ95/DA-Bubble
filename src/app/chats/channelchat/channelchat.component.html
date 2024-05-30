@@ -55,11 +55,11 @@
       <div class="conversation">
         <div class="name-timestamp">
           <h5 (click)="openContactInfoDialog()"><strong>{{ message.authorName }}</strong></h5>
-          <p>{{ message.createdAt | timestamp: 'time' }}</p>
+          <span>{{ message.createdAt | timestamp: 'time' }}</span>
         </div>
 
         <div class="messages-container">
-          <div class="speechbubble" *ngIf="editingMessageIndex !== i">
+          <div [ngClass]="{'bg-color-own-message': message.uid === firestoreService.currentuid, 'bg-color-message': message.uid !== firestoreService.currentuid}" class="speechbubble" *ngIf="editingMessageIndex !== i">
             <p>{{ message.message }}</p>
           </div>
           <div class="edit-message-container" *ngIf="editingMessageIndex === i">
@@ -75,8 +75,8 @@
         </div>
 
         <div class="reply" *ngIf="message.commentCount > 0">
-          <div (click)="openThreadWindow(message.messageId)">{{ message.commentCount }} Antworten</div>
-          <p> Letzte Antwort {{ message.lastCommentTime | timestamp: 'time' }}</p>
+          <div class="answers" (click)="openThreadWindow(message.messageId)">{{ message.commentCount }} Antworten</div>
+          <span> Letzte Antwort {{ message.lastCommentTime | timestamp: 'time' }}</span>
         </div>
       </div>
     </div>
