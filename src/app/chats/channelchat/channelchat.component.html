@@ -1,6 +1,8 @@
 <div class="header">
   <div class="active-channel">
-    <div (click)="openChannelInfoDialog()"># {{ channelService.channelName }}</div>
+    <span>#</span>
+    <div (click)="openChannelInfoDialog()">{{ channelService.channelName }}</div>
+    <img src="./../../../assets/images/arrow-down.png" alt="">
   </div>
   <div class="images">
     <div (click)="openMemberDialog()" class="d-flex">

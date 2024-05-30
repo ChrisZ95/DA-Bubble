@@ -18,3 +18,15 @@
     background-color: #797EF3;
     color: white;
 }
+
+.active-channel {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 24px;
+    font-weight: 700;
+    >img {
+        height: 8.19px;
+        width: 14px;
+    }
+}
