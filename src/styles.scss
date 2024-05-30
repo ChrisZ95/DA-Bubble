@@ -36,6 +36,9 @@ $dabubble-theme: mat.define-light-theme(
 // that you are using.
 @include mat.all-component-themes($dabubble-theme);
 
+// Emoji Mart Picker
+@import '@ctrl/ngx-emoji-mart/picker';
+
 /* You can add global styles to this file, and also import other style files */
 body,
 html {

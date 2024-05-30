@@ -20,10 +20,13 @@ import { ChannelService } from '../../services/channel.service';
 import { FirestoreService } from '../../firestore.service';
 import { log } from 'console';
 import { ThreadService } from '../../services/thread.service';
+import { PickerComponent } from '@ctrl/ngx-emoji-mart';
+import { CommonModule } from '@angular/common';
+
 @Component({
   selector: 'app-text-editor',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, PickerComponent, CommonModule],
   templateUrl: './text-editor.component.html',
   styleUrls: ['./text-editor.component.scss'],
 })
@@ -33,6 +36,7 @@ export class TextEditorComponent implements OnInit {
   message: string = '';
   comment: string = '';
   currentMessageComments: any[] = [];
+  openEmojiPicker = false;
 
   constructor(
     private chatService: ChatService,
@@ -67,11 +71,19 @@ export class TextEditorComponent implements OnInit {
     }
   }
 
+  openEmojiMartPicker() {
+    this.openEmojiPicker = true;
+  }
+
+  addEmoji(event: any) {
+
+  }
+
   sendMessage() {
     this.chatService.sendData(this.message);
     this.message = '';
   }
-  
+
   sendReply() {
     this.threadService.sendReply(this.message);
   }
@@ -87,9 +99,9 @@ export class TextEditorComponent implements OnInit {
         message: this.message,
         createdAt: timestampString,
         uid: currentUid,
-        comments: [], 
-        commentCount: 0, 
-        lastCommentTime: null 
+        comments: [],
+        commentCount: 0,
+        lastCommentTime: null
       };
       this.channelService
         .getAuthorName(currentUid)
@@ -99,7 +111,7 @@ export class TextEditorComponent implements OnInit {
             authorName: authorName ?? currentUid,
           };
           this.channelService.messagesWithAuthors.push(message);
-          this.channelService.messages.push(message); 
+          this.channelService.messages.push(message);
           this.chatService.sendDataToChannel(currentChannelId, message);
           this.message = '';
         })
