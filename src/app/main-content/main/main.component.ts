@@ -124,14 +124,14 @@ export class MainComponent implements OnInit {
   }
 
   handleIdle() {
-    let key = this.firestoreService.currentuid;
-    let status = 'away';
-    this.firestoreService.updateActiveStatus(key, status);
+    // let key = this.firestoreService.currentuid;
+    // let status = 'away';
+    // this.firestoreService.updateActiveStatus(key, status);
   }
   handleActive() {
-    let key = this.firestoreService.currentuid;
-    let status = 'active';
-    this.firestoreService.updateActiveStatus(key, status);
+    // let key = this.firestoreService.currentuid;
+    // let status = 'active';
+    // this.firestoreService.updateActiveStatus(key, status);
   }
 
   isIdle: number = 0;
@@ -177,6 +177,6 @@ export class MainComponent implements OnInit {
     if (this.emojiPickerSubscription) {
       this.emojiPickerSubscription.unsubscribe();
     }
-    // this.activityAfterIdleSubscription.unsubscribe();
+    this.activityAfterIdleSubscription.unsubscribe();
   }
 }

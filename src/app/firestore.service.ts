@@ -116,7 +116,7 @@ export class FirestoreService {
       debounceTime(100)
     );
     this.noMouseMoveIdle$ = mouseMove$.pipe(
-      debounceTime(30000),
+      debounceTime(300000),
       switchMap(() => timer(500))
     );
     const keyPress$ = fromEvent(document, 'keydown');
@@ -129,7 +129,7 @@ export class FirestoreService {
       debounceTime(100)
     );
     this.noKeyPressIdle$ = keyPress$.pipe(
-      debounceTime(30000),
+      debounceTime(300000),
       switchMap(() => timer(500))
     );
   }
@@ -741,6 +741,5 @@ export class FirestoreService {
       active: value,
     };
     this.setData(`users/${key}`, status);
-    // this.usersRef.update(key, { activeStatus: value });
   }
 }
