@@ -1,3 +1,7 @@
+<div class="emoji-picker-container" *ngIf="openEmojiPicker">
+  <emoji-mart  (emojiClick)="addEmoji($event)" title="Pick your emoji…" emoji="point_up"></emoji-mart>
+</div>
+
 <form (submit)="submit()" class="container">
     <div class="chat-input-container">
         <textarea id="textArea" cols="30" rows="10" placeholder="Nachricht an #Entwicklerteam" [(ngModel)]="message" [(ngModel)]="comment"
@@ -12,11 +16,7 @@
                 </div>
                 <div class="chat-input-line"></div>
                 <div class="img">
-                    <img (click)="openEmojiMartPicker()" src="../../../assets/images/smiley.png" alt="Smiley">
-
-                    <div *ngIf="openEmojiPicker">
-                      <emoji-mart title="Pick your emoji…" emoji="point_up"></emoji-mart>
-                    </div>
+                  <img (click)="openEmojiMartPicker()" src="../../../assets/images/smiley.png" alt="Smiley">
                 </div>
                 <div class="img">
                     <img src="../../../assets/images/atsign.png" alt="At Sign">
@@ -26,10 +26,4 @@
         </div>
     </div>
 </form>
-<!-- <emoji-mart set="apple"></emoji-mart>
-<emoji-mart (emojiClick)="addEmoji($event)"></emoji-mart>
-<emoji-mart [style]="{ position: 'absolute', bottom: '20px', right: '20px' }"></emoji-mart>
-<emoji-mart
-  [i18n]="{ search: 'Recherche', categories: { search: 'Résultats de recherche', recent: 'Récents' } }"
-></emoji-mart> -->
 

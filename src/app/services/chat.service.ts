@@ -27,6 +27,8 @@ import { BehaviorSubject, Observable } from 'rxjs';
 export class ChatService {
   private messagesSubject = new BehaviorSubject<any[]>([]);
   public messages$: Observable<any[]> = this.messagesSubject.asObservable();
+  private emojiPickerSubject = new BehaviorSubject<boolean>(false);
+  emojiPicker$ = this.emojiPickerSubject.asObservable();
   currentuid: any;
   chatList: any = [];
   loadedchatInformation: any = {};
@@ -46,6 +48,10 @@ export class ChatService {
     public generateIdServie: GenerateIdsService
   ) {
     this.initializeService();
+  }
+
+  emojiPicker(state: boolean) {
+    this.emojiPickerSubject.next(state);
   }
 
   async initializeService() {

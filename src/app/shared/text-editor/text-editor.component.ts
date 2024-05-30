@@ -22,6 +22,7 @@ import { log } from 'console';
 import { ThreadService } from '../../services/thread.service';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { CommonModule } from '@angular/common';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-text-editor',
@@ -37,6 +38,7 @@ export class TextEditorComponent implements OnInit {
   comment: string = '';
   currentMessageComments: any[] = [];
   openEmojiPicker = false;
+  emojiPickerSubscription: Subscription | null = null;
 
   constructor(
     private chatService: ChatService,
@@ -48,6 +50,20 @@ export class TextEditorComponent implements OnInit {
   ) {}
 
   @Input() componentName!: string;
+
+  ngOnInit(): void {
+    this.subscribeToMessages();
+      this.emojiPickerSubscription = this.chatService.emojiPicker$
+      .subscribe((state: boolean) => {
+        this.openEmojiPicker = state;
+      });
+  }
+
+  ngOnDestroy(): void {
+    if (this.emojiPickerSubscription) {
+      this.emojiPickerSubscription.unsubscribe();
+    }
+  }
 
   submit() {
     if (this.componentName === 'ownChat') {
@@ -73,14 +89,23 @@ export class TextEditorComponent implements OnInit {
 
   openEmojiMartPicker() {
     this.openEmojiPicker = true;
+    this.chatService.emojiPicker(true)
+  }
+
+  closeEmojiMartPicker() {
+    this.openEmojiPicker = false;
+    this.chatService.emojiPicker(false);
   }
 
   addEmoji(event: any) {
-
+    console.log('Emoji selected', event);
+    const emoji = event.emoji.native;
+    this.message = `${this.message}${emoji}`;
   }
 
   sendMessage() {
     this.chatService.sendData(this.message);
+    this.openEmojiPicker = false;
     this.message = '';
   }
 
@@ -207,10 +232,6 @@ export class TextEditorComponent implements OnInit {
     if (imageDisplay) {
       imageDisplay.innerHTML = `<img src="${dataUrl}" style="max-width: 100%; height: auto;">`;
     }
-  }
-
-  ngOnInit(): void {
-    this.subscribeToMessages();
   }
 
   subscribeToMessages() {

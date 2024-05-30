@@ -1,4 +1,10 @@
 @import '@ctrl/ngx-emoji-mart/picker';
+
+.emoji-picker-container{
+  position: absolute;
+  z-index: 1000;
+  padding-top: 100px;
+}
 .container {
   position: relative;
   display: flex;

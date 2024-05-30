@@ -1,5 +1,12 @@
 $wct-height: calc(100vh - 20vh);
 
+.close-emoji-picker {
+  position: absolute;
+  height: 100vh;
+  width: 100vw;
+  z-index: 999;
+}
+
 .main {
   position: relative;
 }

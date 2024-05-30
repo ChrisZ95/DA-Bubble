@@ -94,6 +94,11 @@ export class MainComponent implements OnInit {
   displayThread: boolean = false;
   userDetails: any = '';
   selectedMessageId: string = '';
+  emojiPicker = false;
+
+  closeEmojiPicker() {
+    this.chatService.emojiPicker(false);
+  }
 
   showHideWorkspace() {
     this.displayWorkspace = !this.displayWorkspace;
@@ -136,6 +141,7 @@ export class MainComponent implements OnInit {
   noMouseMove!: Subscription;
   keyPressSubscription!: Subscription;
   noKeyPress!: Subscription;
+  emojiPickerSubscription: Subscription | null = null;
   ngOnInit(): void {
     this.idleSubscription = this.firestoreService
       .isUserIdle()
@@ -161,9 +167,16 @@ export class MainComponent implements OnInit {
       .subscribe(() => {
         this.handleActive();
       });
+      this.emojiPickerSubscription = this.chatService.emojiPicker$
+      .subscribe((state: boolean) => {
+        this.emojiPicker = state;
+      });
   }
   ngOnDestroy(): void {
     this.idleSubscription.unsubscribe();
+    if (this.emojiPickerSubscription) {
+      this.emojiPickerSubscription.unsubscribe();
+    }
     // this.activityAfterIdleSubscription.unsubscribe();
   }
 }
