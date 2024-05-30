@@ -4,6 +4,8 @@ import {
   getFirestore,
   onSnapshot,
   DocumentData,
+  collectionData,
+  docData,
 } from '@angular/fire/firestore';
 import {
   doc,
@@ -19,7 +21,15 @@ import {
 import { ChannelService } from './channel.service';
 import { FirestoreService } from '../firestore.service';
 import { GenerateIdsService } from './generate-ids.service';
-import { BehaviorSubject, Observable } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  catchError,
+  combineLatest,
+  map,
+  of,
+} from 'rxjs';
+import { log } from 'console';
 
 @Injectable({
   providedIn: 'root',
@@ -27,6 +37,11 @@ import { BehaviorSubject, Observable } from 'rxjs';
 export class ChatService {
   private messagesSubject = new BehaviorSubject<any[]>([]);
   public messages$: Observable<any[]> = this.messagesSubject.asObservable();
+  private filteredUsersSubject: BehaviorSubject<any[]> = new BehaviorSubject<
+    any[]
+  >([]);
+  public filteredUsers$: Observable<any[]> =
+    this.filteredUsersSubject.asObservable();
   private emojiPickerSubject = new BehaviorSubject<boolean>(false);
   emojiPicker$ = this.emojiPickerSubject.asObservable();
   currentuid: any;
@@ -40,6 +55,9 @@ export class ChatService {
   focusOnTextEditor: boolean = false;
   messages: any[] = [];
   dataURL: any;
+  participants: any = [];
+  allUsers: any;
+  filteredUsers: any;
 
   constructor(
     private firestore: Firestore,
@@ -148,6 +166,7 @@ export class ChatService {
         return user;
       }
     );
+    this.allUsers = allUsers;
     return allUsers;
   }
 
@@ -229,6 +248,8 @@ export class ChatService {
       );
       if (chatDoc.exists()) {
         const data = chatDoc.data();
+        this.participants = data['participants'];
+
         if (Array.isArray(data['messages'])) {
           const userMessages = data['messages'].filter((message: any) => {
             if (this.chatDocId === currentuid) {
@@ -244,6 +265,11 @@ export class ChatService {
         }
       }
     }
+    const filteredUsers = this.allUsers.filter((user: any) =>
+      this.participants.includes(user.uid)
+    );
+    this.filteredUsersSubject.next(filteredUsers);
+
     this.messagesSubject.next(messages);
   }
 

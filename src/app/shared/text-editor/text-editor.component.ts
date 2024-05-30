@@ -53,10 +53,11 @@ export class TextEditorComponent implements OnInit {
 
   ngOnInit(): void {
     this.subscribeToMessages();
-      this.emojiPickerSubscription = this.chatService.emojiPicker$
-      .subscribe((state: boolean) => {
+    this.emojiPickerSubscription = this.chatService.emojiPicker$.subscribe(
+      (state: boolean) => {
         this.openEmojiPicker = state;
-      });
+      }
+    );
   }
 
   ngOnDestroy(): void {
@@ -89,7 +90,7 @@ export class TextEditorComponent implements OnInit {
 
   openEmojiMartPicker() {
     this.openEmojiPicker = true;
-    this.chatService.emojiPicker(true)
+    this.chatService.emojiPicker(true);
   }
 
   closeEmojiMartPicker() {
@@ -126,7 +127,7 @@ export class TextEditorComponent implements OnInit {
         uid: currentUid,
         comments: [],
         commentCount: 0,
-        lastCommentTime: null
+        lastCommentTime: null,
       };
       this.channelService
         .getAuthorName(currentUid)
@@ -144,7 +145,9 @@ export class TextEditorComponent implements OnInit {
           console.error('Error fetching author name:', error);
         });
     } else {
-      console.error('Kein aktueller Kanal ausgewählt oder Benutzer nicht angemeldet.');
+      console.error(
+        'Kein aktueller Kanal ausgewählt oder Benutzer nicht angemeldet.'
+      );
     }
   }
 
@@ -166,7 +169,10 @@ export class TextEditorComponent implements OnInit {
       newComment.authorName = authorName ?? currentUid;
       newComment.authorNameStatus = 'loaded';
       this.chatService.sendCommentToChannel(currentMessageId, newComment);
-      this.channelService.updateMessageInMessagesList(currentMessageId, newComment);
+      this.channelService.updateMessageInMessagesList(
+        currentMessageId,
+        newComment
+      );
       this.updateCommentCount(currentMessageId);
       this.updateLastCommentTime(currentMessageId, timestampString);
       this.comment = '';

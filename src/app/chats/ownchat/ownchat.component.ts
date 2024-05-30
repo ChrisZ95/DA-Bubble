@@ -36,8 +36,7 @@ export class OwnchatComponent implements OnChanges, OnInit {
   @Input() userDetails: any;
   messages: any = [];
   allUsers: any = [];
-
-
+  participants: any;
   openMemberDialog() {
     this.dialog.open(DialogMembersComponent);
   }
@@ -83,7 +82,7 @@ export class OwnchatComponent implements OnChanges, OnInit {
       this.messages = this.chatService.messages;
     }
   }
-
+  filteredUsers: any;
   ngOnInit(): void {
     this.loadCurrentUser();
     this.chatService.messages$.subscribe((messages) => {
@@ -91,5 +90,8 @@ export class OwnchatComponent implements OnChanges, OnInit {
     });
     const userDetails = { uid: 'someUserId' };
     this.loadAllUsers();
+    this.chatService.filteredUsers$.subscribe((users) => {
+      this.filteredUsers = users;
+    });
   }
 }
