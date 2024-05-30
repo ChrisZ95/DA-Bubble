@@ -3,7 +3,7 @@
 .emoji-picker-container{
   position: absolute;
   z-index: 1000;
-  padding-top: 100px;
+  margin-top: 100px;
 }
 .container {
   position: relative;
@@ -107,4 +107,7 @@
 }
 .editor:focus {
   outline: none;
+}
+.send-message-button {
+  z-index: 1000;
 }
