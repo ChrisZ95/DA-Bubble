@@ -145,12 +145,6 @@ export class ChannelchatComponent implements OnInit, AfterViewInit, OnDestroy {
     }));
   }
 
-  ngOnDestroy(): void {
-    if(this.channelSubscription) {
-      this.channelSubscription.unsubscribe()
-    }
-  }
-
   openThreadWindow(messageId: string){
     this.channelService.currentMessageId = messageId;
     this.channelService.setCurrentMessageId(messageId);
