@@ -132,6 +132,12 @@
   }
 }
 
+.name-timestamp.reverse-order {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row-reverse;
+}
+
 .reply {
   display: flex;
   justify-content: center;
