@@ -1,4 +1,4 @@
-<div class="container">
+<!-- <div class="container">
     <div class="header">
         <img src="../assets/images/workspaceLogo.svg" alt="" class="workspace-logo">
         <div>Devspace</div>
@@ -49,4 +49,76 @@
             </div>
         </div>
     </div>
+</div> -->
+
+<div class="workspace-content">
+  <header>
+      <img src="../assets/images/workspaceLogo.svg" alt="" class="workspace-logo">
+      <h1>Code learning</h1>
+      <img src="../assets/images/editSquare.svg" alt="" class="open-empty-chat-button" (click)="openEmptyChat()">
+  </header>
+
+  <div class="workspace-main-content">
+    <div class="channels-container">
+      <div class="channels-overview">
+        <div (click)="showAllChannles()" class="open-channel-overview">
+          <img [src]="showChannel ? '../assets/images/arrowDropDown.svg' : '../assets/images/arrow_drop_down.svg'" alt="" class="channels-dropdown">
+          <img src="../assets/images/workspaces.svg" alt="" class="channels-dropdown">
+          <h2>Channels</h2>
+        </div>
+        <div class="open-create-channel">
+          <img (click)="openCreateChannelDialog()" src="../assets/images/add.svg" alt="" class="channels-add">
+        </div>
+      </div>
+      <div class="reveal-channels" *ngIf="showChannel">
+        <div class="active-channel" *ngFor="let channel of filteredChannels">
+          <div class="channel-name"
+            (click)="channelService.getChannelName(channel.channelName)"
+            (click)="channelService.getDescription(channel.description)"
+            (click)="channelService.getUserName(channel.users)" (click)="channelService.getAuthor(channel.author)"
+            (click)="openChannelChat(channel.channelId)">
+            <span>#</span>
+            <span>{{ channel.channelName }}</span>
+          </div>
+        </div>
+        <div (click)="openCreateChannelDialog()" class="create-channel">
+          <img class="add-channel-image" src="./../../../assets/images/add_circle.svg">
+          <span>Channel hinzufügen</span>
+        </div>
+      </div>
+  </div>
+
+  <div class="direct-messages-container">
+    <div (click)="dropDownMessages()" class="direct-messages-overview">
+      <img [src]="displayUsers ? '../assets/images/arrowDropDown.svg' : '../assets/images/arrow_drop_down.svg'" alt="" class="channels-dropdown">
+      <img src="../assets/images/accountCircle.svg" alt="" class="workspaces-icon">
+      <h2>Direktnachrichten</h2>
+    </div>
+
+    <div *ngIf="displayUsers" class="users scrollbar">
+      <div class="own-user" (click)="openChat(currentUser)">
+          <img id="user-icon" class="user-icon" src="{{ currentUser?.photo }}" alt="User Icon"
+          onerror="this.onerror=null;this.src='./../../../assets/images/Property 1=Default (8).png'">
+          <div>
+            <h2>{{ currentUser?.username }} ( Du )</h2>
+              <div class="active-circle" [ngClass]="userStatus">
+                  <select (change)="changeStatus($event)">
+                      <option value="active" [selected]="userStatus === 'active'">Active</option>
+                      <option value="away" [selected]="userStatus === 'away'">Away</option>
+                      <option value="busy" [selected]="userStatus === 'busy'">Busy</option>
+                  </select>
+              </div>
+          </div>
+      </div>
+      <div *ngFor="let user of otherUsers, let i = index">
+          <div class="other-user" (click)="openChat(user)">
+              <img id="user-icon" class="user-icon" src="{{ user.photo }}" alt="User Icon"
+                  onerror="this.onerror=null;this.src='./../../../assets/images/Property 1=Default (8).png'">
+              <h2>{{ user.username }}</h2>
+          </div>
+      </div>
+  </div>
+
+  </div>
+  </div>
 </div>

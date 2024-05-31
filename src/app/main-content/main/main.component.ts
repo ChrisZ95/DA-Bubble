@@ -47,23 +47,23 @@ import { Subscription } from 'rxjs';
   templateUrl: './main.component.html',
   styleUrl: './main.component.scss',
   animations: [
-    trigger('displayWorkspaceTrigger', [
-      state(
-        'true',
-        style({
-          width: '30%',
-          opacity: 1,
-        })
-      ),
-      state(
-        'false',
-        style({
-          width: '0%',
-          opacity: 0,
-        })
-      ),
-      transition('false <=> true', animate('1s linear')),
-    ]),
+    // trigger('displayWorkspaceTrigger', [
+    //   state(
+    //     'true',
+    //     style({
+    //       width: '30%',
+    //       opacity: 1,
+    //     })
+    //   ),
+    //   state(
+    //     'false',
+    //     style({
+    //       width: '0%',
+    //       opacity: 0,
+    //     })
+    //   ),
+    //   transition('false <=> true', animate('1s linear')),
+    // ]),
     trigger('isThreadOpenTrigger', [
       state(
         'true',

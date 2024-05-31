@@ -35,32 +35,32 @@ import {
   imports: [CommonModule],
   templateUrl: './workspace.component.html',
   styleUrl: './workspace.component.scss',
-  animations: [
-    trigger('toggleUsers', [
-      state(
-        'open',
-        style({
-          height: '*',
-          opacity: 1,
-          overflow: 'hidden',
-        })
-      ),
-      state(
-        'closed',
-        style({
-          height: '0',
-          opacity: 0,
-          overflow: 'hidden',
-        })
-      ),
-      transition('open <=> closed', [animate('0.5s ease-in-out')]),
-    ]),
-  ],
+  // animations: [
+  //   trigger('toggleUsers', [
+  //     state(
+  //       'open',
+  //       style({
+  //         height: '*',
+  //         opacity: 1,
+  //         overflow: 'hidden',
+  //       })
+  //     ),
+  //     state(
+  //       'closed',
+  //       style({
+  //         height: '0',
+  //         opacity: 0,
+  //         overflow: 'hidden',
+  //       })
+  //     ),
+  //     transition('open <=> closed', [animate('0.5s ease-in-out')]),
+  //   ]),
+  // ],
 })
 export class WorkspaceComponent implements OnInit {
   @ViewChild(ChannelchatComponent) channelchatComponent!: ChannelchatComponent;
 
-  displayUsers: boolean = true;
+  displayUsers: boolean = false;
   channel = new Channel();
   allChannels: any = [];
   filteredChannels: any[] = [];
@@ -70,6 +70,7 @@ export class WorkspaceComponent implements OnInit {
   otherUsers: any = [];
   selectedChannelName: string | null = null;
   currentChannelId: string = '';
+  showChannel = false
 
   constructor(
     public dialog: MatDialog,
@@ -89,12 +90,24 @@ export class WorkspaceComponent implements OnInit {
   userStatus$: any;
   userStatus: any = 'active';
 
+  showAllChannles() {
+    if(this.showChannel) {
+      this.showChannel = false;
+    } else {
+      this.showChannel = true
+    }
+  }
+
   openCreateChannelDialog() {
     this.dialog.open(DialogCreateChannelComponent);
   }
 
   dropDownMessages() {
-    this.displayUsers = !this.displayUsers;
+    if(this.displayUsers) {
+      this.displayUsers = false;
+    } else {
+      this.displayUsers = true;
+    }
   }
 
   openChannelChat(channelId: string) {

@@ -5,7 +5,7 @@
 
     <div class="workspace-chat-thread">
 
-      <div class="workspace" [@displayWorkspaceTrigger]="displayWorkspace">
+      <div *ngIf="displayWorkspace" class="workspace" [@displayWorkspaceTrigger]="displayWorkspace">
         <app-workspace (userDetails)="openChat($event)" (disyplayEmptyChat)="openEmptyChat()" />
       </div>
 
@@ -33,7 +33,7 @@
   </div>
   <div class="workspace-menu" (click)="showHideWorkspace()">
     <div class="workspace-menu-text"></div>
-    <p>Workspace-Menü schließen</p>
+    <p><b>Workspace-Menü schließen</b></p>
     <img src="../../../assets/images/displayWorkspace.png" alt="">
   </div>
 </div>
