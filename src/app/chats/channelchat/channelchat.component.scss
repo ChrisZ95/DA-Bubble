@@ -11,11 +11,11 @@
 }
 
 .justify-end {
-    justify-content: end;
+    justify-content: flex-end;
 }
 
 .justify-start {
-    justify-content: start;
+    justify-content: flex-start;
 }
 
 .bg-color-message {
@@ -69,13 +69,14 @@
     display: flex;
     gap: 20px;
     padding: 6px 75px;
-    img {
-      height: 70px;
-      width: 70px;
-      border-radius: 100%;
-      object-fit: cover;
-    }
     &:hover {
         background-color: rgba(236, 238, 254, 1);
     }
+}
+
+.user-avatar {
+    height: 70px;
+    width: 70px;
+    border-radius: 100%;
+    object-fit: cover;
 }

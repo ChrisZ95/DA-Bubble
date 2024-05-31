@@ -12,7 +12,7 @@
         </ng-container>
       </div>
       <ng-container *ngIf="channelService.UserName.length > 3">
-        <div class="additional-members">{{ channelService.UserName.length  }}</div>
+        <div class="additional-members">{{ channelService.UserName.length }}</div>
       </ng-container>
     </div>
     <div class="add-participants">
@@ -35,25 +35,11 @@
       (mouseenter)="updateHoverState(i, true)" 
       (mouseleave)="updateHoverState(i, false)"
       [ngClass]="{'justify-end': message.uid === firestoreService.currentuid, 'justify-start': message.uid !== firestoreService.currentuid}">
-      <div class="popup-window" *ngIf="isHoveredArray[i] && message.uid === firestoreService.currentuid">
-        <img src="./../../../assets/images/green-tick.png" alt="">
-        <img src="./../../../assets/images/hands-emoji.png" alt="">
-        <img src="./../../../assets/images/add_reaction.png" alt="">
-        <img (click)="openThreadWindow(message.messageId)" src="./../../../assets/images/comment.png" alt="">
-        <button [matMenuTriggerFor]="editMessage" mat-icon-button (menuOpened)="menuOpened(i)">
-          <mat-icon>more_vert</mat-icon>
-        </button>
-        <mat-menu #editMessage="matMenu" class="profile-menu" (closed)="menuClosed()">
-          <button mat-menu-item (click)="startEditingMessage(i, message.message)">Nachricht bearbeiten</button>
-        </mat-menu>
+      
+      <div *ngIf="message.uid !== firestoreService.currentuid" class="user-avatar-container">
+        <img [src]="getMemberAvatar(message.uid)" alt="" class="user-avatar">
       </div>
-      <div class="popup-window" *ngIf="isHoveredArray[i] && message.uid !== firestoreService.currentuid">
-        <img src="./../../../assets/images/green-tick.png" alt="">
-        <img src="./../../../assets/images/hands-emoji.png" alt="">
-        <img src="./../../../assets/images/add_reaction.png" alt="">
-        <img (click)="openThreadWindow(message.messageId)" src="./../../../assets/images/comment.png" alt="">
-      </div>
-      <img [src]="getMemberAvatar(message.uid)" alt="" class="user-avatar">
+
       <div class="conversation">
         <div class="name-timestamp">
           <span class="name" (click)="openContactInfoDialog()">{{ message.authorName }}</span>
@@ -62,10 +48,12 @@
 
         <div class="messages-container">
           <div [ngClass]="{
+            'speechbubble': message.uid !== firestoreService.currentuid,
             'bg-color-own-message': message.uid === firestoreService.currentuid,
             'bg-color-message': message.uid !== firestoreService.currentuid,
+            'own-message-bubble': message.uid === firestoreService.currentuid,
             'hovered-other-message': isHoveredArray[i] && message.uid !== firestoreService.currentuid
-          }" class="speechbubble" *ngIf="editingMessageIndex !== i">
+          }" *ngIf="editingMessageIndex !== i">
             <span class="message-text">{{ message.message }}</span>
           </div>
           <div class="edit-message-container" *ngIf="editingMessageIndex === i">
@@ -85,8 +73,31 @@
           <span class="last-answer"> Letzte Antwort {{ message.lastCommentTime | timestamp: 'time' }}</span>
         </div>
       </div>
+
+      <div *ngIf="message.uid === firestoreService.currentuid" class="user-avatar-container">
+        <img [src]="getMemberAvatar(message.uid)" alt="" class="user-avatar">
+      </div>
+
+      <div class="popup-window" *ngIf="isHoveredArray[i] && message.uid === firestoreService.currentuid">
+        <img src="./../../../assets/images/green-tick.png" alt="">
+        <img src="./../../../assets/images/hands-emoji.png" alt="">
+        <img src="./../../../assets/images/add_reaction.png" alt="">
+        <img (click)="openThreadWindow(message.messageId)" src="./../../../assets/images/comment.png" alt="">
+        <button [matMenuTriggerFor]="editMessage" mat-icon-button (menuOpened)="menuOpened(i)">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #editMessage="matMenu" class="profile-menu" (closed)="menuClosed()">
+          <button mat-menu-item (click)="startEditingMessage(i, message.message)">Nachricht bearbeiten</button>
+        </mat-menu>
+      </div>
+      <div class="popup-window" *ngIf="isHoveredArray[i] && message.uid !== firestoreService.currentuid">
+        <img src="./../../../assets/images/green-tick.png" alt="">
+        <img src="./../../../assets/images/hands-emoji.png" alt="">
+        <img src="./../../../assets/images/add_reaction.png" alt="">
+        <img (click)="openThreadWindow(message.messageId)" src="./../../../assets/images/comment.png" alt="">
+      </div>
     </div>
   </div>
 </div>
 
-<app-text-editor [componentName]="'channel'" />
+<app-text-editor [componentName]="'channel'"></app-text-editor>
