@@ -129,7 +129,7 @@ export class FirestoreService {
       debounceTime(100)
     );
     this.noKeyPressIdle$ = keyPress$.pipe(
-      debounceTime(300000),
+      debounceTime(30000),
       switchMap(() => timer(500))
     );
   }
@@ -172,7 +172,6 @@ export class FirestoreService {
   }
 
   async deleteAccount(uid: any): Promise<string> {
-    debugger
     try {
       const auth = getAuth();
       const user: any = auth.currentUser;
@@ -543,26 +542,26 @@ export class FirestoreService {
   }
   //Formeln werden noch verschoben
   userStatus$!: Observable<string>;
+  testStatus: any;
   setData(path: string, data: any) {
     const dbRef = reference(this.rdb, path);
     return from(set(dbRef, data));
-
   }
   pushData(path: string, data: any) {
     const dbRef = reference(this.rdb, path);
     return from(push(dbRef, data));
   }
   getUserStatus(uid: string): Observable<any> {
-    const statusRef = reference(this.rdb, `users/${uid}/active`);
+    const statusRef = reference(this.rdb, `users/${uid}/activeStatus`);
     return new Observable((observer) => {
       onValue(statusRef, (snapshot) => {
         observer.next(snapshot.val());
+        this.testStatus = snapshot.val();
       });
     });
   }
   setUserStatus(uid: string, status: string) {
-    const statusRef = reference(this.rdb, `users/${uid}/active`);
-    return set(statusRef, status);
+    this.updateActiveStatus(uid, status);
   }
 
   /* Nutzer wird eingeloggt */
@@ -587,7 +586,7 @@ export class FirestoreService {
       this.setCurrentUid(userCredential.user.uid);
       this.setData(`users/${userCredential.user.uid}`, {
         uid: userCredential.user.uid,
-        active: 'active',
+        activeStatus: 'active',
       });
       localStorage.setItem('uid', userCredential.user.uid);
       console.log('User log in erfolgreich');
@@ -738,7 +737,7 @@ export class FirestoreService {
   updateActiveStatus(key: string, value: any): void {
     let status = {
       uid: key,
-      active: value,
+      activeStatus: value,
     };
     this.setData(`users/${key}`, status);
   }

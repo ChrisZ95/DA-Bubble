@@ -124,14 +124,18 @@ export class MainComponent implements OnInit {
   }
 
   handleIdle() {
-    // let key = this.firestoreService.currentuid;
-    // let status = 'away';
-    // this.firestoreService.updateActiveStatus(key, status);
+    if (this.firestoreService.testStatus == 'active') {
+      let key = this.firestoreService.currentuid;
+      let status = 'simpleaway';
+      this.firestoreService.updateActiveStatus(key, status);
+    }
   }
   handleActive() {
-    // let key = this.firestoreService.currentuid;
-    // let status = 'active';
-    // this.firestoreService.updateActiveStatus(key, status);
+    if (this.firestoreService.testStatus == 'simpleaway') {
+      let key = this.firestoreService.currentuid;
+      let status = 'active';
+      this.firestoreService.updateActiveStatus(key, status);
+    }
   }
 
   isIdle: number = 0;
@@ -167,10 +171,11 @@ export class MainComponent implements OnInit {
       .subscribe(() => {
         this.handleActive();
       });
-      this.emojiPickerSubscription = this.chatService.emojiPicker$
-      .subscribe((state: boolean) => {
+    this.emojiPickerSubscription = this.chatService.emojiPicker$.subscribe(
+      (state: boolean) => {
         this.emojiPicker = state;
-      });
+      }
+    );
   }
   ngOnDestroy(): void {
     this.idleSubscription.unsubscribe();

@@ -70,7 +70,7 @@ export class WorkspaceComponent implements OnInit {
   otherUsers: any = [];
   selectedChannelName: string | null = null;
   currentChannelId: string = '';
-  showChannel = false
+  showChannel = false;
 
   constructor(
     public dialog: MatDialog,
@@ -91,10 +91,10 @@ export class WorkspaceComponent implements OnInit {
   userStatus: any = 'active';
 
   showAllChannles() {
-    if(this.showChannel) {
+    if (this.showChannel) {
       this.showChannel = false;
     } else {
-      this.showChannel = true
+      this.showChannel = true;
     }
   }
 
@@ -103,7 +103,7 @@ export class WorkspaceComponent implements OnInit {
   }
 
   dropDownMessages() {
-    if(this.displayUsers) {
+    if (this.displayUsers) {
       this.displayUsers = false;
     } else {
       this.displayUsers = true;
@@ -150,10 +150,11 @@ export class WorkspaceComponent implements OnInit {
     const newStatus = (event.target as HTMLSelectElement).value;
     this.firestoreService
       .setUserStatus(this.firestoreService.currentuid, newStatus)
-      .then(() => {
-        this.userStatus = newStatus;
-        console.log('Status updated to:', newStatus);
-      });
+      
+        this.userStatus = this.firestoreService.testStatus;
+        // this.userStatus = newStatus;
+        // console.log('Status updated to:', newStatus);
+      
   }
 
   ngOnInit(): void {
