@@ -7,12 +7,12 @@
       </button>
     </div>
     <div class="profile">
-      <span>{{ userName }}</span>
+      <span class="user-name">{{ userName }}</span>
       <div *ngIf="userIsVerified">
         <img title="Konto verifiziert" class="user-verified" src="./../../assets/images/verified-user.png">
       </div>
       <img class="avatar-icon" src="{{ userPhoto }}" alt="" onerror="this.onerror=null;this.src='./../../assets/images/Property 1=Default (8).png'">
-      <img class="open-dialog" [matMenuTriggerFor]="profilMenu" src="./../assets/images/arrow_down.png" alt="">
+      <img class="open-dialog" [matMenuTriggerFor]="profilMenu" src="./../../assets/images/keyboard_arrow_down.svg" alt="">
       <mat-menu #profilMenu="matMenu" class="profile-menu">
         <button *ngIf="!guestLogIn" mat-menu-item (click)="openProfileDialog()">Profil</button>
         <button (click)="logOut()" mat-menu-item>Log out</button>
