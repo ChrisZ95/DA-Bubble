@@ -124,7 +124,7 @@
 }
 
 .speechbubble {
-  padding: 12px;
+  padding: 15px;
   border-radius: 0px 30px 30px 30px;
 }
 
@@ -132,7 +132,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 15px;
+  gap: 20px;
   a {
     color: rgba(83, 90, 241, 1);
     cursor: pointer;
@@ -223,4 +223,17 @@
 .answers {
   color: #535AF1;
   cursor: pointer;
+  font-size: 18px;
+  font-weight: 400;
+}
+
+.last-answer {
+  font-size: 14px;
+  font-weight: 400;
+  color: #686868;
+}
+
+.message-text {
+  font-size: 18px;
+  font-weight: 400;
 }
