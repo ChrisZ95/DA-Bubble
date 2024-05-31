@@ -1,5 +1,5 @@
 import { FirestoreService } from './../firestore.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
@@ -7,6 +7,7 @@ import { DialogProfileComponent } from '../dialog-profile/dialog-profile.compone
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { doc, onSnapshot } from "firebase/firestore";
+import { Unsubscribe } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-header',
@@ -15,8 +16,9 @@ import { doc, onSnapshot } from "firebase/firestore";
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })
-export class HeaderComponent implements OnInit{
+export class HeaderComponent implements OnInit, OnDestroy{
   constructor(public dialog: MatDialog,  private router: Router, private firestoreService: FirestoreService) {}
+  private unsubscribe: Unsubscribe | undefined;
   logInUid: any;
   userForm: any;
   userName: any;
@@ -30,7 +32,7 @@ export class HeaderComponent implements OnInit{
     const uid = localStorage.getItem('uid');
 
     const userDocRef = this.firestoreService.getUserDocRef(uid);
-    onSnapshot(userDocRef, (doc) => {
+    this.unsubscribe = onSnapshot(userDocRef, (doc) => {
       if (doc.exists()) {
         const userData = doc.data();
         this.userForm = { id: doc.id, ...userData };
@@ -46,6 +48,12 @@ export class HeaderComponent implements OnInit{
         console.log("Das Benutzerdokument existiert nicht.");
       }
     });
+  }
+
+  ngOnDestroy() {
+    if (this.unsubscribe) {
+      this.unsubscribe();
+    }
   }
 
   openProfileDialog() {

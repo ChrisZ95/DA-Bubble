@@ -174,6 +174,10 @@ export class MainComponent implements OnInit {
   }
   ngOnDestroy(): void {
     this.idleSubscription.unsubscribe();
+    this.noMouseMove.unsubscribe();
+    this.mouseMoveSubscription.unsubscribe();
+    this.noKeyPress.unsubscribe();
+    this.keyPressSubscription.unsubscribe();
     if (this.emojiPickerSubscription) {
       this.emojiPickerSubscription.unsubscribe();
     }
