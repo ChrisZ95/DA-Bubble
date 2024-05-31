@@ -177,7 +177,6 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    debugger
     if (this.userStatusSubscription) {
       this.userStatusSubscription.unsubscribe();
     }

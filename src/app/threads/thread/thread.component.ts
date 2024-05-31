@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ThreadService } from '../../services/thread.service';
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -18,12 +18,13 @@ import { TimestampPipe } from '../../shared/pipes/timestamp.pipe';
   templateUrl: './thread.component.html',
   styleUrls: ['./thread.component.scss', '../threads.component.scss'],
 })
-export class ThreadComponent implements OnInit {
+export class ThreadComponent implements OnInit, OnDestroy {
   constructor(
     public threadService: ThreadService,
     private firestore: Firestore
   ) {}
   private messageInfoSubscription!: Subscription;
+  private threadSubscription: Subscription | null = null;
   documentID: any;
   messageDetail: any;
   message: any = {};
@@ -34,7 +35,7 @@ export class ThreadComponent implements OnInit {
   }
 
   async loadMessages() {
-    this.threadService.getMessageInformation().subscribe((info) => {
+    this.threadSubscription = this.threadService.getMessageInformation().subscribe((info) => {
       this.message = info;
       this.replies = info.replies;
     });
@@ -42,5 +43,11 @@ export class ThreadComponent implements OnInit {
 
   ngOnInit() {
     this.loadMessages();
+  }
+
+  ngOnDestroy(): void {
+    if(this.threadSubscription) {
+      this.threadSubscription.unsubscribe();
+    }
   }
 }

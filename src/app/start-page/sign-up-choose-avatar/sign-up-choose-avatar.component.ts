@@ -87,17 +87,17 @@ export class SignUpChooseAvatarComponent implements OnInit {
     this.showInputInformationUserIcon = false;
     this.selectedAvatar = this.avatar[index];
     if (index == 0) {
-      this.userIconTokenURL = 'https://firebasestorage.googleapis.com/v0/b/dabubble-180.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(0).png?alt=media&token=084e1046-d86a-492a-9d3a-d067185b78b3'
+      this.userIconTokenURL = 'https://firebasestorage.googleapis.com/v0/b/da181-db3ce.appspot.com/o/user-icon%2F80.%20avatar%20interaction.png?alt=media&token=d1e4d7b5-7d23-4f22-b444-5af815e54cc0'
     } else if (index == 1) {
-      this.userIconTokenURL = 'https://firebasestorage.googleapis.com/v0/b/dabubble-180.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(1).png?alt=media&token=d4ce52b2-3bc9-48fd-9021-912002d298ee'
+      this.userIconTokenURL = 'https://firebasestorage.googleapis.com/v0/b/da181-db3ce.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(1).png?alt=media&token=f72fc9cd-95d7-40cc-9535-49794a547352'
     } else if (index == 2) {
-      this.userIconTokenURL = 'https://firebasestorage.googleapis.com/v0/b/dabubble-180.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(2).png?alt=media&token=e8f80f22-1fef-49ad-91a1-818223fb0d69'
+      this.userIconTokenURL = 'https://firebasestorage.googleapis.com/v0/b/da181-db3ce.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(2).png?alt=media&token=5f7c9f16-eb33-4319-a3df-11e4fb515415'
     } else if (index == 3) {
-      this.userIconTokenURL = 'https://firebasestorage.googleapis.com/v0/b/dabubble-180.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(3).png?alt=media&token=41950865-ed8c-4797-bf85-942d72833899'
+      this.userIconTokenURL = 'https://firebasestorage.googleapis.com/v0/b/da181-db3ce.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(3).png?alt=media&token=1cbd3b9d-18dc-4476-815a-30c1def0c0ba'
     } else if (index == 4) {
-      this.userIconTokenURL = 'https://firebasestorage.googleapis.com/v0/b/dabubble-180.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(4).png?alt=media&token=84f4dfc3-08ba-469e-8792-783b1a504d4b'
+      this.userIconTokenURL = 'https://firebasestorage.googleapis.com/v0/b/da181-db3ce.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(4).png?alt=media&token=49f19eed-8e39-4e4e-8562-9653036a6d21'
     } else if (index == 5) {
-      this.userIconTokenURL = 'https://firebasestorage.googleapis.com/v0/b/dabubble-180.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(5).png?alt=media&token=3acc0648-eff2-422a-80c6-a0400a7c0351'
+      this.userIconTokenURL = 'https://firebasestorage.googleapis.com/v0/b/da181-db3ce.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(5).png?alt=media&token=24fc0d08-16dd-4a37-bf35-19fdf87413de'
     }
     console.log('Avatar ausgewählt:', index ,this.userIconTokenURL);
     this.iconIndex = index;

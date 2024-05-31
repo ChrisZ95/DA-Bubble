@@ -41,7 +41,7 @@ export class ChannelchatComponent implements OnInit, AfterViewInit, OnDestroy {
     this.chatSnapshotUnsubscribe = onSnapshot(collection(this.firestore, 'chats'), (list) => {
       this.allChats = list.docs.map((doc) => doc.data());
     });
-  
+
     for (let i = 0; i < this.channelService.messages.length; i++) {
       this.isHoveredArray.push(false);
     }
@@ -150,7 +150,7 @@ export class ChannelchatComponent implements OnInit, AfterViewInit, OnDestroy {
     this.channelService.setCurrentMessageId(messageId);
     this.channelService.showThreadWindow = true;
   }
-  
+
   getMemberAvatar(memberId: string): string {
     const member = this.allUsers.find(user => user.uid === memberId);
     return member ? member.photo : '';

@@ -3,6 +3,7 @@ import {
   OnChanges,
   SimpleChanges,
   OnInit,
+  OnDestroy,
 } from '@angular/core';
 import { ChannelService } from '../../services/channel.service';
 import { FormsModule } from '@angular/forms';
@@ -10,6 +11,7 @@ import { CommonModule } from '@angular/common';
 import { TimestampPipe } from '../../shared/pipes/timestamp.pipe';
 import { TextEditorComponent } from '../../shared/text-editor/text-editor.component';
 import { FirestoreService } from '../../firestore.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-channelthread',
@@ -18,10 +20,11 @@ import { FirestoreService } from '../../firestore.service';
   templateUrl: './channelthread.component.html',
   styleUrls: ['./channelthread.component.scss', '../threads.component.scss'],
 })
-export class ChannelthreadComponent implements OnInit, OnChanges {
+export class ChannelthreadComponent implements OnInit, OnDestroy, OnChanges {
   currentMessageId: string = '';
   currentMessageComments: any[] = [];
   allUsers: any[] = [];
+  private channelSubscription: Subscription | null = null;
 
   constructor(
     public channelService: ChannelService,
@@ -34,11 +37,17 @@ export class ChannelthreadComponent implements OnInit, OnChanges {
 
   async ngOnInit(): Promise<void> {
     this.allUsers = await this.firestoreService.getAllUsers();
-    this.channelService.currentMessageCommentsChanged.subscribe((comments) => {
+    this.channelSubscription = this.channelService.currentMessageCommentsChanged.subscribe((comments) => {
       this.currentMessageComments = comments;
     });
     this.currentMessageId = this.channelService.getCurrentMessageId();
     this.loadCommentsForCurrentMessage(this.currentMessageId);
+  }
+
+  ngOnDestroy(): void {
+    if(this.channelSubscription) {
+      this.channelSubscription.unsubscribe();
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {

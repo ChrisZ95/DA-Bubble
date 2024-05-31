@@ -5,6 +5,7 @@ import {
   OnChanges,
   OnInit,
   SimpleChanges,
+  OnDestroy
 } from '@angular/core';
 import { collection, getDocs } from 'firebase/firestore';
 import { ChatService } from '../../services/chat.service';
@@ -18,6 +19,7 @@ import { DialogMembersComponent } from '../../dialog-members/dialog-members.comp
 import { FirestoreService } from '../../firestore.service';
 import { ChannelService } from '../../services/channel.service';
 import { ThreadService } from '../../services/thread.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-ownchat',
@@ -26,7 +28,7 @@ import { ThreadService } from '../../services/thread.service';
   templateUrl: './ownchat.component.html',
   styleUrls: ['./ownchat.component.scss', '../chats.component.scss'],
 })
-export class OwnchatComponent implements OnChanges, OnInit {
+export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   constructor(
     public dialog: MatDialog,
     public chatService: ChatService,
@@ -37,6 +39,8 @@ export class OwnchatComponent implements OnChanges, OnInit {
   messages: any = [];
   allUsers: any = [];
   participants: any;
+  private messagesSubscription: Subscription | undefined;
+  private filteredUsersSubscription: Subscription | undefined;
   openMemberDialog() {
     this.dialog.open(DialogMembersComponent);
   }
@@ -85,13 +89,26 @@ export class OwnchatComponent implements OnChanges, OnInit {
   filteredUsers: any;
   ngOnInit(): void {
     this.loadCurrentUser();
-    this.chatService.messages$.subscribe((messages) => {
+
+    this.messagesSubscription = this.chatService.messages$.subscribe((messages) => {
       this.messages = messages;
     });
+
     const userDetails = { uid: 'someUserId' };
     this.loadAllUsers();
-    this.chatService.filteredUsers$.subscribe((users) => {
+
+    this.filteredUsersSubscription = this.chatService.filteredUsers$.subscribe((users) => {
       this.filteredUsers = users;
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this.messagesSubscription) {
+      this.messagesSubscription.unsubscribe();
+    }
+
+    if (this.filteredUsersSubscription) {
+      this.filteredUsersSubscription.unsubscribe();
+    }
   }
 }

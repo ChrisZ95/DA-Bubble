@@ -95,6 +95,16 @@ export class MainComponent implements OnInit {
   userDetails: any = '';
   selectedMessageId: string = '';
   emojiPicker = false;
+  isIdle: number = 0;
+
+  private idleSubscription: Subscription | null = null;
+  private noMouseMove: Subscription | null = null;
+  private mouseMoveSubscription: Subscription | null = null;
+  private noKeyPress: Subscription | null = null;
+  private keyPressSubscription: Subscription | null = null;
+  private emojiPickerSubscription: Subscription | null = null;
+  private activityAfterIdleSubscription: Subscription | null = null;
+
 
   closeEmojiPicker() {
     this.chatService.emojiPicker(false);
@@ -138,23 +148,17 @@ export class MainComponent implements OnInit {
     }
   }
 
-  isIdle: number = 0;
-  idleSubscription!: Subscription;
-  activityAfterIdleSubscription!: Subscription;
-  mouseMoveSubscription!: Subscription;
-  noMouseMove!: Subscription;
-  keyPressSubscription!: Subscription;
-  noKeyPress!: Subscription;
-  emojiPickerSubscription: Subscription | null = null;
   ngOnInit(): void {
     this.idleSubscription = this.firestoreService
       .isUserIdle()
       .subscribe((idle) => {});
+
     this.noMouseMove = this.firestoreService
       .noMouseMoveAfterIdle()
       .subscribe(() => {
         this.handleIdle();
       });
+
     this.mouseMoveSubscription = this.firestoreService
       .onMouseMoveAfterIdle()
       .subscribe(() => {
@@ -166,26 +170,41 @@ export class MainComponent implements OnInit {
       .subscribe(() => {
         this.handleIdle();
       });
+
     this.keyPressSubscription = this.firestoreService
       .onKeyPressAfterIdle()
       .subscribe(() => {
         this.handleActive();
       });
+
     this.emojiPickerSubscription = this.chatService.emojiPicker$.subscribe(
       (state: boolean) => {
         this.emojiPicker = state;
       }
     );
   }
+
   ngOnDestroy(): void {
-    this.idleSubscription.unsubscribe();
-    this.noMouseMove.unsubscribe();
-    this.mouseMoveSubscription.unsubscribe();
-    this.noKeyPress.unsubscribe();
-    this.keyPressSubscription.unsubscribe();
+    if (this.idleSubscription) {
+      this.idleSubscription.unsubscribe();
+    }
+    if (this.noMouseMove) {
+      this.noMouseMove.unsubscribe();
+    }
+    if (this.mouseMoveSubscription) {
+      this.mouseMoveSubscription.unsubscribe();
+    }
+    if (this.noKeyPress) {
+      this.noKeyPress.unsubscribe();
+    }
+    if (this.keyPressSubscription) {
+      this.keyPressSubscription.unsubscribe();
+    }
     if (this.emojiPickerSubscription) {
       this.emojiPickerSubscription.unsubscribe();
     }
-    this.activityAfterIdleSubscription.unsubscribe();
+    if (this.activityAfterIdleSubscription) {
+      this.activityAfterIdleSubscription.unsubscribe();
+    }
   }
 }
