@@ -4,10 +4,12 @@ import {
   OnInit,
   Output,
   ViewChild,
+  OnDestroy
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DialogCreateChannelComponent } from '../../dialog-create-channel/dialog-create-channel.component';
 import { MatDialog } from '@angular/material/dialog';
+import { Subscription } from 'rxjs';
 import {
   Firestore,
   onSnapshot,
@@ -57,7 +59,7 @@ import {
   //   ]),
   // ],
 })
-export class WorkspaceComponent implements OnInit {
+export class WorkspaceComponent implements OnInit, OnDestroy {
   @ViewChild(ChannelchatComponent) channelchatComponent!: ChannelchatComponent;
 
   displayUsers: boolean = false;
@@ -89,6 +91,7 @@ export class WorkspaceComponent implements OnInit {
   @Output() disyplayEmptyChat = new EventEmitter<boolean>();
   userStatus$: any;
   userStatus: any = 'active';
+  private userStatusSubscription: Subscription | undefined;
 
   showAllChannles() {
     if (this.showChannel) {
@@ -150,11 +153,11 @@ export class WorkspaceComponent implements OnInit {
     const newStatus = (event.target as HTMLSelectElement).value;
     this.firestoreService
       .setUserStatus(this.firestoreService.currentuid, newStatus)
-      
+
         this.userStatus = this.firestoreService.testStatus;
         // this.userStatus = newStatus;
         // console.log('Status updated to:', newStatus);
-      
+
   }
 
   ngOnInit(): void {
@@ -168,9 +171,16 @@ export class WorkspaceComponent implements OnInit {
       this.firestoreService.currentuid
     );
 
-    this.userStatus$.subscribe((status: any) => {
+    this.userStatusSubscription = this.userStatus$.subscribe((status: any) => {
       this.userStatus = status;
     });
+  }
+
+  ngOnDestroy(): void {
+    debugger
+    if (this.userStatusSubscription) {
+      this.userStatusSubscription.unsubscribe();
+    }
   }
 
   filterChannels() {
