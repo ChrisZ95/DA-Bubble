@@ -27,6 +27,10 @@
     color: white;
 }
 
+.hovered-other-message {
+    background-color: white !important;
+}
+
 .active-channel {
     display: flex;
     align-items: center;
@@ -58,4 +62,20 @@
     font-size: 14px;
     font-weight: 400;
     color: #686868;
+}
+
+.conversation-container-channelchat {
+    position: relative;
+    display: flex;
+    gap: 20px;
+    padding: 6px 75px;
+    img {
+      height: 70px;
+      width: 70px;
+      border-radius: 100%;
+      object-fit: cover;
+    }
+    &:hover {
+        background-color: rgba(236, 238, 254, 1);
+    }
 }

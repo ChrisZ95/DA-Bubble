@@ -31,7 +31,7 @@
       <div class="separator-line"></div>
     </div>
 
-    <div class="conversation-container"
+    <div class="conversation-container-channelchat"
       (mouseenter)="updateHoverState(i, true)" 
       (mouseleave)="updateHoverState(i, false)"
       [ngClass]="{'justify-end': message.uid === firestoreService.currentuid, 'justify-start': message.uid !== firestoreService.currentuid}">
@@ -61,7 +61,11 @@
         </div>
 
         <div class="messages-container">
-          <div [ngClass]="{'bg-color-own-message': message.uid === firestoreService.currentuid, 'bg-color-message': message.uid !== firestoreService.currentuid}" class="speechbubble" *ngIf="editingMessageIndex !== i">
+          <div [ngClass]="{
+            'bg-color-own-message': message.uid === firestoreService.currentuid,
+            'bg-color-message': message.uid !== firestoreService.currentuid,
+            'hovered-other-message': isHoveredArray[i] && message.uid !== firestoreService.currentuid
+          }" class="speechbubble" *ngIf="editingMessageIndex !== i">
             <span class="message-text">{{ message.message }}</span>
           </div>
           <div class="edit-message-container" *ngIf="editingMessageIndex === i">
