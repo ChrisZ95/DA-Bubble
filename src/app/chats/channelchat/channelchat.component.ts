@@ -7,6 +7,7 @@ import {
   ElementRef,
   ViewChild,
   Output,
+  OnDestroy
 } from '@angular/core';
 import { DialogMembersComponent } from '../../dialog-members/dialog-members.component';
 import { DialogChannelInfoComponent } from '../../dialog-channel-info/dialog-channel-info.component';
@@ -38,7 +39,7 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './channelchat.component.html',
   styleUrls: ['./channelchat.component.scss', '../chats.component.scss'],
 })
-export class ChannelchatComponent implements OnInit, AfterViewInit {
+export class ChannelchatComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(
     public dialog: MatDialog,
     public channelService: ChannelService,
@@ -140,12 +141,18 @@ export class ChannelchatComponent implements OnInit, AfterViewInit {
     }));
   }
 
+  ngOnDestroy(): void {
+    if(this.channelSubscription) {
+      this.channelSubscription.unsubscribe()
+    }
+  }
+
   openThreadWindow(messageId: string){
     this.channelService.currentMessageId = messageId;
     this.channelService.setCurrentMessageId(messageId);
     this.channelService.showThreadWindow = true;
   }
-  
+
   getMemberAvatar(memberId: string): string {
     const member = this.allUsers.find(user => user.uid === memberId);
     return member ? member.photo : '';
