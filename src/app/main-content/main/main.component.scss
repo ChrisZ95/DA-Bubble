@@ -43,15 +43,23 @@
   box-shadow: -6px -6px 6px grey;
   border-top-left-radius: 30px;
   border-bottom-left-radius: 30px;
+
+
   p {
     writing-mode: vertical-lr;
   }
-  img {
+
+  .workspace-menu-icon {
     transform: rotate(-180deg);
   }
+
   &:hover {
     color: #565bf4;
     cursor: pointer;
+
+    .workspace-menu-icon {
+      filter: brightness(0) saturate(100%) invert(26%) sepia(95%) saturate(2195%) hue-rotate(217deg) brightness(95%) contrast(89%);
+    }
   }
 }
 

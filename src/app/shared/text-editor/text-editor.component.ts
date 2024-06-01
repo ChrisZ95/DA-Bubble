@@ -224,24 +224,37 @@ export class TextEditorComponent implements OnInit {
   }
 
   async customDataURL() {
+    debugger
     const fileInput = this.fileInput.nativeElement;
     const file = fileInput.files?.[0];
     if (file) {
       try {
         this.chatService.dataURL =
-          await this.firestoreService.uploadDataIntoStorage(file);
+        await this.firestoreService.uploadDataIntoStorage(file);
         console.log('dataURL', this.chatService.dataURL);
-        this.insertImage(this.chatService.dataURL);
+        this.insertImage(this.chatService.dataURL ,file?.name);
+        // this.insertImage(this.chatService.dataURL);
       } catch (error) {
         console.error('Error uploading file:', error);
       }
     }
   }
 
-  insertImage(dataUrl: string): void {
+  insertImage(dataUrl: string, dataName: any): void {
     const imageDisplay = document.getElementById('imageDisplay') as HTMLElement;
     if (imageDisplay) {
-      imageDisplay.innerHTML = `<img src="${dataUrl}" style="max-width: 100%; height: auto;">`;
+      imageDisplay.innerHTML += `<div class="image-tag"
+      style="
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: 1px solid #565bf4;
+      padding: 0px 20px;
+      width: auto;
+      border-radius: 25px;
+      background-color: #ADB0D9;
+      font-family: "nunito";
+      "><a href="${dataUrl}" target="_blank">${dataName}</a></div>`;
     }
   }
 
