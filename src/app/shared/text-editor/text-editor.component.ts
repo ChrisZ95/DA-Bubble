@@ -109,6 +109,11 @@ export class TextEditorComponent implements OnInit {
     this.openEmojiPicker = false;
     this.message = '';
   }
+  sendGroupMessage() {
+    console.log('Participants', this.chatService.participants);
+    console.log('message', this.message);
+    console.log('chatDocId', this.chatService.chatDocId);
+  }
 
   sendReply() {
     this.threadService.sendReply(this.message);

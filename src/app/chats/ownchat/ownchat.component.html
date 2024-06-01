@@ -1,4 +1,4 @@
- <div class="header">
+<div class="header">
     <div class="active-channel">
         <div (click)="openChannelInfoDialog()"></div>
     </div>
@@ -50,15 +50,16 @@
         </div>
     </ng-container>
 </div>
-<div *ngIf="messages.length === 0">
-  <div class="chat-information" *ngFor="let user of filteredUsers">
-    <div class="images-participants" (click)="openMemberDialog()">
-      <img [src]='user?.photo' alt="">
-      <h2>{{ user.username }} ( Du )</h2>
+<div *ngIf="messages.length === 0 && this.chatService.participants.length === 1">
+    <div class="chat-information" *ngFor="let user of filteredUsers">
+        <div class="images-participants" (click)="openMemberDialog()">
+            <img [src]='user?.photo' alt="">
+            <h2>{{ user.username }} ( Du )</h2>
+        </div>
+        <div class="chat-information-span">
+            <span>Das ist dein privater Raum. Mache dir Notizen, liste To-dos auf oder bewahre Links und Dateien
+                auf.</span>
+        </div>
     </div>
-    <div class="chat-information-span">
-      <span>Das ist dein privater Raum. Mache dir Notizen, liste To-dos auf oder bewahre Links und Dateien auf.</span>
-    </div>
-  </div>
 </div>
 <app-text-editor class="text-editor" [componentName]="'ownChat'" />

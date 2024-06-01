@@ -4,7 +4,7 @@ import {
   OnInit,
   Output,
   ViewChild,
-  OnDestroy
+  OnDestroy,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DialogCreateChannelComponent } from '../../dialog-create-channel/dialog-create-channel.component';
@@ -151,13 +151,14 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
 
   changeStatus(event: Event) {
     const newStatus = (event.target as HTMLSelectElement).value;
-    this.firestoreService
-      .setUserStatus(this.firestoreService.currentuid, newStatus)
+    this.firestoreService.setUserStatus(
+      this.firestoreService.currentuid,
+      newStatus
+    );
 
-        this.userStatus = this.firestoreService.testStatus;
-        // this.userStatus = newStatus;
-        // console.log('Status updated to:', newStatus);
-
+    this.userStatus = this.firestoreService.testStatus;
+    // this.userStatus = newStatus;
+    // console.log('Status updated to:', newStatus);
   }
 
   ngOnInit(): void {
