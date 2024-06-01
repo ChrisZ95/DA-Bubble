@@ -68,7 +68,6 @@ export class TextEditorComponent implements OnInit {
   }
 
   submit() {
-    console.log(this.fileArray.length)
     if (this.fileArray.length === 0 && (!this.message || this.message.trim().length === 0)) {
       console.log('wähle ein bild oder nachricht')
     } else {
@@ -81,6 +80,7 @@ export class TextEditorComponent implements OnInit {
       } else if (this.componentName === 'channelthread') {
         this.sendCommentToMessage();
       }
+      this.chatService.dataURL = null;
       this.fileArray = [];
     }
   }
@@ -235,8 +235,7 @@ export class TextEditorComponent implements OnInit {
     const file = fileInput.files?.[0];
     if (file && (this.fileArray.length) <= 4) {
       try {
-        this.chatService.dataURL =
-        await this.firestoreService.uploadDataIntoStorage(file);
+        this.chatService.dataURL = await this.firestoreService.uploadDataIntoStorage(file);
         console.log('dataURL', this.chatService.dataURL);
         this.insertImage(file?.type,this.chatService.dataURL ,file?.name);
         // if(file.type === 'image/png') {

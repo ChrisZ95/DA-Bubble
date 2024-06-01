@@ -37,27 +37,6 @@ import {
   imports: [CommonModule],
   templateUrl: './workspace.component.html',
   styleUrl: './workspace.component.scss',
-  // animations: [
-  //   trigger('toggleUsers', [
-  //     state(
-  //       'open',
-  //       style({
-  //         height: '*',
-  //         opacity: 1,
-  //         overflow: 'hidden',
-  //       })
-  //     ),
-  //     state(
-  //       'closed',
-  //       style({
-  //         height: '0',
-  //         opacity: 0,
-  //         overflow: 'hidden',
-  //       })
-  //     ),
-  //     transition('open <=> closed', [animate('0.5s ease-in-out')]),
-  //   ]),
-  // ],
 })
 export class WorkspaceComponent implements OnInit, OnDestroy {
   @ViewChild(ChannelchatComponent) channelchatComponent!: ChannelchatComponent;

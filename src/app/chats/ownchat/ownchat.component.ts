@@ -82,7 +82,6 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (this.userDetails != '' && changes['userDetails']) {
-      debugger;
       this.chatService.loadMessages(this.userDetails);
       this.messages = this.chatService.messages;
     }

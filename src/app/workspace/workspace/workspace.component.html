@@ -20,9 +20,11 @@
       </div>
       <div class="reveal-channels" *ngIf="showChannel">
         <div class="active-channel" *ngFor="let channel of filteredChannels">
-          <div class="channel-name" (click)="channelService.getChannelName(channel.channelName)"
+          <div class="channel-name"
+            (click)="channelService.getChannelName(channel.channelName)"
             (click)="channelService.getDescription(channel.description)"
-            (click)="channelService.getUserName(channel.users)" (click)="channelService.getAuthor(channel.author)"
+            (click)="channelService.getUserName(channel.users)"
+            (click)="channelService.getAuthor(channel.author)"
             (click)="openChannelChat(channel.channelId)">
             <span>#</span>
             <span>{{ channel.channelName }}</span>
