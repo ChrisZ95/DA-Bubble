@@ -1,30 +1,25 @@
-$wct-height: calc(100vh - 20vh);
+$wct-height: calc(100vh - 20vh + 20px);
 
 .d-none {
   display: none;
 }
-
 .close-emoji-picker {
   position: absolute;
   height: 100vh;
   width: 100vw;
   z-index: 999;
 }
-
 .main {
   position: relative;
 }
-
 .container {
   position: relative;
 }
-
 .workspace-chat-thread {
   height: 100%;
   display: flex;
   justify-content: space-evenly;
 }
-
 .workspace {
   position: absolute;
   left: 32px;
@@ -34,9 +29,7 @@ $wct-height: calc(100vh - 20vh);
   padding: 10px;
   background-color: rgb(255, 255, 255);
   height: $wct-height;
-
 }
-
 .workspace-menu {
   position: absolute;
   width: max-content;
@@ -57,7 +50,6 @@ $wct-height: calc(100vh - 20vh);
   img {
     transform: rotate(-180deg);
   }
-
   &:hover {
     color: #565bf4;
     cursor: pointer;
@@ -66,12 +58,10 @@ $wct-height: calc(100vh - 20vh);
 
 .chat {
   background-color: rgba(255, 255, 255, 1);
-  display: flex;
-  flex-direction: column;
   width: 80%;
   height: $wct-height;
   border-radius: 30px;
-  margin-left: 400px;
+  margin-left: 430px;
 }
 
 .thread {
