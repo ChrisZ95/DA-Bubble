@@ -5,7 +5,7 @@ import {
   OnChanges,
   OnInit,
   SimpleChanges,
-  OnDestroy
+  OnDestroy,
 } from '@angular/core';
 import { collection, getDocs } from 'firebase/firestore';
 import { ChatService } from '../../services/chat.service';
@@ -90,16 +90,20 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadCurrentUser();
 
-    this.messagesSubscription = this.chatService.messages$.subscribe((messages) => {
-      this.messages = messages;
-    });
+    this.messagesSubscription = this.chatService.messages$.subscribe(
+      (messages) => {
+        this.messages = messages;
+      }
+    );
 
     const userDetails = { uid: 'someUserId' };
     this.loadAllUsers();
 
-    this.filteredUsersSubscription = this.chatService.filteredUsers$.subscribe((users) => {
-      this.filteredUsers = users;
-    });
+    this.filteredUsersSubscription = this.chatService.filteredUsers$.subscribe(
+      (users) => {
+        this.filteredUsers = users;
+      }
+    );
   }
 
   ngOnDestroy(): void {

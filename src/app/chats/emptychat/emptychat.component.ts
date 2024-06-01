@@ -195,13 +195,15 @@ export class EmptychatComponent implements OnInit {
       this.focusInputField();
     }, 0);
   }
-
+  // selectedUserUids: any = [this.firestoreService.currentuid];
   selectEntity(entity: any) {
     if (
       entity.username &&
       !this.selectedUsers.includes(`@${entity.username}`)
     ) {
       this.selectedUsers.push(`@${entity.username}`);
+      // let currentUID = this.firestoreService.currentuid;
+      // this.selectedUserUids.push(`${entity.uid}`);
       this.chatService.allPotentialChatUsers.push(entity);
 
       this.updateInputField();
@@ -227,7 +229,6 @@ export class EmptychatComponent implements OnInit {
   }
 
   removeUser(user: string) {
-    console.log('removed');
     this.selectedUsers = this.selectedUsers.filter((u) => u !== user);
     this.updateInputField();
   }
