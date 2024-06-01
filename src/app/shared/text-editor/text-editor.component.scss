@@ -38,10 +38,51 @@
       display: flex;
       flex-direction: row;
       gap: 20px;
-      height: 50px;
+      height: 80px;
       width: 90%;
       margin-left: 24px;
       margin-right: 24px;
+
+      .file-link-container {
+        display: flex;
+        justify-content: center;
+        flex-direction: row;
+        align-items: center;
+        border: 1px solid #565bf4;
+        padding: 0px 20px;
+        width: auto;
+        border-radius: 25px;
+        background-color: #ADB0D9;
+        font-family: "nunito";
+
+        .delete-file-button {
+          border: none;
+          background-color: transparent;
+
+          img {
+            height: 16px;
+            width: 16px;
+          }
+
+          &:hover {
+            cursor: pointer;
+            filter: brightness(0) saturate(100%) invert(26%) sepia(95%) saturate(2195%) hue-rotate(217deg) brightness(95%) contrast(89%);
+          }
+        }
+
+        .file-link {
+          text-decoration: none;
+          color: black;
+        }
+
+        &:hover {
+
+          .file-link {
+            text-decoration: underline;
+            color: #565bf4;
+          }
+        }
+      }
     }
 
     .button-container {

@@ -31,7 +31,14 @@
 
   <div class="input-section">
     <textarea cols="30" rows="10" id="textArea" placeholder="Nachricht schreiben" [(ngModel)]="message" [(ngModel)]="comment" name="message"></textarea>
-    <div class="imageDisplay" id="imageDisplay"></div>
+    <div class="imageDisplay" id="imageDisplay">
+      <div *ngFor="let file of fileArray let i = index"  class="file-link-container">
+        <button class="delete-file-button" (click)="deleteFile(i)">
+          <img src="./../../../assets/images/close.png">
+        </button>
+        <a class="file-link" href="{{ file.url }}">{{ file.name }}</a>
+      </div>
+    </div>
     <div class="button-container">
 
       <div class="left-buttons">

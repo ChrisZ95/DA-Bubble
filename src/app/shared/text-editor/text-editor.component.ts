@@ -37,6 +37,7 @@ export class TextEditorComponent implements OnInit {
   message: string = '';
   comment: string = '';
   currentMessageComments: any[] = [];
+  fileArray: any[] = [];
   openEmojiPicker = false;
   emojiPickerSubscription: Subscription | null = null;
 
@@ -67,6 +68,7 @@ export class TextEditorComponent implements OnInit {
   }
 
   submit() {
+    this.fileArray = [];
     if (this.componentName === 'ownChat') {
       this.sendMessage();
     } else if (this.componentName === 'thread') {
@@ -224,38 +226,41 @@ export class TextEditorComponent implements OnInit {
   }
 
   async customDataURL() {
-    debugger
     const fileInput = this.fileInput.nativeElement;
     const file = fileInput.files?.[0];
-    if (file) {
+    if (file && (this.fileArray.length) <= 4) {
       try {
         this.chatService.dataURL =
         await this.firestoreService.uploadDataIntoStorage(file);
         console.log('dataURL', this.chatService.dataURL);
-        this.insertImage(this.chatService.dataURL ,file?.name);
-        // this.insertImage(this.chatService.dataURL);
+        this.insertImage(file?.type,this.chatService.dataURL ,file?.name);
+        // if(file.type === 'image/png') {
+        //   this.insertImage(file?.type,this.chatService.dataURL ,file?.name);
+        //   console.log('Bild hochgeladen')
+        // } else if(file.type === 'video/mp4') {
+        //   this.insertImage(file?.type,this.chatService.dataURL ,file?.name);
+        //   console.log('Video hochgeladen')
+        // }  else if(file.type === 'audio/wav') {
+        //   this.insertImage(file?.type, this.chatService.dataURL ,file?.name);
+        //   console.log('audio hochgeladen')
+        // }
       } catch (error) {
         console.error('Error uploading file:', error);
       }
     }
   }
 
-  insertImage(dataUrl: string, dataName: any): void {
-    const imageDisplay = document.getElementById('imageDisplay') as HTMLElement;
-    if (imageDisplay) {
-      imageDisplay.innerHTML += `<div class="image-tag"
-      style="
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border: 1px solid #565bf4;
-      padding: 0px 20px;
-      width: auto;
-      border-radius: 25px;
-      background-color: #ADB0D9;
-      font-family: "nunito";
-      "><a href="${dataUrl}" target="_blank">${dataName}</a></div>`;
-    }
+  insertImage(dataType: any, dataUrl: string, dataName: any): void {
+    console.log('wird aufgerufen')
+      this.fileArray.push({
+        type: dataType,
+        url: dataUrl,
+        name: dataName,
+    });
+  }
+
+  deleteFile(index: number): void {
+    this.fileArray.splice(index, 1);
   }
 
   subscribeToMessages() {
