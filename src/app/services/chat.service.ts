@@ -247,7 +247,7 @@ export class ChatService {
   }
 
   async loadMessages(userDetails: any, retryCount: number = 0) {
-    if (this.loadCount == 0) {
+    
       this.loadCount = 1;
       if (Array.isArray(userDetails)) {
         userDetails = userDetails[0];
@@ -305,7 +305,7 @@ export class ChatService {
       );
       this.filteredUsersSubject.next(filteredUsers);
       this.messagesSubject.next(messages);
-    }
+    
   }
 
   getCombinedChatId(uid1: string, uid2: string): string {
