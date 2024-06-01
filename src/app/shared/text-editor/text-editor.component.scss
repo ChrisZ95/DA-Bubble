@@ -48,12 +48,12 @@
         justify-content: center;
         flex-direction: row;
         align-items: center;
-        border: 1px solid #565bf4;
         padding: 0px 20px;
         width: auto;
         border-radius: 25px;
         background-color: #ADB0D9;
         font-family: "nunito";
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 
         .delete-file-button {
           border: none;
