@@ -1,4 +1,4 @@
-<div class="header">
+<div class="header-channelchat">
   <div class="active-channel">
     <span>#</span>
     <div (click)="openChannelInfoDialog()">{{ channelService.channelName }}</div>
@@ -11,7 +11,7 @@
           <img [src]="getMemberAvatar(member)" alt="">
         </ng-container>
       </div>
-      <ng-container *ngIf="channelService.UserName.length > 3">
+      <ng-container>
         <div class="additional-members">{{ channelService.UserName.length }}</div>
       </ng-container>
     </div>
@@ -23,13 +23,15 @@
 
 <div class="scrollbar" #scrollContainer>
   <div *ngFor="let message of channelService.messagesWithAuthors; let i = index">
-    <div class="separator">
-      <div class="separator-line"></div>
-      <div class="separator-date">
-        {{ message.createdAt | timestamp: 'day' }}
+    <ng-container *ngIf="shouldShowSeparator(i)">
+      <div class="separator">
+        <div class="separator-line"></div>
+        <div class="separator-date">
+          {{ message.createdAt | timestamp: 'day' }}
+        </div>
+        <div class="separator-line"></div>
       </div>
-      <div class="separator-line"></div>
-    </div>
+    </ng-container>
 
     <div class="conversation-container-channelchat"
       (mouseenter)="updateHoverState(i, true)" 
@@ -99,5 +101,4 @@
     </div>
   </div>
 </div>
-
 <app-text-editor [componentName]="'channel'"></app-text-editor>

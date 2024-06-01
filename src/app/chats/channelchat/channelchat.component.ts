@@ -188,4 +188,22 @@ export class ChannelchatComponent implements OnInit, AfterViewInit, OnDestroy {
     this.editingMessageIndex = null;
     this.editedMessageText = '';
   }
+
+  shouldShowSeparator(index: number): boolean {
+    if (index === 0) {
+      return true;
+    }
+    const currentMessage = this.channelService.messagesWithAuthors[index];
+    const previousMessage = this.channelService.messagesWithAuthors[index - 1];
+    const currentDate = new Date(Number(currentMessage.createdAt));
+    const previousDate = new Date(Number(previousMessage.createdAt));
+    if (isNaN(currentDate.getTime()) || isNaN(previousDate.getTime())) {
+        console.error(`Invalid Date - Current Message: ${JSON.stringify(currentMessage)}, Previous Message: ${JSON.stringify(previousMessage)}`);
+        return false;
+    }
+    const currentDateString = currentDate.toDateString();
+    const previousDateString = previousDate.toDateString();
+    const showSeparator = currentDateString !== previousDateString;
+    return showSeparator;
+  }
 }
