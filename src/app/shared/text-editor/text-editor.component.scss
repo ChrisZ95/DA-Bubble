@@ -12,39 +12,43 @@
   align-items: center;
   width: 90%;
   padding-left: 5%;
+
   .input-section {
     width: 100%;
     border: 1px solid #ADB0D9;
     border-radius: 25px;
-    height: 100px;
+    height: auto;
     z-index: 100;
 
     textarea {
       width: 90%;
       height: 40px;
       resize: none;
-      overflow: hidden;
       border: none;
       font-size: 18px;
       font-weight: 400;
       font-family: "nunito";
       margin-left: 24px;
-      margin-top: 8px !important;
+      margin-top: 24px !important;
       color: #686868;
       outline: none;
     }
 
-    // .imageDisplay {
-    //   height: 50px;
-    //   width: 50px;
-    // }
+    .imageDisplay {
+      display: flex;
+      flex-direction: row;
+      gap: 20px;
+      height: 50px;
+      width: 90%;
+      margin-left: 24px;
+      margin-right: 24px;
+    }
 
     .button-container {
       display: flex;
       flex-direction: row;
       justify-content: space-between;
-      margin-left: 24px;
-      margin-right: 24px;
+      margin: 24px;
       height: 25px;
 
       .left-buttons {
@@ -85,4 +89,10 @@
       }
     }
   }
+}
+
+.image-tag {
+   &:hover {
+    background-color: aqua !important;
+   }
 }
