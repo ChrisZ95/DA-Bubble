@@ -22,12 +22,10 @@
     z-index: 100;
 
     textarea {
-      min-width: 90%;
-      max-width: 90%;
       width: 90%;
-      min-height: 40px;
-      max-height: 40px;
       height: 40px;
+      resize: none;
+      overflow: hidden;
       border: none;
       font-size: 18px;
       font-weight: 400;
@@ -36,6 +34,57 @@
       margin-top: 8px !important;
       color: #686868;
       outline: none;
+    }
+
+    // .imageDisplay {
+    //   height: 50px;
+    //   width: 50px;
+    // }
+
+    .button-container {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      margin-left: 24px;
+      margin-right: 24px;
+      height: 25px;
+
+      .left-buttons {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        .input-button {
+          height: 25px;
+          margin: 5px;
+
+          &:hover {
+            cursor: pointer;
+            filter: brightness(0) saturate(100%) invert(26%) sepia(95%) saturate(2195%) hue-rotate(217deg) brightness(95%) contrast(89%);
+          }
+        }
+
+        .distance-line {
+          margin: 5px;
+          height: 25px;
+          width: 2px;
+          background-color: #ADB0D9;
+        }
+      }
+
+      .right-buttons {
+
+        .send-message-button {
+          border: none;
+          background-color: transparent;
+          filter: brightness(0%);
+
+          &:hover {
+            cursor: pointer;
+            filter: brightness(0) saturate(100%) invert(26%) sepia(95%) saturate(2195%) hue-rotate(217deg) brightness(95%) contrast(89%);
+          }
+        }
+      }
     }
   }
 }

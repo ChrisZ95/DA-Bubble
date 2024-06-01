@@ -31,6 +31,30 @@
 
   <div class="input-section">
     <textarea cols="30" rows="10" id="textArea" placeholder="Nachricht schreiben" [(ngModel)]="message" [(ngModel)]="comment" name="message"></textarea>
-  </div>
+    <div class="imageDisplay" id="imageDisplay"></div>
+    <div class="button-container">
 
+      <div class="left-buttons">
+        <div class="input-button add-file">
+          <img src="../../../assets/images/add.png" alt="Add" (click)="triggerFileInput()">
+          <input type="file" accept="image/*" id="data-input" style="display: none;" #fileInput (change)="customDataURL()">
+        </div>
+
+        <div class="distance-line"></div>
+
+        <div class="input-button emoji-picker">
+          <img (click)="openEmojiMartPicker()" src="../../../assets/images/smiley.png" alt="Smiley">
+        </div>
+
+        <div class="input-button">
+          <img src="../../../assets/images/atsign.png" alt="At Sign">
+        </div>
+      </div>
+
+      <div class="right-buttons">
+        <button class="send-message-button" type="submit"><img src="../../../assets/images/send.png" alt="Send"></button>
+      </div>
+
+    </div>
+  </div>
 </form>
