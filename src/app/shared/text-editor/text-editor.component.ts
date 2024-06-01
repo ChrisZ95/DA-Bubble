@@ -68,15 +68,20 @@ export class TextEditorComponent implements OnInit {
   }
 
   submit() {
-    this.fileArray = [];
-    if (this.componentName === 'ownChat') {
-      this.sendMessage();
-    } else if (this.componentName === 'thread') {
-      this.sendReply();
-    } else if (this.componentName === 'channel') {
-      this.sendMessageToChannel();
-    } else if (this.componentName === 'channelthread') {
-      this.sendCommentToMessage();
+    console.log(this.fileArray.length)
+    if (this.fileArray.length === 0 && (!this.message || this.message.trim().length === 0)) {
+      console.log('wähle ein bild oder nachricht')
+    } else {
+      if (this.componentName === 'ownChat') {
+        this.sendMessage();
+      } else if (this.componentName === 'thread') {
+        this.sendReply();
+      } else if (this.componentName === 'channel') {
+        this.sendMessageToChannel();
+      } else if (this.componentName === 'channelthread') {
+        this.sendCommentToMessage();
+      }
+      this.fileArray = [];
     }
   }
 
@@ -251,7 +256,6 @@ export class TextEditorComponent implements OnInit {
   }
 
   insertImage(dataType: any, dataUrl: string, dataName: any): void {
-    console.log('wird aufgerufen')
       this.fileArray.push({
         type: dataType,
         url: dataUrl,
