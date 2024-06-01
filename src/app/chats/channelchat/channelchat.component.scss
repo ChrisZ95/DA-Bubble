@@ -80,3 +80,11 @@
     border-radius: 100%;
     object-fit: cover;
 }
+
+.header-channelchat {
+    display: flex;
+    justify-content: space-between;
+    padding: 25px 45px 25px 45px;
+    align-items: center;
+    box-shadow: 0 4px 2px rgba(225, 225, 225, 0.5);
+}

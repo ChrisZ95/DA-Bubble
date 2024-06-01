@@ -1,4 +1,4 @@
-$wct-height: calc(100vh - 20vh);
+$wct-height: calc(100vh - 20vh + 20px);
 
 .d-none {
   display: none;
@@ -66,12 +66,10 @@ $wct-height: calc(100vh - 20vh);
 
 .chat {
   background-color: rgba(255, 255, 255, 1);
-  display: flex;
-  flex-direction: column;
   width: 80%;
   height: $wct-height;
   border-radius: 30px;
-  margin-left: 400px;
+  margin-left: 430px;
 }
 
 .thread {
