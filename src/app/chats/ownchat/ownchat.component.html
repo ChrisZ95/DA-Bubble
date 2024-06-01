@@ -4,7 +4,7 @@
     </div>
     <div class="images">
 
-        <div class="images-participants" (click)="openMemberDialog()" *ngFor="let user of filteredUsers">
+        <div class="images-participants" (click)="openContactInfoDialog()" *ngFor="let user of filteredUsers">
             <img [src]='user?.photo' alt="">
             <h2>{{ user.username }} ( Du )</h2>
         </div>

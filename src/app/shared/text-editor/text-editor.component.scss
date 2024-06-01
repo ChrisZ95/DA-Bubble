@@ -5,25 +5,20 @@
   z-index: 1000;
   margin-top: 100px;
 }
-.container {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  width: 100%;
-}
 
-.chat-input-container {
+.text-editor-container {
   display: flex;
   justify-content: center;
   flex-direction: column;
   margin: 0 auto;
   width: 90%;
-  border: 1px solid rgba(173, 176, 217, 1);
-  border-radius: 30px;
-  textarea {
-    // overflow-y: auto;
-    box-sizing: border-box;
-    resize: none;
+  padding-left: 5%;
+
+
+  .input-section {
+    width: 100%;
+    border: 1px solid #ADB0D9;
+    border-radius: 25px;
     height: 100px;
     width: 100%;
     padding: 15px 25px 0px 25px;
@@ -67,46 +62,46 @@
   gap: 5px;
 }
 
-.img {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 35px;
-  width: 35px;
-  border-radius: 100%;
-  &:hover {
-    background-color: rgba(236, 238, 254, 1);
-  }
-}
+// .img {
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   height: 35px;
+//   width: 35px;
+//   border-radius: 100%;
+//   &:hover {
+//     background-color: rgba(236, 238, 254, 1);
+//   }
+// }
 
-.chat-input-line {
-  background-color: rgba(173, 176, 217, 1);
-  height: 40px;
-  width: 1px;
-}
+// .chat-input-line {
+//   background-color: rgba(173, 176, 217, 1);
+//   height: 40px;
+//   width: 1px;
+// }
 
-.editor {
-  border: 1px solid #ccc;
-  min-height: 100px;
-  padding: 10px;
-}
-.toolbar button {
-  margin-right: 5px;
-}
+// .editor {
+//   border: 1px solid #ccc;
+//   min-height: 100px;
+//   padding: 10px;
+// }
+// .toolbar button {
+//   margin-right: 5px;
+// }
 
-.toolbar button {
-  cursor: pointer;
-  padding: 5px;
-  margin-right: 5px;
-  border: none;
-  background: none;
-}
-.toolbar button:focus {
-  outline: none;
-}
-.editor:focus {
-  outline: none;
-}
-.send-message-button {
-  z-index: 1000;
-}
+// .toolbar button {
+//   cursor: pointer;
+//   padding: 5px;
+//   margin-right: 5px;
+//   border: none;
+//   background: none;
+// }
+// .toolbar button:focus {
+//   outline: none;
+// }
+// .editor:focus {
+//   outline: none;
+// }
+// .send-message-button {
+//   z-index: 1000;
+// }

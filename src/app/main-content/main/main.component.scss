@@ -1,28 +1,23 @@
 .d-none {
   display: none;
 }
-
 .close-emoji-picker {
   position: absolute;
   height: 100vh;
   width: 100vw;
   z-index: 999;
 }
-
 .main {
   position: relative;
 }
-
 .container {
   position: relative;
 }
-
 .workspace-chat-thread {
   height: 100%;
   display: flex;
   justify-content: space-evenly;
 }
-
 .workspace {
   position: absolute;
   left: 32px;
@@ -34,7 +29,6 @@
   height: 80vh;
 
 }
-
 .workspace-menu {
   position: absolute;
   width: max-content;
@@ -55,7 +49,6 @@
   img {
     transform: rotate(-180deg);
   }
-
   &:hover {
     color: #565bf4;
     cursor: pointer;
