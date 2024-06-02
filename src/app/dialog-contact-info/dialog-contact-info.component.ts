@@ -8,48 +8,74 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './dialog-contact-info.component.html',
-  styleUrl: './dialog-contact-info.component.scss'
+  styleUrls: ['./dialog-contact-info.component.scss']
 })
 export class DialogContactInfoComponent implements OnInit{
   constructor(
     private dialogRef: MatDialogRef<DialogContactInfoComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {}
 
-    logIndate: any;
-    formattedDate: any;
-    lastOnlineMessage: any;
+    onlineStatus: Date = new Date();
+    formattedDate: string = '';
+    lastOnlineMessage: string = '';
+    onlineStatusClass: string = '';
+    signUpDate: Date = new Date();
 
-    ngOnInit(): void {
-      console.log(this.data)
-      this.lastOnlineMessage = this.convertSignUpDate(this.data.logIndate);
+  ngOnInit(): void {
+    console.log(this.data);
+    this.convertOnlineStatus(this.data.logIndate, this.data.logOutDate);
+    this.convertSignUpDate(this.data.signUpdate);
+  }
+
+  convertSignUpDate(unixTimestamp: any) {
+    if (unixTimestamp.toString().length === 13) {
+      this.signUpDate = new Date(unixTimestamp);
+    } else {
+      this.signUpDate = new Date(unixTimestamp * 1000);
     }
+    const year = this.signUpDate.getFullYear();
+    const month = this.signUpDate.getMonth() + 1;
+    const day = this.signUpDate.getDate();
+    this.formattedDate = `${day}.${month}.${year}`;
+  }
 
-  closeContactInfoDialog(){
+  closeContactInfoDialog() {
     this.dialogRef.close();
   }
 
-  convertSignUpDate(unixTimestamp: any): string {
-    const now = new Date();
-    this.logIndate;
+  convertOnlineStatus(unixTimestampLogIn: any, unixTimestampLogOut: any): void {
+    const currentDate = new Date();
+    let onlineStatus: Date;
 
-    if (unixTimestamp.toString().length === 13) {
-      this.logIndate = new Date(unixTimestamp);
+    if (unixTimestampLogIn.toString().length === 13) {
+      onlineStatus = new Date(unixTimestampLogIn);
     } else {
-      this.logIndate = new Date(unixTimestamp * 1000);
+      onlineStatus = new Date(unixTimestampLogIn * 1000);
     }
 
-    const diffInMs = now.getTime() - this.logIndate.getTime();
+    if (unixTimestampLogOut === 1) {
+      this.lastOnlineMessage = 'Online';
+      this.onlineStatusClass = 'online';
+      return;
+    }
+
+    const diffInMs = currentDate.getTime() - onlineStatus.getTime();
     const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
     const diffInHours = Math.floor(diffInMinutes / 60);
     const diffInDays = Math.floor(diffInHours / 24);
 
-    if (diffInMinutes < 60) {
-      return `vor ${diffInMinutes} Minuten`;
+    if (diffInMinutes < 5) {
+      this.lastOnlineMessage = 'Zuletzt online gerade eben';
+      this.onlineStatusClass = 'offline';
+    } else if (diffInMinutes < 60) {
+      this.lastOnlineMessage = `War zuletzt online vor ${diffInMinutes} Minuten`;
+      this.onlineStatusClass = 'offline';
     } else if (diffInHours < 24) {
-      return `vor ${diffInHours} Stunden`;
+      this.lastOnlineMessage = `War zuletzt online vor ${diffInHours} Stunden`;
+      this.onlineStatusClass = 'offline';
     } else {
-      return `vor ${diffInDays} Tagen`;
+      this.lastOnlineMessage = `War zuletzt online vor ${diffInDays} Tagen`;
+      this.onlineStatusClass = 'offline';
     }
   }
-
 }

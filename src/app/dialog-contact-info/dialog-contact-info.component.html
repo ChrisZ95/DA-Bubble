@@ -1,7 +1,7 @@
 <div class="profile-dialog-container">
   <div class="profile-title">
-    <h3>Profil</h3>
-    <img src="./../../assets/images/close.png" alt="" (click)="closeContactInfoDialog()">
+    <span>Mitglied seit dem {{ formattedDate }}</span>
+    <img class="close-dialog-button" src="./../../assets/images/close.png" alt="" (click)="closeContactInfoDialog()">
   </div>
   <div class="avatar-big">
     <img src="{{ data.photo }}" alt="">
@@ -9,14 +9,13 @@
   <div class="profile-name">
     <span class="profile-full-name">{{ data.username }}</span>
   </div>
-  <div>
-    <span>War zuletzt online {{ lastOnlineMessage }}</span>
+  <div class="online-status"  [ngClass]="onlineStatusClass">
+    <span>{{ lastOnlineMessage }}</span>
   </div>
   <div class="email">
     <img src="./../../assets/images/mail.png" alt="">
-    <span>E-Mail-Adresse</span>
+    <a href="mailto:{{ data.email }}">{{ data.email }}</a>
   </div>
-  <a href="">{{ data.email }}</a>
   <div class="message-button">
     <button>
       <img src="./../../assets/images/message-icon.png" alt="">

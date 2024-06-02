@@ -318,16 +318,23 @@ export class FirestoreService {
     };
   }
 
-  logOut() {
-    signOut(this.auth)
-      .then(() => {
-        localStorage.clear();
-        this.router.navigate(['']);
-      })
-      .catch((error) => {
-        console.error('Error signing out:', error);
+  async logOut() {
+    debugger
+    try {
+      const uid = this.getUid()
+      const logOutTimeStamp = this.createTimeStamp();
+      const userRef = doc(this.firestore, 'users', this.currentuid);
+      await updateDoc(userRef, {
+        logOutDate: logOutTimeStamp,
       });
+      await signOut(this.auth);
+      localStorage.clear();
+      this.router.navigate(['']);
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
   }
+
 
   logOutAfterDeleteAccount() {
     signOut(this.auth)
@@ -582,6 +589,7 @@ export class FirestoreService {
       const userRef = doc(this.firestore, 'users', userCredential.user.uid);
       await updateDoc(userRef, {
         logIndate: logIndate,
+        logOutDate: 1,
       });
       this.setCurrentUid(userCredential.user.uid);
       this.setData(`users/${userCredential.user.uid}`, {
