@@ -35,14 +35,15 @@ import { log } from 'console';
   providedIn: 'root',
 })
 export class ChatService {
-
   private userInformationSubject = new BehaviorSubject<any>(null);
-  userInformation$: Observable<any> = this.userInformationSubject.asObservable();
-
+  userInformation$: Observable<any> =
+    this.userInformationSubject.asObservable();
 
   private messagesSubject = new BehaviorSubject<any[]>([]);
   public messages$: Observable<any[]> = this.messagesSubject.asObservable();
-  private filteredUsersSubject: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
+  private filteredUsersSubject: BehaviorSubject<any[]> = new BehaviorSubject<
+    any[]
+  >([]);
   public filteredUsers$: Observable<any[]> =
     this.filteredUsersSubject.asObservable();
   private emojiPickerSubject = new BehaviorSubject<boolean>(false);
@@ -254,66 +255,144 @@ export class ChatService {
     this.messagesSubject.next(messages);
   }
 
-  async loadMessages(userDetails: any, retryCount: number = 0) {
+  // async loadMessages(userDetails: any, retryCount: number = 0) {
+  //     this.loadCount = 1;
+  //     if (Array.isArray(userDetails)) {
+  //       userDetails = userDetails[0];
+  //     }
+  //     await this.createChat(userDetails);
+  //     let currentuid = this.FirestoreService.currentuid;
 
-      this.loadCount = 1;
-      if (Array.isArray(userDetails)) {
-        userDetails = userDetails[0];
-      }
-      await this.createChat(userDetails);
-      let currentuid = this.FirestoreService.currentuid;
+  //     if (!currentuid) {
+  //       if (retryCount < 3) {
+  //         setTimeout(() => {
+  //           currentuid = this.FirestoreService.currentuid;
+  //           this.loadMessages(userDetails, retryCount + 1);
+  //         }, 1000);
+  //       } else {
+  //         console.error('Currentuid nicht gefunden');
+  //       }
+  //       return;
+  //     }
+  //     const messages: any[] = [];
+  //     if (userDetails.uid && userDetails.uid !== currentuid) {
+  //       const combinedShortedId = this.getCombinedChatId(
+  //         currentuid,
+  //         userDetails.uid
+  //       );
+  //       this.chatDocId = combinedShortedId;
+  //     } else {
+  //       this.chatDocId = currentuid;
+  //     }
 
-      if (!currentuid) {
-        if (retryCount < 3) {
-          setTimeout(() => {
-            currentuid = this.FirestoreService.currentuid;
-            this.loadMessages(userDetails, retryCount + 1);
-          }, 1000);
-        } else {
-          console.error('Currentuid nicht gefunden');
-        }
-        return;
-      }
-      const messages: any[] = [];
-      if (userDetails.uid && userDetails.uid !== currentuid) {
-        const combinedShortedId = this.getCombinedChatId(
-          currentuid,
-          userDetails.uid
-        );
-        this.chatDocId = combinedShortedId;
-      } else {
-        this.chatDocId = currentuid;
-      }
+  //     if (this.chatDocId) {
+  //       const chatDoc = await getDoc(
+  //         doc(this.firestore, 'chats', this.chatDocId)
+  //       );
+  //       if (chatDoc.exists()) {
+  //         const data = chatDoc.data();
+  //         this.participants = data['participants'];
 
-      if (this.chatDocId) {
+  //         if (Array.isArray(data['messages'])) {
+  //           const userMessages = data['messages'].filter((message: any) => {
+  //             if (this.chatDocId === currentuid) {
+  //               return message.creator === currentuid;
+  //             } else {
+  //               return (
+  //                 message.creator === currentuid ||
+  //                 (userDetails.uid && message.creator === userDetails.uid)
+  //               );
+  //             }
+  //           });
+  //           messages.push(...userMessages);
+  //         }
+  //       }
+  //     }
+  //     const filteredUsers = this.allUsers.filter((user: any) =>
+  //       this.participants.includes(user.uid)
+  //     );
+  //     this.filteredUsersSubject.next(filteredUsers);
+  //     this.messagesSubject.next(messages);
+  // }
+  
+  //noch viel zu lang
+  async loadMessages(input: string | any, retryCount: number = 0) {
+    let currentuid = this.FirestoreService.currentuid;
+    let concatenatedDocId: string | undefined;
+    let userDetails: any;
+    let messages: any[] = [];
+
+    if (typeof input === 'string') {
+      concatenatedDocId = input;
+      userDetails = null;
+      if (concatenatedDocId) {
+        this.chatDocId = concatenatedDocId;
         const chatDoc = await getDoc(
-          doc(this.firestore, 'chats', this.chatDocId)
+          doc(this.firestore, 'chats', concatenatedDocId)
         );
         if (chatDoc.exists()) {
           const data = chatDoc.data();
           this.participants = data['participants'];
-
           if (Array.isArray(data['messages'])) {
-            const userMessages = data['messages'].filter((message: any) => {
-              if (this.chatDocId === currentuid) {
-                return message.creator === currentuid;
-              } else {
-                return (
-                  message.creator === currentuid ||
-                  (userDetails.uid && message.creator === userDetails.uid)
-                );
-              }
+            messages = data['messages'].filter((message: any) => {
+              return this.participants.includes(message.creator);
             });
-            messages.push(...userMessages);
           }
         }
-      }
-      const filteredUsers = this.allUsers.filter((user: any) =>
-        this.participants.includes(user.uid)
-      );
-      this.filteredUsersSubject.next(filteredUsers);
-      this.messagesSubject.next(messages);
+        const filteredUsers = this.allUsers.filter((user: any) =>
+          this.participants.includes(user.uid)
+        );
 
+        this.filteredUsersSubject.next(filteredUsers);
+        this.messagesSubject.next(messages);
+      }
+    } else if (typeof input === 'object') {
+      userDetails = input;
+      if (Array.isArray(userDetails)) {
+        userDetails = userDetails[0];
+      }
+      if (!currentuid) {
+        if (retryCount < 3) {
+          setTimeout(() => {
+            this.loadMessages(userDetails, retryCount + 1);
+          }, 1000);
+        } else {
+          console.error('Currentuid not found');
+        }
+        return;
+      }
+
+      if (userDetails.uid && userDetails.uid !== currentuid) {
+        concatenatedDocId = this.getCombinedChatId(currentuid, userDetails.uid);
+      } else {
+        concatenatedDocId = currentuid;
+      }
+
+      if (concatenatedDocId) {
+        this.chatDocId = concatenatedDocId;
+        const chatDoc = await getDoc(
+          doc(this.firestore, 'chats', concatenatedDocId)
+        );
+        if (chatDoc.exists()) {
+          const data = chatDoc.data();
+          this.participants = data['participants'];
+          if (Array.isArray(data['messages'])) {
+            messages = data['messages'].filter((message: any) => {
+              return (
+                message.creator === currentuid ||
+                message.creator === userDetails.uid
+              );
+            });
+          }
+        }
+
+        const filteredUsers = this.allUsers.filter((user: any) =>
+          this.participants.includes(user.uid)
+        );
+        this.filteredUsersSubject.next(filteredUsers);
+        this.messagesSubject.next(messages);
+      }
+    }
   }
 
   getCombinedChatId(uid1: string, uid2: string): string {

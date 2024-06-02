@@ -102,10 +102,12 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
   openEmptyChat() {
     this.disyplayEmptyChat.emit(true);
   }
-  openChat(user: any) {
-    console.log(user)
+  
+  async openChat(user: any) {
+    console.log(user);
     this.userDetails.emit(user);
     this.chatService.loadUserData(user);
+    await this.chatService.createChat(user);
   }
 
   getallUsers() {
