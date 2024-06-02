@@ -3,7 +3,7 @@
         <div (click)="openChannelInfoDialog()"></div>
     </div>
     <div  class="images">
-        <div class="images-participants" (click)="openContactInfoDialog()" *ngFor="let user of filteredUsers">
+        <div class="images-participants" (click)="openContactInfoDialog(this.filteredUsers)" *ngFor="let user of filteredUsers">
             <img [src]='user.photo' alt="">
             <h2>{{ user.username }} ( Du )</h2>
         </div>
@@ -26,7 +26,7 @@
             <img src="../../../assets/images/avatar.png" alt="">
             <div class="conversation">
                 <div class="name-timestamp">
-                    <h5 (click)="openContactInfoDialog()"><strong>
+                    <h5 (click)="openContactInfoDialog(this.filteredUsers)"><strong>
                             {{displayName(message.creator)}}</strong></h5>
                     {{message.createdAt | timestamp: 'time' }}Uhr
                 </div>

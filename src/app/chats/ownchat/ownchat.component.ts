@@ -39,6 +39,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   messages: any = [];
   allUsers: any = [];
   participants: any;
+  filteredUsers: any;
   private messagesSubscription: Subscription | undefined;
   private filteredUsersSubscription: Subscription | undefined;
   openMemberDialog() {
@@ -49,8 +50,11 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     this.dialog.open(DialogChannelInfoComponent);
   }
 
-  openContactInfoDialog() {
-    this.dialog.open(DialogContactInfoComponent);
+  openContactInfoDialog(userDetails: any) {
+    console.log(userDetails)
+    this.dialog.open(DialogContactInfoComponent, {
+      data: userDetails
+    });
   }
 
   openThread(messageInformation: any) {
@@ -86,7 +90,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
       this.messages = this.chatService.messages;
     }
   }
-  filteredUsers: any;
+
   ngOnInit(): void {
     this.loadCurrentUser();
 
@@ -102,6 +106,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     this.filteredUsersSubscription = this.chatService.filteredUsers$.subscribe(
       (users) => {
         this.filteredUsers = users;
+        console.log(this.filteredUsers)
       }
     );
   }
