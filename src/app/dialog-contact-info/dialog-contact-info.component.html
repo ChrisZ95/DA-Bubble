@@ -1,13 +1,18 @@
 <div class="profile-dialog-container">
   <div class="profile-title">
     <span>Mitglied seit dem {{ formattedDate }}</span>
-    <img class="close-dialog-button" src="./../../assets/images/close.png" alt="" (click)="closeContactInfoDialog()">
+    <button class="close-dialog-button" (click)="closeContactInfoDialog()">
+      <img class="close-dialog-button-image" src="./../../assets/images/close.png" alt="">
+    </button>
   </div>
   <div class="avatar-big">
     <img src="{{ data.photo }}" alt="">
   </div>
   <div class="profile-name">
     <span class="profile-full-name">{{ data.username }}</span>
+    <div *ngIf="userIsVerified">
+      <img title="Konto verifiziert" class="user-verified" src="./../../assets/images/verified-user.png">
+    </div>
   </div>
   <div class="online-status"  [ngClass]="onlineStatusClass">
     <span>{{ lastOnlineMessage }}</span>
@@ -16,10 +21,16 @@
     <img src="./../../assets/images/mail.png" alt="">
     <a href="mailto:{{ data.email }}">{{ data.email }}</a>
   </div>
-  <div class="message-button">
+  <div *ngIf="!myAccount" class="message-button">
     <button>
       <img src="./../../assets/images/message-icon.png" alt="">
       Nachricht
+    </button>
+  </div>
+  <div *ngIf="myAccount" class="message-button">
+    <button (click)="openEditProfile()">
+      <img src="./../../assets/images/user.icon.svg" alt="">
+      Profil bearbeiten
     </button>
   </div>
 </div>
