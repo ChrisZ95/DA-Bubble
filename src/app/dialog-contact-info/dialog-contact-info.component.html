@@ -4,12 +4,14 @@
     <img src="./../../assets/images/close.png" alt="" (click)="closeContactInfoDialog()">
   </div>
   <div class="avatar-big">
-    <img src="./../../assets/images/avatar-big.png" alt="">
+    <img src="{{ data.photo }}" alt="">
   </div>
   <div class="profile-name">
     <span class="profile-full-name">{{ data.username }}</span>
   </div>
-  <img class="status" src="./../../assets/images/active.png" alt="">
+  <div>
+    <span>War zuletzt online {{ lastOnlineMessage }}</span>
+  </div>
   <div class="email">
     <img src="./../../assets/images/mail.png" alt="">
     <span>E-Mail-Adresse</span>

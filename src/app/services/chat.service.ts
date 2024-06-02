@@ -35,11 +35,14 @@ import { log } from 'console';
   providedIn: 'root',
 })
 export class ChatService {
+
+  private userInformationSubject = new BehaviorSubject<any>(null);
+  userInformation$: Observable<any> = this.userInformationSubject.asObservable();
+
+
   private messagesSubject = new BehaviorSubject<any[]>([]);
   public messages$: Observable<any[]> = this.messagesSubject.asObservable();
-  private filteredUsersSubject: BehaviorSubject<any[]> = new BehaviorSubject<
-    any[]
-  >([]);
+  private filteredUsersSubject: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
   public filteredUsers$: Observable<any[]> =
     this.filteredUsersSubject.asObservable();
   private emojiPickerSubject = new BehaviorSubject<boolean>(false);
@@ -59,6 +62,7 @@ export class ChatService {
   allUsers: any;
   filteredUsers: any;
   loadCount: number = 0;
+  userInformation: any[] = [];
 
   constructor(
     private firestore: Firestore,
@@ -102,6 +106,10 @@ export class ChatService {
     const docRef = collection(this.db, collectionName);
     const docSnap = await getDocs(docRef);
     return docSnap.docs.map((doc) => doc.id);
+  }
+
+  loadUserData(userDetails: any) {
+    this.userInformationSubject.next(userDetails);
   }
 
   async createChat(userDetails: any, retryCount: number = 0) {
@@ -247,7 +255,7 @@ export class ChatService {
   }
 
   async loadMessages(userDetails: any, retryCount: number = 0) {
-    
+
       this.loadCount = 1;
       if (Array.isArray(userDetails)) {
         userDetails = userDetails[0];
@@ -305,7 +313,7 @@ export class ChatService {
       );
       this.filteredUsersSubject.next(filteredUsers);
       this.messagesSubject.next(messages);
-    
+
   }
 
   getCombinedChatId(uid1: string, uid2: string): string {
