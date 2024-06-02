@@ -2,10 +2,12 @@
     <div class="active-channel">
         <div (click)="openChannelInfoDialog()"></div>
     </div>
-    <div  class="images">
+    <div class="images">
         <div class="images-participants" (click)="openContactInfoDialog()" *ngFor="let user of filteredUsers">
             <img [src]='user.photo' alt="">
-            <h2>{{ user.username }} ( Du )</h2>
+            <h2>{{ user.username }} <ng-container *ngIf="user.uid == this.chatService.currentuid"> ( Du
+                    )</ng-container>
+            </h2>
         </div>
         <div class="add-participants">
         </div>

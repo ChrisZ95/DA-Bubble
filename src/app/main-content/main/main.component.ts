@@ -105,7 +105,6 @@ export class MainComponent implements OnInit {
   private emojiPickerSubscription: Subscription | null = null;
   private activityAfterIdleSubscription: Subscription | null = null;
 
-
   closeEmojiPicker() {
     this.chatService.emojiPicker(false);
   }

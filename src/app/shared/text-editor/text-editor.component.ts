@@ -68,8 +68,11 @@ export class TextEditorComponent implements OnInit {
   }
 
   submit() {
-    if (this.fileArray.length === 0 && (!this.message || this.message.trim().length === 0)) {
-      console.log('wähle ein bild oder nachricht')
+    if (
+      this.fileArray.length === 0 &&
+      (!this.message || this.message.trim().length === 0)
+    ) {
+      console.log('wähle ein bild oder nachricht');
     } else {
       if (this.componentName === 'ownChat') {
         this.sendMessage();
@@ -86,12 +89,13 @@ export class TextEditorComponent implements OnInit {
   }
 
   @HostListener('focusin', ['$event'])
-  onFocus(event: FocusEvent) {
+  async onFocus(event: FocusEvent) {
     if (this.componentName === 'emptyChat') {
       this.chatService.focusOnTextEditor = true;
       this.chatService.showEmptyChat = false;
       this.chatService.showOwnChat = true;
-      this.chatService.createChatWithUsers();
+      await this.chatService.createChatWithUsers();
+      await this.chatService.loadMessages(this.chatService.chatDocId);
     }
   }
 
@@ -233,11 +237,12 @@ export class TextEditorComponent implements OnInit {
   async customDataURL() {
     const fileInput = this.fileInput.nativeElement;
     const file = fileInput.files?.[0];
-    if (file && (this.fileArray.length) <= 4) {
+    if (file && this.fileArray.length <= 4) {
       try {
-        this.chatService.dataURL = await this.firestoreService.uploadDataIntoStorage(file);
+        this.chatService.dataURL =
+          await this.firestoreService.uploadDataIntoStorage(file);
         console.log('dataURL', this.chatService.dataURL);
-        this.insertImage(file?.type,this.chatService.dataURL ,file?.name);
+        this.insertImage(file?.type, this.chatService.dataURL, file?.name);
         // if(file.type === 'image/png') {
         //   this.insertImage(file?.type,this.chatService.dataURL ,file?.name);
         //   console.log('Bild hochgeladen')
@@ -255,10 +260,10 @@ export class TextEditorComponent implements OnInit {
   }
 
   insertImage(dataType: any, dataUrl: string, dataName: any): void {
-      this.fileArray.push({
-        type: dataType,
-        url: dataUrl,
-        name: dataName,
+    this.fileArray.push({
+      type: dataType,
+      url: dataUrl,
+      name: dataName,
     });
   }
 
