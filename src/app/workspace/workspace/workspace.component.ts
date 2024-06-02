@@ -102,10 +102,10 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
   openEmptyChat() {
     this.disyplayEmptyChat.emit(true);
   }
-  async openChat(user: any) {
+  openChat(user: any) {
+    console.log(user)
     this.userDetails.emit(user);
-    await this.chatService.createChat(user);
-    await this.chatService.loadMessages(user);
+    this.chatService.loadUserData(user);
   }
 
   getallUsers() {
@@ -138,6 +138,8 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
     );
 
     this.userStatus = this.firestoreService.testStatus;
+    // this.userStatus = newStatus;
+    // console.log('Status updated to:', newStatus);
   }
 
   ngOnInit(): void {

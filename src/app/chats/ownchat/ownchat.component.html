@@ -2,16 +2,18 @@
     <div class="active-channel">
         <div (click)="openChannelInfoDialog()"></div>
     </div>
-    <div class="images">
-        <div class="images-participants" (click)="openContactInfoDialog()" *ngFor="let user of filteredUsers">
-            <img [src]='user.photo' alt="">
-            <h2>{{ user.username }} <ng-container *ngIf="user.uid == this.chatService.currentuid"> ( Du
-                    )</ng-container>
-            </h2>
-        </div>
-        <div class="add-participants">
-        </div>
+
+    <div *ngIf="this.chatService.participants.length > 0" class="images">
+      <div class="images-participants"
+           *ngFor="let user of (this.chatService.participants.length === 1 ? filteredUsers : [userInformation])"
+           (click)="openContactInfoDialog(user)">
+        <img [src]="user.photo" alt="">
+        <h2>{{ user.username }} {{ this.chatService.participants.length === 1 ? '( Du )' : '' }}</h2>
+      </div>
+      <div class="add-participants"></div>
     </div>
+
+
 </div>
 
 <div class="scrollbar test" #scrollContainer>
@@ -28,7 +30,7 @@
             <img src="../../../assets/images/avatar.png" alt="">
             <div class="conversation">
                 <div class="name-timestamp">
-                    <h5 (click)="openContactInfoDialog()"><strong>
+                    <h5 (click)="openContactInfoDialog(this.filteredUsers)"><strong>
                             {{displayName(message.creator)}}</strong></h5>
                     {{message.createdAt | timestamp: 'time' }}Uhr
                 </div>

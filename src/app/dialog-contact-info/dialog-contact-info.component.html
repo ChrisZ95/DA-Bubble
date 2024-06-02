@@ -1,12 +1,27 @@
 <div class="profile-dialog-container">
-    <div class="profile-title"><h3>Profil</h3><img src="./../../assets/images/close.png" alt="" (click)="closeContactInfoDialog()"></div>
-    <div class="avatar-big"><img src="./../../assets/images/avatar-big.png" alt=""></div>
-    <div class="profile-name"><span class="profile-full-name">Frederick Beck</span></div>
-    <img class="status" src="./../../assets/images/active.png" alt="">
-    <div class="email">
-        <img src="./../../assets/images/mail.png" alt="">
-        <span>E-Mail-Adresse</span>   
-    </div>
-    <a href="">fred.beck&#64;gmail.com</a>
-    <div class="message-button"><button><img src="./../../assets/images/message-icon.png" alt="">Nachricht</button></div>
+  <div class="profile-title">
+    <h3>Profil</h3>
+    <img src="./../../assets/images/close.png" alt="" (click)="closeContactInfoDialog()">
+  </div>
+  <div class="avatar-big">
+    <img src="{{ data.photo }}" alt="">
+  </div>
+  <div class="profile-name">
+    <span class="profile-full-name">{{ data.username }}</span>
+  </div>
+  <div>
+    <span>War zuletzt online {{ lastOnlineMessage }}</span>
+  </div>
+  <div class="email">
+    <img src="./../../assets/images/mail.png" alt="">
+    <span>E-Mail-Adresse</span>
+  </div>
+  <a href="">{{ data.email }}</a>
+  <div class="message-button">
+    <button>
+      <img src="./../../assets/images/message-icon.png" alt="">
+      Nachricht
+    </button>
+  </div>
 </div>
+

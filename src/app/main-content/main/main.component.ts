@@ -46,42 +46,6 @@ import { Subscription } from 'rxjs';
   ],
   templateUrl: './main.component.html',
   styleUrl: './main.component.scss',
-  animations: [
-    // trigger('displayWorkspaceTrigger', [
-    //   state(
-    //     'true',
-    //     style({
-    //       width: '30%',
-    //       opacity: 1,
-    //     })
-    //   ),
-    //   state(
-    //     'false',
-    //     style({
-    //       width: '0%',
-    //       opacity: 0,
-    //     })
-    //   ),
-    //   transition('false <=> true', animate('1s linear')),
-    // ]),
-    trigger('isThreadOpenTrigger', [
-      state(
-        'true',
-        style({
-          width: '40%',
-          opacity: 1,
-        })
-      ),
-      state(
-        'false',
-        style({
-          width: '0%',
-          opacity: 0,
-        })
-      ),
-      transition('false <=> true', animate('1s linear')),
-    ]),
-  ],
 })
 export class MainComponent implements OnInit {
   constructor(
@@ -104,6 +68,7 @@ export class MainComponent implements OnInit {
   private keyPressSubscription: Subscription | null = null;
   private emojiPickerSubscription: Subscription | null = null;
   private activityAfterIdleSubscription: Subscription | null = null;
+
 
   closeEmojiPicker() {
     this.chatService.emojiPicker(false);

@@ -42,6 +42,10 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   filteredUsers: any;
   private messagesSubscription: Subscription | undefined;
   private filteredUsersSubscription: Subscription | undefined;
+
+  userInformation: any;
+  private userDetailsSubscription: Subscription | undefined;
+
   openMemberDialog() {
     this.dialog.open(DialogMembersComponent);
   }
@@ -50,8 +54,10 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     this.dialog.open(DialogChannelInfoComponent);
   }
 
-  openContactInfoDialog() {
-    this.dialog.open(DialogContactInfoComponent);
+  openContactInfoDialog(userDetails: any) {
+    this.dialog.open(DialogContactInfoComponent, {
+      data: userDetails
+    });
   }
 
   openThread(messageInformation: any) {
@@ -89,8 +95,13 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.userDetailsSubscription = this.chatService.userInformation$.subscribe(
+      data => {
+        this.userInformation = data;
+        console.log('User details:', this.userInformation);
+      }
+    );
     this.loadCurrentUser();
-    this.loadAllUsers();
 
     this.messagesSubscription = this.chatService.messages$.subscribe(
       (messages) => {
@@ -98,11 +109,13 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
       }
     );
 
-    // const userDetails = { uid: 'someUserId' };
+    const userDetails = { uid: 'someUserId' };
+    this.loadAllUsers();
 
     this.filteredUsersSubscription = this.chatService.filteredUsers$.subscribe(
       (users) => {
         this.filteredUsers = users;
+        console.log(this.filteredUsers)
       }
     );
   }
@@ -114,6 +127,10 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
 
     if (this.filteredUsersSubscription) {
       this.filteredUsersSubscription.unsubscribe();
+    }
+
+    if (this.userDetailsSubscription) {
+      this.userDetailsSubscription.unsubscribe();
     }
   }
 }
