@@ -1,4 +1,4 @@
-<div (click)="closeEmojiPicker()" *ngIf="emojiPicker" class="close-emoji-picker"></div>
+<div (click)="closeEmojiPicker()" (click)="closeAssociatedUser()" *ngIf="emojiPicker  || associatedUser" class="close-emoji-picker"></div>
 <div class="main">
   <div class="container">
     <app-header></app-header>

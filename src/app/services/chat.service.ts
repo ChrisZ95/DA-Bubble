@@ -46,8 +46,13 @@ export class ChatService {
   >([]);
   public filteredUsers$: Observable<any[]> =
     this.filteredUsersSubject.asObservable();
+
   private emojiPickerSubject = new BehaviorSubject<boolean>(false);
   emojiPicker$ = this.emojiPickerSubject.asObservable();
+
+  private AssociatedUserSubject = new BehaviorSubject<boolean>(false);
+  associatedUser$ = this.AssociatedUserSubject.asObservable();
+
   currentuid: any;
   chatList: any = [];
   loadedchatInformation: any = {};
@@ -76,6 +81,10 @@ export class ChatService {
 
   emojiPicker(state: boolean) {
     this.emojiPickerSubject.next(state);
+  }
+
+  associatedUser(state: boolean) {
+    this.AssociatedUserSubject.next(state);
   }
 
   async initializeService() {
