@@ -96,7 +96,6 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
   }
   @Input() channelDetails: any;
   openChannelChat(channelId: string) {
-    debugger;
     this.channelService.setCurrentChannelId(channelId);
     this.channelService.showChannelChat = true;
     this.chatService.showOwnChat = false;
