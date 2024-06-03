@@ -8,12 +8,10 @@
            *ngFor="let user of (this.chatService.participants.length === 1 ? filteredUsers : [userInformation])"
            (click)="openContactInfoDialog(user)">
         <img [src]="user?.photo" alt="">
-        <h2>{{ user.username }} {{ this.chatService.participants.length === 1 ? '( Du )' : '' }}</h2>
+        <h2>{{ user?.username }} {{ this.chatService.participants.length === 1 ? '( Du )' : '' }}</h2>
       </div>
       <div class="add-participants"></div>
     </div>
-
-
 </div>
 
 <div class="scrollbar test" #scrollContainer>

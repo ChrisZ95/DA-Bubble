@@ -5,6 +5,9 @@ import {
   Output,
   ViewChild,
   OnDestroy,
+  Input,
+  OnChanges,
+  SimpleChanges,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DialogCreateChannelComponent } from '../../dialog-create-channel/dialog-create-channel.component';
@@ -38,7 +41,7 @@ import {
   templateUrl: './workspace.component.html',
   styleUrl: './workspace.component.scss',
 })
-export class WorkspaceComponent implements OnInit, OnDestroy {
+export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
   @ViewChild(ChannelchatComponent) channelchatComponent!: ChannelchatComponent;
 
   displayUsers: boolean = false;
@@ -91,8 +94,9 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
       this.displayUsers = true;
     }
   }
-
+  @Input() channelDetails: any;
   openChannelChat(channelId: string) {
+    debugger;
     this.channelService.setCurrentChannelId(channelId);
     this.channelService.showChannelChat = true;
     this.chatService.showOwnChat = false;
@@ -102,7 +106,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
   openEmptyChat() {
     this.disyplayEmptyChat.emit(true);
   }
-  
+
   async openChat(user: any) {
     console.log(user);
     this.userDetails.emit(user);
@@ -163,6 +167,12 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.userStatusSubscription) {
       this.userStatusSubscription.unsubscribe();
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (this.channelDetails != '' && changes['channelDetails']) {
+      this.openChannelChat(this.channelDetails.channelId);
     }
   }
 

@@ -1,21 +1,35 @@
 <div class="header">
-    <div><img src="./../assets/images/dabubble-logo.png" alt=""></div>
-    <div class="search-input">
-      <input class="serach-bar" type="text" placeholder="Code learning durchsuchen" id="">
-      <button class="search-button">
-        <img src="./../assets/images/search.png">
-      </button>
+  <div><img src="./../assets/images/dabubble-logo.png" alt=""></div>
+  <div class="search-input">
+    <input class="serach-bar" type="text" placeholder="Code learning durchsuchen" id="" #inputRef>
+    <button class="search-button">
+      <img src="./../assets/images/search.png">
+    </button>
+  </div>
+  <div class="profile">
+    <span class="user-name">{{ userName }}</span>
+    <div *ngIf="userIsVerified">
+      <img title="Konto verifiziert" class="user-verified" src="./../../assets/images/verified-user.png">
     </div>
-    <div class="profile">
-      <span class="user-name">{{ userName }}</span>
-      <div *ngIf="userIsVerified">
-        <img title="Konto verifiziert" class="user-verified" src="./../../assets/images/verified-user.png">
-      </div>
-      <img class="avatar-icon" src="{{ userPhoto }}" alt="" onerror="this.onerror=null;this.src='./../../assets/images/Property 1=Default (8).png'">
-      <img class="open-dialog" [matMenuTriggerFor]="profilMenu" src="./../../assets/images/keyboard_arrow_down.svg" alt="">
-      <mat-menu #profilMenu="matMenu" class="profile-menu">
-        <button *ngIf="!guestLogIn" mat-menu-item (click)="openProfileDialog()">Profil</button>
-        <button (click)="logOut()" mat-menu-item>Log out</button>
-      </mat-menu>
+    <img class="avatar-icon" src="{{ userPhoto }}" alt=""
+      onerror="this.onerror=null;this.src='./../../assets/images/Property 1=Default (8).png'">
+    <img class="open-dialog" [matMenuTriggerFor]="profilMenu" src="./../../assets/images/keyboard_arrow_down.svg"
+      alt="">
+    <mat-menu #profilMenu="matMenu" class="profile-menu">
+      <button *ngIf="!guestLogIn" mat-menu-item (click)="openProfileDialog()">Profil</button>
+      <button (click)="logOut()" mat-menu-item>Log out</button>
+    </mat-menu>
+  </div>
+</div>
+  <!-- Adrian -->
+  <div class="dropdown-menu" *ngIf="showDropdown">
+    <div *ngIf="showUserChannelPlaceholder" class="dropdown-item" (click)="displayAllUsersAndChannels()">Show Users
+        and Channels</div>
+    <div *ngIf="showUserPlaceholder" class="dropdown-item" (click)="displayAllUsers()">Search for User</div>
+    <div *ngIf="showChannelPlaceholder" class="dropdown-item" (click)="displayAllChannels()">Search for Channel
+    </div>
+    <div class="dropdown-item" *ngFor="let entity of filteredEntities" (click)="selectEntity(entity)">
+        {{ entity.username || entity.channelName }}
     </div>
 </div>
+  <!-- Adrian -->

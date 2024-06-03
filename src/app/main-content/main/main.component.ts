@@ -57,6 +57,7 @@ export class MainComponent implements OnInit {
   displayWorkspace: boolean = true;
   displayThread: boolean = false;
   userDetails: any = '';
+  channelDetails: any = '';
   selectedMessageId: string = '';
   emojiPicker = false;
   isIdle: number = 0;
@@ -68,7 +69,6 @@ export class MainComponent implements OnInit {
   private keyPressSubscription: Subscription | null = null;
   private emojiPickerSubscription: Subscription | null = null;
   private activityAfterIdleSubscription: Subscription | null = null;
-
 
   closeEmojiPicker() {
     this.chatService.emojiPicker(false);
@@ -95,6 +95,10 @@ export class MainComponent implements OnInit {
     this.chatService.showEmptyChat = false;
     this.chatService.showOwnChat = true;
     this.userDetails = userDetails;
+  }
+
+  channelInformaion(channelDetails: any) {
+    this.channelDetails = channelDetails;
   }
 
   handleIdle() {

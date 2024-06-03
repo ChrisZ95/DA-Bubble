@@ -195,15 +195,15 @@ export class EmptychatComponent implements OnInit {
       this.focusInputField();
     }, 0);
   }
-  // selectedUserUids: any = [this.firestoreService.currentuid];
+  selectedUserUids: any = [this.firestoreService.currentuid]; //
   selectEntity(entity: any) {
     if (
       entity.username &&
       !this.selectedUsers.includes(`@${entity.username}`)
     ) {
       this.selectedUsers.push(`@${entity.username}`);
-      // let currentUID = this.firestoreService.currentuid;
-      // this.selectedUserUids.push(`${entity.uid}`);
+      let currentUID = this.firestoreService.currentuid; //
+      this.selectedUserUids.push(`${entity.uid}`); //
       this.chatService.allPotentialChatUsers.push(entity);
 
       this.updateInputField();

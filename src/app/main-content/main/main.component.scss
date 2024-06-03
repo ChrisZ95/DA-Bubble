@@ -17,6 +17,8 @@
   height: 100%;
   display: flex;
   justify-content: space-evenly;
+  position: relative;
+  z-index: 1;
 }
 .workspace {
   position: absolute;
@@ -28,7 +30,6 @@
   background-color: rgb(255, 255, 255);
   height: 80vh;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-
 }
 .workspace-menu {
   position: absolute;
@@ -45,7 +46,6 @@
   border-top-left-radius: 30px;
   border-bottom-left-radius: 30px;
 
-
   p {
     writing-mode: vertical-lr;
   }
@@ -59,7 +59,8 @@
     cursor: pointer;
 
     .workspace-menu-icon {
-      filter: brightness(0) saturate(100%) invert(26%) sepia(95%) saturate(2195%) hue-rotate(217deg) brightness(95%) contrast(89%);
+      filter: brightness(0) saturate(100%) invert(26%) sepia(95%)
+        saturate(2195%) hue-rotate(217deg) brightness(95%) contrast(89%);
     }
   }
 }

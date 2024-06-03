@@ -89,8 +89,9 @@ export class FirestoreService {
   storageId: any;
   signInuid: any;
   logInUid: any;
-
   allUsers: any;
+  allChannels: any;
+
   constructor(
     private myFirebaseApp: FirebaseApp,
     public router: Router, // private realTimedb: AngularFireDatabase
@@ -319,9 +320,9 @@ export class FirestoreService {
   }
 
   async logOut() {
-    debugger
+    debugger;
     try {
-      const uid = this.getUid()
+      const uid = this.getUid();
       const logOutTimeStamp = this.createTimeStamp();
       const userRef = doc(this.firestore, 'users', this.currentuid);
       await updateDoc(userRef, {
@@ -334,7 +335,6 @@ export class FirestoreService {
       console.error('Error signing out:', error);
     }
   }
-
 
   logOutAfterDeleteAccount() {
     signOut(this.auth)
@@ -457,6 +457,7 @@ export class FirestoreService {
       const usersCollection = collection(this.firestore, 'users');
       const usersSnapshot = await getDocs(usersCollection);
       const users: User[] = usersSnapshot.docs.map((doc) => doc.data() as User);
+      this.allUsers = users;
       return users;
     } catch (error) {
       console.error('Error fetching users:', error);
@@ -472,6 +473,7 @@ export class FirestoreService {
       const channels: Channel[] = channelsSnapshot.docs.map(
         (doc) => doc.data() as Channel
       );
+      this.allChannels = channels;
       return channels;
     } catch (error) {
       console.error('Error fetching users:', error);

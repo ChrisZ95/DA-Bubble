@@ -1,12 +1,12 @@
 <div (click)="closeEmojiPicker()" *ngIf="emojiPicker" class="close-emoji-picker"></div>
 <div class="main">
   <div class="container">
-    <app-header></app-header>
-
+    <app-header (userDetails)="openChat($event)" (channelDetails)="channelInformaion($event)"></app-header>
     <div class="workspace-chat-thread">
 
       <div *ngIf="displayWorkspace" class="workspace" [@displayWorkspaceTrigger]="displayWorkspace">
-        <app-workspace (userDetails)="openChat($event)" (disyplayEmptyChat)="openEmptyChat()" />
+        <app-workspace (userDetails)="openChat($event)" (disyplayEmptyChat)="openEmptyChat()"
+          [channelDetails]=(channelDetails) />
       </div>
 
       <div *ngIf="showChannelChat" class="chat">
