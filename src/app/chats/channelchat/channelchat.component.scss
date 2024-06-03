@@ -10,23 +10,6 @@
     }
 }
 
-.justify-end {
-    justify-content: flex-end;
-}
-
-.justify-start {
-    justify-content: flex-start;
-}
-
-.bg-color-message {
-    background-color: #ECEEFE;
-}
-
-.bg-color-own-message {
-    background-color: #797EF3;
-    color: white;
-}
-
 .hovered-other-message {
     background-color: white !important;
 }
@@ -47,21 +30,6 @@
         height: 8.19px;
         width: 14px;
     }
-}
-
-.name {
-    font-size: 18px;
-    font-weight: 700;
-    cursor: pointer;
-    &:hover {
-      color: rgba(83, 90, 241, 1);
-    }
-}
-
-.time {
-    font-size: 14px;
-    font-weight: 400;
-    color: #686868;
 }
 
 .conversation-container-channelchat {
@@ -89,9 +57,3 @@
     box-shadow: 0 4px 2px rgba(225, 225, 225, 0.5);
 }
 
-.text-editor {
-    height: 200px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}

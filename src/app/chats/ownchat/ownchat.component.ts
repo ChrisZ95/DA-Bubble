@@ -20,11 +20,12 @@ import { FirestoreService } from '../../firestore.service';
 import { ChannelService } from '../../services/channel.service';
 import { ThreadService } from '../../services/thread.service';
 import { Subscription } from 'rxjs';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-ownchat',
   standalone: true,
-  imports: [TextEditorComponent, TimestampPipe, CommonModule, TimestampPipe],
+  imports: [TextEditorComponent, TimestampPipe, CommonModule, TimestampPipe, FormsModule],
   templateUrl: './ownchat.component.html',
   styleUrls: ['./ownchat.component.scss', '../chats.component.scss'],
 })
@@ -33,11 +34,11 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     public dialog: MatDialog,
     public chatService: ChatService,
     public threadService: ThreadService,
-    private firestore: FirestoreService
+    public firestore: FirestoreService
   ) {}
   @Input() userDetails: any;
   messages: any = [];
-  allUsers: any = [];
+  allUsers: any[] = [];
   participants: any;
   filteredUsers: any;
   private messagesSubscription: Subscription | undefined;
@@ -132,5 +133,10 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     if (this.userDetailsSubscription) {
       this.userDetailsSubscription.unsubscribe();
     }
+  }
+
+  getMemberAvatar(memberId: string): string {
+    const member = this.allUsers.find(user => user.uid === memberId);
+    return member ? member.photo : '';
   }
 }

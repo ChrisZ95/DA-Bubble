@@ -81,7 +81,7 @@
           <img [src]="getMemberAvatar(message.uid)" alt="" class="user-avatar">
         </div>
 
-        <div class="popup-window" *ngIf="isHoveredArray[i] && message.uid === firestoreService.currentuid">
+        <div class="popup-window-own-message" *ngIf="isHoveredArray[i] && message.uid === firestoreService.currentuid">
           <img src="./../../../assets/images/green-tick.png" alt="">
           <img src="./../../../assets/images/hands-emoji.png" alt="">
           <img src="./../../../assets/images/add_reaction.png" alt="">
@@ -102,7 +102,5 @@
       </div>
     </div>
   </div>
-  <div class="text-editor">
-    <app-text-editor [componentName]="'channel'" style="width: 100%"></app-text-editor>
-  </div>
+  <app-text-editor [componentName]="'channel'"></app-text-editor>
 </div>

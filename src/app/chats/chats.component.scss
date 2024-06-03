@@ -188,6 +188,31 @@
   }
 }
 
+.popup-window-own-message {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  top: -18px;
+  left: 20px;
+  height: 46px;
+  border: 1px solid;
+  border-radius: 25px 25px 0px 25px;
+  padding: 3px 15px 3px 20px;
+  background-color: white;
+  >img{
+    height: 20px;
+    width: 20px;
+    padding: 10px;
+    border-radius: 100%;
+    &:hover{
+      background-color: #ECEEFE;
+      cursor: pointer;
+    }
+  }
+}
+
 .edit-textarea {
   border: none;
   background-color: white;
@@ -268,4 +293,36 @@
     margin-top: 6px;
     font-size: 18px;
   }
+}
+
+.justify-end {
+  justify-content: flex-end;
+}
+
+.justify-start {
+  justify-content: flex-start;
+}
+
+.name {
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  &:hover {
+    color: rgba(83, 90, 241, 1);
+  }
+}
+
+.time {
+  font-size: 14px;
+  font-weight: 400;
+  color: #686868;
+}
+
+.bg-color-message {
+  background-color: #ECEEFE;
+}
+
+.bg-color-own-message {
+  background-color: #797EF3;
+  color: white;
 }

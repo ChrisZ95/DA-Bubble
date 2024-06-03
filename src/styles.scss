@@ -157,7 +157,7 @@ body {
 }
 
 .scrollbar {
-  height: calc(100vh - 456px);
+  height: calc(100vh - 520px);
   overflow: scroll; //ohne funktioniert die Scrollbar nicht
   // Webkit-based browsers (Chrome, Safari)
   &::-webkit-scrollbar {

@@ -26,15 +26,27 @@
             <div class="separator-line"></div>
         </div>
 
-        <div class="conversation-container">
-            <img src="../../../assets/images/avatar.png" alt="">
+        <div class="conversation-container" [ngClass]="{'justify-end': message.creator === firestore.currentuid, 'justify-start': message.creator !== firestore.currentuid}">
+            <div *ngIf="message.creator !== firestore.currentuid" class="user-avatar-container">
+                <img [src]="getMemberAvatar(message.creator)" alt="" class="user-avatar">
+            </div>
+
+            <div *ngIf="message.creator === firestore.currentuid" class="user-avatar-container">
+                <img [src]="getMemberAvatar(message.creator)" alt="" class="user-avatar">
+            </div>
             <div class="conversation">
-                <div class="name-timestamp">
-                    <h5 (click)="openContactInfoDialog(this.filteredUsers)"><strong>
-                            {{displayName(message.creator)}}</strong></h5>
-                    {{message.createdAt | timestamp: 'time' }}Uhr
+                <div class="name-timestamp" [ngClass]="{'reverse-order': message.creator === firestore.currentuid}">
+                    <span class="name" (click)="openContactInfoDialog(this.filteredUsers)">{{ displayName(message.creator) }}</span>
+                    <span class="time">{{ message.createdAt | timestamp: 'time' }} Uhr</span>
                 </div>
-                {{ message.message }}
+                <div [ngClass]="{
+                    'speechbubble': message.creator !== firestore.currentuid,
+                    'bg-color-own-message': message.creator === firestore.currentuid,
+                    'bg-color-message': message.creator !== firestore.currentuid,
+                    'own-message-bubble': message.creator === firestore.currentuid
+                  }">
+                    <span class="message-text">{{ message.message }}</span>
+                </div>
                 <ng-container *ngIf="message.image">
                     <img [src]='message.image' alt="">
                 </ng-container>

@@ -69,7 +69,7 @@ export class ChatService {
     private firestore: Firestore,
     public channelService: ChannelService,
     public FirestoreService: FirestoreService,
-    public generateIdServie: GenerateIdsService
+    public generateIdServie: GenerateIdsService,
   ) {
     this.initializeService();
   }

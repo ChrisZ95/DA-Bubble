@@ -75,6 +75,7 @@ export class ChannelchatComponent implements OnInit, AfterViewInit, OnDestroy {
   private channelSnapshotUnsubscribe: Unsubscribe | undefined;
   private chatSnapshotUnsubscribe: Unsubscribe | undefined;
 
+
   openMemberDialog() {
     this.dialog.open(DialogMembersComponent);
   }
