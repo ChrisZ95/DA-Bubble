@@ -74,10 +74,12 @@ export class MainComponent implements OnInit {
   private activityAfterIdleSubscription: Subscription | null = null;
 
   closeEmojiPicker() {
+    debugger
     this.chatService.emojiPicker(false);
   }
 
   closeAssociatedUser() {
+    debugger
     this.chatService.associatedUser(false);
     console.log('close');
   }
@@ -123,7 +125,7 @@ export class MainComponent implements OnInit {
       this.firestoreService.updateActiveStatus(key, status);
     }
   }
-  
+
   ngOnInit(): void {
     this.idleSubscription = this.firestoreService
       .isUserIdle()
@@ -158,6 +160,12 @@ export class MainComponent implements OnInit {
         this.emojiPicker = state;
       }
     );
+
+    this.AssociatedUserSubscription = this.chatService.associatedUser$.subscribe(
+      (state: boolean) => {
+        this.associatedUser = state;
+      }
+    );
   }
 
   ngOnDestroy(): void {
@@ -178,6 +186,9 @@ export class MainComponent implements OnInit {
     }
     if (this.emojiPickerSubscription) {
       this.emojiPickerSubscription.unsubscribe();
+    }
+    if (this.AssociatedUserSubscription) {
+      this.AssociatedUserSubscription.unsubscribe();
     }
     if (this.activityAfterIdleSubscription) {
       this.activityAfterIdleSubscription.unsubscribe();

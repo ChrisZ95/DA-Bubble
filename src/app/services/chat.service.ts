@@ -41,11 +41,8 @@ export class ChatService {
 
   private messagesSubject = new BehaviorSubject<any[]>([]);
   public messages$: Observable<any[]> = this.messagesSubject.asObservable();
-  private filteredUsersSubject: BehaviorSubject<any[]> = new BehaviorSubject<
-    any[]
-  >([]);
-  public filteredUsers$: Observable<any[]> =
-    this.filteredUsersSubject.asObservable();
+  private filteredUsersSubject: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
+  public filteredUsers$: Observable<any[]> = this.filteredUsersSubject.asObservable();
 
   private emojiPickerSubject = new BehaviorSubject<boolean>(false);
   emojiPicker$ = this.emojiPickerSubject.asObservable();
@@ -80,10 +77,12 @@ export class ChatService {
   }
 
   emojiPicker(state: boolean) {
+    debugger
     this.emojiPickerSubject.next(state);
   }
 
   associatedUser(state: boolean) {
+    debugger
     this.AssociatedUserSubject.next(state);
   }
 

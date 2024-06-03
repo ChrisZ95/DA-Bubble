@@ -85,23 +85,38 @@ export class TextEditorComponent implements OnInit {
   }
 
   userMention() {
+    debugger
     this.filteredUsersSubscription = this.chatService.filteredUsers$.subscribe(
       (users) => {
         this.associatedUser = users;
-        this.openAssociatedUser = true;
-        this.chatService.associatedUser(true);
-        console.log(this.associatedUser)
       }
     );
+    this.openUserMention();
+  }
+
+  openUserMention() {
+    this.openAssociatedUser = true;
+    this.chatService.associatedUser(true);
   }
 
   closeuserMention() {
+    debugger
     this.openAssociatedUser = false;
     this.chatService.associatedUser(false);
   }
 
   userInserted(user: any) {
     this.message += `@${user}  `;
+  }
+
+  openEmojiMartPicker() {
+    this.openEmojiPicker = true;
+    this.chatService.emojiPicker(true);
+  }
+
+  closeEmojiMartPicker() {
+    this.openEmojiPicker = false;
+    this.chatService.emojiPicker(false);
   }
 
   submit() {
@@ -135,17 +150,6 @@ export class TextEditorComponent implements OnInit {
       this.chatService.focusOnTextEditor = false;
       this.chatService.createChatWithUsers();
     }
-  }
-
-  openEmojiMartPicker() {
-    this.openEmojiPicker = true;
-    this.openAssociatedUser = false;
-    this.chatService.emojiPicker(true);
-  }
-
-  closeEmojiMartPicker() {
-    this.openEmojiPicker = false;
-    this.chatService.emojiPicker(false);
   }
 
   addEmoji(event: any) {
