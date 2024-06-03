@@ -8,6 +8,12 @@
   </div>
 </div>
 
+<div *ngIf="openAssociatedUser" class="show-associated-user">
+  <div class="user-parcel"  *ngFor="let member of memberData">
+    <div class="choose-user-parcel" (click)="userInserted(member.username)">{{ member.username }}</div>
+  </div>
+</div>
+
 <form (submit)="submit()" class="text-editor-container">
 
   <div class="input-section">

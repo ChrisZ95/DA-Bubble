@@ -74,12 +74,10 @@ export class MainComponent implements OnInit {
   private activityAfterIdleSubscription: Subscription | null = null;
 
   closeEmojiPicker() {
-    debugger
     this.chatService.emojiPicker(false);
   }
 
   closeAssociatedUser() {
-    debugger
     this.chatService.associatedUser(false);
     console.log('close');
   }

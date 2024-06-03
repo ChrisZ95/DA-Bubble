@@ -99,6 +99,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
     this.channelService.showChannelChat = true;
     this.chatService.showOwnChat = false;
     this.channelService.showThreadWindow = false;
+    this.chatService.clearInputValue(true);
   }
 
   openEmptyChat() {

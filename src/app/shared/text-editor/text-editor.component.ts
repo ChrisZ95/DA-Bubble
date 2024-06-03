@@ -45,6 +45,8 @@ export class TextEditorComponent implements OnInit {
   filteredUsersSubscription: Subscription | null = null;
   clearTextEditorValueSubcription: Subscription | null = null;
   associatedUser: any;
+  allUsers: any[] = [];
+  memberData: { username: string }[] = [];
 
   constructor(
     private chatService: ChatService,
@@ -77,6 +79,13 @@ export class TextEditorComponent implements OnInit {
         this.message = '';
       }
     );
+
+    this.firestoreService.getAllUsers().then(users => {
+      this.allUsers = users;
+      this.updateMemberData();
+    }).catch(error => {
+      console.error('Error fetching users:', error);
+    });
   }
 
   ngOnDestroy(): void {
@@ -94,23 +103,29 @@ export class TextEditorComponent implements OnInit {
     }
   }
 
+  updateMemberData(): void {
+    this.memberData = this.allUsers.filter(user => this.channelService.UserName.includes(user.uid)).map(user => ({ username: user.username}));
+  }
+
   userMention() {
-    debugger
     this.filteredUsersSubscription = this.chatService.filteredUsers$.subscribe(
       (users) => {
         this.associatedUser = users;
+        console.log('geöffnet')
       }
     );
     this.openUserMention();
   }
 
   openUserMention() {
+    console.log(this.allUsers, this.memberData)
     this.openAssociatedUser = true;
     this.chatService.associatedUser(true);
   }
 
   closeuserMention() {
     debugger
+    console.log(this.allUsers, this.memberData)
     this.openAssociatedUser = false;
     this.chatService.associatedUser(false);
   }

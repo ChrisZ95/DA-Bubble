@@ -37,8 +37,6 @@ export class DialogMembersComponent implements OnInit {
   }
 
   updateMemberData(): void {
-    this.memberData = this.allUsers
-      .filter(user => this.channelService.UserName.includes(user.uid))
-      .map(user => ({ username: user.username, photo: user.photo }));
+    this.memberData = this.allUsers.filter(user => this.channelService.UserName.includes(user.uid)).map(user => ({ username: user.username, photo: user.photo }));
   }
 }
