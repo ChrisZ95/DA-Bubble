@@ -314,7 +314,7 @@ export class ChatService {
   //     this.filteredUsersSubject.next(filteredUsers);
   //     this.messagesSubject.next(messages);
   // }
-  
+
   //noch viel zu lang
   async loadMessages(input: string | any, retryCount: number = 0) {
     let currentuid = this.FirestoreService.currentuid;

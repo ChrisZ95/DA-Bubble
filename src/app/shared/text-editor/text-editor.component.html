@@ -2,30 +2,11 @@
   <emoji-mart  (emojiClick)="addEmoji($event)" title="Pick your emoji…" emoji="point_up"></emoji-mart>
 </div>
 
-<!-- <form (submit)="submit()" class="container">
-    <div class="chat-input-container">
-        <textarea id="textArea" cols="30" rows="10" placeholder="Nachricht an #Entwicklerteam" [(ngModel)]="message" [(ngModel)]="comment"
-            name="message"></textarea>
-        <div id="imageDisplay"></div>
-        <div class="img-container">
-            <div class="images">
-                <div class="img">
-                    <img src="../../../assets/images/add.png" alt="Add" (click)="triggerFileInput()">
-                    <input type="file" accept="image/*" id="data-input" style="display: none;" #fileInput
-                        (change)="customDataURL()">
-                </div>
-                <div class="chat-input-line"></div>
-                <div class="img">
-                  <img (click)="openEmojiMartPicker()" src="../../../assets/images/smiley.png" alt="Smiley">
-                </div>
-                <div class="img">
-                    <img src="../../../assets/images/atsign.png" alt="At Sign">
-                </div>
-            </div>
-            <button class="send-message-button" type="submit"><img src="../../../assets/images/send.png" alt="Send"></button>
-        </div>
-    </div>
-</form> -->
+<div *ngIf="openAssociatedUser" class="show-associated-user">
+  <div class="choose-user" *ngFor="let user of associatedUser">
+    <span (click)="userInserted(user.username)">{{ user.username }}</span>
+  </div>
+</div>
 
 <form (submit)="submit()" class="text-editor-container">
 
@@ -53,7 +34,7 @@
           <img (click)="openEmojiMartPicker()" src="../../../assets/images/smiley.png" alt="Smiley">
         </div>
 
-        <div class="input-button">
+        <div (click)="userMention()" class="input-button">
           <img src="../../../assets/images/atsign.png" alt="At Sign">
         </div>
       </div>

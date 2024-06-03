@@ -6,6 +6,25 @@
   margin-top: 100px;
 }
 
+.show-associated-user{
+  position: absolute;
+  z-index: 1000;
+  margin-top: 100px;
+  height: auto;
+  width: auto;
+  min-width: 200px;
+  border: 1px solid black;
+
+  .choose-user {
+
+    &:hover {
+      cursor: pointer;
+      background-color: #565bf4;
+      color: white;
+    }
+  }
+}
+
 .text-editor-container {
   display: flex;
   justify-content: center;

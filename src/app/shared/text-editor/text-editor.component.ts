@@ -40,6 +40,9 @@ export class TextEditorComponent implements OnInit {
   fileArray: any[] = [];
   openEmojiPicker = false;
   emojiPickerSubscription: Subscription | null = null;
+  filteredUsersSubscription: Subscription | null = null;
+  associatedUser: any;
+  openAssociatedUser = false;
 
   constructor(
     private chatService: ChatService,
@@ -65,6 +68,23 @@ export class TextEditorComponent implements OnInit {
     if (this.emojiPickerSubscription) {
       this.emojiPickerSubscription.unsubscribe();
     }
+    if (this.filteredUsersSubscription) {
+      this.filteredUsersSubscription.unsubscribe();
+    }
+  }
+
+  userMention() {
+    this.filteredUsersSubscription = this.chatService.filteredUsers$.subscribe(
+      (users) => {
+        this.associatedUser = users;
+        this.openAssociatedUser = true;
+        console.log(this.associatedUser)
+      }
+    );
+  }
+
+  userInserted(user: any) {
+   console.log(user)
   }
 
   submit() {
@@ -81,6 +101,7 @@ export class TextEditorComponent implements OnInit {
         this.sendCommentToMessage();
       }
       this.chatService.dataURL = null;
+      this.openAssociatedUser = false;
       this.fileArray = [];
     }
   }

@@ -43,7 +43,8 @@ export class DialogProfileComponent implements OnInit{
     const month = this.userSignUpDate.getMonth() + 1;
     const day = this.userSignUpDate.getDate();
     this.formattedDate = `${day}.${month}.${year}`;
-}
+  }
+
   closeProfileDialog(): void {
     this.dialogRef.close();
   }
