@@ -3,8 +3,8 @@
 </div>
 
 <div *ngIf="openAssociatedUser" class="show-associated-user">
-  <div class="choose-user" *ngFor="let user of associatedUser">
-    <span (click)="userInserted(user.username)">{{ user.username }}</span>
+  <div class="user-parcel" *ngFor="let user of associatedUser">
+    <div class="choose-user-parcel" (click)="userInserted(user.username)">{{ user.username }}</div>
   </div>
 </div>
 

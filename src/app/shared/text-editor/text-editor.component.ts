@@ -40,9 +40,10 @@ export class TextEditorComponent implements OnInit {
   fileArray: any[] = [];
   openEmojiPicker = false;
   emojiPickerSubscription: Subscription | null = null;
+  openAssociatedUser = false;
+  AssociatedUserSubscription: Subscription | null = null;
   filteredUsersSubscription: Subscription | null = null;
   associatedUser: any;
-  openAssociatedUser = false;
 
   constructor(
     private chatService: ChatService,
@@ -57,9 +58,16 @@ export class TextEditorComponent implements OnInit {
 
   ngOnInit(): void {
     this.subscribeToMessages();
+
     this.emojiPickerSubscription = this.chatService.emojiPicker$.subscribe(
       (state: boolean) => {
         this.openEmojiPicker = state;
+      }
+    );
+
+    this.AssociatedUserSubscription = this.chatService.associatedUser$.subscribe(
+      (state: boolean) => {
+        this.openAssociatedUser = state;
       }
     );
   }
@@ -71,6 +79,9 @@ export class TextEditorComponent implements OnInit {
     if (this.filteredUsersSubscription) {
       this.filteredUsersSubscription.unsubscribe();
     }
+    if (this.AssociatedUserSubscription) {
+      this.AssociatedUserSubscription.unsubscribe();
+    }
   }
 
   userMention() {
@@ -78,13 +89,19 @@ export class TextEditorComponent implements OnInit {
       (users) => {
         this.associatedUser = users;
         this.openAssociatedUser = true;
-        console.log(this.associatedUser);
+        this.chatService.associatedUser(true);
+        console.log(this.associatedUser)
       }
     );
   }
 
+  closeuserMention() {
+    this.openAssociatedUser = false;
+    this.chatService.associatedUser(false);
+  }
+
   userInserted(user: any) {
-    console.log(user);
+    this.message += `@${user}  `;
   }
 
   submit() {
@@ -122,6 +139,7 @@ export class TextEditorComponent implements OnInit {
 
   openEmojiMartPicker() {
     this.openEmojiPicker = true;
+    this.openAssociatedUser = false;
     this.chatService.emojiPicker(true);
   }
 
@@ -258,7 +276,8 @@ export class TextEditorComponent implements OnInit {
   async customDataURL() {
     const fileInput = this.fileInput.nativeElement;
     const file = fileInput.files?.[0];
-    if (file && this.fileArray.length <= 4) {
+    this.openAssociatedUser = false;
+    if (file && (this.fileArray.length) <= 4) {
       try {
         this.chatService.dataURL =
           await this.firestoreService.uploadDataIntoStorage(file);

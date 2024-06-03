@@ -60,6 +60,8 @@ export class MainComponent implements OnInit {
   channelDetails: any = '';
   selectedMessageId: string = '';
   emojiPicker = false;
+  associatedUser = false;
+
   isIdle: number = 0;
 
   private idleSubscription: Subscription | null = null;
@@ -68,10 +70,16 @@ export class MainComponent implements OnInit {
   private noKeyPress: Subscription | null = null;
   private keyPressSubscription: Subscription | null = null;
   private emojiPickerSubscription: Subscription | null = null;
+  private AssociatedUserSubscription: Subscription | null = null;
   private activityAfterIdleSubscription: Subscription | null = null;
 
   closeEmojiPicker() {
     this.chatService.emojiPicker(false);
+  }
+
+  closeAssociatedUser() {
+    this.chatService.associatedUser(false);
+    console.log('close');
   }
 
   showHideWorkspace() {
@@ -115,7 +123,7 @@ export class MainComponent implements OnInit {
       this.firestoreService.updateActiveStatus(key, status);
     }
   }
-
+  
   ngOnInit(): void {
     this.idleSubscription = this.firestoreService
       .isUserIdle()
