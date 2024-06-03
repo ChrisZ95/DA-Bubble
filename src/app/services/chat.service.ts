@@ -50,6 +50,9 @@ export class ChatService {
   private AssociatedUserSubject = new BehaviorSubject<boolean>(false);
   associatedUser$ = this.AssociatedUserSubject.asObservable();
 
+  private clearTextEditorValueSubcription = new BehaviorSubject<boolean>(false);
+  clearValue$ = this.clearTextEditorValueSubcription.asObservable();
+
   currentuid: any;
   chatList: any = [];
   loadedchatInformation: any = {};
@@ -77,13 +80,16 @@ export class ChatService {
   }
 
   emojiPicker(state: boolean) {
-    debugger
     this.emojiPickerSubject.next(state);
   }
 
   associatedUser(state: boolean) {
-    debugger
     this.AssociatedUserSubject.next(state);
+  }
+
+  clearInputValue(state: boolean) {
+    debugger
+    this.clearTextEditorValueSubcription.next(state);
   }
 
   async initializeService() {

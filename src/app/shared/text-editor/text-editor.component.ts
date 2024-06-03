@@ -43,6 +43,7 @@ export class TextEditorComponent implements OnInit {
   openAssociatedUser = false;
   AssociatedUserSubscription: Subscription | null = null;
   filteredUsersSubscription: Subscription | null = null;
+  clearTextEditorValueSubcription: Subscription | null = null;
   associatedUser: any;
 
   constructor(
@@ -70,6 +71,12 @@ export class TextEditorComponent implements OnInit {
         this.openAssociatedUser = state;
       }
     );
+
+    this.clearTextEditorValueSubcription = this.chatService.clearValue$.subscribe(
+      (state: boolean) => {
+        this.message = '';
+      }
+    );
   }
 
   ngOnDestroy(): void {
@@ -81,6 +88,9 @@ export class TextEditorComponent implements OnInit {
     }
     if (this.AssociatedUserSubscription) {
       this.AssociatedUserSubscription.unsubscribe();
+    }
+    if (this.clearTextEditorValueSubcription) {
+      this.clearTextEditorValueSubcription.unsubscribe();
     }
   }
 

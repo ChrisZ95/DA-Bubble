@@ -43,7 +43,11 @@ import {
 })
 export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
   @ViewChild(ChannelchatComponent) channelchatComponent!: ChannelchatComponent;
-
+  @Input() channelDetails: any;
+  @Output() userDetails = new EventEmitter<string>();
+  @Output() disyplayEmptyChat = new EventEmitter<boolean>();
+  userStatus$: any;
+  userStatus: any = 'active';
   displayUsers: boolean = false;
   channel = new Channel();
   allChannels: any = [];
@@ -55,6 +59,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
   selectedChannelName: string | null = null;
   currentChannelId: string = '';
   showChannel = false;
+  private userStatusSubscription: Subscription | undefined;
 
   constructor(
     public dialog: MatDialog,
@@ -68,12 +73,6 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
       this.filterChannels();
     });
   }
-
-  @Output() userDetails = new EventEmitter<string>();
-  @Output() disyplayEmptyChat = new EventEmitter<boolean>();
-  userStatus$: any;
-  userStatus: any = 'active';
-  private userStatusSubscription: Subscription | undefined;
 
   showAllChannles() {
     if (this.showChannel) {
@@ -94,7 +93,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
       this.displayUsers = true;
     }
   }
-  @Input() channelDetails: any;
+
   openChannelChat(channelId: string) {
     this.channelService.setCurrentChannelId(channelId);
     this.channelService.showChannelChat = true;
@@ -111,6 +110,8 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
     this.userDetails.emit(user);
     this.chatService.loadUserData(user);
     await this.chatService.createChat(user);
+
+    this.chatService.clearInputValue(true);
   }
 
   getallUsers() {
@@ -157,10 +158,6 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
     this.userStatus$ = this.firestoreService.getUserStatus(
       this.firestoreService.currentuid
     );
-
-    this.userStatusSubscription = this.userStatus$.subscribe((status: any) => {
-      this.userStatus = status;
-    });
   }
 
   ngOnDestroy(): void {
