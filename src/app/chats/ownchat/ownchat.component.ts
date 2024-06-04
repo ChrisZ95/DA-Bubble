@@ -1,12 +1,5 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import {
-  Component,
-  Input,
-  OnChanges,
-  OnInit,
-  SimpleChanges,
-  OnDestroy,
-} from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges, OnDestroy,} from '@angular/core';
 import { collection, getDocs } from 'firebase/firestore';
 import { ChatService } from '../../services/chat.service';
 import { TimestampPipe } from '../../shared/pipes/timestamp.pipe';
@@ -24,11 +17,12 @@ import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
+import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 
 @Component({
   selector: 'app-ownchat',
   standalone: true,
-  imports: [TextEditorComponent, TimestampPipe, CommonModule, TimestampPipe, FormsModule, MatIconModule, MatMenuModule, MatButtonModule],
+  imports: [TextEditorComponent, PickerComponent, TimestampPipe, CommonModule, TimestampPipe, FormsModule, MatIconModule, MatMenuModule, MatButtonModule],
   templateUrl: './ownchat.component.html',
   styleUrls: ['./ownchat.component.scss', '../chats.component.scss'],
 })
@@ -46,12 +40,60 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   filteredUsers: any;
   private messagesSubscription: Subscription | undefined;
   private filteredUsersSubscription: Subscription | undefined;
+  // emojiPickerSubscription: Subscription | null = null;
   isHoveredArray: boolean[] = [];
   menuClicked = false;
   currentMessageIndex: number | null = null;
+  openEmojiPicker = false;
+  message: any;
+  emojiMessageId : any;
+  foundMessage: any;
 
   userInformation: any;
   private userDetailsSubscription: Subscription | undefined;
+
+  openEmojiMartPicker(message: { id: number, text: string }) {
+    this.emojiMessageId = message.id;
+    console.log(this.emojiMessageId);
+    this.openEmojiPicker = true;
+
+    this.foundMessage = this.messages.find((msg: any) => msg.id === this.emojiMessageId);
+
+    if (this.foundMessage) {
+        console.log('Found Message:', this.foundMessage);
+    } else {
+        console.log('Message not found');
+    }
+
+    console.log(this.messages);
+    // this.chatService.emojiPicker(true);
+  }
+
+  addEmoji(event: any) {
+    console.log('Emoji selected', event);
+    const emojiId = event.emoji.id;
+
+    const message = this.messages.find((msg: any) => msg.id === this.emojiMessageId);
+
+    if (message) {
+        if (!message.emojiReactions) {
+            message.emojiReactions = [];
+        }
+        message.emojiReactions.push(emojiId);
+        console.log('Updated Message:', message);
+    } else {
+        console.log('Message not found');
+    }
+
+    console.log(this.messages);
+  }
+
+
+
+  closeEmojiMartPicker() {
+    this.openEmojiPicker = false;
+    // this.chatService.emojiPicker(false);
+  }
 
   openMemberDialog() {
     this.dialog.open(DialogMembersComponent);
@@ -125,6 +167,12 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
         console.log(this.filteredUsers)
       }
     );
+
+    // this.emojiPickerSubscription = this.chatService.emojiPicker$.subscribe(
+    //   (state: boolean) => {
+    //     this.openEmojiPicker = state;
+    //   }
+    // );
   }
 
   ngOnDestroy(): void {

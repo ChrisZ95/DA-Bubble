@@ -1,0 +1,11 @@
+.emoji-reactions {
+   height: 20px;
+   width: 20px;
+   border: 1px solid black ;
+}
+
+.emoji-picker-container {
+  position: absolute;
+  bottom: 50px;
+  z-index: 1000;
+}

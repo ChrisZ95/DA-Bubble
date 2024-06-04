@@ -54,6 +54,9 @@
                     <a (click)="openThread(message)">
                         {{ message.replies ? message.replies.length + ' Antworten' : 'Jetzt Antworten' }}
                     </a>
+                    <div class="emoji-reactions">
+                      {{ message.emojiReactions }}
+                    </div>
                     <p>
                         {{ message.replies && message.replies.length ? (message.replies[message.replies.length -
                         1].createdAt | timestamp: 'time') + 'Uhr' : '' }}
@@ -78,7 +81,7 @@
               <div class="popup-window" *ngIf="isHoveredArray[i] && message.creator !== firestore.currentuid">
                 <img src="./../../../assets/images/green-tick.png" alt="">
                 <img src="./../../../assets/images/hands-emoji.png" alt="">
-                <img src="./../../../assets/images/add_reaction.png" alt="">
+                <img (click)="openEmojiMartPicker(message)" src="./../../../assets/images/add_reaction.png" alt="">
                 <img (click)="openThread(message)" src="./../../../assets/images/comment.png" alt="">
               </div>
         </div>
@@ -95,5 +98,9 @@
                 auf.</span>
         </div>
     </div>
+</div>
+<div class="emoji-picker-container" *ngIf="openEmojiPicker">
+  <emoji-mart  (emojiClick)="addEmoji($event)" title="Pick your emoji…" emoji="point_up"></emoji-mart>
+  <button (click)="closeEmojiMartPicker()">close</button>
 </div>
 <app-text-editor class="text-editor" [componentName]="'ownChat'" />
