@@ -123,7 +123,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
       input === '' ||
       input === '@' ||
       input === '#';
-    console.log('filteredEntities', this.filteredEntities);
   }
 
   updatePlaceholder(input: string) {
@@ -223,11 +222,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     } else if (!entity.username) {
       this.channelDetails.emit(entity);
     }
+    this.filteredEntities = undefined;
     this.showDropdown = false;
-
-    // setTimeout(() => {
-    //   this.blurInputField();
-    // }, 0);
   }
 
   private blurInputField() {
@@ -243,7 +239,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
       this.showDropdown = false;
     }
   }
-
+  // Adrian
+  // selectedUser
   @HostListener('focusin', ['$event'])
   onFocus(event: FocusEvent) {
     // let focusOnTextEditor = this.chatService.focusOnTextEditor;

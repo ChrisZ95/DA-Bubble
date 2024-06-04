@@ -49,7 +49,7 @@ import { Subscription } from 'rxjs';
 })
 export class MainComponent implements OnInit {
   constructor(
-    private channelService: ChannelService,
+    public channelService: ChannelService,
     public firestoreService: FirestoreService,
     public chatService: ChatService,
     public threadService: ThreadService
@@ -159,11 +159,10 @@ export class MainComponent implements OnInit {
       }
     );
 
-    this.AssociatedUserSubscription = this.chatService.associatedUser$.subscribe(
-      (state: boolean) => {
+    this.AssociatedUserSubscription =
+      this.chatService.associatedUser$.subscribe((state: boolean) => {
         this.associatedUser = state;
-      }
-    );
+      });
   }
 
   ngOnDestroy(): void {

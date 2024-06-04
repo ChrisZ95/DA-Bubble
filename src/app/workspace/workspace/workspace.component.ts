@@ -170,6 +170,10 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (this.channelDetails != '' && changes['channelDetails']) {
       this.openChannelChat(this.channelDetails.channelId);
+      this.channelService.getChannelName(this.channelDetails.channelName);
+      this.channelService.getDescription(this.channelDetails.description);
+      this.channelService.getUserName(this.channelDetails.users);
+      this.channelService.getAuthor(this.channelDetails.author);
     }
   }
 

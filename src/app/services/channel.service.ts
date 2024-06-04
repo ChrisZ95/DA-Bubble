@@ -15,7 +15,7 @@ import {
   getDocs,
   Query,
 } from '@angular/fire/firestore';
-import { Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { Channel } from './../../models/channel.class';
 import { FirestoreService } from '../firestore.service';
 import { EventEmitter } from '@angular/core';
@@ -26,7 +26,7 @@ import { EventEmitter } from '@angular/core';
 export class ChannelService {
   channel = new Channel();
   channelID: string = '';
-  channelName = '';
+  channelName: any = '';
   channelListNamesArray: any = [];
   channelDescription = '';
   UserName = '';
@@ -42,7 +42,9 @@ export class ChannelService {
   currentMessage: any;
   currentMessageIdChanged: EventEmitter<string> = new EventEmitter<string>();
   currentChannelIdChanged: EventEmitter<string> = new EventEmitter<string>();
-  currentMessageCommentsChanged: EventEmitter<any[]> = new EventEmitter<any[]>();
+  currentMessageCommentsChanged: EventEmitter<any[]> = new EventEmitter<
+    any[]
+  >();
 
   constructor(
     private readonly firestore: Firestore,
@@ -59,7 +61,9 @@ export class ChannelService {
       }
       this.messages[messageIndex].comments.push(newComment);
       this.updateMessagesWithAuthors();
-      this.currentMessageCommentsChanged.emit(this.messages[messageIndex].comments); // Emit the updated comments
+      this.currentMessageCommentsChanged.emit(
+        this.messages[messageIndex].comments
+      ); // Emit the updated comments
     }
   }
 
@@ -172,7 +176,7 @@ export class ChannelService {
     }
   }
 
-  async getChannelAuthorUid(channelId: string): Promise<string | null > {
+  async getChannelAuthorUid(channelId: string): Promise<string | null> {
     try {
       const channelDocRef = doc(this.firestore, 'channels', channelId);
       const channelSnapshot = await getDoc(channelDocRef);
@@ -215,37 +219,43 @@ export class ChannelService {
 
   setCurrentMessage(message: any) {
     this.currentMessage = message;
-}
+  }
 
   getCurrentMessage() {
     return this.currentMessage;
   }
 
   async loadMessagesForChannel(channelId: string): Promise<any[]> {
-  this.messages = [];
-  try {
-    const chatsRef = collection(this.firestore, 'chats');
-    const q: Query<DocumentData> = query(
-      chatsRef,
-      where('channelId', '==', channelId)
-    );
-    const querySnapshot = await getDocs(q);
+    this.messages = [];
+    try {
+      const chatsRef = collection(this.firestore, 'chats');
+      const q: Query<DocumentData> = query(
+        chatsRef,
+        where('channelId', '==', channelId)
+      );
+      const querySnapshot = await getDocs(q);
 
-    querySnapshot.forEach((doc) => {
-      const chatData = doc.data();
-      if (chatData['messages'] && Array.isArray(chatData['messages'])) {
-        const messagesWithCommentCount = chatData['messages'].map((message: any) => {
-          const commentCount = message.comments ? message.comments.length : 0;
-          const lastCommentTime = message.comments ? message.comments.reduce((latest: number, comment: any) => {
-            const commentTime = parseInt(comment.createdAt);
-            return commentTime > latest ? commentTime : latest;
-          }, 0) : 0;
-          return { ...message, commentCount, lastCommentTime };
-        });
-        this.messages.push(...messagesWithCommentCount);
-      }
-    });
-    return this.messages;
+      querySnapshot.forEach((doc) => {
+        const chatData = doc.data();
+        if (chatData['messages'] && Array.isArray(chatData['messages'])) {
+          const messagesWithCommentCount = chatData['messages'].map(
+            (message: any) => {
+              const commentCount = message.comments
+                ? message.comments.length
+                : 0;
+              const lastCommentTime = message.comments
+                ? message.comments.reduce((latest: number, comment: any) => {
+                    const commentTime = parseInt(comment.createdAt);
+                    return commentTime > latest ? commentTime : latest;
+                  }, 0)
+                : 0;
+              return { ...message, commentCount, lastCommentTime };
+            }
+          );
+          this.messages.push(...messagesWithCommentCount);
+        }
+      });
+      return this.messages;
     } catch (error) {
       console.error('Error loading messages for channel:', error);
       return [];
@@ -274,13 +284,16 @@ export class ChannelService {
         const authorName = await this.getAuthorName(message.uid);
         return {
           ...message,
-          authorName: authorName ?? message.uid
+          authorName: authorName ?? message.uid,
         };
       })
     );
   }
 
-  async updateMessage(messageId: string, newMessageText: string): Promise<void> {
+  async updateMessage(
+    messageId: string,
+    newMessageText: string
+  ): Promise<void> {
     try {
       const chatsRef = collection(this.firestore, 'chats');
       const querySnapshot = await getDocs(chatsRef);
@@ -289,20 +302,27 @@ export class ChannelService {
         const chatData = chatDoc.data();
         if (chatData['messages'] && Array.isArray(chatData['messages'])) {
           const messages = chatData['messages'];
-          const messageIndex = messages.findIndex((msg: any) => msg.messageId === messageId);
+          const messageIndex = messages.findIndex(
+            (msg: any) => msg.messageId === messageId
+          );
           if (messageIndex !== -1) {
             messages[messageIndex].message = newMessageText;
             await updateDoc(doc(this.firestore, 'chats', chatDoc.id), {
               messages: messages,
             });
             messageFound = true;
-            console.log('Message updated successfully in chat document with ID:', chatDoc.id);
+            console.log(
+              'Message updated successfully in chat document with ID:',
+              chatDoc.id
+            );
             break;
           }
         }
       }
       if (!messageFound) {
-        console.error('No chat document found containing the specified message.');
+        console.error(
+          'No chat document found containing the specified message.'
+        );
       }
     } catch (error) {
       console.error('Error updating message:', error);

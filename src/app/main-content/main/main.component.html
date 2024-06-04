@@ -8,10 +8,10 @@
 
         <div *ngIf="displayWorkspace" class="workspace" [@displayWorkspaceTrigger]="displayWorkspace">
           <app-workspace (userDetails)="openChat($event)" (disyplayEmptyChat)="openEmptyChat()"
-            [channelDetails]=(channelDetails) />
+            [channelDetails]="channelDetails" />
         </div>
 
-        <div *ngIf="showChannelChat" class="chat">
+        <div *ngIf="channelService.showChannelChat" class="chat">
           <app-channelchat />
         </div>
 
