@@ -34,7 +34,7 @@
         </div>
       </ng-container>
 
-      <div class="conversation-container-channelchat"
+      <div class="conversation-container"
         (mouseenter)="updateHoverState(i, true)" 
         (mouseleave)="updateHoverState(i, false)"
         [ngClass]="{'justify-end': message.uid === firestoreService.currentuid, 'justify-start': message.uid !== firestoreService.currentuid}">

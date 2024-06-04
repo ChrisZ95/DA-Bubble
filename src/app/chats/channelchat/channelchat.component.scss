@@ -10,10 +10,6 @@
     }
 }
 
-.hovered-other-message {
-    background-color: white !important;
-}
-
 .active-channel {
     display: flex;
     align-items: center;
@@ -32,23 +28,6 @@
     }
 }
 
-.conversation-container-channelchat {
-    position: relative;
-    display: flex;
-    gap: 20px;
-    padding: 6px 75px;
-    &:hover {
-        background-color: rgba(236, 238, 254, 1);
-    }
-}
-
-.user-avatar {
-    height: 70px;
-    width: 70px;
-    border-radius: 100%;
-    object-fit: cover;
-}
-
 .header-channelchat {
     display: flex;
     justify-content: space-between;
@@ -56,4 +35,3 @@
     align-items: center;
     box-shadow: 0 4px 2px rgba(225, 225, 225, 0.5);
 }
-

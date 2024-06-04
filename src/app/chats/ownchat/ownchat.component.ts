@@ -21,11 +21,14 @@ import { ChannelService } from '../../services/channel.service';
 import { ThreadService } from '../../services/thread.service';
 import { Subscription } from 'rxjs';
 import { FormsModule } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-ownchat',
   standalone: true,
-  imports: [TextEditorComponent, TimestampPipe, CommonModule, TimestampPipe, FormsModule],
+  imports: [TextEditorComponent, TimestampPipe, CommonModule, TimestampPipe, FormsModule, MatIconModule, MatMenuModule, MatButtonModule],
   templateUrl: './ownchat.component.html',
   styleUrls: ['./ownchat.component.scss', '../chats.component.scss'],
 })
@@ -43,6 +46,9 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   filteredUsers: any;
   private messagesSubscription: Subscription | undefined;
   private filteredUsersSubscription: Subscription | undefined;
+  isHoveredArray: boolean[] = [];
+  menuClicked = false;
+  currentMessageIndex: number | null = null;
 
   userInformation: any;
   private userDetailsSubscription: Subscription | undefined;
@@ -138,5 +144,43 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   getMemberAvatar(memberId: string): string {
     const member = this.allUsers.find(user => user.uid === memberId);
     return member ? member.photo : '';
+  }
+
+  shouldShowSeparator(index: number): boolean {
+    if (index === 0) {
+      return true;
+    }
+    const currentMessage = this.messages[index];
+    const previousMessage = this.messages[index - 1];
+    const currentDate = new Date(Number(currentMessage.createdAt));
+    const previousDate = new Date(Number(previousMessage.createdAt));
+    if (isNaN(currentDate.getTime()) || isNaN(previousDate.getTime())) {
+        console.error(`Invalid Date - Current Message: ${JSON.stringify(currentMessage)}, Previous Message: ${JSON.stringify(previousMessage)}`);
+        return false;
+    }
+    const currentDateString = currentDate.toDateString();
+    const previousDateString = previousDate.toDateString();
+    const showSeparator = currentDateString !== previousDateString;
+    return showSeparator;
+  }
+
+  updateHoverState(index: number, isHovered: boolean) {
+    if (!this.menuClicked) {
+      this.isHoveredArray[index] = isHovered;
+    }
+  }
+
+  menuClosed() {
+    if (this.currentMessageIndex !== null && !this.menuClicked) {
+      this.isHoveredArray[this.currentMessageIndex] = true;
+    }
+    this.menuClicked = false;
+    this.currentMessageIndex = null;
+  }
+
+  menuOpened(index: number) {
+    this.menuClicked = true;
+    this.currentMessageIndex = index;
+    this.isHoveredArray[index] = true;
   }
 }

@@ -15,23 +15,24 @@
 </div>
 
 <div class="scrollbar test" #scrollContainer>
-    <ng-container *ngFor="let message of messages">
-        <div class="separator">
-            <div class="separator-line"></div>
-            <div class="separator-date">
-                {{message.createdAt | timestamp: 'day' }}
+    <ng-container *ngFor="let message of messages; let i = index">
+        <ng-container *ngIf="shouldShowSeparator(i)">
+            <div class="separator">
+              <div class="separator-line"></div>
+              <div class="separator-date">
+                {{ message.createdAt | timestamp: 'day' }}
+              </div>
+              <div class="separator-line"></div>
             </div>
-            <div class="separator-line"></div>
-        </div>
+          </ng-container>
 
-        <div class="conversation-container" [ngClass]="{'justify-end': message.creator === firestore.currentuid, 'justify-start': message.creator !== firestore.currentuid}">
+        <div class="conversation-container" [ngClass]="{'justify-end': message.creator === firestore.currentuid, 'justify-start': message.creator !== firestore.currentuid}" 
+        (mouseenter)="updateHoverState(i, true)" 
+        (mouseleave)="updateHoverState(i, false)">
             <div *ngIf="message.creator !== firestore.currentuid" class="user-avatar-container">
                 <img [src]="getMemberAvatar(message.creator)" alt="" class="user-avatar">
             </div>
 
-            <div *ngIf="message.creator === firestore.currentuid" class="user-avatar-container">
-                <img [src]="getMemberAvatar(message.creator)" alt="" class="user-avatar">
-            </div>
             <div class="conversation">
                 <div class="name-timestamp" [ngClass]="{'reverse-order': message.creator === firestore.currentuid}">
                     <span class="name" (click)="openContactInfoDialog(this.filteredUsers)">{{ displayName(message.creator) }}</span>
@@ -41,7 +42,8 @@
                     'speechbubble': message.creator !== firestore.currentuid,
                     'bg-color-own-message': message.creator === firestore.currentuid,
                     'bg-color-message': message.creator !== firestore.currentuid,
-                    'own-message-bubble': message.creator === firestore.currentuid
+                    'own-message-bubble': message.creator === firestore.currentuid,
+                    'hovered-other-message': isHoveredArray[i] && message.creator !== firestore.currentuid
                   }">
                     <span class="message-text">{{ message.message }}</span>
                 </div>
@@ -57,9 +59,28 @@
                         1].createdAt | timestamp: 'time') + 'Uhr' : '' }}
                     </p>
                 </div>
-
-
             </div>
+            <div *ngIf="message.creator === firestore.currentuid" class="user-avatar-container">
+                <img [src]="getMemberAvatar(message.creator)" alt="" class="user-avatar">
+            </div>
+            <div class="popup-window-own-message" *ngIf="isHoveredArray[i] && message.creator === firestore.currentuid">
+                <img src="./../../../assets/images/green-tick.png" alt="">
+                <img src="./../../../assets/images/hands-emoji.png" alt="">
+                <img src="./../../../assets/images/add_reaction.png" alt="">
+                <img (click)="openThread(message.messageId)" src="./../../../assets/images/comment.png" alt="">
+                <button [matMenuTriggerFor]="editMessage" mat-icon-button (menuOpened)="menuOpened(i)">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #editMessage="matMenu" class="profile-menu" (closed)="menuClosed()">
+                  <button mat-menu-item>Nachricht bearbeiten</button>
+                </mat-menu>
+              </div>
+              <div class="popup-window" *ngIf="isHoveredArray[i] && message.creator !== firestore.currentuid">
+                <img src="./../../../assets/images/green-tick.png" alt="">
+                <img src="./../../../assets/images/hands-emoji.png" alt="">
+                <img src="./../../../assets/images/add_reaction.png" alt="">
+                <img (click)="openThread(message.messageId)" src="./../../../assets/images/comment.png" alt="">
+              </div>
         </div>
     </ng-container>
 </div>

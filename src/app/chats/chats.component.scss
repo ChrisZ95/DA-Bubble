@@ -103,14 +103,8 @@
   display: flex;
   gap: 20px;
   padding: 6px 75px;
-  img {
-    height: 70px;
-    width: 70px;
-    border-radius: 100%;
-    object-fit: cover;
-  }
   &:hover {
-    background-color: rgba(236, 238, 254, 1);
+      background-color: rgba(236, 238, 254, 1);
   }
 }
 
@@ -325,4 +319,15 @@
 .bg-color-own-message {
   background-color: #797EF3;
   color: white;
+}
+
+.user-avatar {
+  height: 70px;
+  width: 70px;
+  border-radius: 100%;
+  object-fit: cover;
+}
+
+.hovered-other-message {
+  background-color: white !important;
 }
