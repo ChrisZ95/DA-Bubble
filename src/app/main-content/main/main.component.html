@@ -3,34 +3,36 @@
 <div class="main">
   <div class="container">
     <app-header (userDetails)="openChat($event)" (channelDetails)="channelInformaion($event)"></app-header>
-    <div class="workspace-chat-thread">
+    <div class="main-container">
+      <div class="workspace-chat-thread">
 
-      <div *ngIf="displayWorkspace" class="workspace" [@displayWorkspaceTrigger]="displayWorkspace">
-        <app-workspace (userDetails)="openChat($event)" (disyplayEmptyChat)="openEmptyChat()"
-          [channelDetails]=(channelDetails) />
+        <div *ngIf="displayWorkspace" class="workspace" [@displayWorkspaceTrigger]="displayWorkspace">
+          <app-workspace (userDetails)="openChat($event)" (disyplayEmptyChat)="openEmptyChat()"
+            [channelDetails]=(channelDetails) />
+        </div>
+
+        <div *ngIf="showChannelChat" class="chat">
+          <app-channelchat />
+        </div>
+
+        <div *ngIf="chatService.showEmptyChat" class="chat">
+          <app-emptychat />
+        </div>
+
+        <div *ngIf="chatService.showOwnChat" class="chat">
+          <app-ownchat [userDetails]="userDetails" />
+        </div>
+
+        <div *ngIf="threadService.displayThread" class="thread">
+          <app-thread />
+        </div>
+
+        <div *ngIf="showThreadWindow" class="thread">
+          <app-channelthread></app-channelthread>
+        </div>
       </div>
 
-      <div *ngIf="showChannelChat" class="chat">
-        <app-channelchat />
-      </div>
-
-      <div *ngIf="chatService.showEmptyChat" class="chat">
-        <app-emptychat />
-      </div>
-
-      <div *ngIf="chatService.showOwnChat" class="chat">
-        <app-ownchat [userDetails]="userDetails" />
-      </div>
-
-      <div *ngIf="threadService.displayThread" class="thread">
-        <app-thread />
-      </div>
-
-      <div *ngIf="showThreadWindow" class="thread">
-        <app-channelthread></app-channelthread>
-      </div>
     </div>
-
   </div>
   <div class="workspace-menu" (click)="showHideWorkspace()">
     <div class="workspace-menu-text"></div>

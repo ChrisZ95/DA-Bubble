@@ -25,6 +25,8 @@ export class ChannelthreadComponent implements OnInit, OnDestroy, OnChanges {
   currentMessageComments: any[] = [];
   allUsers: any[] = [];
   private channelSubscription: Subscription | null = null;
+  currentChannelId: string = '';
+  message: any = {};
 
   constructor(
     public channelService: ChannelService,
@@ -36,6 +38,14 @@ export class ChannelthreadComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   async ngOnInit(): Promise<void> {
+    this.currentChannelId = this.channelService.getCurrentChannelId();
+    const channelId = this.currentChannelId;
+    const messages = await this.channelService.loadMessagesForChannel(channelId);
+    this.channelService.messagesWithAuthors = await Promise.all(messages.map(async message => {
+      const authorName = await this.channelService.getAuthorName(message.uid);
+      return { ...message, authorName };
+    }));
+    this.message = messages
     this.allUsers = await this.firestoreService.getAllUsers();
     this.channelSubscription = this.channelService.currentMessageCommentsChanged.subscribe((comments) => {
       this.currentMessageComments = comments;
