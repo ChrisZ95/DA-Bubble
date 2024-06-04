@@ -107,11 +107,11 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   async openChat(user: any) {
+    this.channelService.showChannelChat = false;
     console.log(user);
     this.userDetails.emit(user);
     this.chatService.loadUserData(user);
     await this.chatService.createChat(user);
-
     this.chatService.clearInputValue(true);
   }
 
