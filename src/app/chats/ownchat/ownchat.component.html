@@ -26,8 +26,8 @@
             </div>
           </ng-container>
 
-        <div class="conversation-container" [ngClass]="{'justify-end': message.creator === firestore.currentuid, 'justify-start': message.creator !== firestore.currentuid}" 
-        (mouseenter)="updateHoverState(i, true)" 
+        <div class="conversation-container" [ngClass]="{'justify-end': message.creator === firestore.currentuid, 'justify-start': message.creator !== firestore.currentuid}"
+        (mouseenter)="updateHoverState(i, true)"
         (mouseleave)="updateHoverState(i, false)">
             <div *ngIf="message.creator !== firestore.currentuid" class="user-avatar-container">
                 <img [src]="getMemberAvatar(message.creator)" alt="" class="user-avatar">
@@ -35,7 +35,7 @@
 
             <div class="conversation">
                 <div class="name-timestamp" [ngClass]="{'reverse-order': message.creator === firestore.currentuid}">
-                    <span class="name" (click)="openContactInfoDialog(this.filteredUsers)">{{ displayName(message.creator) }}</span>
+                    <span *ngFor="let user of (this.chatService.participants.length === 1 ? filteredUsers : [userInformation])" class="name" (click)="openContactInfoDialog(user)">{{ displayName(message.creator) }}</span>
                     <span class="time">{{ message.createdAt | timestamp: 'time' }} Uhr</span>
                 </div>
                 <div [ngClass]="{
@@ -67,7 +67,7 @@
                 <img src="./../../../assets/images/green-tick.png" alt="">
                 <img src="./../../../assets/images/hands-emoji.png" alt="">
                 <img src="./../../../assets/images/add_reaction.png" alt="">
-                <img (click)="openThread(message.messageId)" src="./../../../assets/images/comment.png" alt="">
+                <img (click)="openThread(message)" src="./../../../assets/images/comment.png" alt="">
                 <button [matMenuTriggerFor]="editMessage" mat-icon-button (menuOpened)="menuOpened(i)">
                   <mat-icon>more_vert</mat-icon>
                 </button>
@@ -79,7 +79,7 @@
                 <img src="./../../../assets/images/green-tick.png" alt="">
                 <img src="./../../../assets/images/hands-emoji.png" alt="">
                 <img src="./../../../assets/images/add_reaction.png" alt="">
-                <img (click)="openThread(message.messageId)" src="./../../../assets/images/comment.png" alt="">
+                <img (click)="openThread(message)" src="./../../../assets/images/comment.png" alt="">
               </div>
         </div>
     </ng-container>

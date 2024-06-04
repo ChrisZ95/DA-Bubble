@@ -89,8 +89,13 @@ export class ChannelchatComponent implements OnInit, AfterViewInit, OnDestroy {
     this.currentChannelId = this.channelService.getCurrentChannelId();
   }
 
-  openContactInfoDialog() {
-    this.dialog.open(DialogContactInfoComponent);
+  openContactInfoDialog(userDetails: any) {
+    // this.dialog.open(DialogContactInfoComponent);
+    console.log(userDetails)
+    debugger
+    this.dialog.open(DialogContactInfoComponent, {
+      data: userDetails
+    });
   }
 
   ngAfterViewInit() {
