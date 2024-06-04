@@ -280,9 +280,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.userPhoto = this.userForm['photo'];
         this.userUid = this.userForm['uid'];
         this.userIsVerified =
-          this.firestoreService.auth.currentUser.emailVerified;
+        this.firestoreService.auth.currentUser.emailVerified;
 
-        if (this.userUid === 'ghNGds2D5lTMSsFWIdNP1O6kPk13') {
+        if (this.userUid === 'qahY57hYK6a7PQfEdc7KRCfUEcQ2') {
           this.guestLogIn = true;
         }
       } else {

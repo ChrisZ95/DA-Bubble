@@ -672,7 +672,7 @@ export class FirestoreService {
           privacyPolice: true,
           uid: user.uid,
           photo: user.photoURL,
-          logInDate: logInDate,
+          logIndate: logInDate,
           signUpdate: signUpDateUnixTimestamp,
         });
         await this.setCurrentUid(user.uid);
