@@ -1,6 +1,13 @@
 .d-none {
   display: none;
 }
+
+.main-container{
+  display: flex;
+  justify-content: center;
+  width: 100vw;
+}
+
 .close-emoji-picker {
   position: absolute;
   height: 100vh;
@@ -18,13 +25,14 @@
   display: flex;
   justify-content: space-evenly;
   position: relative;
+  max-width: 1440px;
+  gap: 10px;
   // z-index: 1;
 }
 .workspace {
-  position: absolute;
   left: 32px;
   height: 100%;
-  width: 366px;
+  width: 20vw;
   border-radius: 30px;
   padding: 10px;
   background-color: rgb(255, 255, 255);
@@ -67,16 +75,14 @@
 
 .chat {
   background-color: rgba(255, 255, 255, 1);
-  width: 80%;
+  width: 50vw;
   height: calc(80vh + 20px);
   border-radius: 30px;
-  margin-left: 430px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .thread {
-  height: 80vh;
-  width: calc(20vw - 2px);
+  width: 30vw;
   background-color: rgb(255, 255, 255);
   border-radius: 30px;
 }
