@@ -124,7 +124,6 @@ export class TextEditorComponent implements OnInit {
   }
 
   closeuserMention() {
-    debugger
     console.log(this.allUsers, this.memberData)
     this.openAssociatedUser = false;
     this.chatService.associatedUser(false);

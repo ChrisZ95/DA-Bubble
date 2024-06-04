@@ -6,10 +6,10 @@
     </button>
   </div>
   <div class="avatar-big">
-    <img src="{{ data.photo }}" alt="">
+    <img src="{{ data?.photo }}" alt="">
   </div>
   <div class="profile-name">
-    <span class="profile-full-name">{{ data.username }}</span>
+    <span class="profile-full-name">{{ data?.username }}</span>
     <div *ngIf="userIsVerified">
       <img title="Konto verifiziert" class="user-verified" src="./../../assets/images/verified-user.png">
     </div>
@@ -19,7 +19,7 @@
   </div>
   <div class="email">
     <img src="./../../assets/images/mail.png" alt="">
-    <a href="mailto:{{ data.email }}">{{ data.email }}</a>
+    <a href="mailto:{{ data?.email }}">{{ data?.email }}</a>
   </div>
   <div *ngIf="!myAccount" class="message-button">
     <button>
