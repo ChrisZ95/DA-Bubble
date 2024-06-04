@@ -4,9 +4,7 @@ import { DialogChannelInfoComponent } from '../../dialog-channel-info/dialog-cha
 import { MatDialog } from '@angular/material/dialog';
 import { DialogAddPeopleComponent } from '../../dialog-add-people/dialog-add-people.component';
 import { DialogContactInfoComponent } from '../../dialog-contact-info/dialog-contact-info.component';
-import { TextEditorComponent } from '../../shared/text-editor/text-editor.component';
 import { ChatService } from '../../services/chat.service';
-import { debug, log } from 'console';
 import { collection } from 'firebase/firestore';
 import { CommonModule, NgFor } from '@angular/common';
 import { TimestampPipe } from '../../shared/pipes/timestamp.pipe';
@@ -16,14 +14,15 @@ import { Firestore, onSnapshot, Unsubscribe } from '@angular/fire/firestore';
 import { FirestoreService } from '../../firestore.service';
 import { Subscription } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
-import  { MatIconModule } from '@angular/material/icon';
+import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { FormsModule } from '@angular/forms';
+import { TextEditorChannelComponent } from '../../shared/text-editor-channel/text-editor-channel.component';
 
 @Component({
   selector: 'app-channelchat',
   standalone: true,
-  imports: [TextEditorComponent, NgFor, TimestampPipe, CommonModule, MatButtonModule, MatIconModule, MatMenuModule, FormsModule, CommonModule],
+  imports: [TextEditorChannelComponent, NgFor, TimestampPipe, CommonModule, MatButtonModule, MatIconModule, MatMenuModule, FormsModule, CommonModule],
   templateUrl: './channelchat.component.html',
   styleUrls: ['./channelchat.component.scss', '../chats.component.scss'],
 })

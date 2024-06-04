@@ -1,37 +1,23 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  HostListener,
-  Input,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, HostListener, Input, OnInit, ViewChild,} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../services/chat.service';
 import { GenerateIdsService } from '../../services/generate-ids.service';
-import {
-  Firestore,
-  collection,
-  onSnapshot,
-  query,
-} from '@angular/fire/firestore';
+import { Firestore, collection, onSnapshot, query,} from '@angular/fire/firestore';
 import { ChannelService } from '../../services/channel.service';
 import { FirestoreService } from '../../firestore.service';
-import { log } from 'console';
 import { ThreadService } from '../../services/thread.service';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-text-editor',
+  selector: 'app-text-editor-channel',
   standalone: true,
   imports: [FormsModule, PickerComponent, CommonModule],
-  templateUrl: './text-editor.component.html',
-  styleUrls: ['./text-editor.component.scss'],
+  templateUrl: './text-editor-channel.component.html',
+  styleUrl: './text-editor-channel.component.scss'
 })
-export class TextEditorComponent implements OnInit {
+export class TextEditorChannelComponent implements OnInit {
   @ViewChild('fileInput', { static: true })
   fileInput!: ElementRef<HTMLInputElement>;
   message: string = '';
@@ -77,8 +63,16 @@ export class TextEditorComponent implements OnInit {
     this.clearTextEditorValueSubcription = this.chatService.clearValue$.subscribe(
       (state: boolean) => {
         this.message = '';
+        this.memberData.length = 0;
       }
     );
+
+    this.firestoreService.getAllUsers().then(users => {
+      this.allUsers = users;
+      this.updateMemberData();
+    }).catch(error => {
+      console.error('Error fetching users:', error);
+    });
   }
 
   ngOnDestroy(): void {
@@ -96,7 +90,12 @@ export class TextEditorComponent implements OnInit {
     }
   }
 
+  updateMemberData(): void {
+    this.memberData = this.allUsers.filter(user => this.channelService.UserName.includes(user.uid)).map(user => ({ username: user.username}));
+  }
+
   userMention() {
+    this.updateMemberData();
     this.filteredUsersSubscription = this.chatService.filteredUsers$.subscribe(
       (users) => {
         this.associatedUser = users;
@@ -345,3 +344,4 @@ export class TextEditorComponent implements OnInit {
     }
   }
 }
+

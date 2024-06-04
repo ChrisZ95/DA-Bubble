@@ -79,6 +79,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
       this.showChannel = false;
     } else {
       this.showChannel = true;
+      this.displayUsers = false;
     }
   }
 
@@ -91,6 +92,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
       this.displayUsers = false;
     } else {
       this.displayUsers = true;
+      this.showChannel = false;
     }
   }
 
@@ -107,6 +109,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   async openChat(user: any) {
+    debugger
     this.channelService.showChannelChat = false;
     console.log(user);
     this.userDetails.emit(user);
