@@ -14,21 +14,21 @@
           <button (click)="removeUser(user)">X</button>
         </div>
       </div>
-      <input type="text" 
-             [(ngModel)]="personName" 
-             placeholder="Name der Person" 
+      <input type="text"
+             [(ngModel)]="personName"
+             placeholder="Name der Person"
              (input)="filterUsers()"
              (focus)="showUserList = true">
     </div>
     <div *ngIf="showUserList && filteredUsers.length > 0" class="user-dropdown">
       <div *ngFor="let user of filteredUsers" class="user-option" (click)="selectUser(user)">
-        <img src="{{ user.photo }}" alt="">{{ user.username }}
-      </div> 
+        <img class="user-icon" src="{{ user.photo }}" alt="">{{ user.username }}
+      </div>
     </div>
     <div class="dialog-add-people-to-new-channel-button">
-      <button 
-        [style.background-color]="buttonColor" 
-        (click)="addUserToChannel()" 
+      <button
+        [style.background-color]="buttonColor"
+        (click)="addUserToChannel()"
         [disabled]="selectedUsers.length === 0">
         Hinzufügen
       </button>

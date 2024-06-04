@@ -14,7 +14,7 @@
     <div *ngIf="selectedOption === 'certain'" class="custom-input">
       <div class="selected-users-container">
         <div *ngFor="let user of selectedUsers" class="selected-user">
-          <img src="{{ user.photo }}" alt="">
+          <img class="user-icon" src="{{ user.photo }}" alt="">
           <span>{{ user.username }}</span>
           <button (click)="removeUser(user)">X</button>
         </div>

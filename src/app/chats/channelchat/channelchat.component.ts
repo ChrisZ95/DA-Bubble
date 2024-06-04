@@ -102,9 +102,12 @@ export class ChannelchatComponent implements OnInit, AfterViewInit, OnDestroy {
 
         this.userDialogData = {
           username: this.userForm['username'],
+          email: this.userForm['email'],
           photo: this.userForm['photo'],
           uid: this.userForm['uid'],
           logIndate: this.userForm['logIndate'],
+          logOutDate: this.userForm['logOutDate'],
+          signUpdate: this.userForm['signUpdate'],
           emailVerified: this.firestoreService.auth.currentUser.emailVerified
         };
 

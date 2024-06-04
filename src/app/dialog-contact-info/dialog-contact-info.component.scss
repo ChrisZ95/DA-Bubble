@@ -56,11 +56,12 @@
 
   .profile-name{
     display: flex;
+    align-items: center;
     gap: 20px;
     margin-top: 30px;
 
     .profile-full-name{
-      font-size: 32px;
+      font-size: 26px;
       font-weight: 700;
     }
 
