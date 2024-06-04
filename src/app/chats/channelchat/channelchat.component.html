@@ -35,17 +35,17 @@
       </ng-container>
 
       <div class="conversation-container"
-        (mouseenter)="updateHoverState(i, true)" 
+        (mouseenter)="updateHoverState(i, true)"
         (mouseleave)="updateHoverState(i, false)"
         [ngClass]="{'justify-end': message.uid === firestoreService.currentuid, 'justify-start': message.uid !== firestoreService.currentuid}">
-        
+
         <div *ngIf="message.uid !== firestoreService.currentuid" class="user-avatar-container">
           <img [src]="getMemberAvatar(message.uid)" alt="" class="user-avatar">
         </div>
 
         <div class="conversation">
           <div class="name-timestamp" [ngClass]="{'reverse-order': message.uid === firestoreService.currentuid}">
-            <span class="name" (click)="openContactInfoDialog()">{{ message.authorName }}</span>
+            <span class="name" (click)="openContactInfoDialog(message.uid)">{{ message.authorName }}</span>
             <span class="time">{{ message.createdAt | timestamp: 'time' }} Uhr</span>
           </div>
 

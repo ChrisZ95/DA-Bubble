@@ -62,6 +62,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   openContactInfoDialog(userDetails: any) {
+    debugger
     this.dialog.open(DialogContactInfoComponent, {
       data: userDetails
     });

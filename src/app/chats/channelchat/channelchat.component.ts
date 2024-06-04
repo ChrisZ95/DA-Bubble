@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ElementRef, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ElementRef, ViewChild, OnDestroy, Input } from '@angular/core';
 import { DialogMembersComponent } from '../../dialog-members/dialog-members.component';
 import { DialogChannelInfoComponent } from '../../dialog-channel-info/dialog-channel-info.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -23,7 +23,7 @@ import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-channelchat',
   standalone: true,
-  imports: [TextEditorComponent, NgFor, TimestampPipe, CommonModule, MatButtonModule, MatIconModule, MatMenuModule, FormsModule],
+  imports: [TextEditorComponent, NgFor, TimestampPipe, CommonModule, MatButtonModule, MatIconModule, MatMenuModule, FormsModule, CommonModule],
   templateUrl: './channelchat.component.html',
   styleUrls: ['./channelchat.component.scss', '../chats.component.scss'],
 })
@@ -57,6 +57,7 @@ export class ChannelchatComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
+  @Input() userDialogData: any;
   currentChannel!: Channel;
   allChannels: any = [];
   allChats: any = [];
@@ -72,8 +73,11 @@ export class ChannelchatComponent implements OnInit, AfterViewInit, OnDestroy {
   currentMessageIndex: number | null = null;
   editingMessageIndex: number | null = null;
   editedMessageText: string = '';
+
+  userForm: any;
   private channelSnapshotUnsubscribe: Unsubscribe | undefined;
   private chatSnapshotUnsubscribe: Unsubscribe | undefined;
+  private unsubscribe: Unsubscribe | undefined;
 
 
   openMemberDialog() {
@@ -89,8 +93,29 @@ export class ChannelchatComponent implements OnInit, AfterViewInit, OnDestroy {
     this.currentChannelId = this.channelService.getCurrentChannelId();
   }
 
-  openContactInfoDialog() {
-    this.dialog.open(DialogContactInfoComponent);
+  openContactInfoDialog(userDetails: any) {
+    const userDocRef = this.firestoreService.getUserDocRef(userDetails);
+    this.unsubscribe = onSnapshot(userDocRef, (doc) => {
+      if (doc.exists()) {
+        const userData = doc.data();
+        this.userForm = { id: doc.id, ...userData };
+
+        this.userDialogData = {
+          username: this.userForm['username'],
+          photo: this.userForm['photo'],
+          uid: this.userForm['uid'],
+          logIndate: this.userForm['logIndate'],
+          emailVerified: this.firestoreService.auth.currentUser.emailVerified
+        };
+
+        console.log(this.userDialogData);
+        this.dialog.open(DialogContactInfoComponent, {
+          data: this.userDialogData
+        });
+      } else {
+        console.log('Das Benutzerdokument existiert nicht.');
+      }
+    });
   }
 
   ngAfterViewInit() {
@@ -135,6 +160,9 @@ export class ChannelchatComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     if (this.channelSubscription) {
       this.channelSubscription.unsubscribe();
+    }
+    if (this.unsubscribe) {
+      this.unsubscribe();
     }
   }
 
