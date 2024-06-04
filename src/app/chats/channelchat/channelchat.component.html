@@ -72,7 +72,7 @@
           </div>
 
           <div class="reply" *ngIf="message.commentCount > 0">
-            <div class="answers" (click)="openThreadWindow(message.messageId)">{{ message.commentCount }} Antworten</div>
+            <div class="answers" (click)="openThreadWindow(message, message.messageId)">{{ message.commentCount }} Antworten</div>
             <span class="last-answer"> Letzte Antwort {{ message.lastCommentTime | timestamp: 'time' }}</span>
           </div>
         </div>
@@ -85,7 +85,7 @@
           <img src="./../../../assets/images/green-tick.png" alt="">
           <img src="./../../../assets/images/hands-emoji.png" alt="">
           <img src="./../../../assets/images/add_reaction.png" alt="">
-          <img (click)="openThreadWindow(message.messageId)" src="./../../../assets/images/comment.png" alt="">
+          <img (click)="openThreadWindow(message, message.messageId)" src="./../../../assets/images/comment.png" alt="">
           <button [matMenuTriggerFor]="editMessage" mat-icon-button (menuOpened)="menuOpened(i)">
             <mat-icon>more_vert</mat-icon>
           </button>
@@ -97,7 +97,7 @@
           <img src="./../../../assets/images/green-tick.png" alt="">
           <img src="./../../../assets/images/hands-emoji.png" alt="">
           <img src="./../../../assets/images/add_reaction.png" alt="">
-          <img (click)="openThreadWindow(message.messageId)" src="./../../../assets/images/comment.png" alt="">
+          <img (click)="openThreadWindow(message, message.messageId)" src="./../../../assets/images/comment.png" alt="">
         </div>
       </div>
     </div>

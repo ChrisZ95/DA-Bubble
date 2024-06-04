@@ -26,7 +26,7 @@ export class ChannelthreadComponent implements OnInit, OnDestroy, OnChanges {
   allUsers: any[] = [];
   private channelSubscription: Subscription | null = null;
   currentChannelId: string = '';
-  message: any = {};
+  currentMessage: any;
 
   constructor(
     public channelService: ChannelService,
@@ -38,19 +38,20 @@ export class ChannelthreadComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   async ngOnInit(): Promise<void> {
-    this.currentChannelId = this.channelService.getCurrentChannelId();
-    const channelId = this.currentChannelId;
-    const messages = await this.channelService.loadMessagesForChannel(channelId);
-    this.channelService.messagesWithAuthors = await Promise.all(messages.map(async message => {
-      const authorName = await this.channelService.getAuthorName(message.uid);
-      return { ...message, authorName };
-    }));
-    this.message = messages
-    this.allUsers = await this.firestoreService.getAllUsers();
     this.channelSubscription = this.channelService.currentMessageCommentsChanged.subscribe((comments) => {
       this.currentMessageComments = comments;
+      console.log('Comments updated via subscription:', this.currentMessageComments); // Debugging
     });
+  
+    this.currentMessage = this.channelService.getCurrentMessage();
+    console.log('Current Message:', this.currentMessage); // Debugging
+  
+    this.allUsers = await this.firestoreService.getAllUsers();
+    console.log('All Users:', this.allUsers); // Debugging
+  
     this.currentMessageId = this.channelService.getCurrentMessageId();
+    console.log('Current Message ID:', this.currentMessageId); // Debugging
+  
     this.loadCommentsForCurrentMessage(this.currentMessageId);
   }
 
@@ -91,5 +92,10 @@ export class ChannelthreadComponent implements OnInit, OnDestroy, OnChanges {
     } else {
       this.currentMessageComments = [];
     }
+  }
+
+  getMemberAvatar(memberId: string): string {
+    const member = this.allUsers.find(user => user.uid === memberId);
+    return member ? member.photo : '';
   }
 }

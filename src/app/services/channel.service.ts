@@ -39,6 +39,7 @@ export class ChannelService {
   comments: any[] = [];
   messagesWithAuthors: any[] = [];
   commentsWithAuthors: any[] = [];
+  currentMessage: any;
   currentMessageIdChanged: EventEmitter<string> = new EventEmitter<string>();
   currentChannelIdChanged: EventEmitter<string> = new EventEmitter<string>();
   currentMessageCommentsChanged: EventEmitter<any[]> = new EventEmitter<any[]>();
@@ -210,6 +211,14 @@ export class ChannelService {
 
   getCurrentMessageId(): string {
     return this.currentMessageId;
+  }
+
+  setCurrentMessage(message: any) {
+    this.currentMessage = message;
+}
+
+  getCurrentMessage() {
+    return this.currentMessage;
   }
 
   async loadMessagesForChannel(channelId: string): Promise<any[]> {

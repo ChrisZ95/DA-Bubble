@@ -146,11 +146,11 @@ export class ChannelchatComponent implements OnInit, AfterViewInit, OnDestroy {
     }));
   }
 
-  openThreadWindow(messageId: string){
-    this.channelService.currentMessageId = messageId;
+  openThreadWindow(message: any, messageId: any) {
+    this.channelService.setCurrentMessage(message);
     this.channelService.setCurrentMessageId(messageId);
     this.channelService.showThreadWindow = true;
-  }
+}
 
   getMemberAvatar(memberId: string): string {
     const member = this.allUsers.find(user => user.uid === memberId);

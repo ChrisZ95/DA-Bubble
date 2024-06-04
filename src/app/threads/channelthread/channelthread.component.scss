@@ -98,3 +98,10 @@
   color: #797EF3;
   width: fit-content;
 }
+
+.user-avatar {
+  height: 70px;
+  width: 70px;
+  border-radius: 100%;
+  object-fit: cover;
+}
