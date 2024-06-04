@@ -27,19 +27,18 @@ export class DialogContactInfoComponent implements OnInit{
     userIsVerified: any;
     myAccount: boolean = false;
 
-    ngOnInit(): void {
-      debugger
-      console.log(this.data);
-      if (this.data) {
-        this.convertOnlineStatus(this.data.logIndate, this.data.logOutDate);
-        this.convertSignUpDate(this.data.signUpdate);
-        this.userIsVerified = this.firestore.auth.currentUser.emailVerified;
-        const localStorageUid = localStorage.getItem('uid');
-        this.myAccount = this.data.uid === localStorageUid;
-      } else {
-        console.error('Keine Daten erhalten');
-      }
+  ngOnInit(): void {
+    console.log(this.data);
+    this.convertOnlineStatus(this.data.logIndate, this.data.logOutDate);
+    this.convertSignUpDate(this.data.signUpdate);
+    this.userIsVerified = this.firestore.auth.currentUser.emailVerified;
+    const localStorageUid = localStorage.getItem('uid')
+    if(this.data.uid === localStorageUid) {
+      this.myAccount = true;
+    } else {
+      this.myAccount = false;
     }
+  }
 
   convertSignUpDate(unixTimestamp: any) {
     if (unixTimestamp.toString().length === 13) {

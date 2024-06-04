@@ -88,7 +88,6 @@ export class ChatService {
   }
 
   clearInputValue(state: boolean) {
-    debugger
     this.clearTextEditorValueSubcription.next(state);
   }
 

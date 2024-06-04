@@ -320,7 +320,6 @@ export class FirestoreService {
   }
 
   async logOut() {
-    debugger;
     try {
       const uid = this.getUid();
       const logOutTimeStamp = this.createTimeStamp();
