@@ -28,12 +28,13 @@ export class DialogContactInfoComponent implements OnInit{
     myAccount: boolean = false;
 
   ngOnInit(): void {
-    console.log(this.data);
     this.convertOnlineStatus(this.data.logIndate, this.data.logOutDate);
     this.convertSignUpDate(this.data.signUpdate);
     this.userIsVerified = this.firestore.auth.currentUser.emailVerified;
     const localStorageUid = localStorage.getItem('uid')
-    if(this.data.uid === localStorageUid) {
+    if (this.data.uid === 'qahY57hYK6a7PQfEdc7KRCfUEcQ2') {
+      this.myAccount = false;
+    } else if(this.data.uid === localStorageUid) {
       this.myAccount = true;
     } else {
       this.myAccount = false;
