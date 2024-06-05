@@ -48,6 +48,7 @@ p {
   overflow-y: scroll;
   scrollbar-width: thin; /* For Firefox */
   scrollbar-color: transparent transparent;
+  position: relative;
 }
 
 .creator,
@@ -57,7 +58,7 @@ p {
   display: flex;
   align-items: flex-start;
   gap: 15px;
-  padding: 5% 2.5% 1.25% 2.5%;
+  padding: 10px 40px 10px 40px;
   &:hover {
     background-color: rgba(236, 238, 254, 1);
     .text {
@@ -97,17 +98,17 @@ p {
 
 .separator {
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
-  width: 90%;
   margin: 0 auto;
-  gap: 10%;
+  gap: 20px;
 }
 
 .line {
   background-color: rgba(173, 176, 217, 1);
   height: 1px;
-  width: 60%;
+  width: 65%;
+  margin-right: 40px;
 }
 
 .reply-container {

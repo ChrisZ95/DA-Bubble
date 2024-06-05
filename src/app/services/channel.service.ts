@@ -63,7 +63,7 @@ export class ChannelService {
       this.updateMessagesWithAuthors();
       this.currentMessageCommentsChanged.emit(
         this.messages[messageIndex].comments
-      ); // Emit the updated comments
+      ); 
     }
   }
 

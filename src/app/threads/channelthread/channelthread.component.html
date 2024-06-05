@@ -23,7 +23,8 @@
                             'speechbubble': currentMessage.uid !== firestoreService.currentuid,
                             'bg-color-own-message': currentMessage.uid === firestoreService.currentuid,
                             'bg-color-message': currentMessage.uid !== firestoreService.currentuid,
-                            'own-message-bubble': currentMessage.uid === firestoreService.currentuid
+                            'own-message-bubble': currentMessage.uid === firestoreService.currentuid,
+                            'hovered-other-message': currentMessage.uid !== firestoreService.currentuid
                         }">
                             <span class="message-text">{{ currentMessage.message }}</span>
                         </div>
@@ -36,12 +37,14 @@
         </div>
 
         <div class="separator">
-            <div>2 Antworten</div>
+            <div class="amount-answers">{{ currentMessage.commentCount }} Antworten</div>
             <div class="line"></div>
         </div>
 
-        <div *ngFor="let comment of currentMessageComments" class="history">
-            <div class="creator" [ngClass]="{'justify-end': comment.uid === firestoreService.currentuid, 'justify-start': comment.uid !== firestoreService.currentuid}">
+        <div *ngFor="let comment of currentMessageComments; let i = index" class="history">
+            <div class="creator" [ngClass]="{'justify-end': comment.uid === firestoreService.currentuid, 'justify-start': comment.uid !== firestoreService.currentuid}"
+            (mouseenter)="updateHoverState(i, true)"
+            (mouseleave)="updateHoverState(i, false)">
                 <div class="conversation">
                     <div *ngIf="comment.uid !== firestoreService.currentuid" class="user-avatar-container">
                         <img [src]="getMemberAvatar(comment.uid)" alt="" class="user-avatar">
@@ -55,7 +58,8 @@
                             'speechbubble': comment.uid !== firestoreService.currentuid,
                             'bg-color-own-message': comment.uid === firestoreService.currentuid,
                             'bg-color-message': comment.uid !== firestoreService.currentuid,
-                            'own-message-bubble': comment.uid === firestoreService.currentuid
+                            'own-message-bubble': comment.uid === firestoreService.currentuid,
+                            'hovered-other-message': isHoveredArray[i] && comment.uid !== firestoreService.currentuid
                         }">
                             <span class="message-text">{{ comment.comment }}</span>
                         </div>
@@ -65,6 +69,18 @@
                     </div>
                 </div>
             </div>
+            <div class="popup-window-own-message" *ngIf="isHoveredArray[i] && comment.uid === firestoreService.currentuid">
+                <img src="./../../../assets/images/add_reaction.png" alt="">
+                <button [matMenuTriggerFor]="editMessage" mat-icon-button (menuOpened)="menuOpened(i)">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #editMessage="matMenu" class="profile-menu" (closed)="menuClosed()">
+                  <button mat-menu-item (click)="startEditingMessage(i, comment.comment)">Nachricht bearbeiten</button>
+                </mat-menu>
+              </div>
+              <div class="popup-window" *ngIf="isHoveredArray[i] && comment.uid !== firestoreService.currentuid">
+                <img src="./../../../assets/images/add_reaction.png" alt="">
+              </div>
         </div>
     </div>
 
