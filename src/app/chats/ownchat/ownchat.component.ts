@@ -1,5 +1,12 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, Input, OnChanges, OnInit, SimpleChanges, OnDestroy,} from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+  OnDestroy,
+} from '@angular/core';
 import { collection, getDocs } from 'firebase/firestore';
 import { ChatService } from '../../services/chat.service';
 import { TimestampPipe } from '../../shared/pipes/timestamp.pipe';
@@ -24,6 +31,17 @@ import { EmojiComponent } from '@ctrl/ngx-emoji-mart/ngx-emoji';
   selector: 'app-ownchat',
   standalone: true,
   imports: [TextEditorComponent, EmojiComponent,  PickerComponent, TimestampPipe, CommonModule, TimestampPipe, FormsModule, MatIconModule, MatMenuModule, MatButtonModule],
+  imports: [
+    TextEditorComponent,
+    PickerComponent,
+    TimestampPipe,
+    CommonModule,
+    TimestampPipe,
+    FormsModule,
+    MatIconModule,
+    MatMenuModule,
+    MatButtonModule,
+  ],
   templateUrl: './ownchat.component.html',
   styleUrls: ['./ownchat.component.scss', '../chats.component.scss'],
 })
@@ -47,7 +65,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   currentMessageIndex: number | null = null;
   openEmojiPicker = false;
   message: any;
-  emojiMessageId : any;
+  emojiMessageId: any;
   foundMessage: any;
 
   emoji = [
@@ -74,16 +92,20 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   userInformation: any;
   private userDetailsSubscription: Subscription | undefined;
 
-  openEmojiMartPicker(message: { id: number, text: string }) {
+  openEmojiMartPicker(message: { id: number; text: string }) {
     this.emojiMessageId = message.id;
     console.log(this.emojiMessageId);
     this.openEmojiPicker = true;
 
-    this.foundMessage = this.messages.find((msg: any) => msg.id === this.emojiMessageId);
+    this.foundMessage = this.messages.find(
+      (msg: any) => msg.id === this.emojiMessageId
+    );
 
     if (this.foundMessage) {
       console.log('Found Message:', this.foundMessage);
+      console.log('Found Message:', this.foundMessage);
     } else {
+      console.log('Message not found');
       console.log('Message not found');
     }
 
@@ -151,6 +173,18 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
             reaction.emojiReactions[emojiID] = [];
           }
           reaction.emojiReactions[emojiID].push(emojiIcon);
+    const reaction = this.messages.find(
+      (msg: any) => msg.id === this.emojiMessageId
+    );
+    if (currentUserID)
+      if (reaction) {
+        if (!reaction.emojiReactions) {
+          reaction.emojiReactions = {};
+        }
+        if (!reaction.emojiReactions[emojiID]) {
+          reaction.emojiReactions[emojiID] = [];
+        }
+        reaction.emojiReactions[emojiID].push(emojiIcon);
 
           if(!reaction.emojiReactions[emojiID][emojiIcon]) {
             reaction.emojiReactions[emojiID][emojiIcon] = []
@@ -162,22 +196,37 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
           console.log('Message not found');
       }
         console.log(this.messages);
+        if (!reaction.emojiReactions[emojiID][emojiIcon]) {
+          reaction.emojiReactions[emojiID][emojiIcon] = [];
+        }
+        reaction.emojiReactions[emojiID][emojiIcon].push(currentUserID);
+        // this.chatService.uploadEmojiReaction()
+        console.log('Updated Message:', reaction);
+      } else {
+        console.log('Message not found');
+      }
+    console.log(this.messages);
   }
 
   getEmojiReactions(message: any) {
     const reactionsArray = [];
     for (const emojiID in message.emojiReactions) {
       if (message.emojiReactions.hasOwnProperty(emojiID)) {
-        reactionsArray.push({ id: emojiID, icons: message.emojiReactions[emojiID] });
+        reactionsArray.push({
+          id: emojiID,
+          icons: message.emojiReactions[emojiID],
+        });
       }
     }
   return reactionsArray;
   }
 
+    return reactionsArray;
+  }
 
-addReaction() {
-  console.log('emoji geklickt')
-}
+  addReaction() {
+    console.log('emoji geklickt');
+  }
 
   closeEmojiMartPicker() {
     this.openEmojiPicker = false;
@@ -194,7 +243,7 @@ addReaction() {
 
   openContactInfoDialog(userDetails: any) {
     this.dialog.open(DialogContactInfoComponent, {
-      data: userDetails
+      data: userDetails,
     });
   }
 
@@ -234,7 +283,7 @@ addReaction() {
 
   ngOnInit(): void {
     this.userDetailsSubscription = this.chatService.userInformation$.subscribe(
-      data => {
+      (data) => {
         this.userInformation = data;
         console.log('User details:', this.userInformation);
       }
@@ -253,7 +302,7 @@ addReaction() {
     this.filteredUsersSubscription = this.chatService.filteredUsers$.subscribe(
       (users) => {
         this.filteredUsers = users;
-        console.log(this.filteredUsers)
+        console.log(this.filteredUsers);
       }
     );
 
@@ -279,7 +328,7 @@ addReaction() {
   }
 
   getMemberAvatar(memberId: string): string {
-    const member = this.allUsers.find(user => user.uid === memberId);
+    const member = this.allUsers.find((user) => user.uid === memberId);
     return member ? member.photo : '';
   }
 
@@ -292,8 +341,12 @@ addReaction() {
     const currentDate = new Date(Number(currentMessage.createdAt));
     const previousDate = new Date(Number(previousMessage.createdAt));
     if (isNaN(currentDate.getTime()) || isNaN(previousDate.getTime())) {
-        console.error(`Invalid Date - Current Message: ${JSON.stringify(currentMessage)}, Previous Message: ${JSON.stringify(previousMessage)}`);
-        return false;
+      console.error(
+        `Invalid Date - Current Message: ${JSON.stringify(
+          currentMessage
+        )}, Previous Message: ${JSON.stringify(previousMessage)}`
+      );
+      return false;
     }
     const currentDateString = currentDate.toDateString();
     const previousDateString = previousDate.toDateString();
