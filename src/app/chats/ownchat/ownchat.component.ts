@@ -188,20 +188,6 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     }
   }
 
-  currentTime(currentMessageTime: any): boolean {
-    const currentDate = new Date();
-    const currentDateMilliseconds = currentDate.getTime();
-    const timestampMilliseconds = currentMessageTime;
-    const differenceMilliseconds =
-      currentDateMilliseconds - timestampMilliseconds;
-    const thirtyMinutesMilliseconds = 30 * 60 * 1000;
-    if (differenceMilliseconds <= thirtyMinutesMilliseconds) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
   ngOnInit(): void {
     this.userDetailsSubscription = this.chatService.userInformation$.subscribe(
       (data) => {

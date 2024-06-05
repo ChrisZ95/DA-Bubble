@@ -75,11 +75,9 @@
         <img src="./../../../assets/images/hands-emoji.png" alt="">
         <img src="./../../../assets/images/add_reaction.png" alt="">
         <img (click)="openThread(message)" src="./../../../assets/images/comment.png" alt="">
-        <ng-container *ngIf="currentTime(message.createdAt)">
-          <button [matMenuTriggerFor]="editMessage" mat-icon-button (menuOpened)="menuOpened(i)">
-            <mat-icon>more_vert</mat-icon>
-          </button>
-        </ng-container>
+        <button [matMenuTriggerFor]="editMessage" mat-icon-button (menuOpened)="menuOpened(i)">
+          <mat-icon>more_vert</mat-icon>
+        </button>
         <mat-menu #editMessage="matMenu" class="profile-menu" (closed)="menuClosed()">
           <button mat-menu-item>Nachricht bearbeiten</button>
         </mat-menu>
