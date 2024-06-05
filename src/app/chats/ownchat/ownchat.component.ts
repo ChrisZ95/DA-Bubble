@@ -71,24 +71,46 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
 
   addEmoji(event: any) {
     console.log('Emoji selected', event);
-    const emojiId = event.emoji.id;
-
-    const message = this.messages.find((msg: any) => msg.id === this.emojiMessageId);
-
-    if (message) {
-        if (!message.emojiReactions) {
-            message.emojiReactions = [];
+    const emojiIcon = event.emoji.native;
+    const emojiID = event.emoji.id;
+    const currentUserID = localStorage.getItem('uid');
+    const reaction = this.messages.find((msg: any) => msg.id === this.emojiMessageId);
+    if(currentUserID)
+    if (reaction) {
+        if (!reaction.emojiReactions) {
+            reaction.emojiReactions = {};
         }
-        message.emojiReactions.push(emojiId);
-        console.log('Updated Message:', message);
+        if (!reaction.emojiReactions[emojiID]) {
+            reaction.emojiReactions[emojiID] = [];
+        }
+        reaction.emojiReactions[emojiID].push(emojiIcon);
+
+        if(!reaction.emojiReactions[emojiID][emojiIcon]) {
+          reaction.emojiReactions[emojiID][emojiIcon] = []
+        }
+        reaction.emojiReactions[emojiID][emojiIcon].push(currentUserID)
+        // this.chatService.uploadEmojiReaction()
+        console.log('Updated Message:', reaction);
     } else {
         console.log('Message not found');
     }
-
     console.log(this.messages);
   }
 
+  getEmojiReactions(message: any) {
+    const reactionsArray = [];
+    for (const emojiID in message.emojiReactions) {
+      if (message.emojiReactions.hasOwnProperty(emojiID)) {
+        reactionsArray.push({ id: emojiID, icons: message.emojiReactions[emojiID] });
+      }
+    }
+  return reactionsArray;
+}
 
+
+addReaction() {
+  console.log('emoji geklickt')
+}
 
   closeEmojiMartPicker() {
     this.openEmojiPicker = false;

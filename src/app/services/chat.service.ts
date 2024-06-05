@@ -193,6 +193,10 @@ export class ChatService {
     return allUsers;
   }
 
+  uploadEmojiReaction(emoji: any) {
+    console.log(emoji)
+  }
+
   async createChatWithUsers(retryCount: number = 0): Promise<void> {
     if (!this.currentuid) {
       if (retryCount < 3) {

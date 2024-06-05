@@ -54,8 +54,11 @@
                     <a (click)="openThread(message)">
                         {{ message.replies ? message.replies.length + ' Antworten' : 'Jetzt Antworten' }}
                     </a>
-                    <div class="emoji-reactions">
-                      {{ message.emojiReactions }}
+                    <div *ngFor="let reaction of getEmojiReactions(message)">
+                      <div (click)="addReaction()" class="emoji-reactions" *ngFor="let icon of reaction.icons">
+                        <div>{{ reaction.icons.length }}</div>
+                        <div>{{ icon }}</div>
+                      </div>
                     </div>
                     <p>
                         {{ message.replies && message.replies.length ? (message.replies[message.replies.length -
