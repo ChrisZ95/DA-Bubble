@@ -18,11 +18,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
+import { EmojiComponent } from '@ctrl/ngx-emoji-mart/ngx-emoji';
 
 @Component({
   selector: 'app-ownchat',
   standalone: true,
-  imports: [TextEditorComponent, PickerComponent, TimestampPipe, CommonModule, TimestampPipe, FormsModule, MatIconModule, MatMenuModule, MatButtonModule],
+  imports: [TextEditorComponent, EmojiComponent,  PickerComponent, TimestampPipe, CommonModule, TimestampPipe, FormsModule, MatIconModule, MatMenuModule, MatButtonModule],
   templateUrl: './ownchat.component.html',
   styleUrls: ['./ownchat.component.scss', '../chats.component.scss'],
 })
@@ -49,6 +50,27 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   emojiMessageId : any;
   foundMessage: any;
 
+  emoji = [
+    {
+      id: 'white_check_mark',
+      name: 'White Heavy Check Mark',
+      colons: ':white_check_mark::skin-tone-3:',
+      text: '',
+      emoticons: [],
+      skin: 3,
+      native: '✅',
+    },
+    {
+      id: 'raised_hands',
+      name: 'Person Raising Both Hands in Celebration',
+      colons: ':raised_hands::skin-tone-3:',
+      text: '',
+      emoticons: [],
+      skin: 3,
+      native: '🙌',
+    }
+  ]
+
   userInformation: any;
   private userDetailsSubscription: Subscription | undefined;
 
@@ -60,28 +82,44 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     this.foundMessage = this.messages.find((msg: any) => msg.id === this.emojiMessageId);
 
     if (this.foundMessage) {
-        console.log('Found Message:', this.foundMessage);
+      console.log('Found Message:', this.foundMessage);
     } else {
-        console.log('Message not found');
+      console.log('Message not found');
     }
 
     console.log(this.messages);
     // this.chatService.emojiPicker(true);
   }
 
-  addEmoji(event: any) {
+  addSpecifiedEmoji(emoji: any, message: { id: number, text: string }) {
+    if(emoji === 'white_check_mark' || 'raised_hands') {
+      console.log('button mit', emoji, 'geklickt')
+      this.emojiMessageId = message.id;
+      this.foundMessage = this.messages.find((msg: any) => msg.id === this.emojiMessageId);
+      if (this.foundMessage) {
+        console.log('Found Message:', this.foundMessage);
+      } else {
+        console.log('Message not found');
+      }
+      console.log(this.messages);
+      this.addEmojiTwo(emoji)
+    }
+  }
+
+  addEmojiTwo(emoji: any) {
     console.log('Emoji selected', event);
-    const emojiIcon = event.emoji.native;
-    const emojiID = event.emoji.id;
+    const emojiIcon = emoji.native;
+    const emojiID = emoji.id;
     const currentUserID = localStorage.getItem('uid');
     const reaction = this.messages.find((msg: any) => msg.id === this.emojiMessageId);
+
     if(currentUserID)
-    if (reaction) {
+      if (reaction) {
         if (!reaction.emojiReactions) {
-            reaction.emojiReactions = {};
+          reaction.emojiReactions = {};
         }
         if (!reaction.emojiReactions[emojiID]) {
-            reaction.emojiReactions[emojiID] = [];
+          reaction.emojiReactions[emojiID] = [];
         }
         reaction.emojiReactions[emojiID].push(emojiIcon);
 
@@ -91,10 +129,39 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
         reaction.emojiReactions[emojiID][emojiIcon].push(currentUserID)
         // this.chatService.uploadEmojiReaction()
         console.log('Updated Message:', reaction);
-    } else {
+      } else {
         console.log('Message not found');
     }
-    console.log(this.messages);
+      console.log(this.messages);
+}
+
+  addEmoji(event: any) {
+      console.log('Emoji selected', event);
+      const emojiIcon = event.emoji.native;
+      const emojiID = event.emoji.id;
+      const currentUserID = localStorage.getItem('uid');
+      const reaction = this.messages.find((msg: any) => msg.id === this.emojiMessageId);
+
+      if(currentUserID)
+        if (reaction) {
+          if (!reaction.emojiReactions) {
+            reaction.emojiReactions = {};
+          }
+          if (!reaction.emojiReactions[emojiID]) {
+            reaction.emojiReactions[emojiID] = [];
+          }
+          reaction.emojiReactions[emojiID].push(emojiIcon);
+
+          if(!reaction.emojiReactions[emojiID][emojiIcon]) {
+            reaction.emojiReactions[emojiID][emojiIcon] = []
+          }
+          reaction.emojiReactions[emojiID][emojiIcon].push(currentUserID)
+          // this.chatService.uploadEmojiReaction()
+          console.log('Updated Message:', reaction);
+        } else {
+          console.log('Message not found');
+      }
+        console.log(this.messages);
   }
 
   getEmojiReactions(message: any) {
@@ -105,7 +172,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
       }
     }
   return reactionsArray;
-}
+  }
 
 
 addReaction() {

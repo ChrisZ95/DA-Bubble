@@ -82,10 +82,11 @@
                 </mat-menu>
               </div>
               <div class="popup-window" *ngIf="isHoveredArray[i] && message.creator !== firestore.currentuid">
-                <img src="./../../../assets/images/green-tick.png" alt="">
-                <img src="./../../../assets/images/hands-emoji.png" alt="">
-                <img (click)="openEmojiMartPicker(message)" src="./../../../assets/images/add_reaction.png" alt="">
-                <img (click)="openThread(message)" src="./../../../assets/images/comment.png" alt="">
+                <ngx-emoji (click)="addSpecifiedEmoji(emoji[0], message)" class="emoji-icons" emoji="white_check_mark" set="apple" ></ngx-emoji>
+                <ngx-emoji (click)="addSpecifiedEmoji(emoji[1], message)" class="emoji-icons" emoji="raised_hands" set="apple" ></ngx-emoji>
+                <!-- <img (click)="addEmoji('raised_hands')" src="./../../../assets/images/hands-emoji.png" alt=""> -->
+                <img class="emoji-icons" (click)="openEmojiMartPicker(message)" src="./../../../assets/images/add_reaction.png" alt="">
+                <img class="emoji-icons" (click)="openThread(message)" src="./../../../assets/images/comment.png" alt="">
               </div>
         </div>
     </ng-container>
