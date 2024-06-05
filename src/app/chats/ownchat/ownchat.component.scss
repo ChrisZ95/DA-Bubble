@@ -1,21 +1,3 @@
-.emoji-reactions {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  height: 20px;
-  width: 30px;
-  border: 1px solid lightgrey ;
-  padding: 4px;
-  border-radius: 25%;
-  background-color: transparent;
-
-  &:hover {
-    cursor: pointer;
-    background-color: green;
-  }
-}
-
 .emoji-picker-container {
   position: absolute;
   bottom: 50px;

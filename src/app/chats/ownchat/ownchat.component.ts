@@ -76,28 +76,21 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
 
   openEmojiMartPicker(message: { id: number; text: string }) {
     this.emojiMessageId = message.id;
-    console.log(this.emojiMessageId);
     this.openEmojiPicker = true;
-
     this.foundMessage = this.messages.find(
       (msg: any) => msg.id === this.emojiMessageId
     );
 
     if (this.foundMessage) {
       console.log('Found Message:', this.foundMessage);
-      console.log('Found Message:', this.foundMessage);
     } else {
       console.log('Message not found');
-      console.log('Message not found');
     }
-
     console.log(this.messages);
-    // this.chatService.emojiPicker(true);
   }
 
-  addSpecifiedEmoji(emoji: any, message: { id: number, text: string }) {
+  getMessageForSpefifiedEmoji(emoji: any, message: { id: number, text: string }) {
     if(emoji === 'white_check_mark' || 'raised_hands') {
-      console.log('button mit', emoji, 'geklickt')
       this.emojiMessageId = message.id;
       this.foundMessage = this.messages.find((msg: any) => msg.id === this.emojiMessageId);
       if (this.foundMessage) {
@@ -106,17 +99,11 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
         console.log('Message not found');
       }
       console.log(this.messages);
-      this.addEmojiTwo(emoji)
+      this.addSpecifiedEmoji(emoji)
     }
   }
 
-  addEmojiTwo(emoji: any) {
-    console.log('Emoji selected', event);
-    const emojiIcon = emoji.native;
-    const emojiID = emoji.id;
-    const currentUserID = localStorage.getItem('uid');
-    const reaction = this.messages.find((msg: any) => msg.id === this.emojiMessageId);
-
+  setEmojiInData(emojiIcon: any, emojiID: any, currentUserID: any, reaction: any) {
     if(currentUserID)
       if (reaction) {
         if (!reaction.emojiReactions) {
@@ -131,12 +118,21 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
           reaction.emojiReactions[emojiID][emojiIcon] = []
         }
         reaction.emojiReactions[emojiID][emojiIcon].push(currentUserID)
-        // this.chatService.uploadEmojiReaction()
         console.log('Updated Message:', reaction);
       } else {
         console.log('Message not found');
     }
       console.log(this.messages);
+      this.openEmojiPicker = false;
+  }
+
+  addSpecifiedEmoji(emoji: any) {
+    console.log('Emoji selected', event);
+    const emojiIcon = emoji.native;
+    const emojiID = emoji.id;
+    const currentUserID = localStorage.getItem('uid');
+    const reaction = this.messages.find((msg: any) => msg.id === this.emojiMessageId);
+    this.setEmojiInData(emojiIcon, emojiID, currentUserID, reaction)
 }
 
   addEmoji(event: any) {
@@ -145,27 +141,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
       const emojiID = event.emoji.id;
       const currentUserID = localStorage.getItem('uid');
       const reaction = this.messages.find((msg: any) => msg.id === this.emojiMessageId);
-
-    if (currentUserID)
-      if (reaction) {
-        if (!reaction.emojiReactions) {
-          reaction.emojiReactions = {};
-        }
-        if (!reaction.emojiReactions[emojiID]) {
-          reaction.emojiReactions[emojiID] = [];
-        }
-        reaction.emojiReactions[emojiID].push(emojiIcon);
-
-          if(!reaction.emojiReactions[emojiID][emojiIcon]) {
-            reaction.emojiReactions[emojiID][emojiIcon] = []
-          }
-          reaction.emojiReactions[emojiID][emojiIcon].push(currentUserID)
-          // this.chatService.uploadEmojiReaction()
-          console.log('Updated Message:', reaction);
-        } else {
-          console.log('Message not found');
-      }
-
+      this.setEmojiInData(emojiIcon, emojiID, currentUserID, reaction)
   }
 
   getEmojiReactions(message: any) {
