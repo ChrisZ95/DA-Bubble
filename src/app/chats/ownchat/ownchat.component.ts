@@ -1,12 +1,5 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import {
-  Component,
-  Input,
-  OnChanges,
-  OnInit,
-  SimpleChanges,
-  OnDestroy,
-} from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges, OnDestroy,} from '@angular/core';
 import { collection, getDocs } from 'firebase/firestore';
 import { ChatService } from '../../services/chat.service';
 import { TimestampPipe } from '../../shared/pipes/timestamp.pipe';
@@ -31,17 +24,6 @@ import { EmojiComponent } from '@ctrl/ngx-emoji-mart/ngx-emoji';
   selector: 'app-ownchat',
   standalone: true,
   imports: [TextEditorComponent, EmojiComponent,  PickerComponent, TimestampPipe, CommonModule, TimestampPipe, FormsModule, MatIconModule, MatMenuModule, MatButtonModule],
-  imports: [
-    TextEditorComponent,
-    PickerComponent,
-    TimestampPipe,
-    CommonModule,
-    TimestampPipe,
-    FormsModule,
-    MatIconModule,
-    MatMenuModule,
-    MatButtonModule,
-  ],
   templateUrl: './ownchat.component.html',
   styleUrls: ['./ownchat.component.scss', '../chats.component.scss'],
 })
@@ -164,18 +146,6 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
       const currentUserID = localStorage.getItem('uid');
       const reaction = this.messages.find((msg: any) => msg.id === this.emojiMessageId);
 
-      if(currentUserID)
-        if (reaction) {
-          if (!reaction.emojiReactions) {
-            reaction.emojiReactions = {};
-          }
-          if (!reaction.emojiReactions[emojiID]) {
-            reaction.emojiReactions[emojiID] = [];
-          }
-          reaction.emojiReactions[emojiID].push(emojiIcon);
-    const reaction = this.messages.find(
-      (msg: any) => msg.id === this.emojiMessageId
-    );
     if (currentUserID)
       if (reaction) {
         if (!reaction.emojiReactions) {
@@ -195,17 +165,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
         } else {
           console.log('Message not found');
       }
-        console.log(this.messages);
-        if (!reaction.emojiReactions[emojiID][emojiIcon]) {
-          reaction.emojiReactions[emojiID][emojiIcon] = [];
-        }
-        reaction.emojiReactions[emojiID][emojiIcon].push(currentUserID);
-        // this.chatService.uploadEmojiReaction()
-        console.log('Updated Message:', reaction);
-      } else {
-        console.log('Message not found');
-      }
-    console.log(this.messages);
+
   }
 
   getEmojiReactions(message: any) {
@@ -219,9 +179,6 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
       }
     }
   return reactionsArray;
-  }
-
-    return reactionsArray;
   }
 
   addReaction() {
