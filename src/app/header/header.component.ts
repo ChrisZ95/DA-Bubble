@@ -153,11 +153,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   displayAllUsersAndChannels() {
     this.filteredEntities = [
       ...this.allUsers.filter((user: any) => {
-        return (
-          user.username &&
-          user.uid !== this.firestoreService.currentuid &&
-          !this.selectedUsers.includes(`@${user.username}`)
-        );
+        return user.username && user.uid !== this.firestoreService.currentuid;
       }),
       ...this.allChannels.filter((channel: any) => channel.channelName),
     ];
@@ -172,12 +168,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   displayAllUsers() {
     this.filteredEntities = this.allUsers.filter((item: any) => {
-      return (
-        item.username &&
-        item.uid !== this.firestoreService.currentuid &&
-        !this.selectedUsers.includes(`@${item.username}`)
-      );
+      return item.username && item.uid !== this.firestoreService.currentuid;
     });
+
     this.filteredEntities.sort((a: any, b: any) => {
       const usernameA = a.username.toLowerCase();
       const usernameB = b.username.toLowerCase();
@@ -280,7 +273,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.userPhoto = this.userForm['photo'];
         this.userUid = this.userForm['uid'];
         this.userIsVerified =
-        this.firestoreService.auth.currentUser.emailVerified;
+          this.firestoreService.auth.currentUser.emailVerified;
 
         if (this.userUid === 'qahY57hYK6a7PQfEdc7KRCfUEcQ2') {
           this.guestLogIn = true;

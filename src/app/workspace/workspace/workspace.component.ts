@@ -8,6 +8,7 @@ import {
   Input,
   OnChanges,
   SimpleChanges,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DialogCreateChannelComponent } from '../../dialog-create-channel/dialog-create-channel.component';
@@ -66,7 +67,8 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
     private readonly firestore: Firestore,
     private firestoreService: FirestoreService,
     public channelService: ChannelService,
-    public chatService: ChatService
+    public chatService: ChatService,
+    private cdRef: ChangeDetectorRef
   ) {
     onSnapshot(collection(this.firestore, 'channels'), (list) => {
       this.allChannels = list.docs.map((doc) => doc.data());
@@ -171,6 +173,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (this.channelDetails != '' && changes['channelDetails']) {
+      this.cdRef.detectChanges();
       this.openChannelChat(this.channelDetails.channelId);
       this.channelService.getChannelName(this.channelDetails.channelName);
       this.channelService.getDescription(this.channelDetails.description);

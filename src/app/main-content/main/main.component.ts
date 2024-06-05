@@ -1,5 +1,11 @@
 import { DialogCreateChannelComponent } from './../../dialog-create-channel/dialog-create-channel.component';
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
@@ -52,7 +58,8 @@ export class MainComponent implements OnInit {
     public channelService: ChannelService,
     public firestoreService: FirestoreService,
     public chatService: ChatService,
-    public threadService: ThreadService
+    public threadService: ThreadService,
+    private cdRef: ChangeDetectorRef
   ) {}
   displayWorkspace: boolean = true;
   displayThread: boolean = false;
@@ -107,6 +114,7 @@ export class MainComponent implements OnInit {
 
   channelInformaion(channelDetails: any) {
     this.channelDetails = channelDetails;
+    this.cdRef.detectChanges();
   }
 
   handleIdle() {
