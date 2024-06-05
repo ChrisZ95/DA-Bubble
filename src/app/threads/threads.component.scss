@@ -44,7 +44,6 @@ p {
 }
 
 .history {
-  height: 70%;
   padding-top: 15px;
   overflow-y: scroll;
   scrollbar-width: thin; /* For Firefox */
@@ -70,7 +69,6 @@ p {
 .user-timestamp {
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 15px;
 }
 
@@ -93,8 +91,8 @@ p {
 
 .conversation {
   display: flex;
-  flex-direction: column;
   align-items: flex-start;
+  gap: 15px;
 }
 
 .separator {

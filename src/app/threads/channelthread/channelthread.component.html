@@ -7,45 +7,64 @@
         <img (click)="closeThreadWindow()" src="../../../assets/images/close.png" alt="">
     </div>
 
-    <div class="original-message" *ngIf="currentMessage">
-        <div class="creator" [ngClass]="{'justify-end': currentMessage.uid === firestoreService.currentuid, 'justify-start': currentMessage.uid !== firestoreService.currentuid}">
-            <div *ngIf="currentMessage.uid === firestoreService.currentuid" class="user-avatar-container">
-                <img [src]="getMemberAvatar(currentMessage.uid)" alt="" class="user-avatar">
-              </div>
-            <div class="conversation">
-                <div class="user-timestamp">
-                    <div class="user">
-                        <h5>{{ currentMessage.authorName }}</h5>
-                        <p>{{ currentMessage.createdAt | timestamp: 'time' }}</p>
-                    </div>
-                    <div class="text">
-                        <p>{{ currentMessage.message }}</p>
+    <div class="scrollbar">
+        <div class="original-message" *ngIf="currentMessage">
+            <div class="creator" [ngClass]="{'justify-end': currentMessage.uid === firestoreService.currentuid, 'justify-start': currentMessage.uid !== firestoreService.currentuid}">
+                <div *ngIf="currentMessage.uid !== firestoreService.currentuid" class="user-avatar-container">
+                    <img [src]="getMemberAvatar(currentMessage.uid)" alt="" class="user-avatar">
+                </div>
+                <div class="conversation">
+                    <div class="user-timestamp">
+                        <div class="name-timestamp" [ngClass]="{'reverse-order': currentMessage.uid === firestoreService.currentuid}">
+                            <span class="name">{{ currentMessage.authorName }}</span>
+                            <span class="time">{{ currentMessage.createdAt | timestamp: 'time' }} Uhr</span>
+                        </div>
+                        <div [ngClass]="{
+                            'speechbubble': currentMessage.uid !== firestoreService.currentuid,
+                            'bg-color-own-message': currentMessage.uid === firestoreService.currentuid,
+                            'bg-color-message': currentMessage.uid !== firestoreService.currentuid,
+                            'own-message-bubble': currentMessage.uid === firestoreService.currentuid
+                        }">
+                            <span class="message-text">{{ currentMessage.message }}</span>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <div *ngFor="let comment of currentMessageComments" class="history">
-        <div class="creator" [ngClass]="{'justify-end': comment.uid === firestoreService.currentuid, 'justify-start': comment.uid !== firestoreService.currentuid}">
-            <div class="avatar">
-                <img src="../../../assets/images/avatar.png" alt="">
-            </div>
-            <div class="conversation">
-                <div class="user-timestamp">
-                    <div class="user">
-                        <h5>{{ comment.authorName }}</h5>
-                        <p>{{ comment.createdAt | timestamp: 'time' }}</p>
-                    </div>
-                    <div class="text">
-                        <p>{{ comment.comment }}</p>
-                    </div>
+                <div *ngIf="currentMessage.uid === firestoreService.currentuid" class="user-avatar-container">
+                    <img [src]="getMemberAvatar(currentMessage.uid)" alt="" class="user-avatar">
                 </div>
             </div>
         </div>
 
         <div class="separator">
+            <div>2 Antworten</div>
             <div class="line"></div>
+        </div>
+
+        <div *ngFor="let comment of currentMessageComments" class="history">
+            <div class="creator" [ngClass]="{'justify-end': comment.uid === firestoreService.currentuid, 'justify-start': comment.uid !== firestoreService.currentuid}">
+                <div class="conversation">
+                    <div *ngIf="comment.uid !== firestoreService.currentuid" class="user-avatar-container">
+                        <img [src]="getMemberAvatar(comment.uid)" alt="" class="user-avatar">
+                    </div>
+                    <div class="user-timestamp">
+                        <div class="name-timestamp" [ngClass]="{'reverse-order': comment.uid === firestoreService.currentuid}">
+                            <span class="name">{{ comment.authorName }}</span>
+                            <span class="time">{{ comment.createdAt | timestamp: 'time' }} Uhr</span>
+                        </div>
+                        <div [ngClass]="{
+                            'speechbubble': comment.uid !== firestoreService.currentuid,
+                            'bg-color-own-message': comment.uid === firestoreService.currentuid,
+                            'bg-color-message': comment.uid !== firestoreService.currentuid,
+                            'own-message-bubble': comment.uid === firestoreService.currentuid
+                        }">
+                            <span class="message-text">{{ comment.comment }}</span>
+                        </div>
+                    </div>
+                    <div *ngIf="comment.uid === firestoreService.currentuid" class="user-avatar-container">
+                        <img [src]="getMemberAvatar(comment.uid)" alt="" class="user-avatar">
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
