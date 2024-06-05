@@ -187,7 +187,6 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
       this.messages = this.chatService.messages;
     }
   }
-  editDate: any;
 
   currentTime(currentMessageTime: any): boolean {
     const currentDate = new Date();
@@ -203,15 +202,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     }
   }
 
-  getCurrentDatePlus30Minutes(): number {
-    const currentDate = new Date();
-    return currentDate.getTime() + 30 * 60 * 1000;
-  }
-
   ngOnInit(): void {
-    // let date = new Date();
-    // this.editDate = date.getTime() + 30 * 60 * 1000;
-
     this.userDetailsSubscription = this.chatService.userInformation$.subscribe(
       (data) => {
         this.userInformation = data;
