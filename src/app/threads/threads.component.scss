@@ -44,7 +44,6 @@ p {
 }
 
 .history {
-  padding-top: 15px;
   overflow-y: scroll;
   scrollbar-width: thin; /* For Firefox */
   scrollbar-color: transparent transparent;
@@ -59,6 +58,7 @@ p {
   align-items: flex-start;
   gap: 15px;
   padding: 10px 40px 10px 40px;
+  margin-top: 20px;
   &:hover {
     background-color: rgba(236, 238, 254, 1);
     .text {

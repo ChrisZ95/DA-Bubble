@@ -31,6 +31,7 @@ export class ChannelthreadComponent implements OnInit, OnDestroy, OnChanges {
   currentChannelId: string = '';
   currentMessage: any;
   isHoveredArray: boolean[] = [];
+  isHovered: boolean = false;
   menuClicked = false;
   currentMessageIndex: number | null = null;
   editingMessageIndex: number | null = null;
@@ -105,6 +106,12 @@ export class ChannelthreadComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
+  updateHoverStateCurrentMessage(isHovered: boolean) {
+    if (!this.menuClicked) {
+      this.isHovered = isHovered;
+    }
+  }
+
   menuClosed() {
     if (this.currentMessageIndex !== null && !this.menuClicked) {
       this.isHoveredArray[this.currentMessageIndex] = true;
@@ -119,8 +126,16 @@ export class ChannelthreadComponent implements OnInit, OnDestroy, OnChanges {
     this.isHoveredArray[index] = true;
   }
 
+  menuOpenedCurrentMessage() {
+    this.menuClicked = true;
+  }
+
   startEditingMessage(index: number, message: string) {
     this.editingMessageIndex = index;
+    this.editedMessageText = message;
+  }
+
+  startEditingCurrentMessage(message: string) {
     this.editedMessageText = message;
   }
 
