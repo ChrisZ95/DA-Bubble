@@ -1,6 +1,13 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, Input, OnChanges, OnInit, SimpleChanges, OnDestroy,} from '@angular/core';
-import { collection, getDocs } from 'firebase/firestore';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+  OnDestroy,
+} from '@angular/core';
+import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
 import { ChatService } from '../../services/chat.service';
 import { TimestampPipe } from '../../shared/pipes/timestamp.pipe';
 import { TextEditorComponent } from '../../shared/text-editor/text-editor.component';
@@ -19,11 +26,23 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { EmojiComponent } from '@ctrl/ngx-emoji-mart/ngx-emoji';
+import { log } from 'console';
 
 @Component({
   selector: 'app-ownchat',
   standalone: true,
-  imports: [TextEditorComponent, EmojiComponent,  PickerComponent, TimestampPipe, CommonModule, TimestampPipe, FormsModule, MatIconModule, MatMenuModule, MatButtonModule],
+  imports: [
+    TextEditorComponent,
+    EmojiComponent,
+    PickerComponent,
+    TimestampPipe,
+    CommonModule,
+    TimestampPipe,
+    FormsModule,
+    MatIconModule,
+    MatMenuModule,
+    MatButtonModule,
+  ],
   templateUrl: './ownchat.component.html',
   styleUrls: ['./ownchat.component.scss', '../chats.component.scss'],
 })
@@ -32,7 +51,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     public dialog: MatDialog,
     public chatService: ChatService,
     public threadService: ThreadService,
-    public firestore: FirestoreService
+    public firestoreService: FirestoreService
   ) {}
   @Input() userDetails: any;
   messages: any = [];
@@ -49,8 +68,6 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   message: any;
   emojiMessageId: any;
   foundMessage: any;
-
-
 
   emoji = [
     {
@@ -70,8 +87,8 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
       emoticons: [],
       skin: 3,
       native: '🙌',
-    }
-  ]
+    },
+  ];
 
   userInformation: any;
   private userDetailsSubscription: Subscription | undefined;
@@ -91,21 +108,31 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     console.log(this.messages);
   }
 
-  getMessageForSpefifiedEmoji(emoji: any, message: { id: number, text: string }) {
-    if(emoji === 'white_check_mark' || 'raised_hands') {
+  getMessageForSpefifiedEmoji(
+    emoji: any,
+    message: { id: number; text: string }
+  ) {
+    if (emoji === 'white_check_mark' || 'raised_hands') {
       this.emojiMessageId = message.id;
-      this.foundMessage = this.messages.find((msg: any) => msg.id === this.emojiMessageId);
+      this.foundMessage = this.messages.find(
+        (msg: any) => msg.id === this.emojiMessageId
+      );
       if (this.foundMessage) {
         console.log('Found Message:', this.foundMessage);
       } else {
         console.log('Message not found');
       }
       console.log(this.messages);
-      this.addSpecifiedEmoji(emoji)
+      this.addSpecifiedEmoji(emoji);
     }
   }
 
-  setEmojiInData(emojiIcon: any, emojiID: any, currentUserID: any, reaction: any) {
+  setEmojiInData(
+    emojiIcon: any,
+    emojiID: any,
+    currentUserID: any,
+    reaction: any
+  ) {
     debugger;
     if (!currentUserID || !reaction) {
       console.log('Nachricht nicht gefunden');
@@ -120,7 +147,10 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     }
 
     if (!reaction.emojiReactions[emojiID][emojiIcon]) {
-      reaction.emojiReactions[emojiID][emojiIcon] = { userId: [], emojiCounter: 0 };
+      reaction.emojiReactions[emojiID][emojiIcon] = {
+        userId: [],
+        emojiCounter: 0,
+      };
     }
 
     reaction.emojiReactions[emojiID][emojiIcon].userId.push(currentUserID);
@@ -141,7 +171,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
             reactionsArray.push({
               id: emojiID,
               icon: emojiIcon,
-              counter: emojiReactions[emojiIcon].emojiCounter
+              counter: emojiReactions[emojiIcon].emojiCounter,
             });
           }
         }
@@ -150,23 +180,26 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     return reactionsArray;
   }
 
-
   addSpecifiedEmoji(emoji: any) {
     console.log('Emoji selected', event);
     const emojiIcon = emoji.native;
     const emojiID = emoji.id;
     const currentUserID = localStorage.getItem('uid');
-    const reaction = this.messages.find((msg: any) => msg.id === this.emojiMessageId);
-    this.setEmojiInData(emojiIcon, emojiID, currentUserID, reaction)
-}
+    const reaction = this.messages.find(
+      (msg: any) => msg.id === this.emojiMessageId
+    );
+    this.setEmojiInData(emojiIcon, emojiID, currentUserID, reaction);
+  }
 
   addEmoji(event: any) {
-      console.log('Emoji selected', event);
-      const emojiIcon = event.emoji.native;
-      const emojiID = event.emoji.id;
-      const currentUserID = localStorage.getItem('uid');
-      const reaction = this.messages.find((msg: any) => msg.id === this.emojiMessageId);
-      this.setEmojiInData(emojiIcon, emojiID, currentUserID, reaction)
+    console.log('Emoji selected', event);
+    const emojiIcon = event.emoji.native;
+    const emojiID = event.emoji.id;
+    const currentUserID = localStorage.getItem('uid');
+    const reaction = this.messages.find(
+      (msg: any) => msg.id === this.emojiMessageId
+    );
+    this.setEmojiInData(emojiIcon, emojiID, currentUserID, reaction);
   }
 
   addReaction() {
@@ -199,9 +232,9 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   async loadCurrentUser() {
-    let allUsers = await this.firestore.getAllUsers();
+    let allUsers = await this.firestoreService.getAllUsers();
     let currentUserDetails = allUsers.filter(
-      (user) => user.uid == this.firestore.currentuid
+      (user) => user.uid == this.firestoreService.currentuid
     );
     this.chatService.loadMessages(currentUserDetails);
   }
@@ -217,6 +250,20 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
 
   async loadAllUsers() {
     this.allUsers = await this.chatService.loadUser();
+  }
+
+  currentTime(currentMessageTime: any): boolean {
+    const currentDate = new Date();
+    const currentDateMilliseconds = currentDate.getTime();
+    const timestampMilliseconds = currentMessageTime;
+    const differenceMilliseconds =
+      currentDateMilliseconds - timestampMilliseconds;
+    const thirtyMinutesMilliseconds = 30000 * 60 * 1000;
+    if (differenceMilliseconds <= thirtyMinutesMilliseconds) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -305,15 +352,26 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     }
   }
 
-  menuClosed() {
+  menuClosed(index: any) {
     if (this.currentMessageIndex !== null && !this.menuClicked) {
       this.isHoveredArray[this.currentMessageIndex] = true;
     }
     this.menuClicked = false;
     this.currentMessageIndex = null;
+    this.chatService.editMessage = true;
+    this.chatService.editIndex = index;
   }
 
-  menuOpened(index: number) {
+  deleteMessage(message: any, index: any) {
+    if (this.currentMessageIndex !== null && !this.menuClicked) {
+      this.isHoveredArray[this.currentMessageIndex] = true;
+    }
+    this.menuClicked = false;
+    this.currentMessageIndex = null;
+    this.chatService.deleteCurrentMessage(message, index);
+  }
+
+  menuOpened(index: number, message: any) {
     this.menuClicked = true;
     this.currentMessageIndex = index;
     this.isHoveredArray[index] = true;

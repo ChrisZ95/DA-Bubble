@@ -41,8 +41,11 @@ export class ChatService {
 
   private messagesSubject = new BehaviorSubject<any[]>([]);
   public messages$: Observable<any[]> = this.messagesSubject.asObservable();
-  private filteredUsersSubject: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
-  public filteredUsers$: Observable<any[]> = this.filteredUsersSubject.asObservable();
+  private filteredUsersSubject: BehaviorSubject<any[]> = new BehaviorSubject<
+    any[]
+  >([]);
+  public filteredUsers$: Observable<any[]> =
+    this.filteredUsersSubject.asObservable();
 
   private emojiPickerSubject = new BehaviorSubject<boolean>(false);
   emojiPicker$ = this.emojiPickerSubject.asObservable();
@@ -69,12 +72,14 @@ export class ChatService {
   filteredUsers: any;
   loadCount: number = 0;
   userInformation: any[] = [];
+  editMessage: boolean = false;
+  editIndex: number = -1;
 
   constructor(
     private firestore: Firestore,
     public channelService: ChannelService,
     public FirestoreService: FirestoreService,
-    public generateIdServie: GenerateIdsService,
+    public generateIdServie: GenerateIdsService
   ) {
     this.initializeService();
   }
@@ -194,7 +199,7 @@ export class ChatService {
   }
 
   uploadEmojiReaction(emoji: any) {
-    console.log(emoji)
+    console.log(emoji);
   }
 
   async createChatWithUsers(retryCount: number = 0): Promise<void> {
@@ -474,6 +479,37 @@ export class ChatService {
       this.messagesSubject.next(filteredMessages);
     } catch (error) {
       console.error('Error sendData:', error);
+    }
+  }
+
+  async updateMessage(editedMessage: any, message: any, index: any) {
+    let newMessages: any;
+    message.message = editedMessage;
+    let docId = message.creator;
+    const docRef = doc(this.firestore, 'chats', docId);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      newMessages = docSnap.data();
+      newMessages.messages[index] = message;
+    }
+    if (editedMessage != '') {
+      await updateDoc(docRef, newMessages);
+      this.messagesSubject.next(newMessages.messages);
+    }
+    this.editMessage = false;
+    this.editIndex = -1;
+  }
+
+  async deleteCurrentMessage(message: any, index: any) {
+    let newMessages: any;
+    let docId = message.creator;
+    const docRef = doc(this.firestore, 'chats', docId);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      newMessages = docSnap.data();
+      newMessages.messages.splice(index, 1);
+      await updateDoc(docRef, newMessages);
+      this.messagesSubject.next(newMessages.messages);
     }
   }
 
