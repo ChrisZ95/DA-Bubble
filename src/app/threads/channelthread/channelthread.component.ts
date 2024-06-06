@@ -34,8 +34,10 @@ export class ChannelthreadComponent implements OnInit, OnDestroy, OnChanges {
   isHovered: boolean = false;
   menuClicked = false;
   currentMessageIndex: number | null = null;
-  editingMessageIndex: number | null = null;
+  editingCommentIndex: number | null = null;
   editedMessageText: string = '';
+  editedCommentText: string = '';
+  editedCurrentMessage: boolean = false;
 
   constructor(
     public channelService: ChannelService,
@@ -130,26 +132,44 @@ export class ChannelthreadComponent implements OnInit, OnDestroy, OnChanges {
     this.menuClicked = true;
   }
 
-  startEditingMessage(index: number, message: string) {
-    this.editingMessageIndex = index;
-    this.editedMessageText = message;
+  startEditingComment(index: number, comment: string) {
+    this.editingCommentIndex = index;
+    this.editedCommentText = comment;
   }
 
   startEditingCurrentMessage(message: string) {
+    this.editedCurrentMessage = true;
     this.editedMessageText = message;
   }
 
-  saveEditedMessage(index: number) {
-    if (this.editedMessageText.trim()) {
-      this.channelService.messagesWithAuthors[index].message = this.editedMessageText;
-      this.channelService.updateMessage(this.channelService.messagesWithAuthors[index].messageId, this.editedMessageText);
+  async saveEditedComment(index: number) {
+    try {
+      const comment = this.currentMessageComments[index];
+      comment.comment = this.editedCommentText;
+      await this.channelService.updateComment(this.currentMessage.messageId, comment.commentId, this.editedCommentText);
+      this.editingCommentIndex = null;
+      this.editedCommentText = '';
+      console.log('Comment updated successfully');
+    } catch (error) {
+      console.error('Error updating comment:', error);
     }
-    this.editingMessageIndex = null;
-    this.editedMessageText = '';
+  }
+
+  async saveEditedCurrentMessage() {
+    try {
+      this.currentMessage.message = this.editedMessageText;
+      await this.channelService.updateMessage(this.currentMessage.messageId, this.editedMessageText);
+      this.editedCurrentMessage = false;
+      this.editedMessageText = '';
+      console.log('Message updated successfully');
+    } catch (error) {
+      console.error('Error updating message:', error);
+    }
   }
 
   cancelEditingMessage() {
-    this.editingMessageIndex = null;
+    this.editedCurrentMessage = false;
+    this.editingCommentIndex = null;
     this.editedMessageText = '';
   }
 }

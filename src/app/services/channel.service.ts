@@ -329,4 +329,46 @@ export class ChannelService {
       throw error;
     }
   }
+
+  async updateComment(messageId: string, commentId: string, newCommentText: string): Promise<void> {
+    try {
+      const chatsRef = collection(this.firestore, 'chats');
+      const querySnapshot = await getDocs(chatsRef);
+      let commentFound = false;
+      for (const chatDoc of querySnapshot.docs) {
+        const chatData = chatDoc.data();
+        if (chatData['messages'] && Array.isArray(chatData['messages'])) {
+          const messages = chatData['messages'];
+          for (const message of messages) {
+            if (message.messageId === messageId && message.comments && Array.isArray(message.comments)) {
+              const commentIndex = message.comments.findIndex(
+                (comment: any) => comment.commentId === commentId
+              );
+              if (commentIndex !== -1) {
+                message.comments[commentIndex].comment = newCommentText;
+                await updateDoc(doc(this.firestore, 'chats', chatDoc.id), {
+                  messages: messages,
+                });
+                commentFound = true;
+                console.log(
+                  'Comment updated successfully in chat document with ID:',
+                  chatDoc.id
+                );
+                break;
+              }
+            }
+          }
+        }
+        if (commentFound) break;
+      }
+      if (!commentFound) {
+        console.error(
+          'No chat document found containing the specified comment.'
+        );
+      }
+    } catch (error) {
+      console.error('Error updating comment:', error);
+      throw error;
+    }
+  }
 }
