@@ -4,6 +4,7 @@ import {
   SimpleChanges,
   OnInit,
   OnDestroy,
+  Input
 } from '@angular/core';
 import { ChannelService } from '../../services/channel.service';
 import { FormsModule } from '@angular/forms';
@@ -15,19 +16,25 @@ import { Subscription } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { DialogContactInfoComponent } from '../../dialog-contact-info/dialog-contact-info.component';
+import { MatDialog } from '@angular/material/dialog';
+import { onSnapshot, Unsubscribe } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-channelthread',
   standalone: true,
-  imports: [FormsModule, CommonModule, TimestampPipe, TextEditorComponent, MatButtonModule, MatIconModule, MatMenuModule],
+  imports: [FormsModule, CommonModule, TimestampPipe, TextEditorComponent, MatButtonModule, MatIconModule, MatMenuModule, DialogContactInfoComponent],
   templateUrl: './channelthread.component.html',
   styleUrls: ['./channelthread.component.scss', '../threads.component.scss'],
 })
-export class ChannelthreadComponent implements OnInit, OnDestroy, OnChanges {
+export class ChannelthreadComponent implements OnInit, OnDestroy {
+  @Input() userDialogData: any;
   currentMessageId: string = '';
   currentMessageComments: any[] = [];
   allUsers: any[] = [];
   private channelSubscription: Subscription | null = null;
+  private messageIdSubscription: Subscription | null = null;
+  private messageSubscription: Subscription | null = null;
   currentChannelId: string = '';
   currentMessage: any;
   isHoveredArray: boolean[] = [];
@@ -39,9 +46,15 @@ export class ChannelthreadComponent implements OnInit, OnDestroy, OnChanges {
   editedCommentText: string = '';
   editedCurrentMessage: boolean = false;
 
+  userForm: any;
+  private channelSnapshotUnsubscribe: Unsubscribe | undefined;
+  private chatSnapshotUnsubscribe: Unsubscribe | undefined;
+  private unsubscribe: Unsubscribe | undefined;
+
   constructor(
     public channelService: ChannelService,
-    public firestoreService: FirestoreService
+    public firestoreService: FirestoreService,
+    public dialog: MatDialog
   ) {}
 
   closeThreadWindow() {
@@ -49,8 +62,14 @@ export class ChannelthreadComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   async ngOnInit(): Promise<void> {
+    this.messageIdSubscription = this.channelService.currentMessageIdChanged.subscribe((messageId) => {
+      this.loadCommentsForCurrentMessage(messageId);
+    });
     this.channelSubscription = this.channelService.currentMessageCommentsChanged.subscribe((comments) => {
       this.currentMessageComments = comments;
+    });
+    this.messageSubscription = this.channelService.currentMessageChanged.subscribe((message) => {
+      this.currentMessage = message;
     });
     this.currentMessage = this.channelService.getCurrentMessage();
     this.allUsers = await this.firestoreService.getAllUsers();
@@ -59,16 +78,14 @@ export class ChannelthreadComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnDestroy(): void {
+    if (this.messageIdSubscription) {
+      this.messageIdSubscription.unsubscribe();
+    }
     if(this.channelSubscription) {
       this.channelSubscription.unsubscribe();
     }
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['currentMessageId']) {
-      this.loadCommentsForCurrentMessage(
-        changes['currentMessageId'].currentValue
-      );
+    if(this.messageSubscription) {
+      this.messageSubscription.unsubscribe();
     }
   }
 
@@ -76,6 +93,7 @@ export class ChannelthreadComponent implements OnInit, OnDestroy, OnChanges {
     const currentMessage = this.channelService.messages.find(
       (message: any) => message.messageId === messageId
     );
+    this.currentMessage = currentMessage; 
     if (currentMessage) {
       if (currentMessage.comments && currentMessage.comments.length > 0) {
         this.currentMessageComments = await Promise.all(
@@ -171,5 +189,33 @@ export class ChannelthreadComponent implements OnInit, OnDestroy, OnChanges {
     this.editedCurrentMessage = false;
     this.editingCommentIndex = null;
     this.editedMessageText = '';
+  }
+
+  openContactInfoDialog(userDetails: any) {
+    const userDocRef = this.firestoreService.getUserDocRef(userDetails);
+    this.unsubscribe = onSnapshot(userDocRef, (doc) => {
+      if (doc.exists()) {
+        const userData = doc.data();
+        this.userForm = { id: doc.id, ...userData };
+
+        this.userDialogData = {
+          username: this.userForm['username'],
+          email: this.userForm['email'],
+          photo: this.userForm['photo'],
+          uid: this.userForm['uid'],
+          logIndate: this.userForm['logIndate'],
+          logOutDate: this.userForm['logOutDate'],
+          signUpdate: this.userForm['signUpdate'],
+          emailVerified: this.firestoreService.auth.currentUser.emailVerified
+        };
+
+        console.log(this.userDialogData);
+        this.dialog.open(DialogContactInfoComponent, {
+          data: this.userDialogData
+        });
+      } else {
+        console.log('Das Benutzerdokument existiert nicht.');
+      }
+    });
   }
 }

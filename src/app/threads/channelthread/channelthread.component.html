@@ -18,7 +18,7 @@
                 <div class="conversation">
                     <div class="user-timestamp">
                         <div class="name-timestamp" [ngClass]="{'reverse-order': currentMessage.uid === firestoreService.currentuid}">
-                            <span class="name">{{ currentMessage.authorName }}</span>
+                            <span class="name" (click)="openContactInfoDialog(currentMessage.uid)">{{ currentMessage.authorName }}</span>
                             <span class="time">{{ currentMessage.createdAt | timestamp: 'time' }} Uhr</span>
                         </div>
                         <div [ngClass]="{
@@ -75,7 +75,7 @@
                     </div>
                     <div class="user-timestamp">
                         <div class="name-timestamp" [ngClass]="{'reverse-order': comment.uid === firestoreService.currentuid}">
-                            <span class="name">{{ comment.authorName }}</span>
+                            <span class="name" (click)="openContactInfoDialog(comment.uid)">{{ comment.authorName }}</span>
                             <span class="time">{{ comment.createdAt | timestamp: 'time' }} Uhr</span>
                         </div>
                         <div [ngClass]="{

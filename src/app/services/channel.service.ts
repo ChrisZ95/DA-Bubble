@@ -41,6 +41,7 @@ export class ChannelService {
   commentsWithAuthors: any[] = [];
   currentMessage: any;
   currentMessageIdChanged: EventEmitter<string> = new EventEmitter<string>();
+  currentMessageChanged: EventEmitter<any> = new EventEmitter<any>();
   currentChannelIdChanged: EventEmitter<string> = new EventEmitter<string>();
   currentMessageCommentsChanged: EventEmitter<any[]> = new EventEmitter<
     any[]
@@ -113,7 +114,7 @@ export class ChannelService {
 
   addChannel(channelData: any): Promise<string> {
     return new Promise<string>((resolve, reject) => {
-      const newChannel = channelData; // Verwende das übergebene channelData
+      const newChannel = channelData; 
       addDoc(collection(this.firestore, 'channels'), newChannel)
         .then((result: any) => {
           newChannel['channelId'] = result.id;
@@ -207,6 +208,8 @@ export class ChannelService {
   setCurrentMessageId(messageId: string) {
     this.currentMessageId = messageId;
     this.currentMessageIdChanged.emit(messageId);
+    const currentMessage = this.messages.find(message => message.messageId === messageId);
+    this.currentMessageChanged.emit(currentMessage);
   }
 
   getCurrentChannelId(): string {
