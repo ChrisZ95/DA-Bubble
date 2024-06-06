@@ -6,7 +6,7 @@
     <div class="main-container">
       <div class="workspace-chat-thread">
 
-        <div *ngIf="displayWorkspace" class="workspace" [@displayWorkspaceTrigger]="displayWorkspace">
+        <div *ngIf="firestoreService.displayWorkspace" class="workspace" [@displayWorkspaceTrigger]="firestoreService.displayWorkspace">
           <app-workspace (userDetails)="openChat($event)" (disyplayEmptyChat)="openEmptyChat()"
             [channelDetails]="channelDetails" />
         </div>
@@ -19,7 +19,7 @@
           <app-emptychat />
         </div>
 
-        <div *ngIf="chatService.showOwnChat" class="chat">
+        <div *ngIf="chatService.showOwnChat && isScreenWide" class="chat">
           <app-ownchat [userDetails]="userDetails" />
         </div>
 
@@ -34,7 +34,7 @@
 
     </div>
   </div>
-  <div class="workspace-menu" (click)="showHideWorkspace()">
+  <div *ngIf="isScreenWide" class="workspace-menu" (click)="showHideWorkspace()">
     <div class="workspace-menu-text"></div>
     <p><b>Workspace-Menü schließen</b></p>
     <img class="workspace-menu-icon" src="../../../assets/images/displayWorkspace.png" alt="">

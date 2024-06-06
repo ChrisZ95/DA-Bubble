@@ -26,7 +26,7 @@
                             'bg-color-own-message': currentMessage.uid === firestoreService.currentuid,
                             'bg-color-message': currentMessage.uid !== firestoreService.currentuid,
                             'own-message-bubble': currentMessage.uid === firestoreService.currentuid,
-                            'hovered-other-message': currentMessage.uid !== firestoreService.currentuid
+                            'hovered-other-message': isHovered && currentMessage.uid !== firestoreService.currentuid
                         }" *ngIf="!editedCurrentMessage">
                             <span class="message-text">{{ currentMessage.message }}</span>
                         </div>

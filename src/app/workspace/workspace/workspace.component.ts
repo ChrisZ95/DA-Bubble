@@ -104,6 +104,9 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
     this.chatService.showOwnChat = false;
     this.channelService.showThreadWindow = false;
     this.chatService.clearInputValue(true);
+    if(window.innerWidth <= 850) {
+      this.firestoreService.displayWorkspace = false;
+    }
   }
 
   openEmptyChat() {

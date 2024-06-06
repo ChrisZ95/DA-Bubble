@@ -3,6 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  HostListener,
   OnInit,
   ViewChild,
 } from '@angular/core';
@@ -61,14 +62,14 @@ export class MainComponent implements OnInit {
     public threadService: ThreadService,
     private cdRef: ChangeDetectorRef
   ) {}
-  displayWorkspace: boolean = true;
+
   displayThread: boolean = false;
   userDetails: any = '';
   channelDetails: any = '';
   selectedMessageId: string = '';
   emojiPicker = false;
   associatedUser = false;
-
+  isScreenWide: boolean = false;
   isIdle: number = 0;
 
   private idleSubscription: Subscription | null = null;
@@ -90,7 +91,7 @@ export class MainComponent implements OnInit {
   }
 
   showHideWorkspace() {
-    this.displayWorkspace = !this.displayWorkspace;
+    this.firestoreService.displayWorkspace = false;
   }
 
   get showChannelChat(): boolean {
@@ -171,6 +172,17 @@ export class MainComponent implements OnInit {
       this.chatService.associatedUser$.subscribe((state: boolean) => {
         this.associatedUser = state;
       });
+    
+      this.checkScreenWidth();
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event) {
+    this.checkScreenWidth();
+  }
+
+  checkScreenWidth() {
+    this.isScreenWide = window.innerWidth > 850;
   }
 
   ngOnDestroy(): void {

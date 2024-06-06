@@ -91,6 +91,7 @@ export class FirestoreService {
   logInUid: any;
   allUsers: any;
   allChannels: any;
+  displayWorkspace: boolean = true;
 
   constructor(
     private myFirebaseApp: FirebaseApp,

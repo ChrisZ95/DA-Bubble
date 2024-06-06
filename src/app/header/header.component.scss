@@ -149,3 +149,17 @@
 .dropdown-item:hover {
   background: #f1f1f1;
 }
+
+@media(max-width: 850px) {
+  .search-input {
+    display: none;
+  }
+
+  .user-name {
+    display: none;
+  }
+
+  .open-dialog {
+    display: none;
+  }
+}
