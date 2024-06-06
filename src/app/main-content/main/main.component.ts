@@ -91,7 +91,11 @@ export class MainComponent implements OnInit {
   }
 
   showHideWorkspace() {
-    this.firestoreService.displayWorkspace = false;
+    if(this.firestoreService.displayWorkspace === false) {
+      this.firestoreService.displayWorkspace = true;
+    } else {
+      this.firestoreService.displayWorkspace = false;
+    }
   }
 
   get showChannelChat(): boolean {
@@ -172,7 +176,7 @@ export class MainComponent implements OnInit {
       this.chatService.associatedUser$.subscribe((state: boolean) => {
         this.associatedUser = state;
       });
-    
+
       this.checkScreenWidth();
   }
 
