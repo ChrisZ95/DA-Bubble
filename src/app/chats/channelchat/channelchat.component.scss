@@ -42,3 +42,9 @@
     width: 100%; 
     background-color: white;
 }
+
+@media(max-width: 850px) {
+    .d-flex {
+        display: none;
+    }
+}
