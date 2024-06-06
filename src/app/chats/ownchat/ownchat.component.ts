@@ -258,7 +258,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     const timestampMilliseconds = currentMessageTime;
     const differenceMilliseconds =
       currentDateMilliseconds - timestampMilliseconds;
-    const thirtyMinutesMilliseconds = 30000 * 60 * 1000;
+    const thirtyMinutesMilliseconds = 60 * 24 * 60 * 1000;
     if (differenceMilliseconds <= thirtyMinutesMilliseconds) {
       return true;
     } else {
