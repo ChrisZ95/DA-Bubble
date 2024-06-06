@@ -50,6 +50,7 @@ export class DialogCreateChannelComponent {
         channelName: this.channelName,
         description: this.channelDescription,
         author: authorUid,
+        users: [authorUid]  // Füge den Ersteller zur Mitgliederliste hinzu
       };
       const newChannelId = await this.channelService.addChannel(channelData);
       await this.chatService.createChatForChannel(newChannelId);
