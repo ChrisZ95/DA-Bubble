@@ -51,9 +51,9 @@
                       {{ message.replies ? message.replies.length + ' Antworten' : 'Jetzt Antworten' }}
                   </a>
                   <div *ngFor="let reaction of getEmojiReactions(message)">
-                    <div (click)="addReaction()" class="emoji-reactions" *ngFor="let icon of reaction.icons">
-                      <div>{{ reaction.icons.length }}</div>
-                      <div>{{ icon }}</div>
+                    <div (click)="addReaction()" class="emoji-reactions">
+                      <div>{{ reaction.counter }}</div>
+                      <div>{{ reaction.icon }}</div>
                     </div>
                   </div>
                   <p>

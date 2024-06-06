@@ -1,24 +1,10 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  HostListener,
-  Input,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, Input, OnInit, ViewChild,} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../services/chat.service';
 import { GenerateIdsService } from '../../services/generate-ids.service';
-import {
-  Firestore,
-  collection,
-  onSnapshot,
-  query,
-} from '@angular/fire/firestore';
+import { Firestore, collection, onSnapshot, query,} from '@angular/fire/firestore';
 import { ChannelService } from '../../services/channel.service';
 import { FirestoreService } from '../../firestore.service';
-import { log } from 'console';
 import { ThreadService } from '../../services/thread.service';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { CommonModule } from '@angular/common';
