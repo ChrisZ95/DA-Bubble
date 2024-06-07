@@ -53,12 +53,26 @@
           <a (click)="openThread(message)">
             {{ message.replies ? message.replies.length + ' Antworten' : 'Jetzt Antworten' }}
           </a>
-          <div *ngFor="let reaction of getEmojiReactions(message)">
+          <!-- <div (click)="addReaction()" class="emoji-reactions">
+            <div>{{ message.emojiReactions.emojiCounter }}</div>
+            <div>{{ message.emojiReactions.emojiIcon }}</div>
+          </div> -->
+          <!-- <div *ngFor="let reaction of getEmojiReactions(message)">
             <div (click)="addReaction()" class="emoji-reactions">
               <div>{{ reaction.counter }}</div>
               <div>{{ reaction.icon }}</div>
             </div>
-          </div>
+          </div> -->
+          <!-- <div (click)="addReaction()" class="emoji-reactions">
+            <div>{{ message.emojiReactions.emojiCounter }}</div>
+            <div>{{ message.emojiReactions.emoji }}</div>
+          </div> -->
+          <!-- <div class="emoji-reactions">
+            <div *ngFor="let reaction of getEmojiReactions(message)">
+                <div >{{ reaction.counter }}</div>
+                <div>{{ reaction }}</div>
+            </div>
+        </div> -->
           <p>
             {{ message.replies && message.replies.length ? (message.replies[message.replies.length -
             1].createdAt | timestamp: 'time') + 'Uhr' : '' }}

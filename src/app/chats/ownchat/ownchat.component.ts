@@ -127,39 +127,37 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     }
   }
 
-  setEmojiInData(
-    emojiIcon: any,
-    emojiID: any,
-    currentUserID: any,
-    reaction: any
-  ) {
+  setEmojiInData(emojiIcon: any, emojiID: any, currentUserID: any, reaction: any, message: any) {
     debugger;
     if (!currentUserID || !reaction) {
-      console.log('Nachricht nicht gefunden');
-      return;
+        console.log('Nachricht nicht gefunden');
+        return;
     }
 
     if (!reaction.emojiReactions) {
-      reaction.emojiReactions = {};
+        reaction.emojiReactions = {};
     }
+
     if (!reaction.emojiReactions[emojiID]) {
-      reaction.emojiReactions[emojiID] = {};
+        reaction.emojiReactions[emojiID] = {
+            emojiIcon: emojiIcon,
+            userId: [],
+            emojiCounter: 0,
+        };
     }
 
-    if (!reaction.emojiReactions[emojiID][emojiIcon]) {
-      reaction.emojiReactions[emojiID][emojiIcon] = {
-        userId: [],
-        emojiCounter: 0,
-      };
-    }
-
-    reaction.emojiReactions[emojiID][emojiIcon].userId.push(currentUserID);
-    reaction.emojiReactions[emojiID][emojiIcon].emojiCounter += 1;
+    reaction.emojiReactions[emojiID].userId.push(currentUserID);
+    reaction.emojiReactions[emojiID].emojiCounter += 1;
 
     console.log('Aktualisierte Nachricht:', reaction);
     console.log(reaction.emojiReactions);
     this.openEmojiPicker = false;
-  }
+    console.log(this.userInformation);
+    console.log(reaction.id);
+    console.log(this.chatService.currentuid);
+    this.chatService.uploadEmojiReaction(reaction.emojiReactions, reaction.id);
+}
+
 
   getEmojiReactions(message: any) {
     const reactionsArray = [];
@@ -188,7 +186,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     const reaction = this.messages.find(
       (msg: any) => msg.id === this.emojiMessageId
     );
-    this.setEmojiInData(emojiIcon, emojiID, currentUserID, reaction);
+    this.setEmojiInData(emojiIcon, emojiID, currentUserID, reaction, this.message);
   }
 
   addEmoji(event: any) {
@@ -199,7 +197,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     const reaction = this.messages.find(
       (msg: any) => msg.id === this.emojiMessageId
     );
-    this.setEmojiInData(emojiIcon, emojiID, currentUserID, reaction);
+    this.setEmojiInData(emojiIcon, emojiID, currentUserID, reaction, this.message);
   }
 
   addReaction() {

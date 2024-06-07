@@ -64,7 +64,7 @@ export class ChannelService {
       this.updateMessagesWithAuthors();
       this.currentMessageCommentsChanged.emit(
         this.messages[messageIndex].comments
-      ); 
+      );
     }
   }
 
@@ -114,7 +114,7 @@ export class ChannelService {
 
   addChannel(channelData: any): Promise<string> {
     return new Promise<string>((resolve, reject) => {
-      const newChannel = channelData; 
+      const newChannel = channelData;
       addDoc(collection(this.firestore, 'channels'), newChannel)
         .then((result: any) => {
           newChannel['channelId'] = result.id;

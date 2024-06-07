@@ -84,6 +84,43 @@ export class ChatService {
     this.initializeService();
   }
 
+  async uploadEmojiReaction(emojiData: any, messageID: string): Promise<void> {
+    const chatId = this.chatDocId;
+
+    if (!chatId) {
+      console.error('chatId ist null oder undefined.');
+      return;
+    }
+
+    try {
+      const messageRef = doc(this.firestore, 'chats', chatId);
+      const chatDoc = await getDoc(messageRef);
+
+      console.log(messageRef);
+      console.log(chatDoc);
+
+      if (chatDoc.exists()) {
+        const docMessage = chatDoc.data();
+
+        if (docMessage && docMessage['messages']) {
+          const messages = docMessage['messages'];
+          const messageArray = messages.find( (msg: any) => msg.id === messageID)
+          console.log(messages);
+          console.log(messageArray)
+          console.log(messageArray.emojiReactions)
+        } else {
+          console.error('Nachrichtenarray ist nicht vorhanden.');
+        }
+      } else {
+        console.error('Chat-Dokument nicht gefunden.');
+      }
+    } catch (error) {
+      console.error('Fehler beim Hinzufügen der Emoji-Reaktion:', error);
+    }
+  }
+
+
+
   emojiPicker(state: boolean) {
     this.emojiPickerSubject.next(state);
   }
@@ -128,10 +165,12 @@ export class ChatService {
   }
 
   loadUserData(userDetails: any) {
+    debugger
     this.userInformationSubject.next(userDetails);
   }
 
   async createChat(userDetails: any, retryCount: number = 0) {
+    debugger
     userDetails = Array.isArray(userDetails) ? userDetails : [userDetails];
     try {
       let date = new Date().getTime().toString();
@@ -158,6 +197,7 @@ export class ChatService {
               chatId: this.currentuid,
               participants: [this.currentuid],
               messages: [],
+              emojiReactions: []
             };
             await setDoc(
               doc(this.firestore, 'chats', this.currentuid),
@@ -178,6 +218,7 @@ export class ChatService {
               chatId: combinedShortedId,
               participants: [this.currentuid, user.uid],
               messages: [],
+              emojiReactions: []
             };
             await setDoc(chatDocRef, chatData);
           }
@@ -196,10 +237,6 @@ export class ChatService {
     );
     this.allUsers = allUsers;
     return allUsers;
-  }
-
-  uploadEmojiReaction(emoji: any) {
-    console.log(emoji);
   }
 
   async createChatWithUsers(retryCount: number = 0): Promise<void> {
@@ -439,6 +476,7 @@ export class ChatService {
   }
 
   async sendData(text: any, retryCount: number = 0) {
+    debugger
     let id = this.generateIdServie.generateId();
     let date = new Date().getTime().toString();
     let currentuid = this.FirestoreService.currentuid;
@@ -449,6 +487,7 @@ export class ChatService {
       id: id,
       creator: currentuid,
       createdAt: date,
+      emojiReactions: [],
     };
 
     const docId = this.chatDocId || currentuid;
@@ -463,6 +502,7 @@ export class ChatService {
         createdAt: date,
         messages: [],
         participants: [currentuid],
+        emojiReactions: [],
       };
     }
     if (!Array.isArray(this.loadedchatInformation.messages)) {
