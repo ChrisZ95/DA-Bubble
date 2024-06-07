@@ -48,7 +48,7 @@
                 <div class="popup-window-own-current-message" *ngIf="isHovered && currentMessage.uid === firestoreService.currentuid">
                     <img src="./../../../assets/images/add_reaction.png" alt="">
                     <button [matMenuTriggerFor]="editMessage" mat-icon-button (menuOpened)="menuOpenedCurrentMessage()">
-                      <mat-icon>more_vert</mat-icon>
+                        <mat-icon>more_vert</mat-icon>
                     </button>
                     <mat-menu #editMessage="matMenu" class="profile-menu" (closed)="menuClosed()">
                       <button mat-menu-item (click)="startEditingCurrentMessage(currentMessage.message)">Nachricht bearbeiten</button>
@@ -106,7 +106,7 @@
             <div class="popup-window-own-message" *ngIf="isHoveredArray[i] && comment.uid === firestoreService.currentuid">
                 <img src="./../../../assets/images/add_reaction.png" alt="">
                 <button [matMenuTriggerFor]="editMessage" mat-icon-button (menuOpened)="menuOpened(i)">
-                  <mat-icon>more_vert</mat-icon>
+                    <mat-icon>more_vert</mat-icon>
                 </button>
                 <mat-menu #editMessage="matMenu" class="profile-menu" (closed)="menuClosed()">
                   <button mat-menu-item (click)="startEditingComment(i, comment.comment)">Nachricht bearbeiten</button>

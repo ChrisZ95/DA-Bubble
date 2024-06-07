@@ -43,6 +43,10 @@
     background-color: white;
 }
 
+::ng-deep.mat-mdc-dialog-surface{
+    border-radius: 0px 30px 30px 30px !important;
+}
+
 @media(max-width: 850px) {
     .d-flex {
         display: none;
