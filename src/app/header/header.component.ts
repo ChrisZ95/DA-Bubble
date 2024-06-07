@@ -77,18 +77,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   searchEntity(input: string) {
     const lowerCaseInput = input.toLowerCase().trim();
+    this.filteredEntities = [];
     if (input === '') {
-      this.filteredEntities = [];
       this.showUserChannelPlaceholder = true;
       this.showUserPlaceholder = false;
       this.showChannelPlaceholder = false;
     } else if (input === '@') {
-      this.filteredEntities = [];
       this.showUserPlaceholder = true;
       this.showChannelPlaceholder = false;
       this.showUserChannelPlaceholder = false;
     } else if (input === '#') {
-      this.filteredEntities = [];
       this.showUserPlaceholder = false;
       this.showChannelPlaceholder = true;
       this.showUserChannelPlaceholder = false;
@@ -264,21 +262,17 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   @HostListener('focusin', ['$event'])
   onFocus(event: FocusEvent) {
-    if (
-      this.eRef.nativeElement.contains(event.target) &&
-      this.focusOnTextEditor == false
-    ) {
-      if (this.eRef.nativeElement.querySelector('input').value === '') {
+    const inputValue = this.eRef.nativeElement.querySelector('input').value;
+    const isEventTargetInside = this.eRef.nativeElement.contains(event.target);
+    const isTextEditorFocused = this.focusOnTextEditor;
+    const areFilteredEntitiesEmpty = this.filteredEntities.length === 0;
+
+    if (isEventTargetInside && !isTextEditorFocused) {
+      if (areFilteredEntitiesEmpty && inputValue === '') {
         this.showUserChannelPlaceholder = true;
-      } else if (
-        this.filteredEntities.length == 0 &&
-        this.eRef.nativeElement.querySelector('input').value === '@'
-      ) {
+      } else if (areFilteredEntitiesEmpty && inputValue === '@') {
         this.showUserPlaceholder = true;
-      } else if (
-        this.filteredEntities.length == 0 &&
-        this.eRef.nativeElement.querySelector('input').value === '#'
-      ) {
+      } else if (areFilteredEntitiesEmpty && inputValue === '#') {
         this.showChannelPlaceholder = true;
       }
       this.showDropdown = true;
