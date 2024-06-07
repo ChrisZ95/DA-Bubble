@@ -134,18 +134,22 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
         return;
     }
 
+    // Initialize emojiReactions if it doesn't exist
     if (!reaction.emojiReactions) {
         reaction.emojiReactions = {};
     }
 
+    // Check if emojiID entry exists, if not, initialize it
     if (!reaction.emojiReactions[emojiID]) {
         reaction.emojiReactions[emojiID] = {
+            emojiID: emojiID,
             emojiIcon: emojiIcon,
             userId: [],
             emojiCounter: 0,
         };
     }
 
+    // Push currentUserID and increment emojiCounter
     reaction.emojiReactions[emojiID].userId.push(currentUserID);
     reaction.emojiReactions[emojiID].emojiCounter += 1;
 
@@ -155,8 +159,9 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     console.log(this.userInformation);
     console.log(reaction.id);
     console.log(this.chatService.currentuid);
-    this.chatService.uploadEmojiReaction(reaction.emojiReactions, reaction.id);
+    // this.chatService.uploadEmojiReaction(reaction.emojiReactions, reaction.id);
 }
+
 
 
   getEmojiReactions(message: any) {

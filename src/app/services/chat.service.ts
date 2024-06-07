@@ -17,6 +17,8 @@ import {
   updateDoc,
   query,
   where,
+  arrayUnion,
+  arrayRemove
 } from 'firebase/firestore';
 import { ChannelService } from './channel.service';
 import { FirestoreService } from '../firestore.service';
@@ -85,29 +87,39 @@ export class ChatService {
   }
 
   async uploadEmojiReaction(emojiData: any, messageID: string): Promise<void> {
-    const chatId = this.chatDocId;
-
-    if (!chatId) {
-      console.error('chatId ist null oder undefined.');
-      return;
-    }
-
+    debugger
     try {
+      const chatId = this.chatDocId;
+      if (!chatId) {
+        console.error('chatId ist null oder undefined.');
+        return;
+      }
+
       const messageRef = doc(this.firestore, 'chats', chatId);
       const chatDoc = await getDoc(messageRef);
 
-      console.log(messageRef);
-      console.log(chatDoc);
-
       if (chatDoc.exists()) {
-        const docMessage = chatDoc.data();
+        const docData = chatDoc.data();
 
-        if (docMessage && docMessage['messages']) {
-          const messages = docMessage['messages'];
-          const messageArray = messages.find( (msg: any) => msg.id === messageID)
-          console.log(messages);
-          console.log(messageArray)
-          console.log(messageArray.emojiReactions)
+        if (docData && docData['messages']) {
+          const messages = docData['messages'];
+          const messageIndex = messages.findIndex((msg: any) => msg.id === messageID);
+
+          if (messageIndex !== -1) {
+            const updatedMessages = [...messages]; // Copy the messages array
+            const messageToUpdate = updatedMessages[messageIndex];
+
+            // Update the emojiReactions field of the message
+            if (!messageToUpdate.emojiReactions) {
+              messageToUpdate.emojiReactions = {}; // Ensure emojiReactions field exists
+            }
+            messageToUpdate.emojiReactions.set(emojiData);
+
+            // Update the Firestore document with the modified messages array
+            await updateDoc(messageRef, { emojiReactions: messageToUpdate.emojiReactions });
+          } else {
+            console.error('Nachricht mit der angegebenen ID nicht gefunden.');
+          }
         } else {
           console.error('Nachrichtenarray ist nicht vorhanden.');
         }
@@ -118,6 +130,8 @@ export class ChatService {
       console.error('Fehler beim Hinzufügen der Emoji-Reaktion:', error);
     }
   }
+
+
 
 
 
