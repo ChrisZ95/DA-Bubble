@@ -10,7 +10,8 @@
     </div>
   </div>
   <div class="search-input">
-    <input class="serach-bar" type="text" placeholder="Code learning durchsuchen" id="" #inputRef>
+    <input class="serach-bar" type="text" placeholder="Code learning durchsuchen" id="" #inputRef
+      (keyup)="searchEntity(inputRef.value)">
     <button class="search-button">
       <img src="./../assets/images/search.png">
     </button>
@@ -30,15 +31,15 @@
     </mat-menu>
   </div>
 </div>
-  <!-- Adrian -->
-  <div class="dropdown-menu" *ngIf="showDropdown">
-    <div *ngIf="showUserChannelPlaceholder" class="dropdown-item" (click)="displayAllUsersAndChannels()">Show Users
-        and Channels</div>
-    <div *ngIf="showUserPlaceholder" class="dropdown-item" (click)="displayAllUsers()">Search for User</div>
-    <div *ngIf="showChannelPlaceholder" class="dropdown-item" (click)="displayAllChannels()">Search for Channel
-    </div>
-    <div class="dropdown-item" *ngFor="let entity of filteredEntities" (click)="selectEntity(entity)">
-        {{ entity.username || entity.channelName }}
-    </div>
+<!-- Adrian -->
+<div class="dropdown-menu" *ngIf="showDropdown">
+  <div *ngIf="showUserChannelPlaceholder" class="dropdown-item" (click)="displayAllUsersAndChannels()">Show Users
+    and Channels</div>
+  <div *ngIf="showUserPlaceholder" class="dropdown-item" (click)="displayAllUsers()">Search for User</div>
+  <div *ngIf="showChannelPlaceholder" class="dropdown-item" (click)="displayAllChannels()">Search for Channel
+  </div>
+  <div class="dropdown-item" *ngFor="let entity of filteredEntities" (click)="selectEntity(entity)">
+    {{ entity.username || entity.channelName }} <p *ngIf="entity.isChannel == true">Channel</p>
+  </div>
 </div>
-  <!-- Adrian -->
+<!-- Adrian -->

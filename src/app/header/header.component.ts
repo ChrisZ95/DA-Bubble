@@ -8,6 +8,7 @@ import {
   Renderer2,
   Output,
   EventEmitter,
+  ViewChild,
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -40,6 +41,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private unsubscribe: Unsubscribe | undefined;
   @Output() userDetails = new EventEmitter<string>();
   @Output() channelDetails = new EventEmitter<string>();
+  @ViewChild('inputRef') inputRef: ElementRef | undefined;
   logInUid: any;
   userForm: any;
   userName: any;
@@ -51,13 +53,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
   allUsers: any = [];
   allChannels: any = [];
   filteredUser: any;
-  filteredEntities: any;
+  filteredEntities: any = [];
   showDropdown: boolean = false;
   showUserPlaceholder: any;
   showChannelPlaceholder: any;
 
   showUserChannelPlaceholder: boolean = false;
-  selectedUsers: string[] = [];
   focusOnTextEditor: boolean = false;
 
   @HostListener('window:resize', ['$event'])
@@ -76,7 +77,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   searchEntity(input: string) {
     const lowerCaseInput = input.toLowerCase().trim();
-
     if (input === '') {
       this.filteredEntities = [];
       this.showUserChannelPlaceholder = true;
@@ -97,18 +97,19 @@ export class HeaderComponent implements OnInit, OnDestroy {
         return (
           item.username &&
           item.username.toLowerCase().includes(lowerCaseInput.substring(1)) &&
-          item.uid !== this.firestoreService.currentuid &&
-          !this.selectedUsers.includes(`@${item.username}`)
+          item.uid !== this.firestoreService.currentuid
         );
       });
       this.showUserPlaceholder = false;
       this.showChannelPlaceholder = false;
       this.showUserChannelPlaceholder = false;
-    } else if (input.startsWith('@')) {
-      this.filteredEntities = this.allChannels.filter((item: any) => {
+    } else if (input.startsWith('#')) {
+      this.filteredEntities = this.allChannels.filter((channel: any) => {
         return (
-          item.name &&
-          item.name.toLowerCase().includes(lowerCaseInput.substring(1))
+          channel.channelName &&
+          channel.channelName
+            .toLowerCase()
+            .includes(lowerCaseInput.substring(1))
         );
       });
       this.showUserPlaceholder = false;
@@ -119,8 +120,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         return (
           item.username &&
           item.username.toLowerCase().includes(lowerCaseInput) &&
-          item.uid !== this.firestoreService.currentuid &&
-          !this.selectedUsers.includes(`@${item.username}`)
+          item.uid !== this.firestoreService.currentuid
         );
       });
 
@@ -171,7 +171,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
       ...this.allUsers.filter((user: any) => {
         return user.username && user.uid !== this.firestoreService.currentuid;
       }),
-      ...this.allChannels.filter((channel: any) => channel.channelName),
+      ...this.allChannels.map((channel: any) => {
+        channel.isChannel = true;
+        return channel;
+      }),
     ];
     this.showUserChannelPlaceholder = false;
     this.showDropdown = true;
@@ -210,9 +213,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   displayAllChannels() {
-    this.filteredEntities = this.allChannels.filter((item: any) => {
-      return item.channelName;
+    this.filteredEntities = this.allChannels.map((channel: any) => {
+      channel.isChannel = true;
+      return channel;
     });
+
     this.showUserPlaceholder = false;
     this.showChannelPlaceholder = false;
     this.showUserChannelPlaceholder = false;
@@ -222,16 +227,24 @@ export class HeaderComponent implements OnInit, OnDestroy {
       this.focusInputField();
     }, 0);
   }
+
   selectEntity(entity: any) {
     if (entity.username) {
       let currentUID = this.firestoreService.currentuid;
       this.userDetails.emit(entity);
       this.filteredEntities = [];
       this.focusOnTextEditor = false;
+      this.channelService.showChannelChat = false;
+      this.chatService.showOwnChat = true;
     } else if (!entity.username) {
       this.channelDetails.emit(entity);
+      this.channelService.showChannelChat = true;
+      this.chatService.showOwnChat = false;
     }
-    this.filteredEntities = undefined;
+    if (this.inputRef) {
+      this.inputRef.nativeElement.value = '';
+    }
+    this.filteredEntities = [];
     this.showDropdown = false;
   }
 
@@ -248,22 +261,25 @@ export class HeaderComponent implements OnInit, OnDestroy {
       this.showDropdown = false;
     }
   }
-  // Adrian
-  // selectedUser
+
   @HostListener('focusin', ['$event'])
   onFocus(event: FocusEvent) {
-    // let focusOnTextEditor = this.chatService.focusOnTextEditor;
     if (
       this.eRef.nativeElement.contains(event.target) &&
       this.focusOnTextEditor == false
     ) {
-      if (
-        this.selectedUsers.length === 0 &&
-        this.eRef.nativeElement.querySelector('input').value === ''
+      if (this.eRef.nativeElement.querySelector('input').value === '') {
+        this.showUserChannelPlaceholder = true;
+      } else if (
+        this.filteredEntities.length == 0 &&
+        this.eRef.nativeElement.querySelector('input').value === '@'
       ) {
-        if (this.filteredEntities == undefined) {
-          this.showUserChannelPlaceholder = true;
-        }
+        this.showUserPlaceholder = true;
+      } else if (
+        this.filteredEntities.length == 0 &&
+        this.eRef.nativeElement.querySelector('input').value === '#'
+      ) {
+        this.showChannelPlaceholder = true;
       }
       this.showDropdown = true;
     }
@@ -276,6 +292,25 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
   }
 
+  loadAllUsersAndAllChannels() {
+    this.firestoreService
+      .getAllUsers()
+      .then((users) => {
+        this.allUsers = users;
+      })
+      .catch((error) => {
+        console.error('Error fetching users:', error);
+      });
+
+    this.firestoreService
+      .getAllChannels()
+      .then((Channels) => {
+        this.allChannels = Channels;
+      })
+      .catch((error) => {
+        console.error('Error fetching users:', error);
+      });
+  }
   async ngOnInit() {
     this.guestLogIn = false;
     const uid = localStorage.getItem('uid');
@@ -298,24 +333,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
         console.log('Das Benutzerdokument existiert nicht.');
       }
     });
-    this.firestoreService
-      .getAllUsers()
-      .then((users) => {
-        this.allUsers = users;
-      })
-      .catch((error) => {
-        console.error('Error fetching users:', error);
-      });
-
-    this.firestoreService
-      .getAllChannels()
-      .then((Channels) => {
-        this.allChannels = Channels;
-      })
-      .catch((error) => {
-        console.error('Error fetching users:', error);
-      });
-      this.checkScreenWidth();
+    this.loadAllUsersAndAllChannels();
+    this.checkScreenWidth();
   }
 
   ngOnDestroy() {
