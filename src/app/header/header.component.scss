@@ -150,6 +150,22 @@
   background: #f1f1f1;
 }
 
+.mobile-header-menu {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.logo-devspace {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  >span {
+    font-size: 18px;
+    font-weight: 700;
+  }
+}
+
 @media(max-width: 850px) {
   .search-input {
     display: none;
@@ -161,5 +177,19 @@
 
   .open-dialog {
     display: none;
+  }
+
+  .header {
+    height: 80px;
+  }
+
+  .da-bubble-logo {
+    height: 45px;
+    width: 161.5px;
+  }
+
+  .avatar-icon {
+    height: 50px !important;
+    width: 50px !important;
   }
 }

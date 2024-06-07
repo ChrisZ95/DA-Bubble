@@ -19,7 +19,7 @@
           <app-emptychat />
         </div>
 
-        <div *ngIf="chatService.showOwnChat && isScreenWide" class="chat">
+        <div *ngIf="chatService.showOwnChat && firestoreService.isScreenWide" class="chat">
           <app-ownchat [userDetails]="userDetails" />
         </div>
 
@@ -34,7 +34,7 @@
 
     </div>
   </div>
-  <div *ngIf="isScreenWide" class="workspace-menu" (click)="showHideWorkspace()">
+  <div *ngIf="firestoreService.isScreenWide" class="workspace-menu" (click)="showHideWorkspace()">
     <div class="workspace-menu-text"></div>
     <p><b>Workspace-Menü schließen</b></p>
     <img class="workspace-menu-icon" src="../../../assets/images/displayWorkspace.png" alt="">

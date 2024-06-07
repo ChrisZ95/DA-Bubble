@@ -92,6 +92,7 @@ export class FirestoreService {
   allUsers: any;
   allChannels: any;
   displayWorkspace: boolean = true;
+  isScreenWide: boolean = false;
 
   constructor(
     private myFirebaseApp: FirebaseApp,

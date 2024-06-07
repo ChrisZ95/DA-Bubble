@@ -69,7 +69,6 @@ export class MainComponent implements OnInit {
   selectedMessageId: string = '';
   emojiPicker = false;
   associatedUser = false;
-  isScreenWide: boolean = false;
   isIdle: number = 0;
 
   private idleSubscription: Subscription | null = null;
@@ -186,7 +185,7 @@ export class MainComponent implements OnInit {
   }
 
   checkScreenWidth() {
-    this.isScreenWide = window.innerWidth > 850;
+    this.firestoreService.isScreenWide = window.innerWidth > 850;
   }
 
   ngOnDestroy(): void {

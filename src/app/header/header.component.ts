@@ -18,6 +18,7 @@ import { CommonModule } from '@angular/common';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { Unsubscribe } from '@angular/fire/firestore';
 import { ChatService } from '../services/chat.service';
+import { ChannelService } from '../services/channel.service';
 
 @Component({
   selector: 'app-header',
@@ -30,10 +31,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
   constructor(
     public dialog: MatDialog,
     private router: Router,
-    private firestoreService: FirestoreService,
+    public firestoreService: FirestoreService,
     private chatService: ChatService,
     private eRef: ElementRef,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    public channelService: ChannelService
   ) {}
   private unsubscribe: Unsubscribe | undefined;
   @Output() userDetails = new EventEmitter<string>();
@@ -57,6 +59,20 @@ export class HeaderComponent implements OnInit, OnDestroy {
   showUserChannelPlaceholder: boolean = false;
   selectedUsers: string[] = [];
   focusOnTextEditor: boolean = false;
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event) {
+    this.checkScreenWidth();
+  }
+
+  checkScreenWidth() {
+    this.firestoreService.isScreenWide = window.innerWidth > 850;
+  }
+
+  backToWorkspace() {
+    this.channelService.showChannelChat = false;
+    this.firestoreService.displayWorkspace = true;
+  }
 
   searchEntity(input: string) {
     const lowerCaseInput = input.toLowerCase().trim();
@@ -299,6 +315,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       .catch((error) => {
         console.error('Error fetching users:', error);
       });
+      this.checkScreenWidth();
   }
 
   ngOnDestroy() {

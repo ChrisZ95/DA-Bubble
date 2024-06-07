@@ -59,6 +59,9 @@ export class ChannelthreadComponent implements OnInit, OnDestroy {
 
   closeThreadWindow() {
     this.channelService.showThreadWindow = false;
+    if(window.innerWidth <= 850) {
+      this.channelService.showChannelChat = true;
+    }
   }
 
   async ngOnInit(): Promise<void> {

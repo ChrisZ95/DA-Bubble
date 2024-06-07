@@ -99,11 +99,16 @@
 @media (max-width: 850px) {
   .workspace {
     width: 100vw;
-    height: 85vh;
+    height: calc(100vh - 80px);
   }
 
   .chat {
-    height: 85vh;
+    height: calc(100vh - 80px);
+    width: 100vw;
+  }
+
+  .thread {
+    height: calc(100vh - 80px);
     width: 100vw;
   }
 }

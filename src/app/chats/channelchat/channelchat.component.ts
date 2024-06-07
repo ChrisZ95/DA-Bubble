@@ -180,6 +180,9 @@ export class ChannelchatComponent implements OnInit, AfterViewInit, OnDestroy {
     this.channelService.setCurrentMessage(message);
     this.channelService.setCurrentMessageId(messageId);
     this.channelService.showThreadWindow = true;
+    if(window.innerWidth <= 850) {
+      this.channelService.showChannelChat = false;
+    }
   }
 
   getMemberAvatar(memberId: string): string {
