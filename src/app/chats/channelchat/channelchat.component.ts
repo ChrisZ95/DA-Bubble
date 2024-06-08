@@ -27,6 +27,28 @@ import { TextEditorChannelComponent } from '../../shared/text-editor-channel/tex
   styleUrls: ['./channelchat.component.scss', '../chats.component.scss'],
 })
 export class ChannelchatComponent implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
+  @Input() userDialogData: any;
+  currentChannel!: Channel;
+  allChannels: any = [];
+  allChats: any = [];
+  channel = new Channel();
+  selectedChannelName: string | null = null;
+  selectedChannelDescription: string | null = null;
+  currentChannelId: string = '';
+  allUsers: any[] = [];
+  currentMessageComments: { id: string, comment: string, createdAt: string }[] = [];
+  isHoveredArray: boolean[] = [];
+  private channelSubscription: Subscription | undefined;
+  menuClicked = false;
+  currentMessageIndex: number | null = null;
+  editingMessageIndex: number | null = null;
+  editedMessageText: string = '';
+  userForm: any;
+  private channelSnapshotUnsubscribe: Unsubscribe | undefined;
+  private chatSnapshotUnsubscribe: Unsubscribe | undefined;
+  private unsubscribe: Unsubscribe | undefined;
+
   constructor(
     public dialog: MatDialog,
     public channelService: ChannelService,
@@ -55,30 +77,6 @@ export class ChannelchatComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
-  @Input() userDialogData: any;
-  currentChannel!: Channel;
-  allChannels: any = [];
-  allChats: any = [];
-  channel = new Channel();
-  selectedChannelName: string | null = null;
-  selectedChannelDescription: string | null = null;
-  currentChannelId: string = '';
-  allUsers: any[] = [];
-  currentMessageComments: { id: string, comment: string, createdAt: string }[] = [];
-  isHoveredArray: boolean[] = [];
-  private channelSubscription: Subscription | undefined;
-  menuClicked = false;
-  currentMessageIndex: number | null = null;
-  editingMessageIndex: number | null = null;
-  editedMessageText: string = '';
-
-  userForm: any;
-  private channelSnapshotUnsubscribe: Unsubscribe | undefined;
-  private chatSnapshotUnsubscribe: Unsubscribe | undefined;
-  private unsubscribe: Unsubscribe | undefined;
-
-
   openMemberDialog() {
     this.dialog.open(DialogMembersComponent);
   }
@@ -94,37 +92,44 @@ export class ChannelchatComponent implements OnInit, AfterViewInit, OnDestroy {
 
   openContactInfoDialog(userDetails: any) {
     const userDocRef = this.firestoreService.getUserDocRef(userDetails);
-    this.unsubscribe = onSnapshot(userDocRef, (doc) => {
-      if (doc.exists()) {
-        const userData = doc.data();
-        this.userForm = { id: doc.id, ...userData };
-
-        this.userDialogData = {
-          username: this.userForm['username'],
-          email: this.userForm['email'],
-          photo: this.userForm['photo'],
-          uid: this.userForm['uid'],
-          logIndate: this.userForm['logIndate'],
-          logOutDate: this.userForm['logOutDate'],
-          signUpdate: this.userForm['signUpdate'],
-          emailVerified: this.firestoreService.auth.currentUser.emailVerified
-        };
-
-        console.log(this.userDialogData);
-        this.dialog.open(DialogContactInfoComponent, {
-          data: this.userDialogData
-        });
-      } else {
-        console.log('Das Benutzerdokument existiert nicht.');
-      }
-    });
+    this.unsubscribe = onSnapshot(userDocRef, (doc) => this.handleUserDocSnapshot(doc));
+  }
+  
+  handleUserDocSnapshot(doc: any) {
+    if (doc.exists()) {
+      const userData = doc.data();
+      this.populateUserForm(doc.id, userData);
+      this.setUserDialogData();
+      this.openUserDialog();
+    }
+  }
+  
+  populateUserForm(id: string, userData: any) {
+    this.userForm = { id, ...userData };
+  }
+  
+  setUserDialogData() {
+    this.userDialogData = {
+      username: this.userForm['username'],
+      email: this.userForm['email'],
+      photo: this.userForm['photo'],
+      uid: this.userForm['uid'],
+      logIndate: this.userForm['logIndate'],
+      logOutDate: this.userForm['logOutDate'],
+      signUpdate: this.userForm['signUpdate'],
+      emailVerified: this.firestoreService.auth.currentUser.emailVerified
+    };
+  }
+  
+  openUserDialog() {
+    this.dialog.open(DialogContactInfoComponent, { data: this.userDialogData });
   }
 
   ngAfterViewInit() {
     this.scrollToBottom();
   }
 
-  private scrollToBottom(): void {
+  scrollToBottom(): void {
     try {
       this.scrollContainer.nativeElement.scrollTop =
         this.scrollContainer.nativeElement.scrollHeight;
@@ -135,21 +140,41 @@ export class ChannelchatComponent implements OnInit, AfterViewInit, OnDestroy {
 
   async ngOnInit(): Promise<void> {
     this.currentChannelId = this.channelService.getCurrentChannelId();
-    const channelId = this.currentChannelId;
-    this.channelService.getChannels().then((channels) => {
-      this.allChannels = channels;
-      console.log('Channels', channels);
-    });
-    this.firestoreService.getAllUsers().then(users => {
-      this.allUsers = users
-    }).catch(error => {
+    await Promise.all([this.loadChannels(), this.loadUsers(), this.loadMessages()]);
+    this.initializeHoverArray();
+  }
+  
+  async loadChannels(): Promise<void> {
+    try {
+      this.allChannels = await this.channelService.getChannels();
+    } catch (error) {
+      console.error('Error fetching channels:', error);
+    }
+  }
+  
+  async loadUsers(): Promise<void> {
+    try {
+      this.allUsers = await this.firestoreService.getAllUsers();
+    } catch (error) {
       console.error('Error fetching users:', error);
-    });
-    const messages = await this.channelService.loadMessagesForChannel(channelId);
-    this.channelService.messagesWithAuthors = await Promise.all(messages.map(async message => {
-      const authorName = await this.channelService.getAuthorName(message.uid);
-      return { ...message, authorName };
-    }));
+    }
+  }
+  
+  async loadMessages(): Promise<void> {
+    try {
+      const messages = await this.channelService.loadMessagesForChannel(this.currentChannelId);
+      this.channelService.messagesWithAuthors = await Promise.all(
+        messages.map(async (message) => {
+          const authorName = await this.channelService.getAuthorName(message.uid);
+          return { ...message, authorName };
+        })
+      );
+    } catch (error) {
+      console.error('Error loading messages:', error);
+    }
+  }
+  
+  initializeHoverArray(): void {
     this.isHoveredArray = new Array(this.channelService.messagesWithAuthors.length).fill(false);
   }
 
@@ -224,20 +249,36 @@ export class ChannelchatComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   shouldShowSeparator(index: number): boolean {
-    if (index === 0) {
-      return true;
+    if (index === 0) return true;
+    return this.isDifferentDay(index);
+  }
+  
+  isDifferentDay(index: number): boolean {
+    const { currentMessage, previousMessage } = this.getMessagesAt(index);
+    const { currentDate, previousDate } = this.getDates(currentMessage, previousMessage);
+    if (this.isInvalidDate(currentDate, previousDate, currentMessage, previousMessage)) return false;
+    return currentDate.toDateString() !== previousDate.toDateString();
+  }
+  
+  getMessagesAt(index: number) {
+    return {
+      currentMessage: this.channelService.messagesWithAuthors[index],
+      previousMessage: this.channelService.messagesWithAuthors[index - 1]
+    };
+  }
+  
+  getDates(currentMessage: any, previousMessage: any) {
+    return {
+      currentDate: new Date(Number(currentMessage.createdAt)),
+      previousDate: new Date(Number(previousMessage.createdAt))
+    };
+  }
+  
+  isInvalidDate(currentDate: Date, previousDate: Date, currentMessage: any, previousMessage: any): boolean {
+    const invalid = isNaN(currentDate.getTime()) || isNaN(previousDate.getTime());
+    if (invalid) {
+      console.error(`Invalid Date - Current Message: ${JSON.stringify(currentMessage)}, Previous Message: ${JSON.stringify(previousMessage)}`);
     }
-    const currentMessage = this.channelService.messagesWithAuthors[index];
-    const previousMessage = this.channelService.messagesWithAuthors[index - 1];
-    const currentDate = new Date(Number(currentMessage.createdAt));
-    const previousDate = new Date(Number(previousMessage.createdAt));
-    if (isNaN(currentDate.getTime()) || isNaN(previousDate.getTime())) {
-        console.error(`Invalid Date - Current Message: ${JSON.stringify(currentMessage)}, Previous Message: ${JSON.stringify(previousMessage)}`);
-        return false;
-    }
-    const currentDateString = currentDate.toDateString();
-    const previousDateString = previousDate.toDateString();
-    const showSeparator = currentDateString !== previousDateString;
-    return showSeparator;
+    return invalid;
   }
 }

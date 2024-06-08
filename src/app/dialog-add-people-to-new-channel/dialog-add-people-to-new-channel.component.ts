@@ -83,28 +83,38 @@ export class DialogAddPeopleToNewChannelComponent implements OnInit {
 
   async addUserToChannel() {
     try {
-      const channelDocRef = this.channelService.getChannelDocByID(this.currentChannelId);
-      if (!channelDocRef) {
-        throw new Error('Channel Document Reference is invalid.');
-      }
-      let usersToAdd: any[] = [];
-      if (this.selectedOption === 'office') {
-        usersToAdd = this.allUsers;
-      } else {
-        usersToAdd = this.selectedUsers;
-      }
-      const userIdsToAdd = usersToAdd.map(user => user.uid);
-      const channelSnap = await getDoc(channelDocRef);
-      const currentUsers = channelSnap.data()?.['users'] || [];
-      const updatedUsers = [...new Set([...currentUsers, ...userIdsToAdd])];
+      const channelDocRef = this.getValidChannelDocRef();
+      const usersToAdd = this.getUsersToAdd();
+      const updatedUsers = await this.getUpdatedUsers(channelDocRef, usersToAdd);
       await this.channelService.updateChannel(channelDocRef, { users: updatedUsers });
-      this.selectedUsers = [];
-      this.updatePersonName();
-      this.checkButtonStatus();
-      this.dialogRef.close();
+      this.resetSelections();
     } catch (error) {
       console.error('Fehler beim Hinzufügen der Benutzer zum Kanal:', error);
     }
+  }
+  
+  getValidChannelDocRef() {
+    const channelDocRef = this.channelService.getChannelDocByID(this.currentChannelId);
+    if (!channelDocRef) throw new Error('Channel Document Reference is invalid.');
+    return channelDocRef;
+  }
+  
+  getUsersToAdd() {
+    return this.selectedOption === 'office' ? this.allUsers : this.selectedUsers;
+  }
+  
+  async getUpdatedUsers(channelDocRef: any, usersToAdd: any[]) {
+    const channelSnap = await getDoc(channelDocRef);
+    const currentUsers = (channelSnap.data() as { users?: string[] })?.users || [];
+    const userIdsToAdd = usersToAdd.map(user => user.uid);
+    return [...new Set([...currentUsers, ...userIdsToAdd])];
+  }
+  
+  resetSelections() {
+    this.selectedUsers = [];
+    this.updatePersonName();
+    this.checkButtonStatus();
+    this.dialogRef.close();
   }
 
   removeUser(user: any): void {

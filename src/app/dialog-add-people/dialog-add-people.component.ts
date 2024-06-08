@@ -4,7 +4,7 @@ import { FirestoreService } from '../firestore.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ChannelService } from '../services/channel.service';
-import { Firestore, arrayUnion, doc, addDoc, updateDoc, onSnapshot, collection, getDoc } from '@angular/fire/firestore';
+import { Firestore, onSnapshot, collection, getDoc } from '@angular/fire/firestore';
 import { Channel } from './../../models/channel.class';
 
 @Component({
@@ -53,10 +53,8 @@ export class DialogAddPeopleComponent implements OnInit {
     });
     this.channelService.getChannels().then((channels) => {
       this.allChannels = channels;
-      console.log('Channels', channels);
     });
     this.currentChannelId = this.channelService.getCurrentChannelId();
-    console.log(this.currentChannelId)
   }
 
   selectUser(user: any): void {
@@ -83,26 +81,35 @@ export class DialogAddPeopleComponent implements OnInit {
 
   async addUserToChannel() {
     try {
-      const channelDocRef = this.channelService.getChannelDocByID(this.currentChannelId);
-      if (!channelDocRef) {
-        throw new Error('Channel Document Reference is invalid.');
-      }
-      const channelSnap = await getDoc(channelDocRef);
-      if (!channelSnap.exists()) {
-        throw new Error('Channel document does not exist.');
-      }
-      const currentChannelData = channelSnap.data();
-      const currentUsers = currentChannelData['users'] || [];
-      const userIdsToAdd = this.selectedUsers.map(user => user.uid);
-      const updatedUsers = [...new Set([...currentUsers, ...userIdsToAdd])];
+      const channelDocRef = this.getValidChannelDocRef();
+      const updatedUsers = await this.getUpdatedUsers(channelDocRef);
       await this.channelService.updateChannel(channelDocRef, { users: updatedUsers });
-      this.selectedUsers = [];
-      this.updatePersonName();
-      this.checkButtonStatus();
-      this.dialogRef.close();
+      this.clearSelectedUsers();
     } catch (error) {
       console.error('Fehler beim Hinzufügen der Benutzer zum Kanal:', error);
     }
+  }
+  
+  getValidChannelDocRef() {
+    const channelDocRef = this.channelService.getChannelDocByID(this.currentChannelId);
+    if (!channelDocRef) throw new Error('Channel Document Reference is invalid.');
+    return channelDocRef;
+  }
+  
+  async getUpdatedUsers(channelDocRef: any) {
+    const channelSnap = await getDoc(channelDocRef);
+    if (!channelSnap.exists()) throw new Error('Channel document does not exist.');
+    const currentChannelData = channelSnap.data() as { users?: string[] };
+    const currentUsers = currentChannelData.users || [];
+    const userIdsToAdd = this.selectedUsers.map(user => user.uid);
+    return [...new Set([...currentUsers, ...userIdsToAdd])];
+  }
+  
+  clearSelectedUsers() {
+    this.selectedUsers = [];
+    this.updatePersonName();
+    this.checkButtonStatus();
+    this.dialogRef.close();
   }
 
   removeUser(user: any): void {
