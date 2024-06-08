@@ -199,23 +199,39 @@ export class ChannelthreadComponent implements OnInit, OnDestroy {
   openContactInfoDialog(userDetails: any) {
     const userDocRef = this.firestoreService.getUserDocRef(userDetails);
     this.unsubscribe = onSnapshot(userDocRef, (doc) => {
-      if (doc.exists()) {
-        const userData = doc.data();
-        this.userForm = { id: doc.id, ...userData };
-        this.userDialogData = {
-          username: this.userForm['username'],
-          email: this.userForm['email'],
-          photo: this.userForm['photo'],
-          uid: this.userForm['uid'],
-          logIndate: this.userForm['logIndate'],
-          logOutDate: this.userForm['logOutDate'],
-          signUpdate: this.userForm['signUpdate'],
-          emailVerified: this.firestoreService.auth.currentUser.emailVerified
-        };
-        this.dialog.open(DialogContactInfoComponent, {
-          data: this.userDialogData
-        });
-      }
+      this.handleUserDocumentSnapshot(doc);
+    });
+  }
+  
+  private handleUserDocumentSnapshot(doc: any) {
+    if (doc.exists()) {
+      const userData = doc.data();
+      this.setUserForm(doc.id, userData);
+      this.setUserDialogData();
+      this.openUserDialog();
+    }
+  }
+  
+  private setUserForm(id: string, userData: any) {
+    this.userForm = { id, ...userData };
+  }
+  
+  private setUserDialogData() {
+    this.userDialogData = {
+      username: this.userForm['username'],
+      email: this.userForm['email'],
+      photo: this.userForm['photo'],
+      uid: this.userForm['uid'],
+      logIndate: this.userForm['logIndate'],
+      logOutDate: this.userForm['logOutDate'],
+      signUpdate: this.userForm['signUpdate'],
+      emailVerified: this.firestoreService.auth.currentUser.emailVerified
+    };
+  }
+  
+  private openUserDialog() {
+    this.dialog.open(DialogContactInfoComponent, {
+      data: this.userDialogData
     });
   }
 }
