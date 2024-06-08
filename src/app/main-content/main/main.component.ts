@@ -34,6 +34,7 @@ import { FirestoreService } from '../../firestore.service';
 import { ChatService } from '../../services/chat.service';
 import { ThreadService } from '../../services/thread.service';
 import { Subscription } from 'rxjs';
+import { IdleService } from '../../services/idle.service';
 
 @Component({
   selector: 'app-main',
@@ -60,7 +61,8 @@ export class MainComponent implements OnInit {
     public firestoreService: FirestoreService,
     public chatService: ChatService,
     public threadService: ThreadService,
-    private cdRef: ChangeDetectorRef
+    private cdRef: ChangeDetectorRef,
+    private idleService: IdleService
   ) {}
 
   displayThread: boolean = false;
@@ -90,7 +92,7 @@ export class MainComponent implements OnInit {
   }
 
   showHideWorkspace() {
-    if(this.firestoreService.displayWorkspace === false) {
+    if (this.firestoreService.displayWorkspace === false) {
       this.firestoreService.displayWorkspace = true;
     } else {
       this.firestoreService.displayWorkspace = false;
@@ -122,44 +124,41 @@ export class MainComponent implements OnInit {
   }
 
   handleIdle() {
-    if (this.firestoreService.testStatus == 'active') {
+    if (this.idleService.currentUserStatus == 'active') {
       let key = this.firestoreService.currentuid;
       let status = 'simpleaway';
-      this.firestoreService.updateActiveStatus(key, status);
+      this.idleService.updateActiveStatus(key, status);
     }
   }
+
   handleActive() {
-    if (this.firestoreService.testStatus == 'simpleaway') {
+    if (this.idleService.currentUserStatus == 'simpleaway') {
       let key = this.firestoreService.currentuid;
       let status = 'active';
-      this.firestoreService.updateActiveStatus(key, status);
+      this.idleService.updateActiveStatus(key, status);
     }
   }
 
   ngOnInit(): void {
-    this.idleSubscription = this.firestoreService
+    this.idleSubscription = this.idleService
       .isUserIdle()
       .subscribe((idle) => {});
 
-    this.noMouseMove = this.firestoreService
-      .noMouseMoveAfterIdle()
-      .subscribe(() => {
-        this.handleIdle();
-      });
+    this.noMouseMove = this.idleService.noMouseMoveAfterIdle().subscribe(() => {
+      this.handleIdle();
+    });
 
-    this.mouseMoveSubscription = this.firestoreService
+    this.mouseMoveSubscription = this.idleService
       .onMouseMoveAfterIdle()
       .subscribe(() => {
         this.handleActive();
       });
 
-    this.noKeyPress = this.firestoreService
-      .noKeyPressAfterIdle()
-      .subscribe(() => {
-        this.handleIdle();
-      });
+    this.noKeyPress = this.idleService.noKeyPressAfterIdle().subscribe(() => {
+      this.handleIdle();
+    });
 
-    this.keyPressSubscription = this.firestoreService
+    this.keyPressSubscription = this.idleService
       .onKeyPressAfterIdle()
       .subscribe(() => {
         this.handleActive();
@@ -176,7 +175,7 @@ export class MainComponent implements OnInit {
         this.associatedUser = state;
       });
 
-      this.checkScreenWidth();
+    this.checkScreenWidth();
   }
 
   @HostListener('window:resize', ['$event'])
@@ -189,29 +188,29 @@ export class MainComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    if (this.idleSubscription) {
-      this.idleSubscription.unsubscribe();
-    }
-    if (this.noMouseMove) {
-      this.noMouseMove.unsubscribe();
-    }
-    if (this.mouseMoveSubscription) {
-      this.mouseMoveSubscription.unsubscribe();
-    }
-    if (this.noKeyPress) {
-      this.noKeyPress.unsubscribe();
-    }
-    if (this.keyPressSubscription) {
-      this.keyPressSubscription.unsubscribe();
-    }
+    // if (this.idleSubscription) {
+    //   this.idleSubscription.unsubscribe();
+    // }
+    // if (this.noMouseMove) {
+    //   this.noMouseMove.unsubscribe();
+    // }
+    // if (this.mouseMoveSubscription) {
+    //   this.mouseMoveSubscription.unsubscribe();
+    // }
+    // if (this.noKeyPress) {
+    //   this.noKeyPress.unsubscribe();
+    // }
+    // if (this.keyPressSubscription) {
+    //   this.keyPressSubscription.unsubscribe();
+    // }
     if (this.emojiPickerSubscription) {
       this.emojiPickerSubscription.unsubscribe();
     }
     if (this.AssociatedUserSubscription) {
       this.AssociatedUserSubscription.unsubscribe();
     }
-    if (this.activityAfterIdleSubscription) {
-      this.activityAfterIdleSubscription.unsubscribe();
-    }
+    // if (this.activityAfterIdleSubscription) {
+    //   this.activityAfterIdleSubscription.unsubscribe();
+    // }
   }
 }

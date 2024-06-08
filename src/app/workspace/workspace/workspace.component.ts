@@ -34,6 +34,7 @@ import {
   transition,
   animate,
 } from '@angular/animations';
+import { IdleService } from '../../services/idle.service';
 
 @Component({
   selector: 'app-workspace',
@@ -68,7 +69,8 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
     private firestoreService: FirestoreService,
     public channelService: ChannelService,
     public chatService: ChatService,
-    private cdRef: ChangeDetectorRef
+    private cdRef: ChangeDetectorRef,
+    private idleService: IdleService
   ) {
     onSnapshot(collection(this.firestore, 'channels'), (list) => {
       this.allChannels = list.docs.map((doc) => doc.data());
@@ -104,7 +106,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
     this.chatService.showOwnChat = false;
     this.channelService.showThreadWindow = false;
     this.chatService.clearInputValue(true);
-    if(window.innerWidth <= 850) {
+    if (window.innerWidth <= 850) {
       this.firestoreService.displayWorkspace = false;
     }
   }
@@ -146,14 +148,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
 
   changeStatus(event: Event) {
     const newStatus = (event.target as HTMLSelectElement).value;
-    this.firestoreService.setUserStatus(
-      this.firestoreService.currentuid,
-      newStatus
-    );
-
-    this.userStatus = this.firestoreService.testStatus;
-    // this.userStatus = newStatus;
-    // console.log('Status updated to:', newStatus);
+    this.idleService.setUserStatus(this.firestoreService.currentuid, newStatus);
   }
 
   ngOnInit(): void {
@@ -163,7 +158,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
       this.filterChannels();
     });
 
-    this.userStatus$ = this.firestoreService.getUserStatus(
+    this.userStatus$ = this.idleService.getUserStatus(
       this.firestoreService.currentuid
     );
   }
