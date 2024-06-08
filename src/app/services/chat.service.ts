@@ -87,7 +87,7 @@ export class ChatService {
   }
 
   async uploadEmojiReaction(emojiData: any, messageID: string): Promise<void> {
-    debugger
+    // debugger
     try {
       const chatId = this.chatDocId;
       if (!chatId) {
@@ -179,12 +179,12 @@ export class ChatService {
   }
 
   loadUserData(userDetails: any) {
-    debugger
+    // debugger
     this.userInformationSubject.next(userDetails);
   }
 
   async createChat(userDetails: any, retryCount: number = 0) {
-    debugger
+    // debugger
     userDetails = Array.isArray(userDetails) ? userDetails : [userDetails];
     try {
       let date = new Date().getTime().toString();
@@ -490,7 +490,7 @@ export class ChatService {
   }
 
   async sendData(text: any, retryCount: number = 0) {
-    debugger
+    // debugger
     let id = this.generateIdServie.generateId();
     let date = new Date().getTime().toString();
     let currentuid = this.FirestoreService.currentuid;
