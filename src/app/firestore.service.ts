@@ -71,6 +71,7 @@ import {
   update,
   remove,
 } from '@angular/fire/database';
+import { IdleService } from './services/idle.service';
 
 @Injectable({
   providedIn: 'root',
@@ -97,7 +98,8 @@ export class FirestoreService {
   constructor(
     private myFirebaseApp: FirebaseApp,
     public router: Router, // private realTimedb: AngularFireDatabase
-    private rdb: Database
+    private rdb: Database,
+    private idleService: IdleService
   ) {
     this.auth = getAuth(myFirebaseApp);
     // console.log('Auth dokument', this.auth);
@@ -107,54 +109,6 @@ export class FirestoreService {
     this.currentuid = localStorage.getItem('uid');
     // console.log('ausgeloggte uid', this.currentuid);
     this.initializeAuthState();
-
-    //Adrian wird noch in einen anderen Service verschoben
-    const mouseMove$ = fromEvent(document, 'mousemove');
-    this.idleTimer$ = mouseMove$.pipe(
-      debounceTime(500),
-      switchMap(() => timer(500))
-    );
-    this.mouseMoveAfterIdle$ = this.idleTimer$.pipe(
-      switchMap(() => mouseMove$),
-      debounceTime(100)
-    );
-    this.noMouseMoveIdle$ = mouseMove$.pipe(
-      debounceTime(300000),
-      switchMap(() => timer(500))
-    );
-    const keyPress$ = fromEvent(document, 'keydown');
-    this.idleTimer$ = keyPress$.pipe(
-      debounceTime(500),
-      switchMap(() => timer(500))
-    );
-    this.keyPressAfterIdle$ = this.idleTimer$.pipe(
-      switchMap(() => keyPress$),
-      debounceTime(100)
-    );
-    this.noKeyPressIdle$ = keyPress$.pipe(
-      debounceTime(30000),
-      switchMap(() => timer(500))
-    );
-  }
-  idleTimer$: Observable<any>;
-  mouseMoveAfterIdle$: Observable<any>;
-  noMouseMoveIdle$: Observable<any>;
-  keyPressAfterIdle$: Observable<any>;
-  noKeyPressIdle$: Observable<any>;
-  isUserIdle(): Observable<any> {
-    return this.idleTimer$;
-  }
-  onMouseMoveAfterIdle(): Observable<void> {
-    return this.mouseMoveAfterIdle$;
-  }
-  noMouseMoveAfterIdle(): Observable<void> {
-    return this.noMouseMoveIdle$;
-  }
-  onKeyPressAfterIdle(): Observable<void> {
-    return this.keyPressAfterIdle$;
-  }
-  noKeyPressAfterIdle(): Observable<void> {
-    return this.noKeyPressIdle$;
   }
 
   initializeAuthState() {
@@ -550,29 +504,6 @@ export class FirestoreService {
       }
     }
   }
-  //Formeln werden noch verschoben
-  userStatus$!: Observable<string>;
-  testStatus: any;
-  setData(path: string, data: any) {
-    const dbRef = reference(this.rdb, path);
-    return from(set(dbRef, data));
-  }
-  pushData(path: string, data: any) {
-    const dbRef = reference(this.rdb, path);
-    return from(push(dbRef, data));
-  }
-  getUserStatus(uid: string): Observable<any> {
-    const statusRef = reference(this.rdb, `users/${uid}/activeStatus`);
-    return new Observable((observer) => {
-      onValue(statusRef, (snapshot) => {
-        observer.next(snapshot.val());
-        this.testStatus = snapshot.val();
-      });
-    });
-  }
-  setUserStatus(uid: string, status: string) {
-    this.updateActiveStatus(uid, status);
-  }
 
   /* Nutzer wird eingeloggt */
   async logInUser(
@@ -595,7 +526,7 @@ export class FirestoreService {
         logOutDate: 1,
       });
       this.setCurrentUid(userCredential.user.uid);
-      this.setData(`users/${userCredential.user.uid}`, {
+      this.idleService.setData(`users/${userCredential.user.uid}`, {
         uid: userCredential.user.uid,
         activeStatus: 'active',
       });
@@ -743,13 +674,5 @@ export class FirestoreService {
     this.newDate = Date.now();
     console.log(this.newDate);
     return this.newDate;
-  }
-
-  updateActiveStatus(key: string, value: any): void {
-    let status = {
-      uid: key,
-      activeStatus: value,
-    };
-    this.setData(`users/${key}`, status);
   }
 }
