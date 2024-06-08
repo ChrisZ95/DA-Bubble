@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ChannelService } from '../services/channel.service';
-import { Firestore, updateDoc, doc, getDoc } from '@angular/fire/firestore';
+import { Firestore, updateDoc, doc, getDoc, deleteDoc } from '@angular/fire/firestore';
 import { Channel } from './../../models/channel.class';
 import { FirestoreService } from '../firestore.service';
 
@@ -24,6 +24,7 @@ export class DialogChannelInfoComponent implements OnInit {
   editingDescription: boolean = false;
   isEditing: boolean = false;
   authorName!: string;
+  isChannelAuthor: boolean = false;
 
   constructor(private dialogRef: MatDialogRef<DialogChannelInfoComponent>, public channelService: ChannelService, private readonly firestore: Firestore, public firestoreService: FirestoreService) {}
 
@@ -35,7 +36,8 @@ export class DialogChannelInfoComponent implements OnInit {
     const channelId = this.channelService.getCurrentChannelId();
     if (channelId) {
       this.channelService.getChannelAuthorUid(channelId).then(authorUid => {
-        if (authorUid) { 
+        if (authorUid) {
+          this.isChannelAuthor = this.firestoreService.currentuid === authorUid;
           this.channelService.getAuthorName(authorUid).then(authorName => {
             if (authorName) {
               this.authorName = authorName;
@@ -126,6 +128,20 @@ export class DialogChannelInfoComponent implements OnInit {
       this.dialogRef.close();
     } catch (error) {
       console.error('Error leaving the channel:', error);
+    }
+  }
+
+  async deleteChannel() {
+    try {
+      const channelId = this.channelService.getCurrentChannelId();
+      if (!channelId) {
+        throw new Error('Channel ID is not available.');
+      }
+      const channelDocRef = this.channelService.getChannelDocByID(channelId);
+      await deleteDoc(channelDocRef);
+      this.dialogRef.close();
+    } catch (error) {
+      console.error('Error deleting the channel:', error);
     }
   }
 }

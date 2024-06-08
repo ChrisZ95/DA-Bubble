@@ -24,5 +24,10 @@
             <span class="created-by-name">{{ authorName }}</span>
         </div>
     </div>
-    <div (click)="leaveChannel()" class="leave-channel-button"><button>Channel verlassen</button></div>
+    <div *ngIf="isChannelAuthor" (click)="deleteChannel()" class="leave-channel-button">
+        <button>Channel löschen</button>
+    </div>
+    <div *ngIf="!isChannelAuthor" (click)="leaveChannel()" class="leave-channel-button">
+        <button>Channel verlassen</button>
+    </div>
 </div>

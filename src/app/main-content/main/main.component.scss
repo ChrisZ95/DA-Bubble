@@ -21,16 +21,18 @@
   position: relative;
 }
 .workspace-chat-thread {
+  margin-left: 45px;
+  margin-right: 45px;
+  width: calc(100% - 90px);
   height: 100%;
   display: flex;
-  justify-content: space-evenly;
+  justify-content: center;
   position: relative;
   max-width: 1920px;
   gap: 10px;
   // z-index: 1;
 }
 .workspace {
-  left: 32px;
   height: 100%;
   width: 20vw;
   border-radius: 30px;
@@ -110,5 +112,11 @@
   .thread {
     height: calc(100vh - 80px);
     width: 100vw;
+  }
+
+  .workspace-chat-thread {
+    margin-left: 0px;
+    margin-right: 0px;
+    width: 100%;
   }
 }
