@@ -64,37 +64,32 @@ export class DialogContactInfoComponent implements OnInit{
 
   convertOnlineStatus(unixTimestampLogIn: any, unixTimestampLogOut: any): void {
     const currentDate = new Date();
-    let onlineStatus: Date;
-
-    if (unixTimestampLogIn.toString().length === 13) {
-      onlineStatus = new Date(unixTimestampLogIn);
-    } else {
-      onlineStatus = new Date(unixTimestampLogIn * 1000);
-    }
-
+    const onlineStatus = this.getOnlineStatusDate(unixTimestampLogIn);
     if (unixTimestampLogOut === 1) {
       this.lastOnlineMessage = 'Online';
       this.onlineStatusClass = 'online';
       return;
     }
-
     const diffInMs = currentDate.getTime() - onlineStatus.getTime();
     const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
     const diffInHours = Math.floor(diffInMinutes / 60);
     const diffInDays = Math.floor(diffInHours / 24);
-
     if (diffInMinutes < 5) {
       this.lastOnlineMessage = 'Zuletzt online gerade eben';
-      this.onlineStatusClass = 'offline';
     } else if (diffInMinutes < 60) {
       this.lastOnlineMessage = `Zuletzt online vor ${diffInMinutes} Minuten`;
-      this.onlineStatusClass = 'offline';
     } else if (diffInHours < 24) {
       this.lastOnlineMessage = `Zuletzt online vor ${diffInHours} Stunden`;
-      this.onlineStatusClass = 'offline';
     } else {
       this.lastOnlineMessage = `Zuletzt online vor ${diffInDays} Tagen`;
-      this.onlineStatusClass = 'offline';
     }
+    this.onlineStatusClass = 'offline';
+  }
+  
+  getOnlineStatusDate(unixTimestamp: any): Date {
+    const millisecondsInSecond = 1000;
+    const timestamp = parseInt(unixTimestamp.toString(), 10);
+    const timestampInMilliseconds = unixTimestamp.toString().length === 13 ? timestamp : timestamp * millisecondsInSecond;
+    return new Date(timestampInMilliseconds);
   }
 }

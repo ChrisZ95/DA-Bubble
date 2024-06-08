@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ChannelService } from '../services/channel.service';
 import { Firestore, updateDoc, doc, getDoc, deleteDoc } from '@angular/fire/firestore';
-import { Channel } from './../../models/channel.class';
 import { FirestoreService } from '../firestore.service';
 
 @Component({
@@ -34,48 +33,50 @@ export class DialogChannelInfoComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     const channelId = this.channelService.getCurrentChannelId();
-    if (channelId) {
-      this.channelService.getChannelAuthorUid(channelId).then(authorUid => {
-        if (authorUid) {
-          this.isChannelAuthor = this.firestoreService.currentuid === authorUid;
-          this.channelService.getAuthorName(authorUid).then(authorName => {
-            if (authorName) {
-              this.authorName = authorName;
-            } else {
-              console.error('Benutzername ist null.');
-            }
-          }).catch(error => {
-            console.error('Fehler beim Abrufen des Benutzernamens:', error);
-          });
-        } else {
-          console.error('Autor ist null.');
-        }
-      }).catch(error => {
-        console.error('Fehler beim Abrufen des Autors:', error);
-      });
-    } else {
-      console.error('channelId ist null.');
+    if (!channelId) return console.error('channelId ist null.');
+    try {
+      const authorUid = await this.channelService.getChannelAuthorUid(channelId);
+      if (!authorUid) return console.error('Autor ist null.');
+      
+      this.isChannelAuthor = this.firestoreService.currentuid === authorUid;
+      const authorName = await this.channelService.getAuthorName(authorUid);
+      if (authorName !== null) this.authorName = authorName;
+      else console.error('Benutzername ist null.');
+    } catch (error) {
+      console.error('Fehler beim Abrufen des Autors oder des Benutzernamens:', error);
     }
   }
   
-
   toggleEditing(field: string) {
     if (field === 'name') {
-      if (!this.editingName) {
-        this.editedChannelName = this.channelService.channelName;
-      } else {
-        this.updateName();
-      }
-      this.editingName = !this.editingName;
-      } else if (field === 'description') {
-        if (!this.editingDescription) {
-          this.editedDescription = this.channelService.channelDescription; 
-        } else {
-          this.updateDescription();
-        }
-        this.editingDescription = !this.editingDescription;
-      }
-      this.isEditing = this.editingName || this.editingDescription;
+      this.toggleNameEditing();
+    } else if (field === 'description') {
+      this.toggleDescriptionEditing();
+    }
+  }
+  
+  toggleNameEditing() {
+    if (!this.editingName) {
+      this.editedChannelName = this.channelService.channelName;
+    } else {
+      this.updateName();
+    }
+    this.editingName = !this.editingName;
+    this.updateIsEditing();
+  }
+  
+  toggleDescriptionEditing() {
+    if (!this.editingDescription) {
+      this.editedDescription = this.channelService.channelDescription;
+    } else {
+      this.updateDescription();
+    }
+    this.editingDescription = !this.editingDescription;
+    this.updateIsEditing();
+  }
+  
+  updateIsEditing() {
+    this.isEditing = this.editingName || this.editingDescription;
   }
 
   async updateName() {
@@ -117,18 +118,30 @@ export class DialogChannelInfoComponent implements OnInit {
         throw new Error('Channel ID is not available.');
       }
       const channelDocRef = this.channelService.getChannelDocByID(channelId);
-      const channelSnap = await getDoc(channelDocRef);
-      if (!channelSnap.exists()) {
-        throw new Error('Channel document does not exist.');
-      }
-      const currentChannelData = channelSnap.data() as { users: string[] };
-      const currentUsers = currentChannelData.users || [];
-      const updatedUsers = currentUsers.filter((userId: string) => userId !== this.firestoreService.currentuid);
-      await this.channelService.updateChannel(channelDocRef, { users: updatedUsers });
+      const currentUsers = await this.getCurrentChannelUsers(channelDocRef);
+      const updatedUsers = this.filterCurrentUser(currentUsers);
+      await this.updateChannelUsers(channelDocRef, updatedUsers);
       this.dialogRef.close();
     } catch (error) {
       console.error('Error leaving the channel:', error);
     }
+  }
+  
+  async getCurrentChannelUsers(channelDocRef: any): Promise<string[]> {
+    const channelSnap = await getDoc(channelDocRef);
+    if (!channelSnap.exists()) {
+      throw new Error('Channel document does not exist.');
+    }
+    const currentChannelData = channelSnap.data() as { users: string[] };
+    return currentChannelData.users || [];
+  }
+  
+  filterCurrentUser(users: string[]): string[] {
+    return users.filter(userId => userId !== this.firestoreService.currentuid);
+  }
+  
+  async updateChannelUsers(channelDocRef: any, updatedUsers: string[]) {
+    await this.channelService.updateChannel(channelDocRef, { users: updatedUsers });
   }
 
   async deleteChannel() {

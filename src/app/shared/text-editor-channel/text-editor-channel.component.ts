@@ -47,26 +47,22 @@ export class TextEditorChannelComponent implements OnInit {
 
   ngOnInit(): void {
     this.subscribeToMessages();
-
     this.emojiPickerSubscription = this.chatService.emojiPicker$.subscribe(
       (state: boolean) => {
         this.openEmojiPicker = state;
       }
     );
-
     this.AssociatedUserSubscription = this.chatService.associatedUser$.subscribe(
       (state: boolean) => {
         this.openAssociatedUser = state;
       }
     );
-
     this.clearTextEditorValueSubcription = this.chatService.clearValue$.subscribe(
       (state: boolean) => {
         this.message = '';
         this.memberData.length = 0;
       }
     );
-
     this.firestoreService.getAllUsers().then(users => {
       this.allUsers = users;
       this.updateMemberData();
@@ -188,68 +184,92 @@ export class TextEditorChannelComponent implements OnInit {
   sendMessageToChannel() {
     const currentChannelId = this.channelService.getCurrentChannelId();
     const currentUid = this.firestoreService.currentuid;
-    if (currentChannelId && currentUid) {
-      const timestamp: number = Date.now();
-      const timestampString: string = timestamp.toString();
-      const messageWithoutAuthor = {
-        messageId: this.generateId.generateId(),
-        message: this.message,
-        createdAt: timestampString,
-        uid: currentUid,
-        comments: [],
-        commentCount: 0,
-        lastCommentTime: null,
-      };
-      this.channelService
-        .getAuthorName(currentUid)
-        .then((authorName) => {
-          const message = {
-            ...messageWithoutAuthor,
-            authorName: authorName ?? currentUid,
-          };
-          this.channelService.messagesWithAuthors.push(message);
-          this.channelService.messages.push(message);
-          this.chatService.sendDataToChannel(currentChannelId, message);
-          this.message = '';
-        })
-        .catch((error) => {
-          console.error('Error fetching author name:', error);
-        });
+    if (this.isChannelAndUserValid(currentChannelId, currentUid)) {
+      const message = this.createMessage(currentUid);
+      this.addAuthorNameToMessage(message, currentChannelId);
     } else {
-      console.error(
-        'Kein aktueller Kanal ausgewählt oder Benutzer nicht angemeldet.'
-      );
+      console.error('Kein aktueller Kanal ausgewählt oder Benutzer nicht angemeldet.');
     }
+  }
+  
+  isChannelAndUserValid(channelId: string | null, uid: string | null): boolean {
+    return !!channelId && !!uid;
+  }
+  
+  createMessage(uid: string) {
+    const timestamp = Date.now().toString();
+    return {
+      messageId: this.generateId.generateId(),
+      message: this.message,
+      createdAt: timestamp,
+      uid: uid,
+      comments: [],
+      commentCount: 0,
+      lastCommentTime: null,
+    };
+  }
+  
+  async addAuthorNameToMessage(messageWithoutAuthor: any, channelId: string) {
+    try {
+      const authorName = await this.channelService.getAuthorName(messageWithoutAuthor.uid);
+      const message = {
+        ...messageWithoutAuthor,
+        authorName: authorName ?? messageWithoutAuthor.uid,
+      };
+      this.addMessageToChannel(message, channelId);
+      this.message = '';
+    } catch (error) {
+      console.error('Error fetching author name:', error);
+    }
+  }
+  
+  addMessageToChannel(message: any, channelId: string) {
+    this.channelService.messagesWithAuthors.push(message);
+    this.channelService.messages.push(message);
+    this.chatService.sendDataToChannel(channelId, message);
   }
 
   async sendCommentToMessage() {
     const currentMessageId = this.channelService.getCurrentMessageId();
     const currentUid = this.firestoreService.currentuid;
-    if (currentMessageId) {
-      const timestamp: number = Date.now();
-      const timestampString: string = timestamp.toString();
-      let newComment: any = {
-        id: this.generateId.generateId(),
-        comment: this.comment,
-        createdAt: timestampString,
-        uid: currentUid,
-        authorName: '',
-        authorNameStatus: 'loading',
-      };
-      const authorName = await this.channelService.getAuthorName(currentUid);
-      newComment.authorName = authorName ?? currentUid;
-      newComment.authorNameStatus = 'loaded';
-      this.chatService.sendCommentToChannel(currentMessageId, newComment);
-      this.channelService.updateMessageInMessagesList(
-        currentMessageId,
-        newComment
-      );
-      this.updateCommentCount(currentMessageId);
-      this.updateLastCommentTime(currentMessageId, timestampString);
-      this.comment = '';
-    } else {
+  
+    if (!currentMessageId) {
       console.error('Kein aktueller Kanal ausgewählt.');
+      return;
     }
+  
+    const newComment = await this.createComment(currentUid);
+    this.chatService.sendCommentToChannel(currentMessageId, newComment);
+    this.updateMessageWithComment(currentMessageId, newComment);
+  }
+  
+  async createComment(uid: string) {
+    const timestamp = Date.now().toString();
+    const newComment = {
+      id: this.generateId.generateId(),
+      comment: this.comment,
+      createdAt: timestamp,
+      uid: uid,
+      authorName: '',
+      authorNameStatus: 'loading',
+    };
+    try {
+      const authorName = await this.channelService.getAuthorName(uid);
+      newComment.authorName = authorName ?? uid;
+      newComment.authorNameStatus = 'loaded';
+    } catch (error) {
+      console.error('Error fetching author name:', error);
+      newComment.authorName = uid;
+      newComment.authorNameStatus = 'error';
+    }
+    return newComment;
+  }
+  
+  updateMessageWithComment(messageId: string, comment: any) {
+    this.channelService.updateMessageInMessagesList(messageId, comment);
+    this.updateCommentCount(messageId);
+    this.updateLastCommentTime(messageId, comment.createdAt);
+    this.comment = '';
   }
 
   updateMessageInMessagesList(messageId: string, newComment: any): void {
@@ -271,7 +291,7 @@ export class TextEditorChannelComponent implements OnInit {
     );
     if (message) {
       message.lastCommentTime = timestamp;
-      this.channelService.updateMessagesWithAuthors(); // Aktualisieren Sie die messagesWithAuthors Liste
+      this.channelService.updateMessagesWithAuthors();
     }
   }
 
@@ -281,7 +301,7 @@ export class TextEditorChannelComponent implements OnInit {
     );
     if (message) {
       message.commentCount++;
-      this.channelService.updateMessagesWithAuthors(); // Aktualisieren Sie die messagesWithAuthors Liste
+      this.channelService.updateMessagesWithAuthors();
     }
   }
 

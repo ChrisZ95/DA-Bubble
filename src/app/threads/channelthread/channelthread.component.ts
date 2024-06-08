@@ -1,7 +1,5 @@
 import {
   Component,
-  OnChanges,
-  SimpleChanges,
   OnInit,
   OnDestroy,
   Input
@@ -93,29 +91,35 @@ export class ChannelthreadComponent implements OnInit, OnDestroy {
   }
 
   async loadCommentsForCurrentMessage(messageId: string) {
-    const currentMessage = this.channelService.messages.find(
-      (message: any) => message.messageId === messageId
-    );
-    this.currentMessage = currentMessage; 
+    const currentMessage = this.getCurrentMessageById(messageId);
+    this.currentMessage = currentMessage;
     if (currentMessage) {
-      if (currentMessage.comments && currentMessage.comments.length > 0) {
-        this.currentMessageComments = await Promise.all(
-          currentMessage.comments.map(async (comment: any) => {
-            const authorName = await this.channelService.getAuthorName(
-              comment.uid
-            );
-            return {
-              ...comment,
-              authorName: authorName ?? comment.uid,
-            };
-          })
-        );
-      } else {
-        this.currentMessageComments = [];
-      }
+      this.currentMessageComments = await this.loadCommentsWithAuthorNames(currentMessage.comments);
     } else {
       this.currentMessageComments = [];
     }
+  }
+  
+  getCurrentMessageById(messageId: string) {
+    return this.channelService.messages.find(
+      (message: any) => message.messageId === messageId
+    );
+  }
+  
+  async loadCommentsWithAuthorNames(comments: any[]): Promise<any[]> {
+    if (!comments || comments.length === 0) {
+      return [];
+    }
+    const commentsWithAuthorNames = await Promise.all(
+      comments.map(async (comment: any) => {
+        const authorName = await this.channelService.getAuthorName(comment.uid);
+        return {
+          ...comment,
+          authorName: authorName ?? comment.uid,
+        };
+      })
+    );
+    return commentsWithAuthorNames;
   }
 
   getMemberAvatar(memberId: string): string {
@@ -170,7 +174,6 @@ export class ChannelthreadComponent implements OnInit, OnDestroy {
       await this.channelService.updateComment(this.currentMessage.messageId, comment.commentId, this.editedCommentText);
       this.editingCommentIndex = null;
       this.editedCommentText = '';
-      console.log('Comment updated successfully');
     } catch (error) {
       console.error('Error updating comment:', error);
     }
@@ -182,7 +185,6 @@ export class ChannelthreadComponent implements OnInit, OnDestroy {
       await this.channelService.updateMessage(this.currentMessage.messageId, this.editedMessageText);
       this.editedCurrentMessage = false;
       this.editedMessageText = '';
-      console.log('Message updated successfully');
     } catch (error) {
       console.error('Error updating message:', error);
     }
@@ -200,7 +202,6 @@ export class ChannelthreadComponent implements OnInit, OnDestroy {
       if (doc.exists()) {
         const userData = doc.data();
         this.userForm = { id: doc.id, ...userData };
-
         this.userDialogData = {
           username: this.userForm['username'],
           email: this.userForm['email'],
@@ -211,13 +212,9 @@ export class ChannelthreadComponent implements OnInit, OnDestroy {
           signUpdate: this.userForm['signUpdate'],
           emailVerified: this.firestoreService.auth.currentUser.emailVerified
         };
-
-        console.log(this.userDialogData);
         this.dialog.open(DialogContactInfoComponent, {
           data: this.userDialogData
         });
-      } else {
-        console.log('Das Benutzerdokument existiert nicht.');
       }
     });
   }

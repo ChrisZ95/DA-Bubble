@@ -46,19 +46,27 @@ export class DialogCreateChannelComponent {
         console.error('Benutzer nicht angemeldet.');
         return;
       }
-      const channelData = {
-        channelName: this.channelName,
-        description: this.channelDescription,
-        author: authorUid,
-        users: [authorUid] 
-      };
-      const newChannelId = await this.channelService.addChannel(channelData);
-      await this.chatService.createChatForChannel(newChannelId);
+      const newChannelId = await this.addChannel(authorUid);
+      await this.createChatForChannel(newChannelId);
       this.dialogRef.close();
       this.openAddPeopleToNewChannelDialog(newChannelId);
     } catch (error) {
       console.error('Fehler beim Erstellen des Kanals:', error);
       throw error;
     }
+  }
+  
+  async addChannel(authorUid: string): Promise<string> {
+    const channelData = {
+      channelName: this.channelName,
+      description: this.channelDescription,
+      author: authorUid,
+      users: [authorUid]
+    };
+    return await this.channelService.addChannel(channelData);
+  }
+  
+  async createChatForChannel(channelId: string): Promise<void> {
+    await this.chatService.createChatForChannel(channelId);
   }
 }

@@ -7,15 +7,14 @@ import {
   DocumentData,
   doc,
   updateDoc,
-  onSnapshot,
   getDoc,
-  arrayUnion,
   query,
   where,
   getDocs,
   Query,
+  QuerySnapshot,
+  QueryDocumentSnapshot,
 } from '@angular/fire/firestore';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { Channel } from './../../models/channel.class';
 import { FirestoreService } from '../firestore.service';
 import { EventEmitter } from '@angular/core';
@@ -114,25 +113,30 @@ export class ChannelService {
 
   addChannel(channelData: any): Promise<string> {
     return new Promise<string>((resolve, reject) => {
-      const newChannel = channelData;
-      addDoc(collection(this.firestore, 'channels'), newChannel)
-        .then((result: any) => {
-          newChannel['channelId'] = result.id;
-          updateDoc(doc(this.firestore, 'channels', result.id), newChannel)
-            .then(() => {
-              console.log(result);
-              resolve(result.id);
-            })
-            .catch((error) => {
-              console.error('Fehler beim Aktualisieren des Kanals:', error);
-              reject(error);
-            });
-        })
-        .catch((error) => {
-          console.error('Fehler beim Erstellen des Kanals:', error);
-          reject(error);
-        });
+      this.createNewChannel(channelData)
+        .then(channelId => this.updateChannelData(channelId, channelData)
+          .then(() => resolve(channelId))
+          .catch(reject))
+        .catch(reject);
     });
+  }
+  
+  createNewChannel(channelData: any): Promise<string> {
+    return addDoc(collection(this.firestore, 'channels'), channelData)
+      .then((result: any) => result.id)
+      .catch(error => {
+        console.error('Fehler beim Erstellen des Kanals:', error);
+        throw error;
+      });
+  }
+  
+  updateChannelData(channelId: string, channelData: any): Promise<void> {
+    const channelDocRef = doc(this.firestore, 'channels', channelId);
+    return updateDoc(channelDocRef, { ...channelData, channelId })
+      .catch(error => {
+        console.error('Fehler beim Aktualisieren des Kanals:', error);
+        throw error;
+      });
   }
 
   async updateChannel(channelRef: DocumentReference<DocumentData>, object: {}) {
@@ -157,18 +161,12 @@ export class ChannelService {
 
   async getAuthorName(uid: string): Promise<string | null> {
     try {
-      const userDocRef = doc(this.firestore, 'users', uid);
-      const userSnapshot = await getDoc(userDocRef);
-      if (userSnapshot.exists()) {
-        const userData = userSnapshot.data() as DocumentData;
-        if (userData && userData['username']) {
-          return userData['username'];
-        } else {
-          console.error('Benutzername nicht gefunden.');
-          return null;
-        }
+      const userDocRef = this.getUserDocumentReference(uid);
+      const userData = await this.getUserData(userDocRef);
+      if (userData) {
+        return this.extractUsername(userData);
       } else {
-        console.error('Benutzer nicht gefunden.');
+        console.error('Benutzerdaten nicht gefunden.');
         return null;
       }
     } catch (error) {
@@ -176,26 +174,61 @@ export class ChannelService {
       throw error;
     }
   }
+  
+  getUserDocumentReference(uid: string): DocumentReference {
+    return doc(this.firestore, 'users', uid);
+  }
+  
+  async getUserData(userDocRef: DocumentReference): Promise<DocumentData | null> {
+    const userSnapshot = await getDoc(userDocRef);
+    if (userSnapshot.exists()) {
+      return userSnapshot.data() as DocumentData;
+    } else {
+      console.error('Benutzer nicht gefunden.');
+      return null;
+    }
+  }
+  
+  extractUsername(userData: DocumentData): string | null {
+    if (userData && userData['username']) {
+      return userData['username'];
+    } else {
+      console.error('Benutzername nicht gefunden.');
+      return null;
+    }
+  }
 
   async getChannelAuthorUid(channelId: string): Promise<string | null> {
     try {
-      const channelDocRef = doc(this.firestore, 'channels', channelId);
-      const channelSnapshot = await getDoc(channelDocRef);
-      if (channelSnapshot.exists()) {
-        const channelData = channelSnapshot.data() as DocumentData;
-        if (channelData && channelData['author']) {
-          return channelData['author'];
-        } else {
-          console.error('Autor des Kanals nicht gefunden.');
-          return null;
-        }
-      } else {
-        console.error('Kanal nicht gefunden.');
-        return null;
-      }
+      const channelDocRef = this.getChannelDocumentReference(channelId);
+      const channelData = await this.getChannelData(channelDocRef);
+      return this.extractChannelAuthor(channelData);
     } catch (error) {
       console.error('Fehler beim Abrufen des Autors des Kanals:', error);
       throw error;
+    }
+  }
+  
+  getChannelDocumentReference(channelId: string): DocumentReference {
+    return doc(this.firestore, 'channels', channelId);
+  }
+  
+  async getChannelData(channelDocRef: DocumentReference): Promise<DocumentData | null> {
+    const channelSnapshot = await getDoc(channelDocRef);
+    if (channelSnapshot.exists()) {
+      return channelSnapshot.data();
+    } else {
+      console.error('Kanal nicht gefunden.');
+      return null;
+    }
+  }
+  
+  extractChannelAuthor(channelData: DocumentData | null): string | null {
+    if (channelData && channelData['author']) {
+      return channelData['author'];
+    } else {
+      console.error('Autor des Kanals nicht gefunden.');
+      return null;
     }
   }
 
@@ -229,40 +262,48 @@ export class ChannelService {
   }
 
   async loadMessagesForChannel(channelId: string): Promise<any[]> {
-    this.messages = [];
     try {
-      const chatsRef = collection(this.firestore, 'chats');
-      const q: Query<DocumentData> = query(
-        chatsRef,
-        where('channelId', '==', channelId)
-      );
-      const querySnapshot = await getDocs(q);
-
-      querySnapshot.forEach((doc) => {
-        const chatData = doc.data();
-        if (chatData['messages'] && Array.isArray(chatData['messages'])) {
-          const messagesWithCommentCount = chatData['messages'].map(
-            (message: any) => {
-              const commentCount = message.comments
-                ? message.comments.length
-                : 0;
-              const lastCommentTime = message.comments
-                ? message.comments.reduce((latest: number, comment: any) => {
-                    const commentTime = parseInt(comment.createdAt);
-                    return commentTime > latest ? commentTime : latest;
-                  }, 0)
-                : 0;
-              return { ...message, commentCount, lastCommentTime };
-            }
-          );
-          this.messages.push(...messagesWithCommentCount);
-        }
-      });
+      const querySnapshot = await this.queryChannelMessages(channelId);
+      this.processQuerySnapshot(querySnapshot);
       return this.messages;
     } catch (error) {
       console.error('Error loading messages for channel:', error);
       return [];
     }
+  }
+  
+  private async queryChannelMessages(channelId: string): Promise<QuerySnapshot<DocumentData>> {
+    const chatsRef = collection(this.firestore, 'chats');
+    const q: Query<DocumentData> = query(chatsRef, where('channelId', '==', channelId));
+    return await getDocs(q);
+  }
+  
+  private processQuerySnapshot(querySnapshot: QuerySnapshot<DocumentData>): void {
+    this.messages = [];
+    querySnapshot.forEach((doc) => {
+      const chatData = doc.data();
+      this.processChatDataMessages(chatData);
+    });
+  }
+  
+  private processChatDataMessages(chatData: DocumentData): void {
+    if (chatData['messages'] && Array.isArray(chatData['messages'])) {
+      const messagesWithCommentCount = chatData['messages'].map((message: any) => {
+        return this.processMessageWithCommentCount(message);
+      });
+      this.messages.push(...messagesWithCommentCount);
+    }
+  }
+  
+  private processMessageWithCommentCount(message: any): any {
+    const commentCount = message.comments ? message.comments.length : 0;
+    const lastCommentTime = message.comments
+      ? message.comments.reduce((latest: number, comment: any) => {
+          const commentTime = parseInt(comment.createdAt);
+          return commentTime > latest ? commentTime : latest;
+        }, 0)
+      : 0;
+    return { ...message, commentCount, lastCommentTime };
   }
 
   async getUserById(userId: string): Promise<any> {
@@ -293,85 +334,86 @@ export class ChannelService {
     );
   }
 
-  async updateMessage(
-    messageId: string,
-    newMessageText: string
-  ): Promise<void> {
+  async updateMessage(messageId: string, newMessageText: string): Promise<void> {
     try {
-      const chatsRef = collection(this.firestore, 'chats');
-      const querySnapshot = await getDocs(chatsRef);
-      let messageFound = false;
-      for (const chatDoc of querySnapshot.docs) {
-        const chatData = chatDoc.data();
-        if (chatData['messages'] && Array.isArray(chatData['messages'])) {
-          const messages = chatData['messages'];
-          const messageIndex = messages.findIndex(
-            (msg: any) => msg.messageId === messageId
-          );
-          if (messageIndex !== -1) {
-            messages[messageIndex].message = newMessageText;
-            await updateDoc(doc(this.firestore, 'chats', chatDoc.id), {
-              messages: messages,
-            });
-            messageFound = true;
-            console.log(
-              'Message updated successfully in chat document with ID:',
-              chatDoc.id
-            );
-            break;
-          }
-        }
-      }
+      const querySnapshot = await this.getChatsSnapshot();
+      const messageFound = this.findAndUpdateMessage(querySnapshot, messageId, newMessageText);
       if (!messageFound) {
-        console.error(
-          'No chat document found containing the specified message.'
-        );
+        console.error('No chat document found containing the specified message.');
       }
     } catch (error) {
       console.error('Error updating message:', error);
       throw error;
     }
   }
+  
+  async getChatsSnapshot(): Promise<QuerySnapshot<DocumentData>> {
+    const chatsRef = collection(this.firestore, 'chats');
+    return await getDocs(chatsRef);
+  }
+  
+  findAndUpdateMessage(snapshot: QuerySnapshot<DocumentData>, messageId: string, newMessageText: string): boolean {
+    for (const chatDoc of snapshot.docs) {
+      const chatData = chatDoc.data();
+      if (chatData['messages'] && Array.isArray(chatData['messages'])) {
+        const messages = chatData['messages'];
+        const messageIndex = messages.findIndex((msg: any) => msg.messageId === messageId);
+        if (messageIndex !== -1) {
+          this.updateMessageInChatDocument(chatDoc, messages, messageIndex, newMessageText);
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+  
+  async updateMessageInChatDocument(chatDoc: QueryDocumentSnapshot<DocumentData>, messages: any[], messageIndex: number, newMessageText: string): Promise<void> {
+    messages[messageIndex].message = newMessageText;
+    await updateDoc(doc(this.firestore, 'chats', chatDoc.id), { messages });
+  }
 
   async updateComment(messageId: string, commentId: string, newCommentText: string): Promise<void> {
     try {
-      const chatsRef = collection(this.firestore, 'chats');
-      const querySnapshot = await getDocs(chatsRef);
-      let commentFound = false;
-      for (const chatDoc of querySnapshot.docs) {
-        const chatData = chatDoc.data();
-        if (chatData['messages'] && Array.isArray(chatData['messages'])) {
-          const messages = chatData['messages'];
-          for (const message of messages) {
-            if (message.messageId === messageId && message.comments && Array.isArray(message.comments)) {
-              const commentIndex = message.comments.findIndex(
-                (comment: any) => comment.commentId === commentId
-              );
-              if (commentIndex !== -1) {
-                message.comments[commentIndex].comment = newCommentText;
-                await updateDoc(doc(this.firestore, 'chats', chatDoc.id), {
-                  messages: messages,
-                });
-                commentFound = true;
-                console.log(
-                  'Comment updated successfully in chat document with ID:',
-                  chatDoc.id
-                );
-                break;
-              }
-            }
-          }
-        }
-        if (commentFound) break;
-      }
+      const querySnapshot = await this.getChatsSnapshot();
+      const commentFound = this.findAndUpdateComment(querySnapshot, messageId, commentId, newCommentText);
       if (!commentFound) {
-        console.error(
-          'No chat document found containing the specified comment.'
-        );
+        console.error('No chat document found containing the specified comment.');
       }
     } catch (error) {
       console.error('Error updating comment:', error);
       throw error;
     }
+  }
+  
+  private async findAndUpdateComment(snapshot: QuerySnapshot<DocumentData>, messageId: string, commentId: string, newCommentText: string): Promise<boolean> {
+    for (const chatDoc of snapshot.docs) {
+      const chatData = chatDoc.data();
+      if (chatData['messages'] && Array.isArray(chatData['messages'])) {
+        const messages = chatData['messages'];
+        const commentFound = this.updateCommentInMessages(messages, messageId, commentId, newCommentText);
+        if (commentFound) {
+          await this.updateMessagesInChatDocument(chatDoc, messages);
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+  
+  updateCommentInMessages(messages: any[], messageId: string, commentId: string, newCommentText: string): boolean {
+    for (const message of messages) {
+      if (message.messageId === messageId && message.comments && Array.isArray(message.comments)) {
+        const commentIndex = message.comments.findIndex((comment: any) => comment.commentId === commentId);
+        if (commentIndex !== -1) {
+          message.comments[commentIndex].comment = newCommentText;
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+  
+  async updateMessagesInChatDocument(chatDoc: QueryDocumentSnapshot<DocumentData>, messages: any[]): Promise<void> {
+    await updateDoc(doc(this.firestore, 'chats', chatDoc.id), { messages });
   }
 }
