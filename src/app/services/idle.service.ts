@@ -4,9 +4,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class IdleService {
-  constructor() // private myFirebaseApp: FirebaseApp,
-  // public router: Router,
-  // private rdb: Database
+  constructor() // private rdb: Database // public router: Router, // private myFirebaseApp: FirebaseApp,
   {}
   //Adrian wird noch in einen anderen Service verschoben
   // const mouseMove$ = fromEvent(document, 'mousemove');

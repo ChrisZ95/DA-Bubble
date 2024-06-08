@@ -128,7 +128,6 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   setEmojiInData(emojiIcon: any, emojiID: any, currentUserID: any, reaction: any, message: any) {
-    // debugger;
     if (!currentUserID || !reaction) {
         console.log('Nachricht nicht gefunden');
         return;
