@@ -33,6 +33,7 @@ import {
   deleteField,
   deleteDoc,
   onSnapshot,
+  query
 } from '@angular/fire/firestore';
 import {
   getStorage,
@@ -136,6 +137,7 @@ export class FirestoreService {
       if (auth) {
         await deleteDoc(doc(this.firestore, 'users', uid));
       }
+      await this.deleteUserChats(uid);
       localStorage.clear;
       localStorage.setItem('userDelete', 'true');
       return 'auth/correct';
@@ -147,6 +149,22 @@ export class FirestoreService {
       return 'auth/false';
     }
   }
+
+  async deleteUserChats( uid: string) {
+    debugger
+    try {
+      const q = query(collection(this.firestore, "chats"), where("participants", "array-contains", uid));
+      const querySnapshot = await getDocs(q);
+      const deletePromises = querySnapshot.docs.map((chatDoc) => {
+        return deleteDoc(doc(this.firestore, "chats", chatDoc.id));
+      });
+      await Promise.all(deletePromises);
+      console.log(`Alle Chats für den Benutzer mit der ID ${uid} wurden gelöscht.`);
+    } catch (error) {
+      console.error("Fehler beim Löschen der Chats: ", error);
+    }
+  }
+
 
   async deleteUserIcon(currentUserIcon: string, currentUserId: string) {
     console.log(currentUserIcon);

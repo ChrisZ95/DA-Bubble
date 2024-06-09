@@ -41,7 +41,7 @@ export class ThreadService {
   constructor(
     private firestore: Firestore,
     private generateId: GenerateIdsService,
-    private firestoreService: FirestoreService
+    private firestoreService: FirestoreService,
   ) {}
   displayThread: boolean = false;
   messageInformation: any;
