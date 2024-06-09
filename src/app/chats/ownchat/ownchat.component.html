@@ -5,7 +5,7 @@
   <div *ngIf="this.chatService.participants.length > 0" class="images">
     <div class="images-participants"
       *ngFor="let user of (this.chatService.participants.length === 1 ? filteredUsers : [userInformation])"
-      (click)="openContactInfoDialog(user)">
+      (click)="openContactInfoDialogHeader(user)">
       <img [src]="user?.photo" alt="">
       <h2>{{ user?.username }} {{ this.chatService.participants.length === 1 ? '( Du )' : '' }}</h2>
     </div>
@@ -32,7 +32,7 @@
       <div class="conversation">
         <div class="name-timestamp" [ngClass]="{'reverse-order': message.creator === firestoreService.currentuid}">
           <span *ngFor="let user of (this.chatService.participants.length === 1 ? filteredUsers : [userInformation])"
-            class="name" (click)="openContactInfoDialog(user)">{{ displayName(message.creator) }}</span>
+            class="name" (click)="openContactInfoDialog(message.creator)">{{ displayName(message.creator) }}</span>
           <span class="time">{{ message.createdAt | timestamp: 'time' }} Uhr</span>
         </div>
         <div [ngClass]="{

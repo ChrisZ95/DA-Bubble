@@ -7,7 +7,7 @@ import {
   SimpleChanges,
   OnDestroy,
 } from '@angular/core';
-import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
 import { ChatService } from '../../services/chat.service';
 import { TimestampPipe } from '../../shared/pipes/timestamp.pipe';
 import { TextEditorComponent } from '../../shared/text-editor/text-editor.component';
@@ -221,9 +221,20 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     this.dialog.open(DialogChannelInfoComponent);
   }
 
-  openContactInfoDialog(userDetails: any) {
+  async openContactInfoDialogHeader(userDetails: any) {
     this.dialog.open(DialogContactInfoComponent, {
       data: userDetails,
+    });
+  }
+
+  async openContactInfoDialog(uid: any) {
+    let allUsers = await this.firestoreService.getAllUsers();
+    console.log(allUsers)
+    let userDetails = allUsers.filter(
+      (user) => user.uid == uid
+    );
+    this.dialog.open(DialogContactInfoComponent, {
+      data: userDetails[0],
     });
   }
 
