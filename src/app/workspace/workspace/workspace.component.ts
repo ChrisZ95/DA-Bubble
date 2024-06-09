@@ -35,6 +35,7 @@ import {
   animate,
 } from '@angular/animations';
 import { IdleService } from '../../services/idle.service';
+import { GroupchatsService } from '../../services/groupchats.service';
 
 @Component({
   selector: 'app-workspace',
@@ -70,7 +71,8 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
     public channelService: ChannelService,
     public chatService: ChatService,
     private cdRef: ChangeDetectorRef,
-    private idleService: IdleService
+    private idleService: IdleService,
+    private groupService: GroupchatsService
   ) {
     onSnapshot(collection(this.firestore, 'channels'), (list) => {
       this.allChannels = list.docs.map((doc) => doc.data());
@@ -161,6 +163,8 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
     this.userStatus$ = this.idleService.getUserStatus(
       this.firestoreService.currentuid
     );
+    //Adrian Testfunktion
+    this.groupService.displayValue();
   }
 
   ngOnDestroy(): void {

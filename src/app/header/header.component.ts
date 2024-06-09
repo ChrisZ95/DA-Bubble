@@ -299,7 +299,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.firestoreService
       .getAllChannels()
       .then((Channels) => {
-        this.allChannels = Channels;
+        this.allChannels = Channels.filter((channel) =>
+          channel.users.includes(this.firestoreService.currentuid)
+        );
       })
       .catch((error) => {
         console.error('Error fetching users:', error);
