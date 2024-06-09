@@ -1,77 +1,14 @@
 import { Injectable, EventEmitter, OnInit } from '@angular/core';
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  onAuthStateChanged,
-  GoogleAuthProvider,
-  signInWithPopup,
-  sendEmailVerification,
-  updatePassword,
-  sendPasswordResetEmail,
-  OAuthProvider,
-  Auth,
-  signOut,
-  updateEmail,
-  reauthenticateWithCredential,
-  EmailAuthProvider,
-  fetchSignInMethodsForEmail,
-  verifyBeforeUpdateEmail,
-  deleteUser,
-} from '@angular/fire/auth';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, sendEmailVerification, updatePassword, sendPasswordResetEmail, OAuthProvider, Auth, signOut, updateEmail, reauthenticateWithCredential, EmailAuthProvider, fetchSignInMethodsForEmail, verifyBeforeUpdateEmail, deleteUser,} from '@angular/fire/auth';
 import { FirebaseApp } from '@angular/fire/app';
-import {
-  getFirestore,
-  doc,
-  setDoc,
-  collection,
-  getDocs,
-  getDoc,
-  updateDoc,
-  where,
-  QueryDocumentSnapshot,
-  deleteField,
-  deleteDoc,
-  onSnapshot,
-  query
-} from '@angular/fire/firestore';
-import {
-  getStorage,
-  provideStorage,
-  ref,
-  uploadBytes,
-  getDownloadURL,
-  deleteObject,
-} from '@angular/fire/storage';
+import { getFirestore, doc, setDoc, collection, getDocs, getDoc, updateDoc, where, QueryDocumentSnapshot, deleteField, deleteDoc, onSnapshot, query} from '@angular/fire/firestore';
+import { getStorage, provideStorage, ref, uploadBytes, getDownloadURL, deleteObject,} from '@angular/fire/storage';
 import { User } from '../models/user.class';
 import { Channel } from '../models/channel.class';
 import { Router } from '@angular/router';
 import { log } from 'console';
-import {
-  BehaviorSubject,
-  Observable,
-  debounceTime,
-  fromEvent,
-  map,
-  switchMap,
-  timer,
-  from,
-} from 'rxjs';
-// import {
-//   AngularFireDatabase,
-//   AngularFireList,
-// } from '@angular/fire/compat/database';
-import {
-  Database,
-  ref as reference,
-  set,
-  get,
-  child,
-  onValue,
-  push,
-  update,
-  remove,
-} from '@angular/fire/database';
+import { BehaviorSubject, Observable, debounceTime, fromEvent, map, switchMap, timer, from,} from 'rxjs';
+import { Database, ref as reference, set, get, child, onValue, push, update, remove,} from '@angular/fire/database';
 import { IdleService } from './services/idle.service';
 
 @Injectable({
@@ -96,19 +33,12 @@ export class FirestoreService {
   displayWorkspace: boolean = true;
   isScreenWide: boolean = false;
 
-  constructor(
-    private myFirebaseApp: FirebaseApp,
-    public router: Router, // private realTimedb: AngularFireDatabase
-    private rdb: Database,
-    private idleService: IdleService
-  ) {
+  constructor( private myFirebaseApp: FirebaseApp, public router: Router, private rdb: Database, private idleService: IdleService) {
     this.auth = getAuth(myFirebaseApp);
-    // console.log('Auth dokument', this.auth);
     this.auth.languageCode = 'de';
     this.firestore = getFirestore(myFirebaseApp);
     const provider = new GoogleAuthProvider();
     this.currentuid = localStorage.getItem('uid');
-    // console.log('ausgeloggte uid', this.currentuid);
     this.initializeAuthState();
   }
 
