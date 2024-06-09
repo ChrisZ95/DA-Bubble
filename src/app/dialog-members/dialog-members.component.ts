@@ -4,6 +4,7 @@ import { DialogAddPeopleComponent } from '../dialog-add-people/dialog-add-people
 import { ChannelService } from '../services/channel.service';
 import { CommonModule } from '@angular/common';
 import { FirestoreService } from '../firestore.service';
+import { DialogContactInfoComponent } from '../dialog-contact-info/dialog-contact-info.component';
 
 @Component({
   selector: 'app-dialog-members',
@@ -14,7 +15,7 @@ import { FirestoreService } from '../firestore.service';
 })
 export class DialogMembersComponent implements OnInit {
   allUsers: any[] = [];
-  memberData: { username: string, photo: string }[] = [];
+  memberData: { username: string, photo: string, uid: any }[] = [];
 
   constructor(private dialogRef: MatDialogRef<DialogMembersComponent>, public dialog: MatDialog, public channelService: ChannelService, public firestoreService: FirestoreService) {}
 
@@ -36,7 +37,18 @@ export class DialogMembersComponent implements OnInit {
     });
   }
 
+  async openContactInfo(userid:any ) {
+    let allUsers = await this.firestoreService.getAllUsers();
+    console.log(allUsers)
+    let userDetails = allUsers.filter(
+      (user) => user.uid == userid
+    );
+    this.dialog.open(DialogContactInfoComponent, {
+      data: userDetails[0],
+    });
+  }
+
   updateMemberData(): void {
-    this.memberData = this.allUsers.filter(user => this.channelService.UserName.includes(user.uid)).map(user => ({ username: user.username, photo: user.photo }));
+    this.memberData = this.allUsers.filter(user => this.channelService.UserName.includes(user.uid)).map(user => ({ username: user.username, photo: user.photo, uid: user.uid }));
   }
 }

@@ -87,7 +87,6 @@ export class DialogContactInfoComponent implements OnInit{
   }
 
   getOnlineStatusDate(unixTimestamp: any): Date {
-    debugger
     const millisecondsInSecond = 1000;
     const timestamp = parseInt(unixTimestamp.toString(), 10);
     const timestampInMilliseconds = unixTimestamp.toString().length === 13 ? timestamp : timestamp * millisecondsInSecond;

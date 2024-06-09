@@ -3,8 +3,8 @@
       <span>Mitglieder</span>
       <img src="./../../assets/images/close.png" alt="" (click)="closeDialogMember()">
     </div>
-    <div class="dialog-member-avatar-name">
-      <div class="dialog-member-avatar" *ngFor="let member of memberData">
+    <div class="dialog-member-avatar-name" *ngFor="let member of memberData">
+      <div (click)="openContactInfo(member.uid)" class="dialog-member-avatar">
         <img src="{{ member.photo }}" alt="">
         <span>{{ member.username }}</span>
       </div>
