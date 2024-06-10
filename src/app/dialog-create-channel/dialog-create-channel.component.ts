@@ -33,7 +33,7 @@ export class DialogCreateChannelComponent {
     this.dialogRef.close();
     this.dialog.open(DialogAddPeopleToNewChannelComponent, {
       data: {
-        newChannelId: newChannelId
+        channelId: newChannelId
       }
     });
     this.channelService.setCurrentChannelId(newChannelId);

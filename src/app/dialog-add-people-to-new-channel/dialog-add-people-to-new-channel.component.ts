@@ -28,10 +28,11 @@ export class DialogAddPeopleToNewChannelComponent implements OnInit {
   allChannels: any = [];
   currentChannelId: string = '';
   showUserList: boolean = false;
+  authorUid: string = '';
 
   constructor(
     private dialogRef: MatDialogRef<DialogAddPeopleToNewChannelComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { channels: any[] },
+    @Inject(MAT_DIALOG_DATA) public data: { channelId: string },
     private firestoreService: FirestoreService,
     private channelService: ChannelService,
     private readonly firestore: Firestore
@@ -41,18 +42,18 @@ export class DialogAddPeopleToNewChannelComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+    this.currentChannelId = this.data.channelId;  // Correctly access channelId from data
+    const channelDoc = await getDoc(doc(this.firestore, 'channels', this.currentChannelId));
+    if (channelDoc.exists()) {
+      const channelData = channelDoc.data() as any;
+      this.authorUid = channelData.author;
+    }
     this.firestoreService.getAllUsers().then(users => {
-      this.allUsers = users;
+      this.allUsers = users.filter(user => user.uid !== this.authorUid); // Exclude the author from all users
     }).catch(error => {
       console.error('Error fetching users:', error);
     });
-    this.channelService.getChannels().then((channels) => {
-      this.allChannels = channels;
-      console.log('Channels', channels);
-    });
-    this.currentChannelId = this.channelService.getCurrentChannelId();
-    console.log(this.currentChannelId);
   }
 
   closeAddPeopleToNewChannelDialog(): void {
@@ -72,7 +73,8 @@ export class DialogAddPeopleToNewChannelComponent implements OnInit {
   filterUsers(): void {
     if (this.personName.trim() !== '') {
       this.filteredUsers = this.allUsers.filter(user => 
-        user.username.toLowerCase().includes(this.personName.toLowerCase())
+        user.username.toLowerCase().includes(this.personName.toLowerCase()) &&
+        user.uid !== this.authorUid 
       );
       this.showUserList = true;
     } else {

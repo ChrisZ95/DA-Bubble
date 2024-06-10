@@ -29,6 +29,7 @@ export class DialogAddPeopleComponent implements OnInit {
   channel = new Channel();
   currentChannelId: string = '';
   allChannels: any = [];
+  channelMembers: string[] = [];
 
   constructor(
     private dialogRef: MatDialogRef<DialogAddPeopleComponent>, 
@@ -46,15 +47,23 @@ export class DialogAddPeopleComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.firestoreService.getAllUsers().then(users => {
-      this.allUsers = users;
-    }).catch(error => {
-      console.error('Error fetching users:', error);
-    });
-    this.channelService.getChannels().then((channels) => {
-      this.allChannels = channels;
-    });
     this.currentChannelId = this.channelService.getCurrentChannelId();
+    this.loadChannelData();
+  }
+
+  async loadChannelData(): Promise<void> {
+    try {
+      const channelDocRef = this.getValidChannelDocRef();
+      const channelSnap = await getDoc(channelDocRef);
+      if (channelSnap.exists()) {
+        const channelData = channelSnap.data() as { users: string[] };
+        this.channelMembers = channelData.users || [];
+      }
+      this.allUsers = await this.firestoreService.getAllUsers();
+      this.filterAvailableUsers();
+    } catch (error) {
+      console.error('Error fetching channel data:', error);
+    }
   }
 
   selectUser(user: any): void {
@@ -69,9 +78,10 @@ export class DialogAddPeopleComponent implements OnInit {
 
   filterUsers(): void {
     if (this.personName.trim() !== '') {
-      this.filteredUsers = this.allUsers.filter(user => {
-        return user.username.toLowerCase().includes(this.personName.toLowerCase());
-      });
+      this.filteredUsers = this.allUsers.filter(user => 
+        user.username.toLowerCase().includes(this.personName.toLowerCase()) && 
+        !this.channelMembers.includes(user.uid)
+      );
       this.showUserList = true;
     } else {
       this.filteredUsers = [];
@@ -124,5 +134,9 @@ export class DialogAddPeopleComponent implements OnInit {
 
   checkButtonStatus(): void {
     this.buttonColor = this.selectedUsers.length > 0 ? '#444DF2' : '#686868';
+  }
+
+  filterAvailableUsers(): void {
+    this.allUsers = this.allUsers.filter(user => !this.channelMembers.includes(user.uid));
   }
 }
