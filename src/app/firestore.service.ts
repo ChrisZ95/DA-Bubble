@@ -81,7 +81,6 @@ export class FirestoreService {
   }
 
   async deleteUserChats( uid: string) {
-    debugger
     try {
       const q = query(collection(this.firestore, "chats"), where("participants", "array-contains", uid));
       const querySnapshot = await getDocs(q);
@@ -473,6 +472,7 @@ export class FirestoreService {
         logIndate: logIndate,
         logOutDate: 1,
       });
+      this.setuid(userCredential.user.uid)
       this.setCurrentUid(userCredential.user.uid);
       this.idleService.setData(`users/${userCredential.user.uid}`, {
         uid: userCredential.user.uid,
@@ -490,28 +490,6 @@ export class FirestoreService {
         return 'auth/invalid-credential';
       }
       throw error;
-    }
-  }
-
-  /* FUNKTIONIERT AKTUELL NICHT! SignUp / LogIn mit Apple*/
-  async signInWithApple(auth: any, provider: any): Promise<void> {
-    try {
-      const result = await signInWithPopup(auth, provider);
-      const credential = OAuthProvider.credentialFromResult(result);
-      if (credential !== null) {
-        const token = credential.accessToken;
-        const user = result.user;
-        this.observeAuthState();
-        this.router.navigate(['generalView']);
-      } else {
-        console.error('Credential is null');
-      }
-    } catch (error: any) {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      const email = error.customData.email;
-      const credential = OAuthProvider.credentialFromError(error);
-      console.log(errorCode);
     }
   }
 

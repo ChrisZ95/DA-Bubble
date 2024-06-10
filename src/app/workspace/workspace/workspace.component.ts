@@ -1,39 +1,15 @@
-import {
-  Component,
-  EventEmitter,
-  OnInit,
-  Output,
-  ViewChild,
-  OnDestroy,
-  Input,
-  OnChanges,
-  SimpleChanges,
-  ChangeDetectorRef,
-} from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ViewChild, OnDestroy, Input, OnChanges, SimpleChanges, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DialogCreateChannelComponent } from '../../dialog-create-channel/dialog-create-channel.component';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
-import {
-  Firestore,
-  onSnapshot,
-  collection,
-  doc,
-  getDoc,
-} from '@angular/fire/firestore';
+import { Firestore, onSnapshot, collection, doc, getDoc} from '@angular/fire/firestore';
 import { Channel } from './../../../models/channel.class';
 import { FirestoreService } from '../../firestore.service';
 import { ChannelService } from '../../services/channel.service';
 import { ChatService } from '../../services/chat.service';
 import { ChannelchatComponent } from '../../chats/channelchat/channelchat.component';
 import { log } from 'console';
-import {
-  trigger,
-  state,
-  style,
-  transition,
-  animate,
-} from '@angular/animations';
 import { IdleService } from '../../services/idle.service';
 import { GroupchatsService } from '../../services/groupchats.service';
 
@@ -49,35 +25,59 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
   @Input() channelDetails: any;
   @Output() userDetails = new EventEmitter<string>();
   @Output() disyplayEmptyChat = new EventEmitter<boolean>();
+  private userStatusSubscription: Subscription | undefined;
+
   userStatus$: any;
-  userStatus: any = 'active';
-  displayUsers: boolean = false;
-  channel = new Channel();
+  currentUid: any;
+  currentUser: any;
   allChannels: any = [];
   filteredChannels: any[] = [];
   allUsers: any[] = [];
-  currentUid: any;
-  currentUser: any;
   otherUsers: any = [];
+  userStatus: any = 'active';
+  displayUsers: boolean = false;
+  showChannel = false;
+  channel = new Channel();
   selectedChannelName: string | null = null;
   currentChannelId: string = '';
-  showChannel = false;
-  private userStatusSubscription: Subscription | undefined;
 
-  constructor(
-    public dialog: MatDialog,
-    private readonly firestore: Firestore,
-    private firestoreService: FirestoreService,
-    public channelService: ChannelService,
-    public chatService: ChatService,
-    private cdRef: ChangeDetectorRef,
-    private idleService: IdleService,
-    private groupService: GroupchatsService
-  ) {
+  constructor( public dialog: MatDialog, private readonly firestore: Firestore, private firestoreService: FirestoreService, public channelService: ChannelService, public chatService: ChatService, private cdRef: ChangeDetectorRef, private idleService: IdleService, private groupService: GroupchatsService) {
     onSnapshot(collection(this.firestore, 'channels'), (list) => {
       this.allChannels = list.docs.map((doc) => doc.data());
       this.filterChannels();
     });
+  }
+
+  ngOnInit(): void {
+    this.getallUsers();
+    this.channelService.getChannels().then((channels) => {
+      this.allChannels = channels;
+      this.filterChannels();
+    });
+
+    this.userStatus$ = this.idleService.getUserStatus(
+      this.firestoreService.currentuid
+    );
+    this.chatService.checkForExistingChats()
+    //Adrian Testfunktion
+    this.groupService.displayValue();
+  }
+
+  ngOnDestroy(): void {
+    if (this.userStatusSubscription) {
+      this.userStatusSubscription.unsubscribe();
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (this.channelDetails != '' && changes['channelDetails']) {
+      this.cdRef.detectChanges();
+      this.openChannelChat(this.channelDetails.channelId);
+      this.channelService.getChannelName(this.channelDetails.channelName);
+      this.channelService.getDescription(this.channelDetails.description);
+      this.channelService.getUserName(this.channelDetails.users);
+      this.channelService.getAuthor(this.channelDetails.author);
+    }
   }
 
   showAllChannles() {
@@ -151,37 +151,6 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
   changeStatus(event: Event) {
     const newStatus = (event.target as HTMLSelectElement).value;
     this.idleService.setUserStatus(this.firestoreService.currentuid, newStatus);
-  }
-
-  ngOnInit(): void {
-    this.getallUsers();
-    this.channelService.getChannels().then((channels) => {
-      this.allChannels = channels;
-      this.filterChannels();
-    });
-
-    this.userStatus$ = this.idleService.getUserStatus(
-      this.firestoreService.currentuid
-    );
-    //Adrian Testfunktion
-    this.groupService.displayValue();
-  }
-
-  ngOnDestroy(): void {
-    if (this.userStatusSubscription) {
-      this.userStatusSubscription.unsubscribe();
-    }
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (this.channelDetails != '' && changes['channelDetails']) {
-      this.cdRef.detectChanges();
-      this.openChannelChat(this.channelDetails.channelId);
-      this.channelService.getChannelName(this.channelDetails.channelName);
-      this.channelService.getDescription(this.channelDetails.description);
-      this.channelService.getUserName(this.channelDetails.users);
-      this.channelService.getAuthor(this.channelDetails.author);
-    }
   }
 
   filterChannels() {
