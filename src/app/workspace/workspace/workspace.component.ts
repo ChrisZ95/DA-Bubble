@@ -122,6 +122,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
     console.log(user);
     this.userDetails.emit(user);
     this.chatService.loadUserData(user);
+    const chatDocID = this.chatService.searchChatWithUser(user.uid)
     // await this.chatService.createChat(user);
     this.chatService.clearInputValue(true);
   }

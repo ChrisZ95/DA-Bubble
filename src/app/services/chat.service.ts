@@ -138,7 +138,57 @@ async createChats(currentUserID: string, otherUserID: string) {
   }
 }
 
+async searchChatWithUser(userDetails: any) {
+  const querySnapshot = await getDocs(collection(this.firestore, "newchats"));
+  const chatsWithBothUsers: any = [];
+  let chatDocID: string | undefined;
+  querySnapshot.forEach((doc) => {
+    const chatData = doc.data();
+    const usersInChat = chatData['participants'];
+    if (usersInChat.includes(this.currentuid) && usersInChat.includes(userDetails)) {
+      chatsWithBothUsers.push({ id: doc.id, ...chatData });
+      chatDocID =  chatsWithBothUsers[0].id;
+    }
+  });
+  console.log('Chats with both users:', chatsWithBothUsers[0].id);
+  this.loadChatWithUser(chatDocID)
+  return chatDocID;
+}
 
+async loadChatWithUser(chatDocID: any) {
+  console.log(chatDocID);
+  const docRef = doc(this.firestore, "newchats", chatDocID);
+  const docSnap = await getDoc(docRef);
+  if (docSnap.exists()) {
+    console.log("Document data:", docSnap.data());
+  } else {
+    console.log("No such document!");
+  }
+}
+
+
+
+async sendData(text: any) {
+  let id = this.generateIdServie.generateId();
+  let date = new Date().getTime().toString();
+  let currentuid = this.FirestoreService.currentuid;
+  const docId = this.chatDocId || currentuid;
+  const docRef = doc(this.firestore, 'newchats', docId);
+
+  let message = {
+    message: text,
+    image: this.dataURL ? this.dataURL : '',
+    id: id,
+    creator: currentuid,
+    createdAt: date,
+  };
+
+  try {
+
+  } catch (error) {
+    console.error('Error sendData:', error);
+  }
+}
 
   emojiPicker(state: boolean) {
     this.emojiPickerSubject.next(state);
@@ -185,65 +235,6 @@ async createChats(currentUserID: string, otherUserID: string) {
 
   loadUserData(userDetails: any) {
     this.userInformationSubject.next(userDetails);
-  }
-
-  async createChat(userDetails: any, retryCount: number = 0) {
-    userDetails = Array.isArray(userDetails) ? userDetails : [userDetails];
-    try {
-      let date = new Date().getTime().toString();
-      let chatDocIds = await this.getChatsDocumentIDs('chats');
-
-      if (!this.currentuid) {
-        if (retryCount < 3) {
-          setTimeout(() => this.createChat(userDetails, retryCount + 1), 1000);
-        } else {
-          console.error('Currentuid nicht gefunden');
-        }
-        return;
-      }
-
-      for (const user of userDetails) {
-        if (this.currentuid === user.uid) {
-          let ownChatDocId = chatDocIds.filter(
-            (id: any) => this.currentuid === id
-          );
-          if (ownChatDocId.length === 0) {
-            ownChatDocId = [this.currentuid];
-            const chatData = {
-              createdAt: date,
-              chatId: this.currentuid,
-              participants: [this.currentuid],
-              messages: [],
-              emojiReactions: []
-            };
-            await setDoc(
-              doc(this.firestore, 'chats', this.currentuid),
-              chatData
-            );
-          }
-        } else {
-          const combinedShortedId = this.getCombinedChatId(
-            this.currentuid,
-            user.uid
-          );
-          const chatDocRef = doc(this.firestore, 'chats', combinedShortedId);
-          const chatDoc = await getDoc(chatDocRef);
-
-          if (!chatDoc.exists()) {
-            const chatData = {
-              createdAt: date,
-              chatId: combinedShortedId,
-              participants: [this.currentuid, user.uid],
-              messages: [],
-              emojiReactions: []
-            };
-            await setDoc(chatDocRef, chatData);
-          }
-        }
-      }
-    } catch (error) {
-      console.error('Error createChat:', error);
-    }
   }
 
   async loadUser() {
@@ -330,66 +321,6 @@ async createChats(currentUserID: string, otherUserID: string) {
     this.filteredUsersSubject.next(filteredUsers);
     this.messagesSubject.next(messages);
   }
-
-  // async loadMessages(userDetails: any, retryCount: number = 0) {
-  //     this.loadCount = 1;
-  //     if (Array.isArray(userDetails)) {
-  //       userDetails = userDetails[0];
-  //     }
-  //     await this.createChat(userDetails);
-  //     let currentuid = this.FirestoreService.currentuid;
-
-  //     if (!currentuid) {
-  //       if (retryCount < 3) {
-  //         setTimeout(() => {
-  //           currentuid = this.FirestoreService.currentuid;
-  //           this.loadMessages(userDetails, retryCount + 1);
-  //         }, 1000);
-  //       } else {
-  //         console.error('Currentuid nicht gefunden');
-  //       }
-  //       return;
-  //     }
-  //     const messages: any[] = [];
-  //     if (userDetails.uid && userDetails.uid !== currentuid) {
-  //       const combinedShortedId = this.getCombinedChatId(
-  //         currentuid,
-  //         userDetails.uid
-  //       );
-  //       this.chatDocId = combinedShortedId;
-  //     } else {
-  //       this.chatDocId = currentuid;
-  //     }
-
-  //     if (this.chatDocId) {
-  //       const chatDoc = await getDoc(
-  //         doc(this.firestore, 'chats', this.chatDocId)
-  //       );
-  //       if (chatDoc.exists()) {
-  //         const data = chatDoc.data();
-  //         this.participants = data['participants'];
-
-  //         if (Array.isArray(data['messages'])) {
-  //           const userMessages = data['messages'].filter((message: any) => {
-  //             if (this.chatDocId === currentuid) {
-  //               return message.creator === currentuid;
-  //             } else {
-  //               return (
-  //                 message.creator === currentuid ||
-  //                 (userDetails.uid && message.creator === userDetails.uid)
-  //               );
-  //             }
-  //           });
-  //           messages.push(...userMessages);
-  //         }
-  //       }
-  //     }
-  //     const filteredUsers = this.allUsers.filter((user: any) =>
-  //       this.participants.includes(user.uid)
-  //     );
-  //     this.filteredUsersSubject.next(filteredUsers);
-  //     this.messagesSubject.next(messages);
-  // }
 
   //noch viel zu lang
   async loadMessages(input: string | any, retryCount: number = 0) {
@@ -490,52 +421,6 @@ async createChats(currentUserID: string, otherUserID: string) {
     });
 
     return chatDocIds;
-  }
-
-  async sendData(text: any, retryCount: number = 0) {
-    let id = this.generateIdServie.generateId();
-    let date = new Date().getTime().toString();
-    let currentuid = this.FirestoreService.currentuid;
-
-    let message = {
-      message: text,
-      image: this.dataURL ? this.dataURL : '',
-      id: id,
-      creator: currentuid,
-      createdAt: date,
-      emojiReactions: [],
-    };
-
-    const docId = this.chatDocId || currentuid;
-    const docRef = doc(this.firestore, 'chats', docId);
-
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      this.loadedchatInformation = docSnap.data();
-    } else {
-      this.loadedchatInformation = {
-        chatId: docId,
-        createdAt: date,
-        messages: [],
-        participants: [currentuid],
-        emojiReactions: [],
-      };
-    }
-    if (!Array.isArray(this.loadedchatInformation.messages)) {
-      this.loadedchatInformation.messages = [];
-    }
-    this.loadedchatInformation.messages.push(message);
-    try {
-      await updateDoc(docRef, {
-        messages: this.loadedchatInformation.messages,
-      });
-      const filteredMessages = this.loadedchatInformation.messages.filter(
-        (msg: any) => msg.creator === currentuid
-      );
-      this.messagesSubject.next(filteredMessages);
-    } catch (error) {
-      console.error('Error sendData:', error);
-    }
   }
 
   async updateMessage(editedMessage: any, message: any, index: any) {

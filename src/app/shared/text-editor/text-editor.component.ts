@@ -17,33 +17,27 @@ import { Subscription } from 'rxjs';
   templateUrl: './text-editor.component.html',
   styleUrls: ['./text-editor.component.scss'],
 })
+
 export class TextEditorComponent implements OnInit {
   @ViewChild('fileInput', { static: true })
   fileInput!: ElementRef<HTMLInputElement>;
+  @Input() componentName!: string;
+  @HostListener('focusin', ['$event'])
+  openAssociatedUser = false;
+  openEmojiPicker = false;
   message: string = '';
   comment: string = '';
   currentMessageComments: any[] = [];
   fileArray: any[] = [];
-  openEmojiPicker = false;
+  allUsers: any[] = [];
+  memberData: { username: string }[] = [];
+  associatedUser: any;
   emojiPickerSubscription: Subscription | null = null;
-  openAssociatedUser = false;
   AssociatedUserSubscription: Subscription | null = null;
   filteredUsersSubscription: Subscription | null = null;
   clearTextEditorValueSubcription: Subscription | null = null;
-  associatedUser: any;
-  allUsers: any[] = [];
-  memberData: { username: string }[] = [];
 
-  constructor(
-    private chatService: ChatService,
-    private threadService: ThreadService,
-    private generateId: GenerateIdsService,
-    private firestore: Firestore,
-    public channelService: ChannelService,
-    private firestoreService: FirestoreService
-  ) {}
-
-  @Input() componentName!: string;
+  constructor( private chatService: ChatService, private threadService: ThreadService, private generateId: GenerateIdsService, private firestore: Firestore, public channelService: ChannelService, private firestoreService: FirestoreService) {}
 
   ngOnInit(): void {
     this.subscribeToMessages();
@@ -140,7 +134,6 @@ export class TextEditorComponent implements OnInit {
     }
   }
 
-  @HostListener('focusin', ['$event'])
   onFocus(event: FocusEvent) {
     if (this.componentName === 'emptyChat') {
       this.chatService.focusOnTextEditor = true;
