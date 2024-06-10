@@ -30,6 +30,9 @@ export class ChatService {
   private clearTextEditorValueSubcription = new BehaviorSubject<boolean>(false);
   clearValue$ = this.clearTextEditorValueSubcription.asObservable();
 
+  private chatDataSubject = new BehaviorSubject<DocumentData | null>(null);
+  chatData$ = this.chatDataSubject.asObservable();
+
   showEmptyChat: boolean = false;
   editMessage: boolean = false;
   focusOnTextEditor: boolean = false;
@@ -156,35 +159,14 @@ async searchChatWithUser(userDetails: any) {
 }
 
 async loadChatWithUser(chatDocID: any) {
-  console.log(chatDocID);
   const docRef = doc(this.firestore, "newchats", chatDocID);
   const docSnap = await getDoc(docRef);
   if (docSnap.exists()) {
     console.log("Document data:", docSnap.data());
+    this.chatDataSubject.next(docSnap.data());
   } else {
     console.log("No such document!");
-  }
-}
-
-async sendData(text: any) {
-  let id = this.generateIdServie.generateId();
-  let date = new Date().getTime().toString();
-  let currentuid = this.FirestoreService.currentuid;
-  const docId = this.chatDocId || currentuid;
-  const docRef = doc(this.firestore, 'newchats', docId);
-
-  let message = {
-    message: text,
-    image: this.dataURL ? this.dataURL : '',
-    id: id,
-    creator: currentuid,
-    createdAt: date,
-  };
-
-  try {
-
-  } catch (error) {
-    console.error('Error sendData:', error);
+    this.chatDataSubject.next(null);
   }
 }
 

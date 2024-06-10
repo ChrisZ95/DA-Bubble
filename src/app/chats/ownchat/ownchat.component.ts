@@ -47,6 +47,9 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   foundMessage: any;
   userInformation: any;
 
+  chatData: any;
+  private chatSubscription: Subscription | undefined;
+
   emoji = [
     {
       id: 'white_check_mark',
@@ -88,6 +91,11 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
         console.log(this.filteredUsers);
       }
     );
+
+    this.chatSubscription = this.chatService.chatData$.subscribe(data => {
+      this.chatData = data;
+      console.log('Die abgerufenden daten im Chat Bereich',this.chatData);
+    });
   }
 
   ngOnDestroy(): void {
@@ -101,6 +109,10 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
 
     if (this.userDetailsSubscription) {
       this.userDetailsSubscription.unsubscribe();
+    }
+
+    if (this.chatSubscription) {
+      this.chatSubscription.unsubscribe();
     }
   }
 
