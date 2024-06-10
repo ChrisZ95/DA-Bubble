@@ -75,16 +75,12 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
         console.log('User details:', this.userInformation);
       }
     );
-    this.loadCurrentUser();
 
     this.messagesSubscription = this.chatService.messages$.subscribe(
       (messages) => {
         // this.messages = messages;
       }
     );
-
-    const userDetails = { uid: 'someUserId' };
-    this.loadAllUsers();
 
     this.filteredUsersSubscription = this.chatService.filteredUsers$.subscribe(
       (users) => {
@@ -266,27 +262,6 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     this.threadService.getMessage(messageInformation, chatDocId);
   }
 
-  async loadCurrentUser() {
-    let allUsers = await this.firestoreService.getAllUsers();
-    let currentUserDetails = allUsers.filter(
-      (user) => user.uid == this.firestoreService.currentuid
-    );
-    this.chatService.loadMessages(currentUserDetails);
-  }
-
-  displayName(id: any) {
-    let user = this.allUsers.filter((user: any) => {
-      if (id == user.uid) {
-        return user;
-      }
-    });
-    return user[0]?.username;
-  }
-
-  async loadAllUsers() {
-    this.allUsers = await this.chatService.loadUser();
-  }
-
   currentTime(currentMessageTime: any): boolean {
     const currentDate = new Date();
     const currentDateMilliseconds = currentDate.getTime();
@@ -299,11 +274,6 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     } else {
       return false;
     }
-  }
-
-  getMemberAvatar(memberId: string): string {
-    const member = this.allUsers.find((user) => user.uid === memberId);
-    return member ? member.photo : '';
   }
 
   shouldShowSeparator(index: number): boolean {
@@ -342,15 +312,6 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     this.currentMessageIndex = null;
     this.chatService.editMessage = true;
     this.chatService.editIndex = index;
-  }
-
-  deleteMessage(message: any, index: any) {
-    if (this.currentMessageIndex !== null && !this.menuClicked) {
-      this.isHoveredArray[this.currentMessageIndex] = true;
-    }
-    this.menuClicked = false;
-    this.currentMessageIndex = null;
-    this.chatService.deleteCurrentMessage(message, index);
   }
 
   menuOpened(index: number, message: any) {
