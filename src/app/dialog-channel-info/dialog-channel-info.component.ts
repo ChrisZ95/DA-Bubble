@@ -37,7 +37,6 @@ export class DialogChannelInfoComponent implements OnInit {
     try {
       const authorUid = await this.channelService.getChannelAuthorUid(channelId);
       if (!authorUid) return console.error('Autor ist null.');
-      
       this.isChannelAuthor = this.firestoreService.currentuid === authorUid;
       const authorName = await this.channelService.getAuthorName(authorUid);
       if (authorName !== null) this.authorName = authorName;
@@ -112,36 +111,8 @@ export class DialogChannelInfoComponent implements OnInit {
   }
 
   async leaveChannel() {
-    try {
-      const channelId = this.channelService.getCurrentChannelId();
-      if (!channelId) {
-        throw new Error('Channel ID is not available.');
-      }
-      const channelDocRef = this.channelService.getChannelDocByID(channelId);
-      const currentUsers = await this.getCurrentChannelUsers(channelDocRef);
-      const updatedUsers = this.filterCurrentUser(currentUsers);
-      await this.updateChannelUsers(channelDocRef, updatedUsers);
-      this.dialogRef.close();
-    } catch (error) {
-      console.error('Error leaving the channel:', error);
-    }
-  }
-  
-  async getCurrentChannelUsers(channelDocRef: any): Promise<string[]> {
-    const channelSnap = await getDoc(channelDocRef);
-    if (!channelSnap.exists()) {
-      throw new Error('Channel document does not exist.');
-    }
-    const currentChannelData = channelSnap.data() as { users: string[] };
-    return currentChannelData.users || [];
-  }
-  
-  filterCurrentUser(users: string[]): string[] {
-    return users.filter(userId => userId !== this.firestoreService.currentuid);
-  }
-  
-  async updateChannelUsers(channelDocRef: any, updatedUsers: string[]) {
-    await this.channelService.updateChannel(channelDocRef, { users: updatedUsers });
+    this.channelService.leaveChannel();
+    this.dialogRef.close();
   }
 
   async deleteChannel() {
@@ -150,8 +121,7 @@ export class DialogChannelInfoComponent implements OnInit {
       if (!channelId) {
         throw new Error('Channel ID is not available.');
       }
-      const channelDocRef = this.channelService.getChannelDocByID(channelId);
-      await deleteDoc(channelDocRef);
+      await this.channelService.deleteChannel(channelId);
       this.dialogRef.close();
     } catch (error) {
       console.error('Error deleting the channel:', error);

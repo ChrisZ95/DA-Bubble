@@ -14,10 +14,13 @@ import {
   Query,
   QuerySnapshot,
   QueryDocumentSnapshot,
+  deleteDoc
 } from '@angular/fire/firestore';
 import { Channel } from './../../models/channel.class';
 import { FirestoreService } from '../firestore.service';
 import { EventEmitter } from '@angular/core';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { ChannelchatComponent } from '../chats/channelchat/channelchat.component';
 
 @Injectable({
   providedIn: 'root',
@@ -39,16 +42,19 @@ export class ChannelService {
   messagesWithAuthors: any[] = [];
   commentsWithAuthors: any[] = [];
   currentMessage: any;
+  channels: any[] = [];
   currentMessageIdChanged: EventEmitter<string> = new EventEmitter<string>();
   currentMessageChanged: EventEmitter<any> = new EventEmitter<any>();
   currentChannelIdChanged: EventEmitter<string> = new EventEmitter<string>();
   currentMessageCommentsChanged: EventEmitter<any[]> = new EventEmitter<
     any[]
   >();
+  private currentChannelIdSource = new BehaviorSubject<string | null>(null);
+  currentChannelId$ = this.currentChannelIdSource.asObservable();
 
   constructor(
     private readonly firestore: Firestore,
-    private FirestoreService: FirestoreService
+    public FirestoreService: FirestoreService
   ) {}
 
   updateMessageInMessagesList(messageId: string, newComment: any): void {
@@ -415,5 +421,50 @@ export class ChannelService {
   
   async updateMessagesInChatDocument(chatDoc: QueryDocumentSnapshot<DocumentData>, messages: any[]): Promise<void> {
     await updateDoc(doc(this.firestore, 'chats', chatDoc.id), { messages });
+  }
+
+  async leaveChannel() {
+    try {
+      const channelId = this.getCurrentChannelId();
+      if (!channelId) {
+        throw new Error('Channel ID is not available.');
+      }
+      const channelDocRef = this.getChannelDocByID(channelId);
+      const currentUsers = await this.getCurrentChannelUsers(channelDocRef);
+      const updatedUsers = this.filterCurrentUser(currentUsers);
+      await this.updateChannelUsers(channelDocRef, updatedUsers);
+    } catch (error) {
+      console.error('Error leaving the channel:', error);
+    }
+  }
+
+  async deleteChannel(channelId: string) {
+    const channelDocRef = this.getChannelDocByID(channelId);
+    await deleteDoc(channelDocRef);
+    await this.loadChannels(); 
+    this.setCurrentChannelId(''); 
+    this.channelName = null; 
+  }
+
+  async loadChannels() {
+    const channelsSnapshot = await getDocs(collection(this.firestore, 'channels'));
+    this.channels = channelsSnapshot.docs.map(doc => doc.data());
+  }
+  
+  async getCurrentChannelUsers(channelDocRef: any): Promise<string[]> {
+    const channelSnap = await getDoc(channelDocRef);
+    if (!channelSnap.exists()) {
+      throw new Error('Channel document does not exist.');
+    }
+    const currentChannelData = channelSnap.data() as { users: string[] };
+    return currentChannelData.users || [];
+  }
+  
+  filterCurrentUser(users: string[]): string[] {
+    return users.filter(userId => userId !== this.FirestoreService.currentuid);
+  }
+
+  async updateChannelUsers(channelDocRef: any, updatedUsers: string[]) {
+    await this.updateChannel(channelDocRef, { users: updatedUsers });
   }
 }

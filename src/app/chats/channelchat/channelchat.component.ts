@@ -29,7 +29,7 @@ import { TextEditorChannelComponent } from '../../shared/text-editor-channel/tex
 export class ChannelchatComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
   @Input() userDialogData: any;
-  currentChannel!: Channel;
+  currentChannel: Channel | null = null;
   allChannels: any = [];
   allChats: any = [];
   channel = new Channel();
@@ -143,7 +143,7 @@ export class ChannelchatComponent implements OnInit, AfterViewInit, OnDestroy {
     await Promise.all([this.loadChannels(), this.loadUsers(), this.loadMessages()]);
     this.initializeHoverArray();
   }
-  
+
   async loadChannels(): Promise<void> {
     try {
       this.allChannels = await this.channelService.getChannels();
