@@ -1,12 +1,5 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import {
-  Component,
-  Input,
-  OnChanges,
-  OnInit,
-  SimpleChanges,
-  OnDestroy,
-} from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges, OnDestroy } from '@angular/core';
 import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
 import { ChatService } from '../../services/chat.service';
 import { TimestampPipe } from '../../shared/pipes/timestamp.pipe';
@@ -31,43 +24,28 @@ import { log } from 'console';
 @Component({
   selector: 'app-ownchat',
   standalone: true,
-  imports: [
-    TextEditorComponent,
-    EmojiComponent,
-    PickerComponent,
-    TimestampPipe,
-    CommonModule,
-    TimestampPipe,
-    FormsModule,
-    MatIconModule,
-    MatMenuModule,
-    MatButtonModule,
-  ],
+  imports: [ TextEditorComponent, EmojiComponent, PickerComponent, TimestampPipe, CommonModule, TimestampPipe, FormsModule, MatIconModule, MatMenuModule, MatButtonModule],
   templateUrl: './ownchat.component.html',
   styleUrls: ['./ownchat.component.scss', '../chats.component.scss'],
 })
 export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
-  constructor(
-    public dialog: MatDialog,
-    public chatService: ChatService,
-    public threadService: ThreadService,
-    public firestoreService: FirestoreService
-  ) {}
+  constructor( public dialog: MatDialog, public chatService: ChatService, public threadService: ThreadService, public firestoreService: FirestoreService) {}
   @Input() userDetails: any;
-  messages: any = [];
-  allUsers: any[] = [];
-  participants: any;
-  filteredUsers: any;
   private messagesSubscription: Subscription | undefined;
   private filteredUsersSubscription: Subscription | undefined;
-  // emojiPickerSubscription: Subscription | null = null;
+  private userDetailsSubscription: Subscription | undefined;
+  messages: any = [];
+  allUsers: any[] = [];
   isHoveredArray: boolean[] = [];
-  menuClicked = false;
   currentMessageIndex: number | null = null;
   openEmojiPicker = false;
+  menuClicked = false;
+  participants: any;
+  filteredUsers: any;
   message: any;
   emojiMessageId: any;
   foundMessage: any;
+  userInformation: any;
 
   emoji = [
     {
@@ -90,8 +68,52 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     },
   ];
 
-  userInformation: any;
-  private userDetailsSubscription: Subscription | undefined;
+  ngOnInit(): void {
+    this.userDetailsSubscription = this.chatService.userInformation$.subscribe(
+      (data) => {
+        this.userInformation = data;
+        console.log('User details:', this.userInformation);
+      }
+    );
+    this.loadCurrentUser();
+
+    this.messagesSubscription = this.chatService.messages$.subscribe(
+      (messages) => {
+        // this.messages = messages;
+      }
+    );
+
+    const userDetails = { uid: 'someUserId' };
+    this.loadAllUsers();
+
+    this.filteredUsersSubscription = this.chatService.filteredUsers$.subscribe(
+      (users) => {
+        this.filteredUsers = users;
+        console.log(this.filteredUsers);
+      }
+    );
+  }
+
+  ngOnDestroy(): void {
+    if (this.messagesSubscription) {
+      this.messagesSubscription.unsubscribe();
+    }
+
+    if (this.filteredUsersSubscription) {
+      this.filteredUsersSubscription.unsubscribe();
+    }
+
+    if (this.userDetailsSubscription) {
+      this.userDetailsSubscription.unsubscribe();
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (this.userDetails != '' && changes['userDetails']) {
+      this.chatService.loadMessages(this.userDetails);
+      this.messages = this.chatService.messages;
+    }
+  }
 
   openEmojiMartPicker(message: { id: number; text: string }) {
     this.emojiMessageId = message.id;
@@ -276,59 +298,6 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
       return true;
     } else {
       return false;
-    }
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (this.userDetails != '' && changes['userDetails']) {
-      this.chatService.loadMessages(this.userDetails);
-      this.messages = this.chatService.messages;
-    }
-  }
-
-  ngOnInit(): void {
-    this.userDetailsSubscription = this.chatService.userInformation$.subscribe(
-      (data) => {
-        this.userInformation = data;
-        console.log('User details:', this.userInformation);
-      }
-    );
-    this.loadCurrentUser();
-
-    this.messagesSubscription = this.chatService.messages$.subscribe(
-      (messages) => {
-        this.messages = messages;
-      }
-    );
-
-    const userDetails = { uid: 'someUserId' };
-    this.loadAllUsers();
-
-    this.filteredUsersSubscription = this.chatService.filteredUsers$.subscribe(
-      (users) => {
-        this.filteredUsers = users;
-        console.log(this.filteredUsers);
-      }
-    );
-
-    // this.emojiPickerSubscription = this.chatService.emojiPicker$.subscribe(
-    //   (state: boolean) => {
-    //     this.openEmojiPicker = state;
-    //   }
-    // );
-  }
-
-  ngOnDestroy(): void {
-    if (this.messagesSubscription) {
-      this.messagesSubscription.unsubscribe();
-    }
-
-    if (this.filteredUsersSubscription) {
-      this.filteredUsersSubscription.unsubscribe();
-    }
-
-    if (this.userDetailsSubscription) {
-      this.userDetailsSubscription.unsubscribe();
     }
   }
 

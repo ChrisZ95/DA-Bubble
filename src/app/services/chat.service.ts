@@ -113,7 +113,26 @@ async createChats(currentUserID: string, otherUserID: string) {
           createdAt: timestamp,
       };
       await setDoc(newDocRef, chatData);
-      console.log(`Neuer Chat zwischen ${currentUserID} und ${otherUserID} wurde erstellt.`);
+
+      // Sub-Kollektion für nachrichten im chat dokument
+      const messagesCollection = collection(newDocRef, 'messages');
+      const messageDocRef = doc(messagesCollection);
+      const welcomeMessage = {
+          text: "Willkommen im Chat!",
+          sender: "System",
+          createdAt: timestamp,
+      };
+      await setDoc(messageDocRef, welcomeMessage);
+
+      // Sub-Kollektion für reaktionen in der nachricht
+      const emojiReactionsCollection = collection(messageDocRef, 'emojiReactions');
+      const welcomeReaction = {
+          emojiIcon: '😊',
+          emojiCounter: 1
+      };
+      await addDoc(emojiReactionsCollection, welcomeReaction);
+
+      console.log(`Neuer Chat zwischen ${currentUserID} und ${otherUserID} wurde erstellt und die Sub-Kollektionen 'messages' und 'emojiReactions' wurden hinzugefügt.`);
   } catch (error: any) {
       console.error("Fehler beim Erstellen des Chats:", error);
   }
