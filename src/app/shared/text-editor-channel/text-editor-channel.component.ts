@@ -156,7 +156,6 @@ export class TextEditorChannelComponent implements OnInit {
       this.chatService.showEmptyChat = false;
       this.chatService.showOwnChat = true;
       this.chatService.focusOnTextEditor = false;
-      this.chatService.createChatWithUsers();
     }
   }
 
@@ -167,7 +166,6 @@ export class TextEditorChannelComponent implements OnInit {
   }
 
   sendMessage() {
-    this.chatService.sendData(this.message);
     this.openEmojiPicker = false;
     this.message = '';
   }
@@ -191,11 +189,11 @@ export class TextEditorChannelComponent implements OnInit {
       console.error('Kein aktueller Kanal ausgewählt oder Benutzer nicht angemeldet.');
     }
   }
-  
+
   isChannelAndUserValid(channelId: string | null, uid: string | null): boolean {
     return !!channelId && !!uid;
   }
-  
+
   createMessage(uid: string) {
     const timestamp = Date.now().toString();
     return {
@@ -208,7 +206,7 @@ export class TextEditorChannelComponent implements OnInit {
       lastCommentTime: null,
     };
   }
-  
+
   async addAuthorNameToMessage(messageWithoutAuthor: any, channelId: string) {
     try {
       const authorName = await this.channelService.getAuthorName(messageWithoutAuthor.uid);
@@ -222,27 +220,25 @@ export class TextEditorChannelComponent implements OnInit {
       console.error('Error fetching author name:', error);
     }
   }
-  
+
   addMessageToChannel(message: any, channelId: string) {
     this.channelService.messagesWithAuthors.push(message);
     this.channelService.messages.push(message);
-    this.chatService.sendDataToChannel(channelId, message);
   }
 
   async sendCommentToMessage() {
     const currentMessageId = this.channelService.getCurrentMessageId();
     const currentUid = this.firestoreService.currentuid;
-  
+
     if (!currentMessageId) {
       console.error('Kein aktueller Kanal ausgewählt.');
       return;
     }
-  
+
     const newComment = await this.createComment(currentUid);
-    this.chatService.sendCommentToChannel(currentMessageId, newComment);
     this.updateMessageWithComment(currentMessageId, newComment);
   }
-  
+
   async createComment(uid: string) {
     const timestamp = Date.now().toString();
     const newComment = {
@@ -264,7 +260,7 @@ export class TextEditorChannelComponent implements OnInit {
     }
     return newComment;
   }
-  
+
   updateMessageWithComment(messageId: string, comment: any) {
     this.channelService.updateMessageInMessagesList(messageId, comment);
     this.updateCommentCount(messageId);

@@ -43,8 +43,7 @@
                   'hovered-other-message': isHoveredArray[i] && message.creator !== firestoreService.currentuid
                 }">
           <span class="message-text" *ngIf="chatService.editIndex != i">{{ message.message }}</span>
-          <input value="{{ message.message }}" *ngIf="chatService.editMessage == true && i == chatService.editIndex"
-            (keydown.enter)="chatService.updateMessage(value.value, message,i)" #value>
+          <input value="{{ message.message }}" #value>
         </div>
         <ng-container *ngIf="message.image">
           <img [src]='message.image' alt="">

@@ -140,7 +140,6 @@ export class TextEditorComponent implements OnInit {
       this.chatService.showEmptyChat = false;
       this.chatService.showOwnChat = true;
       this.chatService.focusOnTextEditor = false;
-      this.chatService.createChatWithUsers();
     }
   }
 
@@ -151,7 +150,6 @@ export class TextEditorComponent implements OnInit {
   }
 
   sendMessage() {
-    this.chatService.sendData(this.message);
     this.openEmojiPicker = false;
     this.message = '';
   }
@@ -189,7 +187,6 @@ export class TextEditorComponent implements OnInit {
           };
           this.channelService.messagesWithAuthors.push(message);
           this.channelService.messages.push(message);
-          this.chatService.sendDataToChannel(currentChannelId, message);
           this.message = '';
         })
         .catch((error) => {
@@ -219,7 +216,6 @@ export class TextEditorComponent implements OnInit {
       const authorName = await this.channelService.getAuthorName(currentUid);
       newComment.authorName = authorName ?? currentUid;
       newComment.authorNameStatus = 'loaded';
-      this.chatService.sendCommentToChannel(currentMessageId, newComment);
       this.channelService.updateMessageInMessagesList(
         currentMessageId,
         newComment

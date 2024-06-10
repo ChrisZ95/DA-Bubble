@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog'; 
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { DialogAddPeopleToNewChannelComponent } from '../dialog-add-people-to-new-channel/dialog-add-people-to-new-channel.component';
 import { Firestore, addDoc, collection, updateDoc, doc } from '@angular/fire/firestore';
 import { Channel } from './../../models/channel.class';
@@ -47,7 +47,6 @@ export class DialogCreateChannelComponent {
         return;
       }
       const newChannelId = await this.addChannel(authorUid);
-      await this.createChatForChannel(newChannelId);
       this.dialogRef.close();
       this.openAddPeopleToNewChannelDialog(newChannelId);
     } catch (error) {
@@ -55,7 +54,7 @@ export class DialogCreateChannelComponent {
       throw error;
     }
   }
-  
+
   async addChannel(authorUid: string): Promise<string> {
     const channelData = {
       channelName: this.channelName,
@@ -65,8 +64,5 @@ export class DialogCreateChannelComponent {
     };
     return await this.channelService.addChannel(channelData);
   }
-  
-  async createChatForChannel(channelId: string): Promise<void> {
-    await this.chatService.createChatForChannel(channelId);
-  }
+
 }
