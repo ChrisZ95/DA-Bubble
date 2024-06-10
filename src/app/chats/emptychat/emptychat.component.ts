@@ -34,122 +34,52 @@ export class EmptychatComponent implements OnInit {
   filteredEntities: any;
   showDropdown: boolean = false;
   showUserPlaceholder: any;
-  showChannelPlaceholder: any;
-
-  showUserChannelPlaceholder: boolean = false;
-  selectedUsers: string[] = [];
+  selectedUsers: any[] = [];
 
   searchEntity(input: string) {
     const lowerCaseInput = input.toLowerCase().trim();
 
+    this.filteredEntities = [];
     if (input === '') {
-      this.filteredEntities = [];
-      this.showUserChannelPlaceholder = true;
-      this.showUserPlaceholder = false;
-      this.showChannelPlaceholder = false;
-    } else if (input === '@') {
-      this.filteredEntities = [];
       this.showUserPlaceholder = true;
-      this.showChannelPlaceholder = false;
-      this.showUserChannelPlaceholder = false;
-    } else if (input === '#') {
-      this.filteredEntities = [];
-      this.showUserPlaceholder = false;
-      this.showChannelPlaceholder = true;
-      this.showUserChannelPlaceholder = false;
     } else if (input.startsWith('@')) {
       this.filteredEntities = this.allUsers.filter((item: any) => {
         return (
           item.username &&
           item.username.toLowerCase().includes(lowerCaseInput.substring(1)) &&
           item.uid !== this.firestoreService.currentuid &&
-          !this.selectedUsers.includes(`@${item.username}`)
+          !this.selectedUsers.includes(`${item.username}`)
         );
       });
-      this.showUserPlaceholder = false;
-      this.showChannelPlaceholder = false;
-      this.showUserChannelPlaceholder = false;
-    } else if (input.startsWith('@')) {
-      this.filteredEntities = this.allChannels.filter((item: any) => {
-        return (
-          item.name &&
-          item.name.toLowerCase().includes(lowerCaseInput.substring(1))
-        );
+      this.filteredEntities.sort((a: any, b: any) => {
+        const usernameA = a.username.toLowerCase();
+        const usernameB = b.username.toLowerCase();
+        if (usernameA < usernameB) {
+          return -1;
+        }
+        if (usernameA > usernameB) {
+          return 1;
+        }
+        return 0;
       });
       this.showUserPlaceholder = false;
-      this.showChannelPlaceholder = false;
-      this.showUserChannelPlaceholder = false;
     } else {
       const users = this.allUsers.filter((item: any) => {
         return (
           item.username &&
           item.username.toLowerCase().includes(lowerCaseInput) &&
           item.uid !== this.firestoreService.currentuid &&
-          !this.selectedUsers.includes(`@${item.username}`)
+          !this.selectedUsers.includes(`${item.username}`)
         );
       });
-
-      const channels = this.allChannels.filter((item: any) => {
-        return item.name && item.name.toLowerCase().includes(lowerCaseInput);
-      });
-
-      this.filteredEntities = [...users, ...channels];
+      this.filteredEntities = [...users];
       this.showUserPlaceholder = false;
-      this.showChannelPlaceholder = false;
-      this.showUserChannelPlaceholder = false;
     }
-
-    this.showDropdown =
-      this.filteredEntities.length > 0 ||
-      input === '' ||
-      input === '@' ||
-      input === '#';
-    console.log('filteredEntities', this.filteredEntities);
+    this.updatePlaceholder(input);
   }
 
   updatePlaceholder(input: string) {
-    if (input === '') {
-      this.showUserChannelPlaceholder = true;
-      this.showUserPlaceholder = false;
-      this.showChannelPlaceholder = false;
-    } else if (input === '#') {
-      this.showUserPlaceholder = true;
-      this.showChannelPlaceholder = false;
-      this.showUserChannelPlaceholder = false;
-    } else if (input === '@') {
-      this.showUserPlaceholder = false;
-      this.showChannelPlaceholder = true;
-      this.showUserChannelPlaceholder = false;
-    } else {
-      this.showUserPlaceholder = false;
-      this.showChannelPlaceholder = false;
-      this.showUserChannelPlaceholder = false;
-    }
-    this.showDropdown =
-      input === '' ||
-      input === '#' ||
-      input === '@' ||
-      this.filteredEntities.length > 0;
-  }
-
-  displayAllUsersAndChannels() {
-    this.filteredEntities = [
-      ...this.allUsers.filter((user: any) => {
-        return (
-          user.username &&
-          user.uid !== this.firestoreService.currentuid &&
-          !this.selectedUsers.includes(`@${user.username}`)
-        );
-      }),
-      ...this.allChannels.filter((channel: any) => channel.channelName),
-    ];
-    this.showUserChannelPlaceholder = false;
-    this.showDropdown = true;
-
-    setTimeout(() => {
-      this.focusInputField();
-      this.showUserChannelPlaceholder = false;
-    }, 0);
+    this.showDropdown = input === '' || this.filteredEntities?.length > 0;
   }
 
   displayAllUsers() {
@@ -157,7 +87,7 @@ export class EmptychatComponent implements OnInit {
       return (
         item.username &&
         item.uid !== this.firestoreService.currentuid &&
-        !this.selectedUsers.includes(`@${item.username}`)
+        !this.selectedUsers.includes(`${item.username}`)
       );
     });
     this.filteredEntities.sort((a: any, b: any) => {
@@ -173,8 +103,6 @@ export class EmptychatComponent implements OnInit {
     });
 
     this.showUserPlaceholder = false;
-    this.showChannelPlaceholder = false;
-    this.showUserChannelPlaceholder = false;
     this.showDropdown = true;
 
     setTimeout(() => {
@@ -182,26 +110,15 @@ export class EmptychatComponent implements OnInit {
     }, 0);
   }
 
-  displayAllChannels() {
-    this.filteredEntities = this.allChannels.filter((item: any) => {
-      return item.channelName;
-    });
-    this.showUserPlaceholder = false;
-    this.showChannelPlaceholder = false;
-    this.showUserChannelPlaceholder = false;
-    this.showDropdown = true;
-
-    setTimeout(() => {
-      this.focusInputField();
-    }, 0);
-  }
   selectedUserUids: any = [this.firestoreService.currentuid]; //
   selectEntity(entity: any) {
-    if (
-      entity.username &&
-      !this.selectedUsers.includes(`@${entity.username}`)
-    ) {
-      this.selectedUsers.push(`@${entity.username}`);
+    if (entity.username && !this.selectedUsers.includes(entity.username)) {
+      this.selectedUsers.push(entity);
+
+      this.filteredEntities = this.filteredEntities.filter((item: any) => {
+        return item.uid != entity.uid;
+      });
+
       let currentUID = this.firestoreService.currentuid; //
       this.selectedUserUids.push(`${entity.uid}`); //
       this.chatService.allPotentialChatUsers.push(entity);
@@ -228,8 +145,12 @@ export class EmptychatComponent implements OnInit {
     }
   }
 
-  removeUser(user: string) {
-    this.selectedUsers = this.selectedUsers.filter((u) => u !== user);
+  removeUser(user: any) {
+    debugger;
+    // Funktioniert noch nicht
+    this.selectedUsers = this.selectedUsers.filter((item: any) => {
+      return user.uid != item.uid;
+    });
     this.updateInputField();
   }
 
@@ -252,7 +173,7 @@ export class EmptychatComponent implements OnInit {
         this.eRef.nativeElement.querySelector('input').value === ''
       ) {
         if (this.filteredEntities == undefined) {
-          this.showUserChannelPlaceholder = true;
+          this.showUserPlaceholder = true;
         }
       }
       this.showDropdown = true;
@@ -274,8 +195,8 @@ export class EmptychatComponent implements OnInit {
       this.selectedUsers
         .map(
           (user) =>
-            `<div (click)="removeUser(${user})"><span class="user-tag">${user} <span class="remove-tag">
-      <img src="../../../assets/images/close.png" alt="" style=" cursor: pointer; z-index:999;" class="remove-user" >
+            `<div><span class="user-tag">${user.username} <span class="remove-tag">
+      <img src="../../../assets/images/close.png" alt="" style=" cursor: pointer" class="remove-user" (click)="removeUser(${user})">
       </span></span> </div>`
         )
         .join('') + '<input type="text" class="inputField" />';
@@ -320,3 +241,55 @@ export class EmptychatComponent implements OnInit {
       });
   }
 }
+
+// displayAllUsersAndChannels() {
+//   this.filteredEntities = [
+//     ...this.allUsers.filter((user: any) => {
+//       return (
+//         user.username &&
+//         user.uid !== this.firestoreService.currentuid &&
+//         !this.selectedUsers.includes(`@${user.username}`)
+//       );
+//     }),
+//     ...this.allChannels.filter((channel: any) => channel.channelName),
+//   ];
+//   this.showUserChannelPlaceholder = false;
+//   this.showDropdown = true;
+
+//   setTimeout(() => {
+//     this.focusInputField();
+//     this.showUserChannelPlaceholder = false;
+//   }, 0);
+// }
+
+// displayAllChannels() {
+//   this.filteredEntities = this.allChannels.filter((item: any) => {
+//     return item.channelName;
+//   });
+//   this.showUserPlaceholder = false;
+//   this.showChannelPlaceholder = false;
+//   this.showUserChannelPlaceholder = false;
+//   this.showDropdown = true;
+
+// from UpdatePlaceholder
+// if (input === '' || input === '@') {
+//   this.showUserPlaceholder = false;
+// }
+// else if (input === '#') {
+//   this.showUserPlaceholder = true;
+//   this.showChannelPlaceholder = false;
+//   this.showUserChannelPlaceholder = false;
+// } else if (input === '@') {
+//   this.showUserPlaceholder = false;
+//   this.showChannelPlaceholder = true;
+//   this.showUserChannelPlaceholder = false;
+// } else {
+//   this.showUserPlaceholder = false;
+//   this.showChannelPlaceholder = false;
+//   this.showUserChannelPlaceholder = false;
+// }
+
+//   setTimeout(() => {
+//     this.focusInputField();
+//   }, 0);
+// }
