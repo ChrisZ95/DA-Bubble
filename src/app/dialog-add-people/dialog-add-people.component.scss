@@ -4,6 +4,8 @@
     width: 400px;
     padding: 40px;
     gap: 20px;
+    overflow: hidden;
+    position: relative;
     input{
         border: none;
     }
@@ -36,7 +38,7 @@
     margin-right: -50px !important;
 }
 
-.user-dropdown{
+.user-dropdown {
     border: 1px solid #ADB0D9;
     border-radius: 0px 30px 30px 30px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -45,7 +47,9 @@
     width: 50%;
     margin-left: 15px;
     position: absolute;
-    top: 70%;
+    top: 70%; 
+    overflow-y: scroll; 
+    height: 110px;
 }
 
 .user-option{
@@ -57,12 +61,10 @@
     width: auto;
     margin-left: 20px;
     gap: 10px;
-
     &:hover {
         background-color: rgb(236, 238, 254) !important;
         cursor: pointer;
     }
-
     .user-icon {
       height: 34px;
       width: 34px;
@@ -131,16 +133,6 @@
     cursor: pointer;
 }
 
-.user-dropdown {
-    position: absolute;
-    background-color: white;
-    border: 1px solid #ccc;
-    max-height: 200px;
-    overflow-y: auto;
-    z-index: 1000;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-}
-
 .user-option {
     padding: 8px;
     cursor: pointer;
@@ -151,5 +143,5 @@
 }
 
 input[type="text"]:focus {
-    outline: none; /* Entfernt den Rand auch beim Fokus */
+    outline: none;
 }
