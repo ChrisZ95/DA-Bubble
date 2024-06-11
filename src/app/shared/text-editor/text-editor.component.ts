@@ -32,9 +32,11 @@ export class TextEditorComponent implements OnInit {
   allUsers: any[] = [];
   memberData: { username: string }[] = [];
   associatedUser: any[] = [];
+  currentDocID: any;
   emojiPickerSubscription: Subscription | null = null;
   AssociatedUserSubscription: Subscription | null = null;
   filteredUsersSubscription: Subscription | null = null;
+  documentIDSubsrciption: Subscription | null = null;
   clearTextEditorValueSubcription: Subscription | null = null;
 
   constructor( private chatService: ChatService, private threadService: ThreadService, private generateId: GenerateIdsService, private firestore: Firestore, public channelService: ChannelService, private firestoreService: FirestoreService) {}
@@ -57,6 +59,14 @@ export class TextEditorComponent implements OnInit {
         this.message = '';
       }
     );
+
+    this.documentIDSubsrciption = this.chatService.documentID$.subscribe(
+      (docID)=> {
+        this.currentDocID = docID;
+        console.log(docID)
+        console.log(this.currentDocID)
+      },
+    );
   }
 
   ngOnDestroy(): void {
@@ -78,7 +88,7 @@ export class TextEditorComponent implements OnInit {
     this.filteredUsersSubscription = this.chatService.filteredUsers$.subscribe(
       (users) => {
         this.filterChatParticipantName(users)
-      }
+      },
     );
     this.openUserMention();
   }
@@ -139,7 +149,8 @@ export class TextEditorComponent implements OnInit {
       console.log('wähle ein bild oder nachricht');
     } else {
       if (this.componentName === 'ownChat') {
-        this.sendMessage();
+        this.chatService.sendMessageToDatabase(this.message, this.currentDocID)
+        this.clearInputValue();
       } else if (this.componentName === 'thread') {
         // this.sendReply();
       } else if (this.componentName === 'channel') {
@@ -162,7 +173,7 @@ export class TextEditorComponent implements OnInit {
     }
   }
 
-  sendMessage() {
+  clearInputValue() {
     this.openEmojiPicker = false;
     this.message = '';
   }

@@ -18,8 +18,11 @@ export class ChatService {
   private messagesSubject = new BehaviorSubject<any[]>([]);
   public messages$: Observable<any[]> = this.messagesSubject.asObservable();
 
-  private filteredUsersSubject: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
-  public filteredUsers$: Observable<any[]> = this.filteredUsersSubject.asObservable();
+  private filteredUsersSubject: BehaviorSubject<any[]> = new BehaviorSubject<any>(null);
+  public filteredUsers$: Observable<any> = this.filteredUsersSubject.asObservable();
+
+  private documentIDSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  public documentID$: Observable<any> = this.documentIDSubject.asObservable();
 
   private emojiPickerSubject = new BehaviorSubject<boolean>(false);
   emojiPicker$ = this.emojiPickerSubject.asObservable();
@@ -162,7 +165,8 @@ async searchPrivateChat(userDetails: any) {
       const chatData = doc.data();
       const usersInChat = chatData['participants'];
       this.loadChatWithUser(doc.id)
-      this.filteredUsersSubject.next(usersInChat);
+      this.filteredUsersSubject.next( usersInChat );
+      this.documentIDSubject.next( doc.id );
     });
   } else {
     console.log('Die IDs sind nicht gleich');
@@ -179,7 +183,8 @@ async searchChatWithUser(userDetails: any) {
     if (usersInChat.includes(this.currentuid) && usersInChat.includes(userDetails)) {
       chatsWithBothUsers.push({ id: doc.id, ...chatData });
       chatDocID =  chatsWithBothUsers[0].id;
-      this.filteredUsersSubject.next(usersInChat);
+      this.filteredUsersSubject.next( usersInChat );
+      this.documentIDSubject.next( doc.id );
     }
   });
   console.log('Chats with both users:', chatsWithBothUsers[0].id);
@@ -198,6 +203,23 @@ async loadChatWithUser(chatDocID: any) {
     this.chatDataSubject.next(null);
   }
 }
+
+async sendMessageToDatabase(message: any, currentDocID: any) {
+  const timestamp = this.FirestoreService.createTimeStamp();
+
+  try {
+    const messagesCollectionRef = collection(this.firestore, `newchats/${currentDocID}/messages`);
+    const newMessage = {
+      message: message,
+      createdAt: timestamp
+    };
+    const docRef = await addDoc(messagesCollectionRef, newMessage);
+    console.log('Nachricht erfolgreich gespeichert:', docRef.id);
+  } catch (error) {
+    console.error('Fehler beim Speichern der Nachricht:', error);
+  }
+}
+
 
   emojiPicker(state: boolean) {
     this.emojiPickerSubject.next(state);
