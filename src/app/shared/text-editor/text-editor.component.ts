@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, HostListener, Input, OnInit, View
 import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../services/chat.service';
 import { GenerateIdsService } from '../../services/generate-ids.service';
-import { Firestore, collection, onSnapshot, query,} from '@angular/fire/firestore';
+import { Firestore, collection, onSnapshot, query, doc, getDoc} from '@angular/fire/firestore';
 import { ChannelService } from '../../services/channel.service';
 import { FirestoreService } from '../../firestore.service';
 import { ThreadService } from '../../services/thread.service';
@@ -31,7 +31,7 @@ export class TextEditorComponent implements OnInit {
   fileArray: any[] = [];
   allUsers: any[] = [];
   memberData: { username: string }[] = [];
-  associatedUser: any;
+  associatedUser: any[] = [];
   emojiPickerSubscription: Subscription | null = null;
   AssociatedUserSubscription: Subscription | null = null;
   filteredUsersSubscription: Subscription | null = null;
@@ -76,14 +76,29 @@ export class TextEditorComponent implements OnInit {
     }
   }
 
-  userMention() {
+  async userMention() {
     this.filteredUsersSubscription = this.chatService.filteredUsers$.subscribe(
       (users) => {
-        this.associatedUser = users;
-        console.log('geöffnet')
+        this.filterChatParticipantName(users)
       }
     );
     this.openUserMention();
+  }
+
+  async filterChatParticipantName(users: any) {
+    this.associatedUser = []
+    for (let i = 0; i < users.length; i++) {
+      const userID = users[i];
+      const docRef = doc(this.firestore, "users", userID);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+         const user = docSnap.data()
+         console.log("Document data:", docSnap.data());
+         this.associatedUser.push(user['username']);
+      } else {
+        console.log("No such document!");
+      }
+    }
   }
 
   openUserMention() {

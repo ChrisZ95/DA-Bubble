@@ -4,7 +4,7 @@
 
 <div *ngIf="openAssociatedUser" class="show-associated-user">
   <div class="user-parcel" *ngFor="let user of associatedUser">
-    <div class="choose-user-parcel" (click)="userInserted(user.username)">{{ user.username }}</div>
+    <div class="choose-user-parcel" (click)="userInserted(user)">{{ user }}</div>
   </div>
 </div>
 

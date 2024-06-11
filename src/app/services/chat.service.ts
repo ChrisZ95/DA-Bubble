@@ -159,16 +159,15 @@ async searchPrivateChat(userDetails: any) {
 
     querySnapshot.forEach((doc) => {
       console.log('Gefundener Chat:', doc.id, 'Daten:', doc.data());
+      const chatData = doc.data();
+      const usersInChat = chatData['participants'];
       this.loadChatWithUser(doc.id)
+      this.filteredUsersSubject.next(usersInChat);
     });
-
   } else {
     console.log('Die IDs sind nicht gleich');
   }
 }
-
-
-
 
 async searchChatWithUser(userDetails: any) {
   const querySnapshot = await getDocs(collection(this.firestore, "newchats"));
@@ -180,6 +179,7 @@ async searchChatWithUser(userDetails: any) {
     if (usersInChat.includes(this.currentuid) && usersInChat.includes(userDetails)) {
       chatsWithBothUsers.push({ id: doc.id, ...chatData });
       chatDocID =  chatsWithBothUsers[0].id;
+      this.filteredUsersSubject.next(usersInChat);
     }
   });
   console.log('Chats with both users:', chatsWithBothUsers[0].id);
@@ -243,7 +243,6 @@ async loadChatWithUser(chatDocID: any) {
   }
 
   loadUserData(userDetails: any) {
-    debugger
     this.userInformationSubject.next(userDetails);
   }
 
