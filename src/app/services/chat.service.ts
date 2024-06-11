@@ -135,6 +135,12 @@ async createChats(currentUserID: string, otherUserID: string) {
       };
       await addDoc(emojiReactionsCollection, welcomeReaction);
 
+      const threadsCollection = collection(messageDocRef, 'threads');
+      const thraedsMessage = {
+
+      };
+      await addDoc(threadsCollection, thraedsMessage);
+
       console.log(`Neuer Chat zwischen ${currentUserID} und ${otherUserID} wurde erstellt und die Sub-Kollektionen 'messages' und 'emojiReactions' wurden hinzugefügt.`);
   } catch (error: any) {
       console.error("Fehler beim Erstellen des Chats:", error);
