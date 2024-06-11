@@ -48,8 +48,9 @@
     margin-left: 15px;
     position: absolute;
     top: 70%; 
-    overflow-y: scroll; 
-    height: 110px;
+    overflow-y: scroll;
+    height: fit-content; 
+    max-height: 110px;
 }
 
 .user-option{

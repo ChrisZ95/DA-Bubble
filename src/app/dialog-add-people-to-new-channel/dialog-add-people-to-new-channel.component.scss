@@ -77,7 +77,8 @@
     position: absolute;
     top: 70%; 
     overflow-y: scroll; 
-    height: 110px;
+    height: fit-content; 
+    max-height: 110px;
 }
 
 .user-option{
