@@ -19,6 +19,7 @@
       background-color: transparent;
       height: 25px;
       width: 25px;
+      outline: none;
 
       .close-dialog-button-image {
         height: 25px;
@@ -31,11 +32,6 @@
           cursor: pointer;
           filter: brightness(0) saturate(100%) invert(26%) sepia(95%) saturate(2195%) hue-rotate(217deg) brightness(95%) contrast(89%);
         }
-      }
-
-      &:active {
-        background-color: rgba(128, 128, 128, 0.492);
-        filter: none;
       }
     }
   }

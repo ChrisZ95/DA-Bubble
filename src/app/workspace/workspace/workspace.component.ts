@@ -58,9 +58,12 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
     this.userStatus$ = this.idleService.getUserStatus(
       this.firestoreService.currentuid
     );
-    this.chatService.checkForExistingChats()
     //Adrian Testfunktion
     this.groupService.displayValue();
+
+    setTimeout(() => {
+      this.chatService.checkForExistingChats()
+    }, 2000);
   }
 
   ngOnDestroy(): void {
@@ -122,8 +125,13 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
     console.log(user);
     this.userDetails.emit(user);
     this.chatService.loadUserData(user);
-    const chatDocID = this.chatService.searchChatWithUser(user.uid)
-    // await this.chatService.createChat(user);
+    if(this.currentUid == user.uid) {
+      this.chatService.searchPrivateChat(user)
+      console.log('privater chat wird gecheckt')
+    } else {
+      const chatDocID = this.chatService.searchChatWithUser(user.uid)
+      console.log('andere chats werden gecheckt')
+    }
     this.chatService.clearInputValue(true);
   }
 

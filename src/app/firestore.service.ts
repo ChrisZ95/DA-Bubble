@@ -1,7 +1,7 @@
 import { Injectable, EventEmitter, OnInit } from '@angular/core';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, sendEmailVerification, updatePassword, sendPasswordResetEmail, OAuthProvider, Auth, signOut, updateEmail, reauthenticateWithCredential, EmailAuthProvider, fetchSignInMethodsForEmail, verifyBeforeUpdateEmail, deleteUser,} from '@angular/fire/auth';
 import { FirebaseApp } from '@angular/fire/app';
-import { getFirestore, doc, setDoc, collection, getDocs, getDoc, updateDoc, where, QueryDocumentSnapshot, deleteField, deleteDoc, onSnapshot, query} from '@angular/fire/firestore';
+import { getFirestore, doc, setDoc,addDoc, collection, getDocs, getDoc, updateDoc, where, QueryDocumentSnapshot, deleteField, deleteDoc, onSnapshot, query} from '@angular/fire/firestore';
 import { getStorage, provideStorage, ref, uploadBytes, getDownloadURL, deleteObject,} from '@angular/fire/storage';
 import { User } from '../models/user.class';
 import { Channel } from '../models/channel.class';
@@ -10,6 +10,7 @@ import { log } from 'console';
 import { BehaviorSubject, Observable, debounceTime, fromEvent, map, switchMap, timer, from,} from 'rxjs';
 import { Database, ref as reference, set, get, child, onValue, push, update, remove,} from '@angular/fire/database';
 import { IdleService } from './services/idle.service';
+import { ChatService } from './services/chat.service';
 
 @Injectable({
   providedIn: 'root',
@@ -33,7 +34,7 @@ export class FirestoreService {
   displayWorkspace: boolean = true;
   isScreenWide: boolean = false;
 
-  constructor( private myFirebaseApp: FirebaseApp, public router: Router, private rdb: Database, private idleService: IdleService) {
+  constructor(private myFirebaseApp: FirebaseApp, public router: Router, private rdb: Database, private idleService: IdleService) {
     this.auth = getAuth(myFirebaseApp);
     this.auth.languageCode = 'de';
     this.firestore = getFirestore(myFirebaseApp);
@@ -429,6 +430,7 @@ export class FirestoreService {
 
       this.setuid(user.uid);
       this.sendEmailAfterSignUp(user);
+      this.createPrivateChat(user.uid)
       return 'auth';
     } catch (error: any) {
       console.error('Error creating user:', error);
@@ -450,6 +452,40 @@ export class FirestoreService {
         return null;
       }
     }
+  }
+
+  async createPrivateChat(userID: any) {
+    console.log('pribter chat wird erstellt')
+    const timestamp = this.createTimeStamp();
+    const newChatRef = doc(collection(this.firestore, "newchats"));
+    await setDoc(newChatRef, {
+      participants: [userID],
+      createdAt: timestamp,
+    });
+
+    // Sub-Kollektion für nachrichten im chat dokument
+    const messagesCollection = collection(newChatRef, 'messages');
+    const messageDocRef = doc(messagesCollection);
+    const welcomeMessage = {
+        text: "Willkommen im Chat!",
+        sender: "System",
+        createdAt: timestamp,
+    };
+    await setDoc(messageDocRef, welcomeMessage);
+
+    // Sub-Kollektion für reaktionen in der nachricht
+    const emojiReactionsCollection = collection(messageDocRef, 'emojiReactions');
+    const welcomeReaction = {
+        emojiIcon: '😊',
+        emojiCounter: 1
+    };
+    await addDoc(emojiReactionsCollection, welcomeReaction);
+
+    const threadsCollection = collection(messageDocRef, 'threads');
+    const thraedsMessage = {
+
+    };
+    await addDoc(threadsCollection, thraedsMessage);
   }
 
   /* Nutzer wird eingeloggt */

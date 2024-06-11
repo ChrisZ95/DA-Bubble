@@ -51,7 +51,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   userInformation: any;
 
   chatData: any;
-  participantUser: any;
+  participantUser: any = {};
 
   emoji = [
     {
@@ -97,9 +97,19 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
 
     this.chatSubscription = this.chatService.chatData$.subscribe(data => {
       this.chatData = data;
-      console.log('Die abgerufenden daten im Chat Bereich',this.chatData);
-      this.loadParticipantUserData()
+      console.log('Die abgerufenden Daten im Chat Bereich', this.chatData);
+
+      if (this.chatData?.participants?.length === 1) {
+        console.log('Single Chat');
+        this.loadPrivateChat()
+      } else if (this.chatData?.participants?.length > 1) {
+        console.log('Chat mit mehreren Benutzern');
+        this.loadParticipantUserData();
+      } else {
+        console.log('Ungültige Chatdaten');
+      }
     });
+
   }
 
   ngOnDestroy(): void {
@@ -126,6 +136,31 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     }
   }
 
+  async loadPrivateChat() {
+    const currentUserID = localStorage.getItem('uid');
+    if (currentUserID) {
+      const docRef = doc(this.firestore, "users", currentUserID);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        console.log("Document data:", docSnap.data());
+        const userData = docSnap.data();
+        this.participantUser = {
+          email: userData['email'],
+          signUpdate: userData['signUpdate'],
+          logIndate: userData['logIndate'],
+          logOutDate: userData['logOutDate'],
+          photo: userData['photo'],
+          uid: userData['uid'],
+          username: userData['username'],
+        };
+        console.log(this.participantUser)
+      } else {
+        console.log("Kein Dokument des Users gefunden");
+        window.location.reload();
+      }
+    }
+  }
+
   async loadParticipantUserData() {
     const currentUserID = localStorage.getItem('uid');
     if (this.chatData && this.chatData.participants) {
@@ -148,6 +183,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
           console.log(this.participantUser)
         } else {
           console.log("Kein Dokument des Users gefunden");
+          window.location.reload();
         }
       } else {
         console.log("Kein anderer Teilnehmer gefunden");
