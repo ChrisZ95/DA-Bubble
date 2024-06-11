@@ -141,6 +141,29 @@ async createChats(currentUserID: string, otherUserID: string) {
   }
 }
 
+async searchPrivateChat(userDetails: any) {
+  const currentUserID = localStorage.getItem('uid');
+
+  if (userDetails.uid === currentUserID) {
+    console.log('Die IDs sind gleich');
+
+    const querySnapshot = await getDocs(
+      query(collection(this.firestore, 'newchats'), where('participants', '==', [currentUserID]))
+    );
+
+    querySnapshot.forEach((doc) => {
+      console.log('Gefundener Chat:', doc.id, 'Daten:', doc.data());
+      this.loadChatWithUser(doc.id)
+    });
+
+  } else {
+    console.log('Die IDs sind nicht gleich');
+  }
+}
+
+
+
+
 async searchChatWithUser(userDetails: any) {
   const querySnapshot = await getDocs(collection(this.firestore, "newchats"));
   const chatsWithBothUsers: any = [];
@@ -214,6 +237,7 @@ async loadChatWithUser(chatDocID: any) {
   }
 
   loadUserData(userDetails: any) {
+    debugger
     this.userInformationSubject.next(userDetails);
   }
 
