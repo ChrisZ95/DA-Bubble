@@ -25,20 +25,6 @@
   min-width: 150px;
 }
 
-.user-tag {
-  display: inline-flex;
-  align-items: center;
-  background: #e0e0e0;
-  border-radius: 3px;
-  padding: 2px 5px;
-  margin: 2px;
-  transition: background-color 0.3s;
-}
-
-.user-tag:hover {
-  background: #d0d0d0;
-}
-
 .remove-tag {
   margin-left: 5px;
   cursor: pointer;

@@ -2,10 +2,12 @@
     <div class="inputFieldContainer">
         <span *ngFor="let user of selectedUsers" class="user-tag">
             {{ user }}
-            <!-- <span class="remove-tag" (click)="removeUser(user)">x</span> -->
         </span>
-        <input (keyup)="searchEntity(inputRef.value)" (input)="updatePlaceholder(inputRef.value)" #inputRef
-            placeholder="Search users ..." value="" class="inputField" />
+        <mat-form-field appearance="outline">
+            <mat-label>Search User</mat-label>
+            <input matInput (keyup)="searchEntity(inputRef.value)" (input)="updatePlaceholder(inputRef.value)" #inputRef
+                placeholder="Search users ..." value="" class="inputField">
+        </mat-form-field>
     </div>
     <div class="dropdown-menu" *ngIf="showDropdown">
         <div *ngIf="showUserPlaceholder" class="dropdown-item" (click)="displayAllUsers()">Search for User</div>

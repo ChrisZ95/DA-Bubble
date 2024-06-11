@@ -12,11 +12,12 @@ import { CommonModule } from '@angular/common';
 import { log } from 'console';
 import { TextEditorComponent } from '../../shared/text-editor/text-editor.component';
 import { ChatService } from '../../services/chat.service';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-emptychat',
   standalone: true,
-  imports: [FormsModule, CommonModule, TextEditorComponent],
+  imports: [FormsModule, CommonModule, TextEditorComponent, MatInputModule],
   templateUrl: './emptychat.component.html',
   styleUrls: ['./emptychat.component.scss', '../chats.component.scss'],
 })
@@ -90,17 +91,7 @@ export class EmptychatComponent implements OnInit {
         !this.selectedUsers.includes(`${item.username}`)
       );
     });
-    this.filteredEntities.sort((a: any, b: any) => {
-      const usernameA = a.username.toLowerCase();
-      const usernameB = b.username.toLowerCase();
-      if (usernameA < usernameB) {
-        return -1;
-      }
-      if (usernameA > usernameB) {
-        return 1;
-      }
-      return 0;
-    });
+    this.sortUser();
 
     this.showUserPlaceholder = false;
     this.showDropdown = true;
@@ -146,17 +137,40 @@ export class EmptychatComponent implements OnInit {
   }
 
   removeUser(user: any) {
-    debugger;
-    // Funktioniert noch nicht
     this.selectedUsers = this.selectedUsers.filter((item: any) => {
       return user.uid != item.uid;
     });
+    this.filteredEntities.push(user);
+    this.sortUser();
     this.updateInputField();
+    this.blurInputField();
+    setTimeout(() => {}, 0);
+  }
+
+  sortUser() {
+    this.filteredEntities.sort((a: any, b: any) => {
+      const usernameA = a.username.toLowerCase();
+      const usernameB = b.username.toLowerCase();
+      if (usernameA < usernameB) {
+        return -1;
+      }
+      if (usernameA > usernameB) {
+        return 1;
+      }
+      return 0;
+    });
   }
 
   @HostListener('document:click', ['$event'])
   clickOutside(event: Event) {
-    if (!this.eRef.nativeElement.contains(event.target)) {
+    const targetElement = event.target as HTMLElement;
+    const clickedInsideInput = this.eRef.nativeElement
+      .querySelector('.inputFieldContainer')
+      ?.contains(targetElement);
+    const clickedInsideDropdown = this.eRef.nativeElement
+      .querySelector('.dropdown-menu')
+      ?.contains(targetElement);
+    if (!clickedInsideInput && !clickedInsideDropdown) {
       this.showDropdown = false;
     }
   }
@@ -194,18 +208,36 @@ export class EmptychatComponent implements OnInit {
     const htmlString =
       this.selectedUsers
         .map(
-          (user) =>
-            `<div><span class="user-tag">${user.username} <span class="remove-tag">
-      <img src="../../../assets/images/close.png" alt="" style=" cursor: pointer" class="remove-user" (click)="removeUser(${user})">
+          (user, index) =>
+            `<div class="user-tag-container"><span class="user-tag">${user.username} <span class="remove-tag">
+      <img src="../../../assets/images/close.png" alt="" style="cursor: pointer" class="remove-user" id="remove-user-${index}">
       </span></span> </div>`
         )
-        .join('') + '<input type="text" class="inputField" />';
+        .join('') +
+      '<mat-form-field appearance="outline"><input matInput (keyup)="searchEntity(inputRef.value)" (input)="updatePlaceholder(inputRef.value)" #inputRef placeholder="Search users ..." value="" class="inputField"></mat-form-field>';
 
     inputElement.innerHTML = htmlString;
 
-    this.selectedUsers.forEach((user) => {
+    const style = document.createElement('style');
+    style.textContent = `
+  .user-tag-container .user-tag {
+    display: inline-flex ;
+    align-items: center ;
+    background: #e0e0e0 ;
+    border-radius: 3px ;
+    padding: 2px 5px ;
+    margin: 2px ;
+    transition: background-color 0.3s ;
+  }
+  .user-tag-container .user-tag:hover {
+    background: #d0d0d0;
+  }
+`;
+    document.head.append(style);
+
+    this.selectedUsers.forEach((user, index) => {
       const removeBtn = this.eRef.nativeElement.querySelector(
-        `.user-tag:last-child .remove-tag img`
+        `#remove-user-${index}`
       );
       this.renderer.listen(removeBtn, 'click', () => this.removeUser(user));
     });
