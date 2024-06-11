@@ -206,17 +206,49 @@ async loadChatWithUser(chatDocID: any) {
 
 async sendMessageToDatabase(message: any, currentDocID: any) {
   const timestamp = this.FirestoreService.createTimeStamp();
-
+  const currentuserID = localStorage.getItem('uid');
+  const currentUserData = await this.loadUserDataFromDatabase(currentuserID);
+  if (!currentUserData) {
+    console.error('Fehler: Benutzer konnte nicht geladen werden.');
+    return;
+  }
+  console.log(currentUserData);
   try {
     const messagesCollectionRef = collection(this.firestore, `newchats/${currentDocID}/messages`);
     const newMessage = {
       message: message,
-      createdAt: timestamp
+      createdAt: timestamp,
+      senderName: currentUserData.username,
+      senderID: currentUserData.uid
     };
     const docRef = await addDoc(messagesCollectionRef, newMessage);
     console.log('Nachricht erfolgreich gespeichert:', docRef.id);
   } catch (error) {
     console.error('Fehler beim Speichern der Nachricht:', error);
+  }
+}
+
+async loadUserDataFromDatabase(userID: any) {
+  const docRef = doc(this.firestore, "users", userID);
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    console.log("Document data:", docSnap.data());
+    const userData = docSnap.data();
+    console.log(userData);
+    const userDetails = {
+      username: userData['username'],
+      email: userData['email'],
+      photo: userData['photo'],
+      uid: userData['uid'],
+      signUpdate: userData['signUpdate'],
+      logIndate: userData['logIndate'],
+      logOutDate: userData['logOutDate'],
+    };
+    return userDetails;
+  } else {
+    console.log("No such document!");
+    return null;
   }
 }
 
