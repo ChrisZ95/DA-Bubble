@@ -20,6 +20,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { EmojiComponent } from '@ctrl/ngx-emoji-mart/ngx-emoji';
 import { log } from 'console';
+import { Firestore } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-ownchat',
@@ -29,11 +30,13 @@ import { log } from 'console';
   styleUrls: ['./ownchat.component.scss', '../chats.component.scss'],
 })
 export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
-  constructor( public dialog: MatDialog, public chatService: ChatService, public threadService: ThreadService, public firestoreService: FirestoreService) {}
+  constructor(private firestore: Firestore,  public dialog: MatDialog, public chatService: ChatService, public threadService: ThreadService, public firestoreService: FirestoreService) {}
   @Input() userDetails: any;
   private messagesSubscription: Subscription | undefined;
   private filteredUsersSubscription: Subscription | undefined;
   private userDetailsSubscription: Subscription | undefined;
+  private chatSubscription: Subscription | undefined;
+
   messages: any = [];
   allUsers: any[] = [];
   isHoveredArray: boolean[] = [];
@@ -48,7 +51,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   userInformation: any;
 
   chatData: any;
-  private chatSubscription: Subscription | undefined;
+  participantUser: any;
 
   emoji = [
     {
@@ -95,6 +98,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     this.chatSubscription = this.chatService.chatData$.subscribe(data => {
       this.chatData = data;
       console.log('Die abgerufenden daten im Chat Bereich',this.chatData);
+      this.loadParticipantUserData()
     });
   }
 
@@ -121,6 +125,40 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
       this.messages = this.chatService.messages;
     }
   }
+
+  async loadParticipantUserData() {
+    const currentUserID = localStorage.getItem('uid');
+    if (this.chatData && this.chatData.participants) {
+      const otherParticipant = this.chatData.participants.find((participant: string) => participant !== currentUserID);
+      if (otherParticipant) {
+        const docRef = doc(this.firestore, "users", otherParticipant);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          console.log("Document data:", docSnap.data());
+          const userData = docSnap.data();
+          this.participantUser = {
+            email: userData['email'],
+            signUpdate: userData['signUpdate'],
+            logIndate: userData['logIndate'],
+            logOutDate: userData['logOutDate'],
+            photo: userData['photo'],
+            uid: userData['uid'],
+            username: userData['username'],
+          };
+          console.log(this.participantUser)
+        } else {
+          console.log("Kein Dokument des Users gefunden");
+        }
+      } else {
+        console.log("Kein anderer Teilnehmer gefunden");
+      }
+    } else {
+      console.log('Chat data or participants are not available yet');
+    }
+  }
+
+
+
 
   openEmojiMartPicker(message: { id: number; text: string }) {
     this.emojiMessageId = message.id;

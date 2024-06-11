@@ -2,16 +2,16 @@
   <div class="active-channel">
     <div (click)="openChannelInfoDialog()"></div>
   </div>
-  <div *ngIf="this.chatService.participants.length > 0" class="images">
+  <div *ngIf="participantUser && participantUser.username" class="images">
     <div class="images-participants"
-      *ngFor="let user of (this.chatService.participants.length === 1 ? filteredUsers : [userInformation])"
-      (click)="openContactInfoDialogHeader(user)">
-      <img [src]="user?.photo" alt="">
-      <h2>{{ user?.username }} {{ this.chatService.participants.length === 1 ? '( Du )' : '' }}</h2>
+      (click)="openContactInfoDialogHeader(participantUser)">
+      <img [src]="participantUser.photo" alt="">
+      <h2>{{ participantUser.username }} {{ this.chatService.participants.length === 1 ? '( Du )' : '' }}</h2>
     </div>
     <div class="add-participants"></div>
   </div>
 </div>
+
 <div class="scrollbar test" #scrollContainer>
   <ng-container *ngFor="let message of messages; let i = index">
     <ng-container *ngIf="shouldShowSeparator(i)">
