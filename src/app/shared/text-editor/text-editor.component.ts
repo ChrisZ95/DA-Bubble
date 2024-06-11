@@ -57,6 +57,7 @@ export class TextEditorComponent implements OnInit {
     this.clearTextEditorValueSubcription = this.chatService.clearValue$.subscribe(
       (state: boolean) => {
         this.message = '';
+        this.fileArray = [];
       }
     );
 
@@ -149,7 +150,7 @@ export class TextEditorComponent implements OnInit {
       console.log('wähle ein bild oder nachricht');
     } else {
       if (this.componentName === 'ownChat') {
-        this.chatService.sendMessageToDatabase(this.message, this.currentDocID)
+        this.chatService.sendMessageToDatabase(this.fileArray, this.message, this.currentDocID)
         this.clearInputValue();
       } else if (this.componentName === 'thread') {
         // this.sendReply();
@@ -176,6 +177,7 @@ export class TextEditorComponent implements OnInit {
   clearInputValue() {
     this.openEmojiPicker = false;
     this.message = '';
+    this.fileArray = [];
   }
 
   triggerFileInput(): void {
@@ -186,7 +188,7 @@ export class TextEditorComponent implements OnInit {
     const fileInput = this.fileInput.nativeElement;
     const file = fileInput.files?.[0];
     this.openAssociatedUser = false;
-    if (file && (this.fileArray.length) <= 4) {
+    if (file && (this.fileArray.length) <= 2) {
       try {
         this.chatService.dataURL =
           await this.firestoreService.uploadDataIntoStorage(file);

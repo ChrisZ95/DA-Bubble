@@ -204,7 +204,7 @@ async loadChatWithUser(chatDocID: any) {
   }
 }
 
-async sendMessageToDatabase(message: any, currentDocID: any) {
+async sendMessageToDatabase(imageFile: any, message: any, currentDocID: any) {
   const timestamp = this.FirestoreService.createTimeStamp();
   const currentuserID = localStorage.getItem('uid');
   const currentUserData = await this.loadUserDataFromDatabase(currentuserID);
@@ -217,9 +217,11 @@ async sendMessageToDatabase(message: any, currentDocID: any) {
     const messagesCollectionRef = collection(this.firestore, `newchats/${currentDocID}/messages`);
     const newMessage = {
       message: message,
+      image: imageFile,// Komplettes Array übergeben ?
       createdAt: timestamp,
       senderName: currentUserData.username,
-      senderID: currentUserData.uid
+      senderID: currentUserData.uid,
+      // senderDetails: currentUserData,
     };
     const docRef = await addDoc(messagesCollectionRef, newMessage);
     console.log('Nachricht erfolgreich gespeichert:', docRef.id);
