@@ -52,8 +52,16 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   userInformation: any;
 
   chatData: any;
-  participantUser: any = {};
+  participantUser: any = [];
   currentChatID: any;
+
+  email: any;
+  signUpdate: any;
+  logIndate: any;
+  logOutDate: any;
+  photo: any;
+  uid: any;
+  username: any;
 
   emoji = [
     {
@@ -147,10 +155,8 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   async loadChatMessages(docID: any) {
-
     const docRef = doc(this.firestore, "newchats", docID);
     const docSnap = await getDoc(docRef);
-
     if (docSnap.exists()) {
         console.log("Document data:", docSnap.data());
         const messagesRef = collection(this.firestore, "newchats", docID, "messages");
@@ -180,15 +186,16 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
         const userData = docSnap.data();
-        this.participantUser = {
+        this.participantUser = [{
           email: userData['email'],
           signUpdate: userData['signUpdate'],
           logIndate: userData['logIndate'],
           logOutDate: userData['logOutDate'],
           photo: userData['photo'],
           uid: userData['uid'],
-          username: userData['username'],
-        };
+          username: userData['username']
+      }];
+        console.log(this.participantUser)
       } else {
         console.log("Kein Dokument des Users gefunden");
         window.location.reload();
@@ -205,15 +212,16 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           const userData = docSnap.data();
-          this.participantUser = {
+          this.participantUser = [{
             email: userData['email'],
             signUpdate: userData['signUpdate'],
             logIndate: userData['logIndate'],
             logOutDate: userData['logOutDate'],
             photo: userData['photo'],
             uid: userData['uid'],
-            username: userData['username'],
-          };
+            username: userData['username']
+        }];
+          console.log(this.participantUser)
         } else {
           console.log("Kein Dokument des Users gefunden");
           window.location.reload();
