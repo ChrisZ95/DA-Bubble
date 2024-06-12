@@ -36,6 +36,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   private filteredUsersSubscription: Subscription | undefined;
   private userDetailsSubscription: Subscription | undefined;
   private chatSubscription: Subscription | undefined;
+  private documentIDSubsrciption: Subscription | null = null;
 
   messages: any = [];
   allUsers: any[] = [];
@@ -52,6 +53,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
 
   chatData: any;
   participantUser: any = {};
+  currentChatID: any;
 
   emoji = [
     {
@@ -78,7 +80,6 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     this.userDetailsSubscription = this.chatService.userInformation$.subscribe(
       (data) => {
         this.userInformation = data;
-        console.log('User details:', this.userInformation);
       }
     );
 
@@ -91,19 +92,25 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     this.filteredUsersSubscription = this.chatService.filteredUsers$.subscribe(
       (users) => {
         this.filteredUsers = users;
-        console.log(this.filteredUsers);
       }
+    );
+
+    this.documentIDSubsrciption = this.chatService.documentID$.subscribe(
+      (docID)=> {
+        if(docID) {
+          this.messages = []
+          this.currentChatID = docID
+          this.loadChatMessages(this.currentChatID)
+        }
+      },
     );
 
     this.chatSubscription = this.chatService.chatData$.subscribe(data => {
       this.chatData = data;
-      console.log('Die abgerufenden Daten im Chat Bereich', this.chatData);
 
       if (this.chatData?.participants?.length === 1) {
-        console.log('Single Chat');
         this.loadPrivateChat()
       } else if (this.chatData?.participants?.length > 1) {
-        console.log('Chat mit mehreren Benutzern');
         this.loadParticipantUserData();
       } else {
         console.log('Ungültige Chatdaten');
@@ -128,6 +135,9 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     if (this.chatSubscription) {
       this.chatSubscription.unsubscribe();
     }
+    if (this.documentIDSubsrciption) {
+      this.documentIDSubsrciption.unsubscribe();
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -136,13 +146,39 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     }
   }
 
+  async loadChatMessages(docID: any) {
+
+    const docRef = doc(this.firestore, "newchats", docID);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+        console.log("Document data:", docSnap.data());
+        const messagesRef = collection(this.firestore, "newchats", docID, "messages");
+        const messagesSnap = await getDocs(messagesRef);
+        messagesSnap.forEach((messageDoc) => {
+            let messageData = messageDoc.data();
+            messageData['id'] = messageDoc.id;
+            if (messageData['createdAt']) {
+                this.messages.push(messageData);
+            } else {
+                console.error("Invalid timestamp format:", messageData['createdAt']);
+            }
+        });
+        this.messages.sort((a: any, b: any) => a.createdAt - b.createdAt);
+        this.messages.forEach((message: any) => {
+            console.log("Message data:", message);
+        });
+    } else {
+        console.log("No such document!");
+    }
+}
+
   async loadPrivateChat() {
     const currentUserID = localStorage.getItem('uid');
     if (currentUserID) {
       const docRef = doc(this.firestore, "users", currentUserID);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
-        console.log("Document data:", docSnap.data());
         const userData = docSnap.data();
         this.participantUser = {
           email: userData['email'],
@@ -153,7 +189,6 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
           uid: userData['uid'],
           username: userData['username'],
         };
-        console.log(this.participantUser)
       } else {
         console.log("Kein Dokument des Users gefunden");
         window.location.reload();
@@ -169,7 +204,6 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
         const docRef = doc(this.firestore, "users", otherParticipant);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          console.log("Document data:", docSnap.data());
           const userData = docSnap.data();
           this.participantUser = {
             email: userData['email'],
@@ -180,7 +214,6 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
             uid: userData['uid'],
             username: userData['username'],
           };
-          console.log(this.participantUser)
         } else {
           console.log("Kein Dokument des Users gefunden");
           window.location.reload();
@@ -204,11 +237,9 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     );
 
     if (this.foundMessage) {
-      console.log('Found Message:', this.foundMessage);
     } else {
       console.log('Message not found');
     }
-    console.log(this.messages);
   }
 
   getMessageForSpefifiedEmoji(
@@ -221,11 +252,9 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
         (msg: any) => msg.id === this.emojiMessageId
       );
       if (this.foundMessage) {
-        console.log('Found Message:', this.foundMessage);
       } else {
         console.log('Message not found');
       }
-      console.log(this.messages);
       this.addSpecifiedEmoji(emoji);
     }
   }

@@ -5,7 +5,6 @@ import { ChannelService } from './channel.service';
 import { FirestoreService } from '../firestore.service';
 import { GenerateIdsService } from './generate-ids.service';
 import { BehaviorSubject, Observable, catchError, combineLatest, map, of } from 'rxjs';
-import { log } from 'console';
 
 @Injectable({
   providedIn: 'root',
@@ -143,8 +142,6 @@ async createChats(currentUserID: string, otherUserID: string) {
 
       };
       await addDoc(threadsCollection, thraedsMessage);
-
-      console.log(`Neuer Chat zwischen ${currentUserID} und ${otherUserID} wurde erstellt und die Sub-Kollektionen 'messages' und 'emojiReactions' wurden hinzugefügt.`);
   } catch (error: any) {
       console.error("Fehler beim Erstellen des Chats:", error);
   }
@@ -154,14 +151,11 @@ async searchPrivateChat(userDetails: any) {
   const currentUserID = localStorage.getItem('uid');
 
   if (userDetails.uid === currentUserID) {
-    console.log('Die IDs sind gleich');
-
     const querySnapshot = await getDocs(
       query(collection(this.firestore, 'newchats'), where('participants', '==', [currentUserID]))
     );
 
     querySnapshot.forEach((doc) => {
-      console.log('Gefundener Chat:', doc.id, 'Daten:', doc.data());
       const chatData = doc.data();
       const usersInChat = chatData['participants'];
       this.loadChatWithUser(doc.id)
@@ -187,7 +181,6 @@ async searchChatWithUser(userDetails: any) {
       this.documentIDSubject.next( doc.id );
     }
   });
-  console.log('Chats with both users:', chatsWithBothUsers[0].id);
   this.loadChatWithUser(chatDocID)
   return chatDocID;
 }
@@ -196,10 +189,8 @@ async loadChatWithUser(chatDocID: any) {
   const docRef = doc(this.firestore, "newchats", chatDocID);
   const docSnap = await getDoc(docRef);
   if (docSnap.exists()) {
-    console.log("Document data:", docSnap.data());
     this.chatDataSubject.next(docSnap.data());
   } else {
-    console.log("No such document!");
     this.chatDataSubject.next(null);
   }
 }
@@ -212,19 +203,17 @@ async sendMessageToDatabase(imageFile: any, message: any, currentDocID: any) {
     console.error('Fehler: Benutzer konnte nicht geladen werden.');
     return;
   }
-  console.log(currentUserData);
   try {
     const messagesCollectionRef = collection(this.firestore, `newchats/${currentDocID}/messages`);
     const newMessage = {
       message: message,
-      image: imageFile,// Komplettes Array übergeben ?
+      image: imageFile,
       createdAt: timestamp,
       senderName: currentUserData.username,
       senderID: currentUserData.uid,
       // senderDetails: currentUserData,
     };
     const docRef = await addDoc(messagesCollectionRef, newMessage);
-    console.log('Nachricht erfolgreich gespeichert:', docRef.id);
   } catch (error) {
     console.error('Fehler beim Speichern der Nachricht:', error);
   }
@@ -235,9 +224,7 @@ async loadUserDataFromDatabase(userID: any) {
   const docSnap = await getDoc(docRef);
 
   if (docSnap.exists()) {
-    console.log("Document data:", docSnap.data());
     const userData = docSnap.data();
-    console.log(userData);
     const userDetails = {
       username: userData['username'],
       email: userData['email'],
