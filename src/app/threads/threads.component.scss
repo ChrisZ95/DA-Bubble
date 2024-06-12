@@ -102,6 +102,7 @@ p {
   align-items: center;
   margin: 0 auto;
   gap: 20px;
+  margin-left: 20px;
 }
 
 .line {
@@ -147,5 +148,47 @@ p {
     color: black;
     padding: 12px 15px;
     border-radius: 0px 12px 12px 12px;
+  }
+}
+
+@media(min-width: 851px) and (max-width: 1810px) {
+  .line {
+    width: 60%;
+  }
+}
+
+@media(min-width: 851px) and (max-width: 1615px) {
+  .line {
+    width: 55%;
+  }
+}
+
+@media(min-width: 851px) and (max-width: 1460px) {
+  .line {
+    width: 50%;
+  }
+}
+
+@media(min-width: 851px) and (max-width: 1335px) {
+  .amount-answers {
+    font-size: 14px;
+  }
+}
+
+@media(min-width: 851px) and (max-width: 1020px) {
+  .line {
+    width: 45%;
+  }
+}
+
+@media(min-width: 851px) and (max-width: 935px) {
+  .line {
+    width: 40%;
+  }
+}
+
+@media(min-width: 851px) and (max-width: 860px) {
+  .separator {
+    gap: 10px;
   }
 }

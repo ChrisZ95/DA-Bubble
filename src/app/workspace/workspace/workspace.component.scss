@@ -9,8 +9,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-around;
-    margin-top: 16px;
+    justify-content: space-between;
 
     h1 {
       margin: 0;
@@ -34,19 +33,21 @@
     gap: 30px;
 
     .channels-container {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
       .channels-overview {
         display: flex;
         align-items: center;
         flex-direction: row;
         justify-content: space-between;
-        width: 330px;
+        width: 100%;
 
         .open-channel-overview {
           display: flex;
           flex-direction: row;
           align-items: center;
           justify-content: flex-start;
-          padding: 5px 20px;
 
           h2 {
             margin: 0;
@@ -86,7 +87,7 @@
       }
 
       .reveal-channels {
-        width: 330px;
+        width: 100%;
 
         .active-channel {
           display: flex;
@@ -136,12 +137,13 @@
     .direct-messages-container {
       display: flex;
       flex-direction: column;
+      width: 100%;
 
       .direct-messages-overview {
         display: flex;
         align-items: center;
         flex-direction: row;
-        width: 330px;
+        width: 100%;
         margin-left: 40px;
 
         h2 {
@@ -259,6 +261,16 @@
 
 .busy {
   background-color: red;
+}
+
+.workspace-logo-headline {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  h1 {
+    font-size: 24px;
+    font-weight: 700;
+  }
 }
 
 @media(max-width: 850px) {

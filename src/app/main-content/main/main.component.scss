@@ -33,12 +33,11 @@
   // z-index: 1;
 }
 .workspace {
-  height: 100%;
   width: 20vw;
   border-radius: 30px;
-  padding: 10px;
+  padding: 32px 30px 32px 30px;
   background-color: rgb(255, 255, 255);
-  height: 80vh;
+  height: calc(80vh - 40px);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 .workspace-menu {
