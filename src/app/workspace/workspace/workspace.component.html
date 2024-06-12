@@ -16,18 +16,18 @@
           <img src="../assets/images/workspaces.svg" alt="" class="channels-dropdown">
           <h2>Channels</h2>
         </div>
-        <div class="open-create-channel">
-          <img (click)="openCreateChannelDialog()" src="../assets/images/add.svg" alt="" class="channels-add">
-        </div>
+        <img (click)="openCreateChannelDialog()" src="../assets/images/add.svg" alt="" class="channels-add">
       </div>
       <div class="reveal-channels" *ngIf="showChannel">
-        <div class="active-channel" *ngFor="let channel of filteredChannels">
-          <div class="channel-name" (click)="channelService.getChannelName(channel.channelName)"
-            (click)="channelService.getDescription(channel.description)"
-            (click)="channelService.getUserName(channel.users)" (click)="channelService.getAuthor(channel.author)"
-            (click)="openChannelChat(channel.channelId)">
-            <span>#</span>
-            <span>{{ channel.channelName }}</span>
+        <div class="channel-list">
+          <div class="active-channel" *ngFor="let channel of filteredChannels">
+            <div class="channel-name" (click)="channelService.getChannelName(channel.channelName)"
+              (click)="channelService.getDescription(channel.description)"
+              (click)="channelService.getUserName(channel.users)" (click)="channelService.getAuthor(channel.author)"
+              (click)="openChannelChat(channel.channelId)">
+              <span>#</span>
+              <span>{{ channel.channelName }}</span>
+            </div>
           </div>
         </div>
         <div (click)="openCreateChannelDialog()" class="create-channel">
