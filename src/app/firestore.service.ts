@@ -11,6 +11,7 @@ import { BehaviorSubject, Observable, debounceTime, fromEvent, map, switchMap, t
 import { Database, ref as reference, set, get, child, onValue, push, update, remove,} from '@angular/fire/database';
 import { IdleService } from './services/idle.service';
 import { ChatService } from './services/chat.service';
+import { filter } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -19,6 +20,9 @@ export class FirestoreService {
   public onUserRegistered: EventEmitter<string> = new EventEmitter<string>();
   private resetPasswordUserIdSubject = new BehaviorSubject<any>(null);
   resetPasswordUserId$ = this.resetPasswordUserIdSubject.asObservable();
+
+  private clearMessagesSubject = new BehaviorSubject<any>(null);
+  clearMessages$: Observable<any> = this.clearMessagesSubject.asObservable();
 
   public auth: any;
   public firestore: any;
@@ -231,18 +235,22 @@ export class FirestoreService {
       await updateDoc(userRef, {
         logOutDate: logOutTimeStamp,
       });
+
       await signOut(this.auth);
       localStorage.clear();
       this.router.navigate(['']);
+      location.reload();
     } catch (error) {
       console.error('Error signing out:', error);
     }
   }
 
-  logOutAfterDeleteAccount() {
+  async logOutAfterDeleteAccount() {
+    await this.clearMessagesSubject.next( true );
     signOut(this.auth)
       .then(() => {
         this.router.navigate(['']);
+        location.reload();
       })
       .catch((error) => {
         console.error('Error signing out:', error);

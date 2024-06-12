@@ -1,3 +1,4 @@
+import { FirestoreService } from './../../firestore.service';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Component, Input, OnChanges, OnInit, SimpleChanges, OnDestroy } from '@angular/core';
 import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
@@ -9,7 +10,6 @@ import { DialogAddPeopleComponent } from '../../dialog-add-people/dialog-add-peo
 import { DialogChannelInfoComponent } from '../../dialog-channel-info/dialog-channel-info.component';
 import { DialogContactInfoComponent } from '../../dialog-contact-info/dialog-contact-info.component';
 import { DialogMembersComponent } from '../../dialog-members/dialog-members.component';
-import { FirestoreService } from '../../firestore.service';
 import { ChannelService } from '../../services/channel.service';
 import { ThreadService } from '../../services/thread.service';
 import { Subscription } from 'rxjs';
@@ -21,6 +21,8 @@ import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { EmojiComponent } from '@ctrl/ngx-emoji-mart/ngx-emoji';
 import { log } from 'console';
 import { Firestore } from '@angular/fire/firestore';
+import { from, Observable } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-ownchat',
@@ -37,6 +39,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   private userDetailsSubscription: Subscription | undefined;
   private chatSubscription: Subscription | undefined;
   private documentIDSubsrciption: Subscription | null = null;
+  private clearMessagesSubscription: Subscription | undefined;
 
   messages: any = [];
   allUsers: any[] = [];
@@ -62,6 +65,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   photo: any;
   uid: any;
   username: any;
+  currentUserID: any;
 
   emoji = [
     {
@@ -85,6 +89,8 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   ];
 
   ngOnInit(): void {
+    this.messages = [];
+    console.log(this.messages)
     this.userDetailsSubscription = this.chatService.userInformation$.subscribe(
       (data) => {
         this.userInformation = data;
@@ -103,6 +109,11 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
       }
     );
 
+
+    this.clearMessagesSubscription = this.firestoreService.clearMessages$.subscribe(() => {
+      this.clearVariables();
+    });
+
     this.documentIDSubsrciption = this.chatService.documentID$.subscribe(
       (docID)=> {
         if(docID) {
@@ -117,17 +128,21 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
       this.chatData = data;
 
       if (this.chatData?.participants?.length === 1) {
+        console.log('participants.length =', this.chatData?.participants?.length)
         this.loadPrivateChat()
       } else if (this.chatData?.participants?.length > 1) {
+        console.log('participants.length =', this.chatData?.participants?.length)
         this.loadParticipantUserData();
       } else {
         console.log('Ungültige Chatdaten');
       }
     });
 
+    // this.getSenderData(this.currentUserID)
   }
 
   ngOnDestroy(): void {
+    this.messages = []
     if (this.messagesSubscription) {
       this.messagesSubscription.unsubscribe();
     }
@@ -143,8 +158,13 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     if (this.chatSubscription) {
       this.chatSubscription.unsubscribe();
     }
+
     if (this.documentIDSubsrciption) {
       this.documentIDSubsrciption.unsubscribe();
+    }
+
+    if (this.clearMessagesSubscription) {
+      this.clearMessagesSubscription.unsubscribe();
     }
   }
 
@@ -152,6 +172,16 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     if (this.userDetails != '' && changes['userDetails']) {
       this.messages = this.chatService.messages;
     }
+  }
+
+  clearVariables() {
+    debugger
+    this.messages = []
+    console.log(this.messages)
+  }
+
+  getSenderData(senderID: string) {
+
   }
 
   async loadChatMessages(docID: any) {
@@ -166,6 +196,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
             messageData['id'] = messageDoc.id;
             if (messageData['createdAt']) {
                 this.messages.push(messageData);
+                console.log(this.messages)
             } else {
                 console.error("Invalid timestamp format:", messageData['createdAt']);
             }
@@ -180,9 +211,9 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
 }
 
   async loadPrivateChat() {
-    const currentUserID = localStorage.getItem('uid');
-    if (currentUserID) {
-      const docRef = doc(this.firestore, "users", currentUserID);
+    this.currentUserID = localStorage.getItem('uid');
+    if (this.currentUserID) {
+      const docRef = doc(this.firestore, "users", this.currentUserID);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
         const userData = docSnap.data();
@@ -204,9 +235,9 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   async loadParticipantUserData() {
-    const currentUserID = localStorage.getItem('uid');
+    this.currentUserID = localStorage.getItem('uid');
     if (this.chatData && this.chatData.participants) {
-      const otherParticipant = this.chatData.participants.find((participant: string) => participant !== currentUserID);
+      const otherParticipant = this.chatData.participants.find((participant: string) => participant !== this.currentUserID);
       if (otherParticipant) {
         const docRef = doc(this.firestore, "users", otherParticipant);
         const docSnap = await getDoc(docRef);

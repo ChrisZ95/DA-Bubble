@@ -2,11 +2,11 @@
   <div class="active-channel">
     <div (click)="openChannelInfoDialog()"></div>
   </div>
-  <div *ngIf="participantUser && participantUser.username" class="images">
+  <div *ngFor="let user of participantUser" class="images">
     <div class="images-participants"
       (click)="openContactInfoDialogHeader(participantUser)">
-      <img [src]="participantUser.photo" alt="">
-      <h2>{{ participantUser.username }} {{ this.chatService.participants.length === 1 ? '( Du )' : '' }}</h2>
+      <img [src]="user.photo" alt="">
+      <h2>{{ user.username }} {{this.chatData?.participants?.length === 1 ? '( Du )' : '' }}</h2>
     </div>
     <div class="add-participants"></div>
   </div>
@@ -23,24 +23,29 @@
         <div class="separator-line"></div>
       </div>
     </ng-container>
-    <div *ngFor="let user of participantUser" class="conversation-container"
-      [ngClass]="{'justify-end': user.uid === firestoreService.currentuid, 'justify-start': user.uid !== firestoreService.currentuid}"
+    <div class="conversation-container"  [ngClass]="{'justify-end': message.senderID === this.currentUserID, 'justify-start':message.senderID !== this.currentUserID}"(mouseenter)="updateHoverState(i, true)" (mouseleave)="updateHoverState(i, false)">
+      {{ message.message }}
+    </div>
+  </ng-container>
+</div>
+    <!-- <div *ngFor="let user of messages" class="conversation-container"
+      [ngClass]="{'justify-end': user.senderID === this.currentUserID, 'justify-start':user.senderID !== this.currentUserID}"
       (mouseenter)="updateHoverState(i, true)" (mouseleave)="updateHoverState(i, false)">
-      <div *ngIf="user.uid !== firestoreService.currentuid" class="user-avatar-container">
+      <div *ngIf="user.senderID !== this.currentUserID" class="user-avatar-container">
         <img alt="" src="{{ user.photo }}" class="user-avatar">
       </div>
       <div class="conversation">
-        <div class="name-timestamp" [ngClass]="{'reverse-order': user.uid === firestoreService.currentuid}">
-          <span *ngFor="let user of (this.chatService.participants.length === 1 ? filteredUsers : [userInformation])"
-            class="name" (click)="openContactInfoDialog(user.uid)">{{ user.senderName }}</span>
+        <div class="name-timestamp" [ngClass]="{'reverse-order': user.senderID === this.currentUserID}">
+          <span
+            class="name" (click)="openContactInfoDialog(user.senderID)">{{ user.senderName }}</span>
           <span class="time">{{ message.createdAt | timestamp: 'time' }} Uhr</span>
         </div>
         <div [ngClass]="{
-                  'speechbubble': user.uid !== firestoreService.currentuid,
-                  'bg-color-own-message': user.uid === firestoreService.currentuid,
-                  'bg-color-message': user.uid !== firestoreService.currentuid,
-                  'own-message-bubble': user.uid === firestoreService.currentuid,
-                  'hovered-other-message': isHoveredArray[i] && user.uid !== firestoreService.currentuid
+                  'speechbubble': user.senderID !== this.currentUserID,
+                  'bg-color-own-message': user.senderID === this.currentUserID,
+                  'bg-color-message': user.senderID !== this.currentUserID,
+                  'own-message-bubble': user.senderID === this.currentUserID,
+                  'hovered-other-message': isHoveredArray[i] && user.senderID !== this.currentUserID
                 }">
           <span class="message-text" *ngIf="chatService.editIndex != i">{{ message.message }}</span>
           <input value="{{ message.message }}" #value>
@@ -52,37 +57,17 @@
           <a (click)="openThread(message)">
             {{ message.replies ? message.replies.length + ' Antworten' : 'Jetzt Antworten' }}
           </a>
-          <!-- <div (click)="addReaction()" class="emoji-reactions">
-            <div>{{ message.emojiReactions.emojiCounter }}</div>
-            <div>{{ message.emojiReactions.emojiIcon }}</div>
-          </div> -->
-          <!-- <div *ngFor="let reaction of getEmojiReactions(message)">
-            <div (click)="addReaction()" class="emoji-reactions">
-              <div>{{ reaction.counter }}</div>
-              <div>{{ reaction.icon }}</div>
-            </div>
-          </div> -->
-          <!-- <div (click)="addReaction()" class="emoji-reactions">
-            <div>{{ message.emojiReactions.emojiCounter }}</div>
-            <div>{{ message.emojiReactions.emoji }}</div>
-          </div> -->
-          <!-- <div class="emoji-reactions">
-            <div *ngFor="let reaction of getEmojiReactions(message)">
-                <div >{{ reaction.counter }}</div>
-                <div>{{ reaction }}</div>
-            </div>
-        </div> -->
           <p>
             {{ message.replies && message.replies.length ? (message.replies[message.replies.length -
             1].createdAt | timestamp: 'time') + 'Uhr' : '' }}
           </p>
         </div>
       </div>
-      <div *ngIf="user.uid === firestoreService.currentuid" class="user-avatar-container">
+      <div *ngIf="user.senderID === this.currentUserID" class="user-avatar-container">
         <img alt="" class="user-avatar">
       </div>
       <div class="popup-window-own-message"
-        *ngIf="isHoveredArray[i] && user.uid === firestoreService.currentuid">
+        *ngIf="isHoveredArray[i] && user.senderID === this.currentUserID">
         <img src="./../../../assets/images/green-tick.png" alt="">
         <img src="./../../../assets/images/hands-emoji.png" alt="">
         <img src="./../../../assets/images/add_reaction.png" alt="">
@@ -97,7 +82,7 @@
           <button mat-menu-item>LÖSCHEN</button>
         </mat-menu>
       </div>
-      <div class="popup-window" *ngIf="isHoveredArray[i] && user.uid !== firestoreService.currentuid">
+      <div class="popup-window" *ngIf="isHoveredArray[i] && user.senderID !== this.currentUserID">
         <ngx-emoji (click)="getMessageForSpefifiedEmoji(emoji[0], message)" class="emoji-icons" emoji="white_check_mark"
           set="apple" [size]="20"></ngx-emoji>
         <ngx-emoji (click)="getMessageForSpefifiedEmoji(emoji[1], message)" class="emoji-icons" emoji="raised_hands"
@@ -120,7 +105,7 @@
         auf.</span>
     </div>
   </div>
-</div>
+</div> -->
 <div class="emoji-picker-container" *ngIf="openEmojiPicker">
   <emoji-mart (emojiClick)="addEmoji($event)" title="Pick your emoji…" emoji="point_up"></emoji-mart>
   <button (click)="closeEmojiMartPicker()">close</button>
