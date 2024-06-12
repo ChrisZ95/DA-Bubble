@@ -1,5 +1,5 @@
 <div class="header">
-  <div *ngIf="firestoreService.displayWorkspace">
+  <div *ngIf="firestoreService.isScreenWide || !firestoreService.isScreenWide && firestoreService.displayWorkspace">
     <img class="da-bubble-logo" src="./../assets/images/dabubble-logo.png" alt="">
   </div>
   <div *ngIf="!firestoreService.displayWorkspace && !firestoreService.isScreenWide" class="mobile-header-menu">
