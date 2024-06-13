@@ -65,11 +65,14 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 40px;
+  width: 40px;
+  background-color: #ECEEFE;
+  border-radius: 20px;
+  cursor: pointer;
   >img {
-    padding: 8px;
-    border-radius: 20px;
-    background-color: #ECEEFE;
-    cursor: pointer;
+    height: 24px;
+    width: 24px;
   }
 }
 
@@ -350,4 +353,33 @@
 
 .hovered-other-message {
   background-color: white !important;
+}
+
+@media(max-width: 850px) {
+  .add-participants {
+    height: 34px;
+    width: 34px;
+    >img{
+      height: 18px;
+      width: 18px;
+    }
+  }
+
+  .conversation-container {
+    padding: 10px 16px 10px 16px;
+  }
+
+  .separator-date {
+    padding: 5px 15px 5px 15px;
+    font-size: 18px;
+  }
+
+  .user-avatar {
+    height: 50px;
+    width: 50px;
+  }
+
+  .message-text {
+    font-size: 17px;
+  }
 }

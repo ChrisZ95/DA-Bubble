@@ -58,4 +58,18 @@
     .d-flex {
         display: none;
     }
+
+    .header-channelchat {
+        padding: 10px 16px 10px 16px;
+        height: 60px;
+    }
+
+    .active-channel {
+        gap: 5px;
+        font-size: 20px;
+    }
+
+    .chat-container {
+        height: calc(100vh - 80px);
+    }
 }

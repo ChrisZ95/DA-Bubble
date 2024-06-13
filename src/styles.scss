@@ -158,8 +158,11 @@ body {
 }
 
 .scrollbar {
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
   flex: 1 1 auto; /* Take up remaining space */
-  overflow-y: auto; //ohne funktioniert die Scrollbar nicht
+  overflow-y: scroll; //ohne funktioniert die Scrollbar nicht
   // Webkit-based browsers (Chrome, Safari)
   &::-webkit-scrollbar {
     width: 0px; // For vertical scrollbars
