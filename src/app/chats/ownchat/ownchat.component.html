@@ -23,11 +23,27 @@
         <div class="separator-line"></div>
       </div>
     </ng-container>
-    <div class="conversation-container"  [ngClass]="{'justify-end': message.senderID === this.currentUserID, 'justify-start':message.senderID !== this.currentUserID}"(mouseenter)="updateHoverState(i, true)" (mouseleave)="updateHoverState(i, false)">
-      {{ message.message }}
+    <div class="conversation-container"
+         [ngClass]="{'justify-end': message.senderID === currentUserID, 'justify-start': message.senderID !== currentUserID}"
+         (mouseenter)="updateHoverState(i, true)"
+         (mouseleave)="updateHoverState(i, false)">
+      <div class="message"
+           [ngClass]="{'sender-message': message.senderID === currentUserID, 'receiver-message': message.senderID !== currentUserID}">
+        <div class="message-user-information">
+          <span class="time">{{ message.createdAt | timestamp: 'time' }} Uhr</span>
+          <a href="#"><h4>{{ message.senderName }}</h4></a>
+        </div>
+        <div [ngClass]="{'own-message-bubble': message.senderID === currentUserID, 'speechbubble': message.senderID !== currentUserID}">
+          <span> {{ message.message }}</span>
+        </div>
+      </div>
+      <div>
+        <img class="user-avatar" src="{{ message.senderPhoto }}">
+      </div>
     </div>
   </ng-container>
 </div>
+
     <!-- <div *ngFor="let user of messages" class="conversation-container"
       [ngClass]="{'justify-end': user.senderID === this.currentUserID, 'justify-start':user.senderID !== this.currentUserID}"
       (mouseenter)="updateHoverState(i, true)" (mouseleave)="updateHoverState(i, false)">
