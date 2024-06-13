@@ -4,6 +4,8 @@ import {
   HostListener,
   ElementRef,
   Renderer2,
+  Output,
+  EventEmitter,
 } from '@angular/core';
 import { FirestoreService } from '../../firestore.service';
 import { NgModule } from '@angular/core';
@@ -13,11 +15,19 @@ import { log } from 'console';
 import { TextEditorComponent } from '../../shared/text-editor/text-editor.component';
 import { ChatService } from '../../services/chat.service';
 import { MatInputModule } from '@angular/material/input';
+import { ChipsComponent } from '../../shared/chips/chips.component';
+import { ChannelService } from '../../services/channel.service';
 
 @Component({
   selector: 'app-emptychat',
   standalone: true,
-  imports: [FormsModule, CommonModule, TextEditorComponent, MatInputModule],
+  imports: [
+    FormsModule,
+    CommonModule,
+    TextEditorComponent,
+    MatInputModule,
+    ChipsComponent,
+  ],
   templateUrl: './emptychat.component.html',
   styleUrls: ['./emptychat.component.scss', '../chats.component.scss'],
 })
@@ -26,7 +36,8 @@ export class EmptychatComponent implements OnInit {
     private firestoreService: FirestoreService,
     private eRef: ElementRef,
     private renderer: Renderer2,
-    private chatService: ChatService
+    private chatService: ChatService,
+    private channelService: ChannelService
   ) {}
 
   allUsers: any = [];
@@ -36,73 +47,86 @@ export class EmptychatComponent implements OnInit {
   showDropdown: boolean = false;
   showUserPlaceholder: any;
   selectedUsers: any[] = [];
+  currentUid: any;
+  @Output() channelDetails = new EventEmitter<any>();
 
   searchEntity(input: string) {
-    const lowerCaseInput = input.toLowerCase().trim();
-
+    let lowerCaseInput = input.toLowerCase().trim();
     this.filteredEntities = [];
     if (input === '') {
-      this.showUserPlaceholder = true;
+      this.filteredEntities = this.allUsers.filter((item: any) => {
+        return (
+          item.username &&
+          item.username.toLowerCase().includes(lowerCaseInput) &&
+          item.uid !== this.firestoreService.currentuid &&
+          !this.selectedUsers.includes(item.uid)
+        );
+      });
+      const channels = this.allChannels.filter((item: any) => {
+        return (
+          item.users.includes(this.firestoreService.currentuid) &&
+          item.channelName.toLowerCase().includes(lowerCaseInput)
+        );
+      });
+      // this.sortUser();
+      const users = this.filteredEntities;
+      this.filteredEntities = [...users, ...channels];
     } else if (input.startsWith('@')) {
+      lowerCaseInput.replace('@', '');
+      console.log('lowerCaseInput', lowerCaseInput);
+
       this.filteredEntities = this.allUsers.filter((item: any) => {
         return (
           item.username &&
           item.username.toLowerCase().includes(lowerCaseInput.substring(1)) &&
           item.uid !== this.firestoreService.currentuid &&
-          !this.selectedUsers.includes(`${item.username}`)
+          !this.selectedUsers.includes(item.uid)
         );
       });
-      this.filteredEntities.sort((a: any, b: any) => {
-        const usernameA = a.username.toLowerCase();
-        const usernameB = b.username.toLowerCase();
-        if (usernameA < usernameB) {
-          return -1;
-        }
-        if (usernameA > usernameB) {
-          return 1;
-        }
-        return 0;
+    } else if (input.startsWith('#')) {
+      this.filteredEntities = this.allChannels.filter((item: any) => {
+        return item.users.includes(this.firestoreService.currentuid);
       });
-      this.showUserPlaceholder = false;
     } else {
       const users = this.allUsers.filter((item: any) => {
         return (
           item.username &&
           item.username.toLowerCase().includes(lowerCaseInput) &&
           item.uid !== this.firestoreService.currentuid &&
-          !this.selectedUsers.includes(`${item.username}`)
+          !this.selectedUsers.includes(item.uid)
         );
       });
       this.filteredEntities = [...users];
-      this.showUserPlaceholder = false;
     }
-    this.updatePlaceholder(input);
+    // this.sortUser();
   }
 
-  updatePlaceholder(input: string) {
-    this.showDropdown = input === '' || this.filteredEntities?.length > 0;
-  }
+  // updatePlaceholder(input: string) {
+  //   this.showDropdown = input === '' || this.filteredEntities?.length > 0;
+  // }
 
-  displayAllUsers() {
-    this.filteredEntities = this.allUsers.filter((item: any) => {
-      return (
-        item.username &&
-        item.uid !== this.firestoreService.currentuid &&
-        !this.selectedUsers.includes(`${item.username}`)
-      );
-    });
-    this.sortUser();
+  // displayAllUsers(users: any) {
+  //   this.filteredEntities = users.filter((item: any) => {
+  //     return (
+  //       item.username &&
+  //       item.uid !== this.firestoreService.currentuid &&
+  //       !this.selectedUsers.includes(`${item.username}`)
+  //     );
+  //   });
+  //   this.sortUser();
+  // }
 
-    this.showUserPlaceholder = false;
-    this.showDropdown = true;
-
-    setTimeout(() => {
-      this.focusInputField();
-    }, 0);
-  }
+  // displayAllChannels(channels: any) {
+  //   const filteredChannels = this.allChannels.map((channel: any) => {
+  //     channel.isChannel = true;
+  //     return channel;
+  //   });
+  //   this.filteredEntities = [this.filteredEntities, ...filteredChannels];
+  //   console.log('filteredEntities', this.filteredEntities);
+  // }
 
   selectedUserUids: any = [this.firestoreService.currentuid]; //
-  selectEntity(entity: any) {
+  selectEntity(entity: any): void {
     if (entity.username && !this.selectedUsers.includes(entity.username)) {
       this.selectedUsers.push(entity);
 
@@ -114,19 +138,15 @@ export class EmptychatComponent implements OnInit {
       this.selectedUserUids.push(`${entity.uid}`); //
       this.chatService.allPotentialChatUsers.push(entity);
 
-      this.updateInputField();
-    } else if (!entity.username) {
-      const inputElement = this.eRef.nativeElement.querySelector(
-        '.inputFieldContainer'
-      );
-      inputElement.innerHTML = `<span class="channel-tag">#${entity.channelName}</span>`;
+      // this.updateInputField();
+    } else if (entity.channelName) {
       this.selectedUsers = [];
+      this.channelDetails.emit(entity);
+      this.channelService.showChannelChat = true;
+      this.chatService.showOwnChat = false;
+      this.chatService.showEmptyChat = false;
     }
-    this.showDropdown = false;
 
-    setTimeout(() => {
-      this.blurInputField();
-    }, 0);
   }
 
   private blurInputField() {
@@ -142,9 +162,8 @@ export class EmptychatComponent implements OnInit {
     });
     this.filteredEntities.push(user);
     this.sortUser();
-    this.updateInputField();
-    this.blurInputField();
-    setTimeout(() => {}, 0);
+    // this.updateInputField();
+    // this.blurInputField();
   }
 
   sortUser() {
@@ -194,83 +213,110 @@ export class EmptychatComponent implements OnInit {
     }
   }
 
-  private focusInputField() {
-    const inputElement = this.eRef.nativeElement.querySelector('input');
-    if (inputElement) {
-      inputElement.focus();
-    }
-  }
+  // private focusInputField() {
+  //   const inputElement = this.eRef.nativeElement.querySelector('input');
+  //   if (inputElement) {
+  //     inputElement.focus();
+  //   }
+  // }
 
-  private updateInputField() {
-    const inputElement = this.eRef.nativeElement.querySelector(
-      '.inputFieldContainer'
-    );
-    const htmlString =
-      this.selectedUsers
-        .map(
-          (user, index) =>
-            `<div class="user-tag-container"><span class="user-tag">${user.username} <span class="remove-tag">
-      <img src="../../../assets/images/close.png" alt="" style="cursor: pointer" class="remove-user" id="remove-user-${index}">
-      </span></span> </div>`
-        )
-        .join('') +
-      '<mat-form-field appearance="outline"><input matInput (keyup)="searchEntity(inputRef.value)" (input)="updatePlaceholder(inputRef.value)" #inputRef placeholder="Search users ..." value="" class="inputField"></mat-form-field>';
+  //   private updateInputField() {
+  //     const inputElement = this.eRef.nativeElement.querySelector(
+  //       '.inputFieldContainer'
+  //     );
+  //     const htmlString =
+  //       this.selectedUsers
+  //         .map(
+  //           (user, index) =>
+  //             `<div class="user-tag-container"><span class="user-tag">${user.username} <span class="remove-tag">
+  //       <img src="../../../assets/images/close.png" alt="" style="cursor: pointer" class="remove-user" id="remove-user-${index}">
+  //       </span></span> </div>`
+  //         )
+  //         .join('') +
+  //       '<mat-form-field appearance="outline"><input matInput (keyup)="searchEntity(inputRef.value)" (input)="updatePlaceholder(inputRef.value)" #inputRef placeholder="Search users ..." value="" class="inputField"></mat-form-field>';
 
-    inputElement.innerHTML = htmlString;
+  //     inputElement.innerHTML = htmlString;
 
-    const style = document.createElement('style');
-    style.textContent = `
-  .user-tag-container .user-tag {
-    display: inline-flex ;
-    align-items: center ;
-    background: #e0e0e0 ;
-    border-radius: 3px ;
-    padding: 2px 5px ;
-    margin: 2px ;
-    transition: background-color 0.3s ;
-  }
-  .user-tag-container .user-tag:hover {
-    background: #d0d0d0;
-  }
-`;
-    document.head.append(style);
+  //     const style = document.createElement('style');
+  //     style.textContent = `
+  //   .user-tag-container .user-tag {
+  //     display: inline-flex ;
+  //     align-items: center ;
+  //     background: #e0e0e0 ;
+  //     border-radius: 3px ;
+  //     padding: 2px 5px ;
+  //     margin: 2px ;
+  //     transition: background-color 0.3s ;
+  //   }
+  //   .user-tag-container .user-tag:hover {
+  //     background: #d0d0d0;
+  //   }
+  // `;
+  //     document.head.append(style);
 
-    this.selectedUsers.forEach((user, index) => {
-      const removeBtn = this.eRef.nativeElement.querySelector(
-        `#remove-user-${index}`
-      );
-      this.renderer.listen(removeBtn, 'click', () => this.removeUser(user));
+  //     this.selectedUsers.forEach((user, index) => {
+  //       const removeBtn = this.eRef.nativeElement.querySelector(
+  //         `#remove-user-${index}`
+  //       );
+  //       this.renderer.listen(removeBtn, 'click', () => this.removeUser(user));
+  //     });
+
+  //     const inputField = this.eRef.nativeElement.querySelector('.inputField');
+  //     this.renderer.listen(inputField, 'keyup', (event) =>
+  //       this.searchEntity(event.target.value)
+  //     );
+  //     this.renderer.listen(inputField, 'input', (event) =>
+  //       this.updatePlaceholder(event.target.value)
+  //     );
+
+  //     this.focusInputField();
+  //   }
+
+  loadAndMergeEntitys() {
+    this.currentUid = this.firestoreService.currentuid;
+    this.allUsers = this.firestoreService.allUsers;
+    this.allUsers = this.allUsers.filter((user: any) => {
+      return user.uid != this.currentUid;
     });
-
-    const inputField = this.eRef.nativeElement.querySelector('.inputField');
-    this.renderer.listen(inputField, 'keyup', (event) =>
-      this.searchEntity(event.target.value)
-    );
-    this.renderer.listen(inputField, 'input', (event) =>
-      this.updatePlaceholder(event.target.value)
-    );
-
-    this.focusInputField();
+    this.allUsers.sort((a: any, b: any) => {
+      const usernameA = a.username.toLowerCase();
+      const usernameB = b.username.toLowerCase();
+      if (usernameA < usernameB) {
+        return -1;
+      }
+      if (usernameA > usernameB) {
+        return 1;
+      }
+      return 0;
+    });
+    this.allChannels = this.firestoreService.allChannels;
+    this.allChannels = this.allChannels.filter((channel: any) => {
+      return channel.users.includes(this.currentUid);
+    });
+    this.filteredEntities = [...this.allUsers, ...this.allChannels];
+    console.log('filteredEntities', this.filteredEntities);
   }
 
   ngOnInit(): void {
-    this.firestoreService
-      .getAllUsers()
-      .then((users) => {
-        this.allUsers = users;
-      })
-      .catch((error) => {
-        console.error('Error fetching users:', error);
-      });
+    // this.firestoreService
+    //   .getAllUsers()
+    //   .then((users) => {
+    //     this.allUsers = users;
+    //   })
+    //   .catch((error) => {
+    //     console.error('Error fetching users:', error);
+    //   });
 
-    this.firestoreService
-      .getAllChannels()
-      .then((Channels) => {
-        this.allChannels = Channels;
-      })
-      .catch((error) => {
-        console.error('Error fetching users:', error);
-      });
+    // this.firestoreService
+    //   .getAllChannels()
+    //   .then((Channels) => {
+    //     this.allChannels = Channels;
+    //   })
+    //   .catch((error) => {
+    //     console.error('Error fetching users:', error);
+    //   });
+
+    this.loadAndMergeEntitys();
   }
 }
 

@@ -1,4 +1,9 @@
-<div class="header">
+<app-chips [allEntitys]="filteredEntities" (addEntity)="selectEntity($event)" (removedEntity)="removeUser($event)"
+    (searchEntity)="searchEntity($event)"></app-chips>
+<app-text-editor [componentName]="'emptyChat'" />
+
+<!-- Old -->
+<!-- <div class="header">
     <div class="inputFieldContainer">
         <span *ngFor="let user of selectedUsers" class="user-tag">
             {{ user }}
@@ -15,6 +20,4 @@
             {{ entity.username || entity.channelName }}
         </div>
     </div>
-</div>
-
-<app-text-editor [componentName]="'emptyChat'" />
+</div> -->
