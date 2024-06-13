@@ -1,7 +1,7 @@
 import { FirestoreService } from './../../firestore.service';
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, Input, OnChanges, OnInit, SimpleChanges, OnDestroy } from '@angular/core';
-import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
+import { Component, Input, OnChanges, OnInit, SimpleChanges, OnDestroy, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
+import { collection, doc, getDoc, getDocs, query, where, onSnapshot } from 'firebase/firestore';
 import { ChatService } from '../../services/chat.service';
 import { TimestampPipe } from '../../shared/pipes/timestamp.pipe';
 import { TextEditorComponent } from '../../shared/text-editor/text-editor.component';
@@ -34,6 +34,8 @@ import { filter } from 'rxjs/operators';
 export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   constructor(private firestore: Firestore,  public dialog: MatDialog, public chatService: ChatService, public threadService: ThreadService, public firestoreService: FirestoreService) {}
   @Input() userDetails: any;
+  @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
+  @ViewChild('lastMessage') private lastMessage!: ElementRef;
   private messagesSubscription: Subscription | undefined;
   private filteredUsersSubscription: Subscription | undefined;
   private userDetailsSubscription: Subscription | undefined;
@@ -66,6 +68,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   uid: any;
   username: any;
   currentUserID: any;
+  users: Map<string, any> = new Map();
 
   emoji = [
     {
@@ -175,7 +178,6 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   clearVariables() {
-    debugger
     this.messages = []
     console.log(this.messages)
   }
@@ -184,31 +186,73 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
 
   }
 
+  scrollToBottom(): void {
+    try {
+      if (this.scrollContainer && this.scrollContainer.nativeElement) {
+        this.scrollContainer.nativeElement.scrollTop = this.scrollContainer.nativeElement.scrollHeight;
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+
   async loadChatMessages(docID: any) {
     const docRef = doc(this.firestore, "newchats", docID);
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
+
+    onSnapshot(docRef, (docSnap) => {
+      if (docSnap.exists()) {
         console.log("Document data:", docSnap.data());
+
         const messagesRef = collection(this.firestore, "newchats", docID, "messages");
-        const messagesSnap = await getDocs(messagesRef);
-        messagesSnap.forEach((messageDoc) => {
+
+        onSnapshot(messagesRef, async (messagesSnap) => {
+          const messagesMap = new Map();
+
+          const messagePromises = messagesSnap.docs.map(async (messageDoc) => {
             let messageData = messageDoc.data();
             messageData['id'] = messageDoc.id;
+
             if (messageData['createdAt']) {
-                this.messages.push(messageData);
-                console.log(this.messages)
+              if (messageData['senderID']) {
+                const senderID = messageData['senderID'];
+                const senderData = await this.loadSenderData(senderID);
+                messageData['senderName'] = senderData ? senderData.username : "Unknown";
+                messageData['senderPhoto'] = senderData ? senderData.photo : null;
+              }
+              messagesMap.set(messageData['id'], messageData);
             } else {
-                console.error("Invalid timestamp format:", messageData['createdAt']);
+              console.error("Invalid timestamp format:", messageData['createdAt']);
             }
+          });
+
+          await Promise.all(messagePromises);
+
+          this.messages = Array.from(messagesMap.values());
+          this.messages.sort((a: any, b: any) => a.createdAt - b.createdAt);
         });
-        this.messages.sort((a: any, b: any) => a.createdAt - b.createdAt);
-        this.messages.forEach((message: any) => {
-            console.log("Message data:", message);
-        });
-    } else {
+      } else {
         console.log("No such document!");
+      }
+    });
+    this.scrollToBottom();
+  }
+
+  async loadSenderData(senderID: any) {
+    const docRef = doc(this.firestore, "users", senderID);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      const senderData = docSnap.data();
+      return { username: senderData['username'], photo: senderData['photo'] };
+    } else {
+      console.log("No such document!");
+      return null;
     }
-}
+  }
+
+
+
 
   async loadPrivateChat() {
     this.currentUserID = localStorage.getItem('uid');
