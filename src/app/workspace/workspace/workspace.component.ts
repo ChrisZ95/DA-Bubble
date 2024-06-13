@@ -41,7 +41,14 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
   selectedChannelName: string | null = null;
   currentChannelId: string = '';
 
-  constructor( public dialog: MatDialog, private readonly firestore: Firestore, private firestoreService: FirestoreService, public channelService: ChannelService, public chatService: ChatService, private cdRef: ChangeDetectorRef, private idleService: IdleService, private groupService: GroupchatsService) {
+  filteredEntities: any = [];
+  showChannelPlaceholder: any;
+  showUserChannelPlaceholder: boolean = false;
+  showUserPlaceholder: any;
+  showDropdown: boolean = false;
+  
+
+  constructor( public dialog: MatDialog, private readonly firestore: Firestore, public firestoreService: FirestoreService, public channelService: ChannelService, public chatService: ChatService, private cdRef: ChangeDetectorRef, private idleService: IdleService, private groupService: GroupchatsService) {
     onSnapshot(collection(this.firestore, 'channels'), (list) => {
       this.allChannels = list.docs.map((doc) => doc.data());
       this.filterChannels();
@@ -166,5 +173,69 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
       (channel: Channel) =>
         channel.users && channel.users.includes(currentUserId)
     );
+  }
+
+  searchEntity(input: string) {
+    const lowerCaseInput = input.toLowerCase().trim();
+    this.filteredEntities = [];
+    if (input === '') {
+      this.showUserChannelPlaceholder = true;
+      this.showUserPlaceholder = false;
+      this.showChannelPlaceholder = false;
+    } else if (input === '@') {
+      this.showUserPlaceholder = true;
+      this.showChannelPlaceholder = false;
+      this.showUserChannelPlaceholder = false;
+    } else if (input === '#') {
+      this.showUserPlaceholder = false;
+      this.showChannelPlaceholder = true;
+      this.showUserChannelPlaceholder = false;
+    } else if (input.startsWith('@')) {
+      this.filteredEntities = this.allUsers.filter((item: any) => {
+        return (
+          item.username &&
+          item.username.toLowerCase().includes(lowerCaseInput.substring(1)) &&
+          item.uid !== this.firestoreService.currentuid
+        );
+      });
+      this.showUserPlaceholder = false;
+      this.showChannelPlaceholder = false;
+      this.showUserChannelPlaceholder = false;
+    } else if (input.startsWith('#')) {
+      this.filteredEntities = this.allChannels.filter((channel: any) => {
+        return (
+          channel.channelName &&
+          channel.channelName
+            .toLowerCase()
+            .includes(lowerCaseInput.substring(1))
+        );
+      });
+      this.showUserPlaceholder = false;
+      this.showChannelPlaceholder = false;
+      this.showUserChannelPlaceholder = false;
+    } else {
+      const users = this.allUsers.filter((item: any) => {
+        return (
+          item.username &&
+          item.username.toLowerCase().includes(lowerCaseInput) &&
+          item.uid !== this.firestoreService.currentuid
+        );
+      });
+
+      const channels = this.allChannels.filter((item: any) => {
+        return item.name && item.name.toLowerCase().includes(lowerCaseInput);
+      });
+
+      this.filteredEntities = [...users, ...channels];
+      this.showUserPlaceholder = false;
+      this.showChannelPlaceholder = false;
+      this.showUserChannelPlaceholder = false;
+    }
+
+    this.showDropdown =
+      this.filteredEntities.length > 0 ||
+      input === '' ||
+      input === '@' ||
+      input === '#';
   }
 }
