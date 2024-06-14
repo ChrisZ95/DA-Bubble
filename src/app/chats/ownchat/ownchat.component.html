@@ -12,51 +12,7 @@
       <div class="add-participants"></div>
     </div>
   </div>
-<div class="header">
-  <div class="active-channel">
-    <div (click)="openChannelInfoDialog()"></div>
-  </div>
-  <div *ngFor="let user of participantUser" class="images">
-    <div class="images-participants"
-      (click)="openContactInfoDialogHeader(user)">
-      <img [src]="user.photo" alt="">
-      <h2>{{ user.username }} {{this.chatData?.participants?.length === 1 ? '( Du )' : '' }}</h2>
-    </div>
-    <div class="add-participants"></div>
-  </div>
-</div>
 
-  <div class="scrollbar" #scrollContainer>
-    <ng-container *ngFor="let message of messages; let i = index">
-      <ng-container *ngIf="shouldShowSeparator(i)">
-        <div class="separator">
-          <div class="separator-line"></div>
-          <div class="separator-date">
-            {{ message.createdAt | timestamp: 'day' }}
-          </div>
-          <div class="separator-line"></div>
-        </div>
-      </ng-container>
-      <div class="conversation-container"
-          [ngClass]="{'justify-end': message.senderID === currentUserID, 'justify-start': message.senderID !== currentUserID}"
-          (mouseenter)="updateHoverState(i, true)"
-          (mouseleave)="updateHoverState(i, false)">
-        <div class="message"
-            [ngClass]="{'sender-message': message.senderID === currentUserID, 'receiver-message': message.senderID !== currentUserID}">
-          <div class="message-user-information">
-            <span class="time">{{ message.createdAt | timestamp: 'time' }} Uhr</span>
-            <a href="#"><h4>{{ message.senderName }}</h4></a>
-          </div>
-          <div [ngClass]="{'own-message-bubble': message.senderID === currentUserID, 'speechbubble': message.senderID !== currentUserID}">
-            <span> {{ message.message }}</span>
-          </div>
-        </div>
-        <div>
-          <img class="user-avatar" src="{{ message.senderPhoto }}">
-        </div>
-      </div>
-    </ng-container>
-  </div>
 <div class="scrollbar test" #scrollContainer>
   <ng-container *ngFor="let message of messages; let i = index">
     <ng-container *ngIf="shouldShowSeparator(i)">
@@ -81,7 +37,7 @@
           </div>
           <div [ngClass]="{'own-message-bubble': message.senderID === currentUserID, 'speechbubble': message.senderID !== currentUserID}">
             <span>{{ message.message }}</span>
-            <ng-container *ngIf="message.image">
+            <ng-container *ngIf="message.image[0]">
               <div class="message-image">
                 <a href="{{ message.image[0].url }}" target="_blank" rel="noopener noreferrer">
                   <img [src]="message.image[0].url" alt="">
