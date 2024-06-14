@@ -19,7 +19,7 @@
           <app-emptychat />
         </div>
 
-        <div *ngIf="chatService.showOwnChat && firestoreService.isScreenWide" class="chat">
+        <div *ngIf="chatService.showOwnChat" class="chat">
           <app-ownchat [userDetails]="userDetails" />
         </div>
 

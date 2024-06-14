@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ElementRef, ViewChild, OnDestroy, Input } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, OnDestroy, Input, AfterViewChecked } from '@angular/core';
 import { DialogMembersComponent } from '../../dialog-members/dialog-members.component';
 import { DialogChannelInfoComponent } from '../../dialog-channel-info/dialog-channel-info.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -26,7 +26,7 @@ import { TextEditorChannelComponent } from '../../shared/text-editor-channel/tex
   templateUrl: './channelchat.component.html',
   styleUrls: ['./channelchat.component.scss', '../chats.component.scss'],
 })
-export class ChannelchatComponent implements OnInit, AfterViewInit, OnDestroy {
+export class ChannelchatComponent implements OnInit, OnDestroy {
   @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
   @Input() userDialogData: any;
   currentChannel: Channel | null = null;
@@ -129,7 +129,7 @@ export class ChannelchatComponent implements OnInit, AfterViewInit, OnDestroy {
     this.dialog.open(DialogContactInfoComponent, { data: this.userDialogData });
   }
 
-  ngAfterViewInit() {
+  ngAfterViewChecked() {
     this.scrollToBottom();
   }
 

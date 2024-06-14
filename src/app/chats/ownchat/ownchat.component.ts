@@ -175,6 +175,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     if (this.userDetails != '' && changes['userDetails']) {
       this.messages = this.chatService.messages;
     }
+    this.scrollToBottom();
   }
 
   clearVariables() {
@@ -235,6 +236,10 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
         console.log("No such document!");
       }
     });
+    this.scrollToBottom();
+  }
+
+  ngAfterViewChecked() {
     this.scrollToBottom();
   }
 

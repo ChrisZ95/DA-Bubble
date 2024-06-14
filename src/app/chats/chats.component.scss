@@ -3,6 +3,7 @@
   padding: 25px 45px 25px 45px;
   align-items: center;
   box-shadow: 0 4px 2px rgba(225, 225, 225, 0.5);
+  flex: 0 0 auto; 
 }
 
 .images {
@@ -379,6 +380,19 @@
 
 .hovered-other-message {
   background-color: white !important;
+}
+
+.text-editor {
+  position: relative;
+  flex: 0 0 auto; 
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(80vh + 20px);
 }
 
 @media(max-width: 850px) {

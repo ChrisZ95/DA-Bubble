@@ -126,6 +126,9 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   async openChat(user: any) {
+    if (window.innerWidth <= 850) {
+      this.firestoreService.displayWorkspace = false;
+    }
     this.channelService.showChannelChat = false;
     console.log(user);
     this.userDetails.emit(user);

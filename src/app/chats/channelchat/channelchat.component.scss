@@ -31,14 +31,8 @@
 ::ng-deep.mat-mdc-dialog-surface{
     border-radius: 0px 30px 30px 30px !important;
 }
-
-.chat-container {
-    display: flex;
-    flex-direction: column;
-    height: calc(80vh + 20px);
-}
   
-  .header-channelchat {
+.header-channelchat {
     display: flex;
     justify-content: space-between;
     padding: 25px 45px;
@@ -47,7 +41,7 @@
     flex: 0 0 auto; 
 }
   
-  .text-editor-channel {
+.text-editor-channel {
     position: relative;
     flex: 0 0 auto; 
     width: 100%;

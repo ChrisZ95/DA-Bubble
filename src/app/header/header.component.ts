@@ -72,6 +72,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   backToWorkspace() {
     this.channelService.showChannelChat = false;
+    this.chatService.showOwnChat = false;
     this.firestoreService.displayWorkspace = true;
   }
 

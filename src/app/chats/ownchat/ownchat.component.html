@@ -1,129 +1,131 @@
-<div class="header">
-  <div class="active-channel">
-    <div (click)="openChannelInfoDialog()"></div>
-  </div>
-  <div *ngFor="let user of participantUser" class="images">
-    <div class="images-participants"
-      (click)="openContactInfoDialogHeader(participantUser)">
-      <img [src]="user.photo" alt="">
-      <h2>{{ user.username }} {{this.chatData?.participants?.length === 1 ? '( Du )' : '' }}</h2>
+<div class="chat-container">
+  <div class="header">
+    <div class="active-channel">
+      <div (click)="openChannelInfoDialog()"></div>
     </div>
-    <div class="add-participants"></div>
+    <div *ngFor="let user of participantUser" class="images">
+      <div class="images-participants"
+        (click)="openContactInfoDialogHeader(participantUser)">
+        <img [src]="user.photo" alt="">
+        <h2>{{ user.username }} {{this.chatData?.participants?.length === 1 ? '( Du )' : '' }}</h2>
+      </div>
+      <div class="add-participants"></div>
+    </div>
   </div>
-</div>
 
-<div class="scrollbar test" #scrollContainer>
-  <ng-container *ngFor="let message of messages; let i = index">
-    <ng-container *ngIf="shouldShowSeparator(i)">
-      <div class="separator">
-        <div class="separator-line"></div>
-        <div class="separator-date">
-          {{ message.createdAt | timestamp: 'day' }}
+  <div class="scrollbar" #scrollContainer>
+    <ng-container *ngFor="let message of messages; let i = index">
+      <ng-container *ngIf="shouldShowSeparator(i)">
+        <div class="separator">
+          <div class="separator-line"></div>
+          <div class="separator-date">
+            {{ message.createdAt | timestamp: 'day' }}
+          </div>
+          <div class="separator-line"></div>
         </div>
-        <div class="separator-line"></div>
+      </ng-container>
+      <div class="conversation-container"
+          [ngClass]="{'justify-end': message.senderID === currentUserID, 'justify-start': message.senderID !== currentUserID}"
+          (mouseenter)="updateHoverState(i, true)"
+          (mouseleave)="updateHoverState(i, false)">
+        <div class="message"
+            [ngClass]="{'sender-message': message.senderID === currentUserID, 'receiver-message': message.senderID !== currentUserID}">
+          <div class="message-user-information">
+            <span class="time">{{ message.createdAt | timestamp: 'time' }} Uhr</span>
+            <a href="#"><h4>{{ message.senderName }}</h4></a>
+          </div>
+          <div [ngClass]="{'own-message-bubble': message.senderID === currentUserID, 'speechbubble': message.senderID !== currentUserID}">
+            <span> {{ message.message }}</span>
+          </div>
+        </div>
+        <div>
+          <img class="user-avatar" src="{{ message.senderPhoto }}">
+        </div>
       </div>
     </ng-container>
-    <div class="conversation-container"
-         [ngClass]="{'justify-end': message.senderID === currentUserID, 'justify-start': message.senderID !== currentUserID}"
-         (mouseenter)="updateHoverState(i, true)"
-         (mouseleave)="updateHoverState(i, false)">
-      <div class="message"
-           [ngClass]="{'sender-message': message.senderID === currentUserID, 'receiver-message': message.senderID !== currentUserID}">
-        <div class="message-user-information">
-          <span class="time">{{ message.createdAt | timestamp: 'time' }} Uhr</span>
-          <a href="#"><h4>{{ message.senderName }}</h4></a>
-        </div>
-        <div [ngClass]="{'own-message-bubble': message.senderID === currentUserID, 'speechbubble': message.senderID !== currentUserID}">
-          <span> {{ message.message }}</span>
-        </div>
-      </div>
-      <div>
-        <img class="user-avatar" src="{{ message.senderPhoto }}">
-      </div>
-    </div>
-  </ng-container>
-</div>
-
-    <!-- <div *ngFor="let user of messages" class="conversation-container"
-      [ngClass]="{'justify-end': user.senderID === this.currentUserID, 'justify-start':user.senderID !== this.currentUserID}"
-      (mouseenter)="updateHoverState(i, true)" (mouseleave)="updateHoverState(i, false)">
-      <div *ngIf="user.senderID !== this.currentUserID" class="user-avatar-container">
-        <img alt="" src="{{ user.photo }}" class="user-avatar">
-      </div>
-      <div class="conversation">
-        <div class="name-timestamp" [ngClass]="{'reverse-order': user.senderID === this.currentUserID}">
-          <span
-            class="name" (click)="openContactInfoDialog(user.senderID)">{{ user.senderName }}</span>
-          <span class="time">{{ message.createdAt | timestamp: 'time' }} Uhr</span>
-        </div>
-        <div [ngClass]="{
-                  'speechbubble': user.senderID !== this.currentUserID,
-                  'bg-color-own-message': user.senderID === this.currentUserID,
-                  'bg-color-message': user.senderID !== this.currentUserID,
-                  'own-message-bubble': user.senderID === this.currentUserID,
-                  'hovered-other-message': isHoveredArray[i] && user.senderID !== this.currentUserID
-                }">
-          <span class="message-text" *ngIf="chatService.editIndex != i">{{ message.message }}</span>
-          <input value="{{ message.message }}" #value>
-        </div>
-        <ng-container *ngIf="message.image">
-          <img [src]='message.image' alt="">
-        </ng-container>
-        <div class="reply">
-          <a (click)="openThread(message)">
-            {{ message.replies ? message.replies.length + ' Antworten' : 'Jetzt Antworten' }}
-          </a>
-          <p>
-            {{ message.replies && message.replies.length ? (message.replies[message.replies.length -
-            1].createdAt | timestamp: 'time') + 'Uhr' : '' }}
-          </p>
-        </div>
-      </div>
-      <div *ngIf="user.senderID === this.currentUserID" class="user-avatar-container">
-        <img alt="" class="user-avatar">
-      </div>
-      <div class="popup-window-own-message"
-        *ngIf="isHoveredArray[i] && user.senderID === this.currentUserID">
-        <img src="./../../../assets/images/green-tick.png" alt="">
-        <img src="./../../../assets/images/hands-emoji.png" alt="">
-        <img src="./../../../assets/images/add_reaction.png" alt="">
-        <img (click)="openThread(message)" src="./../../../assets/images/comment.png" alt="">
-        <ng-container *ngIf="currentTime(message.createdAt)">
-          <button [matMenuTriggerFor]="editMessage" mat-icon-button (menuOpened)="menuOpened(i,message)">
-            <mat-icon>more_vert</mat-icon>
-          </button>
-        </ng-container>
-        <mat-menu #editMessage="matMenu" class="profile-menu">
-          <button mat-menu-item (click)="menuClosed(i)">Nachricht bearbeiten</button>
-          <button mat-menu-item>LÖSCHEN</button>
-        </mat-menu>
-      </div>
-      <div class="popup-window" *ngIf="isHoveredArray[i] && user.senderID !== this.currentUserID">
-        <ngx-emoji (click)="getMessageForSpefifiedEmoji(emoji[0], message)" class="emoji-icons" emoji="white_check_mark"
-          set="apple" [size]="20"></ngx-emoji>
-        <ngx-emoji (click)="getMessageForSpefifiedEmoji(emoji[1], message)" class="emoji-icons" emoji="raised_hands"
-          set="apple" [size]="20"></ngx-emoji>
-        <img class="emoji-icons" (click)="openEmojiMartPicker(message)" src="./../../../assets/images/add_reaction.png"
-          alt="">
-        <img class="emoji-icons" (click)="openThread(message)" src="./../../../assets/images/comment.png" alt="">
-      </div>
-    </div>
-  </ng-container>
-</div>
-<div *ngIf="messages.length === 0 && this.chatService.participants.length === 1">
-  <div class="chat-information" *ngFor="let user of participantUser">
-    <div class="images-participants" (click)="openMemberDialog()">
-      <img [src]='user?.photo' alt="">
-      <h2>{{ user.senderName }} ( Du )</h2>
-    </div>
-    <div class="chat-information-span">
-      <span>Das ist dein privater Raum. Mache dir Notizen, liste To-dos auf oder bewahre Links und Dateien
-        auf.</span>
-    </div>
   </div>
-</div> -->
-<div class="emoji-picker-container" *ngIf="openEmojiPicker">
-  <emoji-mart (emojiClick)="addEmoji($event)" title="Pick your emoji…" emoji="point_up"></emoji-mart>
-  <button (click)="closeEmojiMartPicker()">close</button>
+
+      <!-- <div *ngFor="let user of messages" class="conversation-container"
+        [ngClass]="{'justify-end': user.senderID === this.currentUserID, 'justify-start':user.senderID !== this.currentUserID}"
+        (mouseenter)="updateHoverState(i, true)" (mouseleave)="updateHoverState(i, false)">
+        <div *ngIf="user.senderID !== this.currentUserID" class="user-avatar-container">
+          <img alt="" src="{{ user.photo }}" class="user-avatar">
+        </div>
+        <div class="conversation">
+          <div class="name-timestamp" [ngClass]="{'reverse-order': user.senderID === this.currentUserID}">
+            <span
+              class="name" (click)="openContactInfoDialog(user.senderID)">{{ user.senderName }}</span>
+            <span class="time">{{ message.createdAt | timestamp: 'time' }} Uhr</span>
+          </div>
+          <div [ngClass]="{
+                    'speechbubble': user.senderID !== this.currentUserID,
+                    'bg-color-own-message': user.senderID === this.currentUserID,
+                    'bg-color-message': user.senderID !== this.currentUserID,
+                    'own-message-bubble': user.senderID === this.currentUserID,
+                    'hovered-other-message': isHoveredArray[i] && user.senderID !== this.currentUserID
+                  }">
+            <span class="message-text" *ngIf="chatService.editIndex != i">{{ message.message }}</span>
+            <input value="{{ message.message }}" #value>
+          </div>
+          <ng-container *ngIf="message.image">
+            <img [src]='message.image' alt="">
+          </ng-container>
+          <div class="reply">
+            <a (click)="openThread(message)">
+              {{ message.replies ? message.replies.length + ' Antworten' : 'Jetzt Antworten' }}
+            </a>
+            <p>
+              {{ message.replies && message.replies.length ? (message.replies[message.replies.length -
+              1].createdAt | timestamp: 'time') + 'Uhr' : '' }}
+            </p>
+          </div>
+        </div>
+        <div *ngIf="user.senderID === this.currentUserID" class="user-avatar-container">
+          <img alt="" class="user-avatar">
+        </div>
+        <div class="popup-window-own-message"
+          *ngIf="isHoveredArray[i] && user.senderID === this.currentUserID">
+          <img src="./../../../assets/images/green-tick.png" alt="">
+          <img src="./../../../assets/images/hands-emoji.png" alt="">
+          <img src="./../../../assets/images/add_reaction.png" alt="">
+          <img (click)="openThread(message)" src="./../../../assets/images/comment.png" alt="">
+          <ng-container *ngIf="currentTime(message.createdAt)">
+            <button [matMenuTriggerFor]="editMessage" mat-icon-button (menuOpened)="menuOpened(i,message)">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+          </ng-container>
+          <mat-menu #editMessage="matMenu" class="profile-menu">
+            <button mat-menu-item (click)="menuClosed(i)">Nachricht bearbeiten</button>
+            <button mat-menu-item>LÖSCHEN</button>
+          </mat-menu>
+        </div>
+        <div class="popup-window" *ngIf="isHoveredArray[i] && user.senderID !== this.currentUserID">
+          <ngx-emoji (click)="getMessageForSpefifiedEmoji(emoji[0], message)" class="emoji-icons" emoji="white_check_mark"
+            set="apple" [size]="20"></ngx-emoji>
+          <ngx-emoji (click)="getMessageForSpefifiedEmoji(emoji[1], message)" class="emoji-icons" emoji="raised_hands"
+            set="apple" [size]="20"></ngx-emoji>
+          <img class="emoji-icons" (click)="openEmojiMartPicker(message)" src="./../../../assets/images/add_reaction.png"
+            alt="">
+          <img class="emoji-icons" (click)="openThread(message)" src="./../../../assets/images/comment.png" alt="">
+        </div>
+      </div>
+    </ng-container>
+  </div>
+  <div *ngIf="messages.length === 0 && this.chatService.participants.length === 1">
+    <div class="chat-information" *ngFor="let user of participantUser">
+      <div class="images-participants" (click)="openMemberDialog()">
+        <img [src]='user?.photo' alt="">
+        <h2>{{ user.senderName }} ( Du )</h2>
+      </div>
+      <div class="chat-information-span">
+        <span>Das ist dein privater Raum. Mache dir Notizen, liste To-dos auf oder bewahre Links und Dateien
+          auf.</span>
+      </div>
+    </div>
+  </div> -->
+  <div class="emoji-picker-container" *ngIf="openEmojiPicker">
+    <emoji-mart (emojiClick)="addEmoji($event)" title="Pick your emoji…" emoji="point_up"></emoji-mart>
+    <button (click)="closeEmojiMartPicker()">close</button>
+  </div>
+  <app-text-editor class="text-editor" [componentName]="'ownChat'" />
 </div>
-<app-text-editor class="text-editor" [componentName]="'ownChat'" />
