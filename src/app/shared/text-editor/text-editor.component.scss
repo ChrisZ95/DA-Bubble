@@ -168,3 +168,9 @@
     }
   }
 }
+
+@media(max-width: 850px) {
+  .imageDisplay{
+    display: none !important;
+  }
+}

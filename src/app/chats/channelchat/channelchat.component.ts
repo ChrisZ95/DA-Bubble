@@ -71,6 +71,10 @@ export class ChannelchatComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
+  ngOnChanges() {
+    this.scrollToBottom();
+  }
+
   updateHoverState(index: number, isHovered: boolean) {
     if (!this.menuClicked) {
       this.isHoveredArray[index] = isHovered;
@@ -130,12 +134,7 @@ export class ChannelchatComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   scrollToBottom(): void {
-    try {
-      this.scrollContainer.nativeElement.scrollTop =
-        this.scrollContainer.nativeElement.scrollHeight;
-    } catch (err) {
-      console.error('Scroll to bottom failed:', err);
-    }
+    this.scrollContainer.nativeElement.scrollTop = this.scrollContainer.nativeElement.scrollHeight;
   }
 
   async ngOnInit(): Promise<void> {

@@ -100,7 +100,6 @@ p {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  margin: 0 auto;
   gap: 20px;
   margin-left: 20px;
 }
@@ -201,5 +200,23 @@ p {
 
   .top-headline {
     gap: 5px;
+  }
+
+  .creator,
+  .reply {
+  padding: 10px 16px 10px 16px;
+  }
+
+  .line {
+    margin-right: 20px;
+    width: 60%;
+  }
+
+  .separator {
+    margin-left: 20px;
+  }
+
+  .amount-answers {
+    font-size: 18px;
   }
 }
