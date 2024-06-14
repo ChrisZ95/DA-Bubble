@@ -100,6 +100,7 @@
     display: flex;
     padding: 6px 75px;
     gap: 20px;
+    margin-top: 10px;
 
     &:hover {
       background-color: rgba(236, 238, 254, 1);
@@ -223,4 +224,55 @@
 
 .justify-start {
   justify-content: flex-start;
+}
+
+.popup-window {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  top: -18px;
+  right: 20px;
+  height: 46px;
+  border: 1px solid;
+  border-radius: 25px 25px 0px 25px;
+  padding: 3px 15px 3px 20px;
+  background-color: white;
+
+  .emoji-icons {
+    height: 20px;
+    width: 20px;
+    padding: 10px;
+    border-radius: 100%;
+    &:hover{
+      background-color: #ECEEFE;
+      cursor: pointer;
+    }
+  }
+}
+
+.popup-window-own-message {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  top: -18px;
+  left: 20px;
+  height: 46px;
+  border: 1px solid;
+  border-radius: 25px 25px 0px 25px;
+  padding: 3px 15px 3px 20px;
+  background-color: white;
+  >img{
+    height: 20px;
+    width: 20px;
+    padding: 10px;
+    border-radius: 100%;
+    &:hover{
+      background-color: #ECEEFE;
+      cursor: pointer;
+    }
+  }
 }

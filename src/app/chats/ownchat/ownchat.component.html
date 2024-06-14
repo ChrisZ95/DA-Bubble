@@ -28,6 +28,21 @@
          [ngClass]="{'justify-end': message.senderID === currentUserID, 'justify-start': message.senderID !== currentUserID}"
          (mouseenter)="updateHoverState(i, true)"
          (mouseleave)="updateHoverState(i, false)">
+         <div class="popup-window-own-message" *ngIf="isHoveredArray[i] && message.senderID === this.currentUserID">
+         <img src="./../../../assets/images/green-tick.png" alt="">
+         <img src="./../../../assets/images/hands-emoji.png" alt="">
+         <img src="./../../../assets/images/add_reaction.png" alt="">
+         <img (click)="openThread(message)" src="./../../../assets/images/comment.png" alt="">
+         <ng-container *ngIf="currentTime(message.createdAt)">
+           <button [matMenuTriggerFor]="editMessage" mat-icon-button (menuOpened)="menuOpened(i,message)">
+             <mat-icon>more_vert</mat-icon>
+           </button>
+         </ng-container>
+         <mat-menu #editMessage="matMenu" class="profile-menu">
+           <button mat-menu-item (click)="menuClosed(i)">Nachricht bearbeiten</button>
+           <button mat-menu-item (click)="deleteMessage(i, message.id)">LÖSCHEN</button>
+         </mat-menu>
+       </div>
       <div [ngClass]="{'row-reverse': message.senderID === currentUserID}" class="message-wrapper">
         <img class="user-avatar" [src]="message.senderPhoto">
         <div class="message">
@@ -50,6 +65,15 @@
           </div>
         </div>
       </div>
+        <div class="popup-window" *ngIf="isHoveredArray[i] && message.senderID !== this.currentUserID">
+          <ngx-emoji (click)="getMessageForSpefifiedEmoji(emoji[0], message)" class="emoji-icons" emoji="white_check_mark"
+            set="apple" [size]="20"></ngx-emoji>
+          <ngx-emoji (click)="getMessageForSpefifiedEmoji(emoji[1], message)" class="emoji-icons" emoji="raised_hands"
+            set="apple" [size]="20"></ngx-emoji>
+          <img class="emoji-icons" (click)="openEmojiMartPicker(message)" src="./../../../assets/images/add_reaction.png"
+            alt="">
+          <img class="emoji-icons" (click)="openThread(message)" src="./../../../assets/images/comment.png" alt="">
+        </div>
     </div>
   </ng-container>
 </div>

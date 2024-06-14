@@ -1,7 +1,7 @@
 import { FirestoreService } from './../../firestore.service';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Component, Input, OnChanges, OnInit, SimpleChanges, OnDestroy, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
-import { collection, doc, getDoc, getDocs, query, where, onSnapshot } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, query, where, onSnapshot, deleteDoc } from 'firebase/firestore';
 import { ChatService } from '../../services/chat.service';
 import { TimestampPipe } from '../../shared/pipes/timestamp.pipe';
 import { TextEditorComponent } from '../../shared/text-editor/text-editor.component';
@@ -59,6 +59,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   chatData: any;
   participantUser: any = [];
   currentChatID: any;
+  currentDocID: any;
 
   email: any;
   signUpdate: any;
@@ -179,6 +180,33 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     this.messages = []
   }
 
+  async deleteMessage(index: any, messageID: any) {
+    try {
+      console.log("Index:", index);
+      console.log("Message ID:", messageID);
+      console.log("Firestore:", this.firestore);
+      console.log("CurrentDocID:", this.currentDocID);
+
+      if (!this.firestore) {
+        throw new Error("Firestore instance is not defined.");
+      }
+      if (!this.currentDocID) {
+        throw new Error("CurrentDocID is not defined.");
+      }
+      if (!messageID) {
+        throw new Error("Message ID is not defined.");
+      }
+
+      const messageDocRef = doc(this.firestore, 'newchats', this.currentDocID, 'messages', messageID);
+      await deleteDoc(messageDocRef);
+      this.menuClosed(index)
+
+      console.log(`Dokument mit der ID ${messageID} wurde erfolgreich gelöscht.`);
+    } catch (error) {
+      console.error('Fehler beim Löschen des Dokuments:', error);
+    }
+  }
+
   getSenderData(senderID: string) {
 
   }
@@ -196,6 +224,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
 
   async loadChatMessages(docID: any) {
     const docRef = doc(this.firestore, "newchats", docID);
+    this.currentDocID = docID;
 
     onSnapshot(docRef, (docSnap) => {
       if (docSnap.exists()) {
