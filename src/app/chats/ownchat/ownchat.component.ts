@@ -1,7 +1,7 @@
 import { FirestoreService } from './../../firestore.service';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Component, Input, OnChanges, OnInit, SimpleChanges, OnDestroy, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
-import { collection, doc, getDoc, getDocs, query, where, onSnapshot, deleteDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, query, where, onSnapshot, deleteDoc, setDoc, addDoc, updateDoc } from 'firebase/firestore';
 import { ChatService } from '../../services/chat.service';
 import { TimestampPipe } from '../../shared/pipes/timestamp.pipe';
 import { TextEditorComponent } from '../../shared/text-editor/text-editor.component';
@@ -341,22 +341,66 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     }
   }
 
-  getMessageForSpefifiedEmoji(emoji: any, currentUserID: any, MessageID: any ) {
-    console.log(emoji)
-    console.log(currentUserID)
-    console.log(MessageID)
-    // if (emoji === 'white_check_mark' || 'raised_hands') {
-    //   this.emojiMessageId = message.id;
-    //   this.foundMessage = this.messages.find(
-    //     (msg: any) => msg.id === this.emojiMessageId
-    //   );
-    //   if (this.foundMessage) {
-    //   } else {
-    //     console.log('Message not found');
-    //   }
-    //   this.addSpecifiedEmoji(emoji);
-    // }
+  async getMessageForSpefifiedEmoji(emoji: any, currentUserID:any, messageID:any) {
+  const emojiReactionID = emoji.id;
+  const emojiReactionDocRef = doc(
+    this.firestore,
+    'newchats',
+    this.currentChatID,
+    'messages',
+    messageID,
+    'emojiReactions',
+    emojiReactionID
+  );
+
+  this.uploadNewEmojiReaction(emoji, currentUserID, emojiReactionDocRef)
   }
+
+  async uploadNewEmojiReaction(emoji: any, currentUserID: any, emojiReactionDocRef: any) {
+    const docSnapshot = await getDoc(emojiReactionDocRef);
+
+    if (docSnapshot.exists()) {
+      const reactionDocData: any = docSnapshot.data();
+      reactionDocData.emojiCounter++;
+      reactionDocData.reactedBy.push(currentUserID);
+
+      await updateDoc(emojiReactionDocRef, {
+        emojiCounter: reactionDocData.emojiCounter,
+        reactedBy: reactionDocData.reactedBy
+      });
+    } else {
+      const emojiReactionData = {
+        emojiIcon: emoji.native,
+        reactedBy: [currentUserID],
+        emojiCounter: 1,
+      };
+      await setDoc(emojiReactionDocRef, emojiReactionData);
+    }
+  }
+
+
+  // async getMessageForSpefifiedEmoji(emoji: any, currentUserID: any, messageID: any , message: any) {
+  //   console.log(emoji)
+  //   console.log(currentUserID)
+  //   console.log(messageID)
+  //   console.log(message)
+  //   console.log(this.currentChatID)
+  //   await setDoc(doc(this.firestore, "newchats", this.currentChatID, "messages", messageID, "emojiReactions"), {
+  //     emojiIcon: emoji.native
+  //   });
+
+  //   // if (emoji === 'white_check_mark' || 'raised_hands') {
+  //   //   this.emojiMessageId = message.id;
+  //   //   this.foundMessage = this.messages.find(
+  //   //     (msg: any) => msg.id === this.emojiMessageId
+  //   //   );
+  //   //   if (this.foundMessage) {
+  //   //   } else {
+  //   //     console.log('Message not found');
+  //   //   }
+  //   //   this.addSpecifiedEmoji(emoji);
+  //   // }
+  // }
 
   setEmojiInData(emojiIcon: any, emojiID: any, currentUserID: any, reaction: any, message: any) {
     if (!currentUserID || !reaction) {
