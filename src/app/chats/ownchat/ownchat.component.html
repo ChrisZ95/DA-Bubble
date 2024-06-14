@@ -66,9 +66,9 @@
         </div>
       </div>
         <div class="popup-window" *ngIf="isHoveredArray[i] && message.senderID !== this.currentUserID">
-          <ngx-emoji (click)="getMessageForSpefifiedEmoji(emoji[0], message)" class="emoji-icons" emoji="white_check_mark"
+          <ngx-emoji (click)="getMessageForSpefifiedEmoji(emoji[0], this.currentUserID, message.id)" class="emoji-icons" emoji="white_check_mark"
             set="apple" [size]="20"></ngx-emoji>
-          <ngx-emoji (click)="getMessageForSpefifiedEmoji(emoji[1], message)" class="emoji-icons" emoji="raised_hands"
+          <ngx-emoji (click)="getMessageForSpefifiedEmoji(emoji[1], this.currentUserID, message.id)" class="emoji-icons" emoji="raised_hands"
             set="apple" [size]="20"></ngx-emoji>
           <img class="emoji-icons" (click)="openEmojiMartPicker(message)" src="./../../../assets/images/add_reaction.png"
             alt="">

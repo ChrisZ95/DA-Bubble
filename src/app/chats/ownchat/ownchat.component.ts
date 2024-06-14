@@ -182,10 +182,6 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
 
   async deleteMessage(index: any, messageID: any) {
     try {
-      console.log("Index:", index);
-      console.log("Message ID:", messageID);
-      console.log("Firestore:", this.firestore);
-      console.log("CurrentDocID:", this.currentDocID);
 
       if (!this.firestore) {
         throw new Error("Firestore instance is not defined.");
@@ -200,8 +196,6 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
       const messageDocRef = doc(this.firestore, 'newchats', this.currentDocID, 'messages', messageID);
       await deleteDoc(messageDocRef);
       this.menuClosed(index)
-
-      console.log(`Dokument mit der ID ${messageID} wurde erfolgreich gelöscht.`);
     } catch (error) {
       console.error('Fehler beim Löschen des Dokuments:', error);
     }
@@ -251,7 +245,6 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
 
           this.messages = Array.from(messagesMap.values());
           this.messages.sort((a: any, b: any) => a.createdAt - b.createdAt);
-          console.log(this.messages)
         });
       } else {
         console.log("No such document!");
@@ -348,21 +341,21 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     }
   }
 
-  getMessageForSpefifiedEmoji(
-    emoji: any,
-    message: { id: number; text: string }
-  ) {
-    if (emoji === 'white_check_mark' || 'raised_hands') {
-      this.emojiMessageId = message.id;
-      this.foundMessage = this.messages.find(
-        (msg: any) => msg.id === this.emojiMessageId
-      );
-      if (this.foundMessage) {
-      } else {
-        console.log('Message not found');
-      }
-      this.addSpecifiedEmoji(emoji);
-    }
+  getMessageForSpefifiedEmoji(emoji: any, currentUserID: any, MessageID: any ) {
+    console.log(emoji)
+    console.log(currentUserID)
+    console.log(MessageID)
+    // if (emoji === 'white_check_mark' || 'raised_hands') {
+    //   this.emojiMessageId = message.id;
+    //   this.foundMessage = this.messages.find(
+    //     (msg: any) => msg.id === this.emojiMessageId
+    //   );
+    //   if (this.foundMessage) {
+    //   } else {
+    //     console.log('Message not found');
+    //   }
+    //   this.addSpecifiedEmoji(emoji);
+    // }
   }
 
   setEmojiInData(emojiIcon: any, emojiID: any, currentUserID: any, reaction: any, message: any) {
@@ -371,32 +364,11 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
         return;
     }
 
-    // Initialize emojiReactions if it doesn't exist
-    if (!reaction.emojiReactions) {
-        reaction.emojiReactions = {};
-    }
-
-    // Check if emojiID entry exists, if not, initialize it
-    if (!reaction.emojiReactions[emojiID]) {
-        reaction.emojiReactions[emojiID] = {
-            emojiID: emojiID,
-            emojiIcon: emojiIcon,
-            userId: [],
-            emojiCounter: 0,
-        };
-    }
-
-    // Push currentUserID and increment emojiCounter
-    reaction.emojiReactions[emojiID].userId.push(currentUserID);
-    reaction.emojiReactions[emojiID].emojiCounter += 1;
-
-    // console.log('Aktualisierte Nachricht:', reaction);
-    // console.log(reaction.emojiReactions);
-    this.openEmojiPicker = false;
-    // console.log(this.userInformation);
-    // console.log(reaction.id);
-    // console.log(this.chatService.currentuid);
-    // this.chatService.uploadEmojiReaction(reaction.emojiReactions, reaction.id);
+   console.log(emojiIcon)
+   console.log(emojiID)
+   console.log(currentUserID)
+   console.log(reaction)
+   console.log(message)
 }
 
 
@@ -421,7 +393,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   addSpecifiedEmoji(emoji: any) {
-    // console.log('Emoji selected', event);
+    console.log('Emoji selected', event);
     const emojiIcon = emoji.native;
     const emojiID = emoji.id;
     const currentUserID = localStorage.getItem('uid');
@@ -432,7 +404,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   addEmoji(event: any) {
-    // console.log('Emoji selected', event);
+    console.log('Emoji selected', event);
     const emojiIcon = event.emoji.native;
     const emojiID = event.emoji.id;
     const currentUserID = localStorage.getItem('uid');
@@ -443,12 +415,12 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   addReaction() {
-    // console.log('emoji geklickt');
+    console.log('emoji geklickt');
   }
 
   closeEmojiMartPicker() {
     this.openEmojiPicker = false;
-    // this.chatService.emojiPicker(false);
+    this.chatService.emojiPicker(false);
   }
 
   openMemberDialog() {
@@ -467,7 +439,6 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
 
   async openContactInfoDialog(uid: any) {
     let allUsers = await this.firestoreService.getAllUsers();
-    console.log(allUsers)
     let userDetails = allUsers.filter(
       (user) => user.uid == uid
     );

@@ -100,9 +100,9 @@ export class ChatService {
     // Überprüfen, ob es für jeden Benutzer im usersArray bereits einen Chat gibt
     usersArray.forEach(userID => {
         if (existingChatsSet.has(userID)) {
-            console.log(`Einzelchat zwischen ${currentUserID} und ${userID} existiert bereits.`);
+            // console.log(`Einzelchat zwischen ${currentUserID} und ${userID} existiert bereits.`);
         } else {
-            console.log(`Kein Einzelchat zwischen ${currentUserID} und ${userID} gefunden.`);
+            // console.log(`Kein Einzelchat zwischen ${currentUserID} und ${userID} gefunden.`);
             this.createChats(currentUserID, userID)
         }
     });
@@ -196,7 +196,6 @@ async loadChatWithUser(chatDocID: any) {
 }
 
 async sendMessageToDatabase(imageFile: any, message: any, currentDocID: any) {
-  console.log(imageFile)
   const timestamp = this.FirestoreService.createTimeStamp();
   const currentuserID = localStorage.getItem('uid');
   const currentUserData = await this.loadUserDataFromDatabase(currentuserID);

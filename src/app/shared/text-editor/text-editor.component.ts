@@ -64,8 +64,6 @@ export class TextEditorComponent implements OnInit {
     this.documentIDSubsrciption = this.chatService.documentID$.subscribe(
       (docID)=> {
         this.currentDocID = docID;
-        console.log(docID)
-        console.log(this.currentDocID)
       },
     );
   }
@@ -105,7 +103,6 @@ export class TextEditorComponent implements OnInit {
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
          const user = docSnap.data()
-         console.log("Document data:", docSnap.data());
          this.associatedUser.push(user['username']);
       } else {
         console.log("No such document!");
@@ -114,13 +111,11 @@ export class TextEditorComponent implements OnInit {
   }
 
   openUserMention() {
-    console.log(this.allUsers, this.memberData)
     this.openAssociatedUser = true;
     this.chatService.associatedUser(true);
   }
 
   closeuserMention() {
-    console.log(this.allUsers, this.memberData)
     this.openAssociatedUser = false;
     this.chatService.associatedUser(false);
   }
@@ -195,7 +190,6 @@ export class TextEditorComponent implements OnInit {
       try {
         this.chatService.dataURL =
           await this.firestoreService.uploadDataIntoStorage(file);
-        console.log('dataURL', this.chatService.dataURL);
         this.insertImage(file?.type, this.chatService.dataURL, file?.name);
       } catch (error) {
         console.error('Error uploading file:', error);
