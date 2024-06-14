@@ -4,7 +4,7 @@
   </div>
   <div *ngFor="let user of participantUser" class="images">
     <div class="images-participants"
-      (click)="openContactInfoDialogHeader(participantUser)">
+      (click)="openContactInfoDialogHeader(user)">
       <img [src]="user.photo" alt="">
       <h2>{{ user.username }} {{this.chatData?.participants?.length === 1 ? '( Du )' : '' }}</h2>
     </div>
@@ -27,22 +27,32 @@
          [ngClass]="{'justify-end': message.senderID === currentUserID, 'justify-start': message.senderID !== currentUserID}"
          (mouseenter)="updateHoverState(i, true)"
          (mouseleave)="updateHoverState(i, false)">
-      <div class="message"
-           [ngClass]="{'sender-message': message.senderID === currentUserID, 'receiver-message': message.senderID !== currentUserID}">
-        <div class="message-user-information">
-          <span class="time">{{ message.createdAt | timestamp: 'time' }} Uhr</span>
-          <a href="#"><h4>{{ message.senderName }}</h4></a>
+      <div [ngClass]="{'row-reverse': message.senderID === currentUserID}" class="message-wrapper">
+        <img class="user-avatar" [src]="message.senderPhoto">
+        <div class="message">
+          <div [ngClass]="{'row': message.senderID === this.currentUserID, 'row-reverse': message.senderID !== this.currentUserID}" class="message-user-information">
+            <span class="time">{{ message.createdAt | timestamp: 'time' }} Uhr</span>
+            <a (click)="openContactInfoDialog(message.senderID)"><h4>{{ message.senderName }}</h4></a>
+          </div>
+          <div [ngClass]="{'own-message-bubble': message.senderID === currentUserID, 'speechbubble': message.senderID !== currentUserID}">
+            <span>{{ message.message }}</span>
+            <ng-container *ngIf="message.image">
+              <div class="message-image">
+                <a href="{{ message.image[0].url }}" target="_blank" rel="noopener noreferrer">
+                  <img [src]="message.image[0].url" alt="">
+                </a>
+              </div>
+            </ng-container>
+          </div>
+          <div class="open-thread">
+           <a (click)="openThread(message)"><h4>Antworten</h4></a>
+          </div>
         </div>
-        <div [ngClass]="{'own-message-bubble': message.senderID === currentUserID, 'speechbubble': message.senderID !== currentUserID}">
-          <span> {{ message.message }}</span>
-        </div>
-      </div>
-      <div>
-        <img class="user-avatar" src="{{ message.senderPhoto }}">
       </div>
     </div>
   </ng-container>
 </div>
+
 
     <!-- <div *ngFor="let user of messages" class="conversation-container"
       [ngClass]="{'justify-end': user.senderID === this.currentUserID, 'justify-start':user.senderID !== this.currentUserID}"

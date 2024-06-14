@@ -93,7 +93,6 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.messages = [];
-    console.log(this.messages)
     this.userDetailsSubscription = this.chatService.userInformation$.subscribe(
       (data) => {
         this.userInformation = data;
@@ -131,10 +130,8 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
       this.chatData = data;
 
       if (this.chatData?.participants?.length === 1) {
-        console.log('participants.length =', this.chatData?.participants?.length)
         this.loadPrivateChat()
       } else if (this.chatData?.participants?.length > 1) {
-        console.log('participants.length =', this.chatData?.participants?.length)
         this.loadParticipantUserData();
       } else {
         console.log('Ungültige Chatdaten');
@@ -179,7 +176,6 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
 
   clearVariables() {
     this.messages = []
-    console.log(this.messages)
   }
 
   getSenderData(senderID: string) {
@@ -202,17 +198,12 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
 
     onSnapshot(docRef, (docSnap) => {
       if (docSnap.exists()) {
-        console.log("Document data:", docSnap.data());
-
         const messagesRef = collection(this.firestore, "newchats", docID, "messages");
-
         onSnapshot(messagesRef, async (messagesSnap) => {
           const messagesMap = new Map();
-
           const messagePromises = messagesSnap.docs.map(async (messageDoc) => {
             let messageData = messageDoc.data();
             messageData['id'] = messageDoc.id;
-
             if (messageData['createdAt']) {
               if (messageData['senderID']) {
                 const senderID = messageData['senderID'];
@@ -230,12 +221,12 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
 
           this.messages = Array.from(messagesMap.values());
           this.messages.sort((a: any, b: any) => a.createdAt - b.createdAt);
+          console.log(this.messages)
         });
       } else {
         console.log("No such document!");
       }
     });
-    this.scrollToBottom();
   }
 
   async loadSenderData(senderID: any) {
@@ -270,7 +261,6 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
           uid: userData['uid'],
           username: userData['username']
       }];
-        console.log(this.participantUser)
       } else {
         console.log("Kein Dokument des Users gefunden");
         window.location.reload();
@@ -296,7 +286,6 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
             uid: userData['uid'],
             username: userData['username']
         }];
-          console.log(this.participantUser)
         } else {
           console.log("Kein Dokument des Users gefunden");
           window.location.reload();
@@ -367,12 +356,12 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     reaction.emojiReactions[emojiID].userId.push(currentUserID);
     reaction.emojiReactions[emojiID].emojiCounter += 1;
 
-    console.log('Aktualisierte Nachricht:', reaction);
-    console.log(reaction.emojiReactions);
+    // console.log('Aktualisierte Nachricht:', reaction);
+    // console.log(reaction.emojiReactions);
     this.openEmojiPicker = false;
-    console.log(this.userInformation);
-    console.log(reaction.id);
-    console.log(this.chatService.currentuid);
+    // console.log(this.userInformation);
+    // console.log(reaction.id);
+    // console.log(this.chatService.currentuid);
     // this.chatService.uploadEmojiReaction(reaction.emojiReactions, reaction.id);
 }
 
@@ -398,7 +387,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   addSpecifiedEmoji(emoji: any) {
-    console.log('Emoji selected', event);
+    // console.log('Emoji selected', event);
     const emojiIcon = emoji.native;
     const emojiID = emoji.id;
     const currentUserID = localStorage.getItem('uid');
@@ -409,7 +398,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   addEmoji(event: any) {
-    console.log('Emoji selected', event);
+    // console.log('Emoji selected', event);
     const emojiIcon = event.emoji.native;
     const emojiID = event.emoji.id;
     const currentUserID = localStorage.getItem('uid');
@@ -420,7 +409,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   addReaction() {
-    console.log('emoji geklickt');
+    // console.log('emoji geklickt');
   }
 
   closeEmojiMartPicker() {
