@@ -140,6 +140,9 @@ export class MainComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if (!this.firestoreService.isScreenWide) {
+      this.chatService.showOwnChat = false;
+    }
     this.idleSubscription = this.idleService
       .isUserIdle()
       .subscribe((idle) => {});
