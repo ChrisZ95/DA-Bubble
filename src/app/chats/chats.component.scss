@@ -422,4 +422,13 @@
   .message-text {
     font-size: 17px;
   }
+
+  .chat-container {
+    height: calc(100vh - 80px);
+  }
+
+  .header {
+    padding: 10px 16px 10px 16px;
+    height: 60px;
+  }
 }
