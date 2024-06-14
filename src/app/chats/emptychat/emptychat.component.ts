@@ -57,7 +57,8 @@ export class EmptychatComponent implements OnInit {
       this.filteredEntities = this.allUsers.filter((item: any) => {
         return (
           item.username &&
-          item.username.toLowerCase().includes(lowerCaseInput) &&
+          (item.username.toLowerCase().includes(lowerCaseInput) ||
+            item.email.toLowerCase().includes(lowerCaseInput)) &&
           item.uid !== this.firestoreService.currentuid &&
           !this.selectedUsers.includes(item.uid)
         );
@@ -91,7 +92,8 @@ export class EmptychatComponent implements OnInit {
       const users = this.allUsers.filter((item: any) => {
         return (
           item.username &&
-          item.username.toLowerCase().includes(lowerCaseInput) &&
+          (item.username.toLowerCase().includes(lowerCaseInput) ||
+            item.email.toLowerCase().includes(lowerCaseInput)) &&
           item.uid !== this.firestoreService.currentuid &&
           !this.selectedUsers.includes(item.uid)
         );
@@ -100,30 +102,6 @@ export class EmptychatComponent implements OnInit {
     }
     // this.sortUser();
   }
-
-  // updatePlaceholder(input: string) {
-  //   this.showDropdown = input === '' || this.filteredEntities?.length > 0;
-  // }
-
-  // displayAllUsers(users: any) {
-  //   this.filteredEntities = users.filter((item: any) => {
-  //     return (
-  //       item.username &&
-  //       item.uid !== this.firestoreService.currentuid &&
-  //       !this.selectedUsers.includes(`${item.username}`)
-  //     );
-  //   });
-  //   this.sortUser();
-  // }
-
-  // displayAllChannels(channels: any) {
-  //   const filteredChannels = this.allChannels.map((channel: any) => {
-  //     channel.isChannel = true;
-  //     return channel;
-  //   });
-  //   this.filteredEntities = [this.filteredEntities, ...filteredChannels];
-  //   console.log('filteredEntities', this.filteredEntities);
-  // }
 
   selectedUserUids: any = [this.firestoreService.currentuid]; //
   selectEntity(entity: any): void {
@@ -146,7 +124,6 @@ export class EmptychatComponent implements OnInit {
       this.chatService.showOwnChat = false;
       this.chatService.showEmptyChat = false;
     }
-
   }
 
   private blurInputField() {
@@ -162,8 +139,6 @@ export class EmptychatComponent implements OnInit {
     });
     this.filteredEntities.push(user);
     this.sortUser();
-    // this.updateInputField();
-    // this.blurInputField();
   }
 
   sortUser() {
@@ -213,65 +188,6 @@ export class EmptychatComponent implements OnInit {
     }
   }
 
-  // private focusInputField() {
-  //   const inputElement = this.eRef.nativeElement.querySelector('input');
-  //   if (inputElement) {
-  //     inputElement.focus();
-  //   }
-  // }
-
-  //   private updateInputField() {
-  //     const inputElement = this.eRef.nativeElement.querySelector(
-  //       '.inputFieldContainer'
-  //     );
-  //     const htmlString =
-  //       this.selectedUsers
-  //         .map(
-  //           (user, index) =>
-  //             `<div class="user-tag-container"><span class="user-tag">${user.username} <span class="remove-tag">
-  //       <img src="../../../assets/images/close.png" alt="" style="cursor: pointer" class="remove-user" id="remove-user-${index}">
-  //       </span></span> </div>`
-  //         )
-  //         .join('') +
-  //       '<mat-form-field appearance="outline"><input matInput (keyup)="searchEntity(inputRef.value)" (input)="updatePlaceholder(inputRef.value)" #inputRef placeholder="Search users ..." value="" class="inputField"></mat-form-field>';
-
-  //     inputElement.innerHTML = htmlString;
-
-  //     const style = document.createElement('style');
-  //     style.textContent = `
-  //   .user-tag-container .user-tag {
-  //     display: inline-flex ;
-  //     align-items: center ;
-  //     background: #e0e0e0 ;
-  //     border-radius: 3px ;
-  //     padding: 2px 5px ;
-  //     margin: 2px ;
-  //     transition: background-color 0.3s ;
-  //   }
-  //   .user-tag-container .user-tag:hover {
-  //     background: #d0d0d0;
-  //   }
-  // `;
-  //     document.head.append(style);
-
-  //     this.selectedUsers.forEach((user, index) => {
-  //       const removeBtn = this.eRef.nativeElement.querySelector(
-  //         `#remove-user-${index}`
-  //       );
-  //       this.renderer.listen(removeBtn, 'click', () => this.removeUser(user));
-  //     });
-
-  //     const inputField = this.eRef.nativeElement.querySelector('.inputField');
-  //     this.renderer.listen(inputField, 'keyup', (event) =>
-  //       this.searchEntity(event.target.value)
-  //     );
-  //     this.renderer.listen(inputField, 'input', (event) =>
-  //       this.updatePlaceholder(event.target.value)
-  //     );
-
-  //     this.focusInputField();
-  //   }
-
   loadAndMergeEntitys() {
     this.currentUid = this.firestoreService.currentuid;
     this.allUsers = this.firestoreService.allUsers;
@@ -298,76 +214,6 @@ export class EmptychatComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // this.firestoreService
-    //   .getAllUsers()
-    //   .then((users) => {
-    //     this.allUsers = users;
-    //   })
-    //   .catch((error) => {
-    //     console.error('Error fetching users:', error);
-    //   });
-
-    // this.firestoreService
-    //   .getAllChannels()
-    //   .then((Channels) => {
-    //     this.allChannels = Channels;
-    //   })
-    //   .catch((error) => {
-    //     console.error('Error fetching users:', error);
-    //   });
-
     this.loadAndMergeEntitys();
   }
 }
-
-// displayAllUsersAndChannels() {
-//   this.filteredEntities = [
-//     ...this.allUsers.filter((user: any) => {
-//       return (
-//         user.username &&
-//         user.uid !== this.firestoreService.currentuid &&
-//         !this.selectedUsers.includes(`@${user.username}`)
-//       );
-//     }),
-//     ...this.allChannels.filter((channel: any) => channel.channelName),
-//   ];
-//   this.showUserChannelPlaceholder = false;
-//   this.showDropdown = true;
-
-//   setTimeout(() => {
-//     this.focusInputField();
-//     this.showUserChannelPlaceholder = false;
-//   }, 0);
-// }
-
-// displayAllChannels() {
-//   this.filteredEntities = this.allChannels.filter((item: any) => {
-//     return item.channelName;
-//   });
-//   this.showUserPlaceholder = false;
-//   this.showChannelPlaceholder = false;
-//   this.showUserChannelPlaceholder = false;
-//   this.showDropdown = true;
-
-// from UpdatePlaceholder
-// if (input === '' || input === '@') {
-//   this.showUserPlaceholder = false;
-// }
-// else if (input === '#') {
-//   this.showUserPlaceholder = true;
-//   this.showChannelPlaceholder = false;
-//   this.showUserChannelPlaceholder = false;
-// } else if (input === '@') {
-//   this.showUserPlaceholder = false;
-//   this.showChannelPlaceholder = true;
-//   this.showUserChannelPlaceholder = false;
-// } else {
-//   this.showUserPlaceholder = false;
-//   this.showChannelPlaceholder = false;
-//   this.showUserChannelPlaceholder = false;
-// }
-
-//   setTimeout(() => {
-//     this.focusInputField();
-//   }, 0);
-// }

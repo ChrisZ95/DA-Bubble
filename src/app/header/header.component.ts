@@ -9,6 +9,7 @@ import {
   Output,
   EventEmitter,
   ViewChild,
+  ViewEncapsulation,
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -27,6 +28,7 @@ import { ChannelService } from '../services/channel.service';
   imports: [MatMenuModule, MatButtonModule, CommonModule],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
+  encapsulation: ViewEncapsulation.None,
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   constructor(

@@ -1,4 +1,37 @@
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+.container ::ng-deep .cdk-overlay-pane {
+  margin-top: 0px !important;
+}
+
+.headline {
+  margin: 3%;
+}
+
+form {
+  width: 90%;
+  display: flex;
+  justify-content: center;
+}
+
 .example-chip-list {
-  width: 100%;
-  border-radius: 30px;
+  margin: auto 5%;
+  width: 100% !important;
+}
+
+::shadow {
+  // width: 100%;
+  box-shadow: 0 4px 2px rgba(225, 225, 225, 0.5);
+}
+
+.channel {
+  color: red;
+}
+
+.user-email {
+  position: absolute;
+  right: 2%;
 }

@@ -107,6 +107,20 @@ export class IdleService {
     this.updateActiveStatus(uid, status);
   }
 
+  // Adrian
+  // Für HTML
+  //<div class="active-circle" [ngClass]="idleService.getOtherUserStatus(user.uid) | async"></div>
+  // set idleService in Workspace to public
+  public getOtherUserStatus(uid: string): Observable<any> {
+    const statusRef = reference(this.rdb, `users/${uid}/activeStatus`);
+    return new Observable((observer) => {
+      onValue(statusRef, (snapshot) => {
+        observer.next(snapshot.val());
+        return snapshot.val();
+      });
+    });
+  }
+
   updateActiveStatus(key: string, value: any): void {
     let status = {
       uid: key,

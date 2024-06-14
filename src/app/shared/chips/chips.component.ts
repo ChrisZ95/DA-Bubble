@@ -9,6 +9,7 @@ import {
   Output,
   SimpleChanges,
   ViewChild,
+  ViewEncapsulation,
   inject,
 } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -40,6 +41,7 @@ import { CommonModule } from '@angular/common';
   ],
   templateUrl: './chips.component.html',
   styleUrl: './chips.component.scss',
+  encapsulation: ViewEncapsulation.None,
 })
 export class ChipsComponent implements OnInit, OnChanges {
   separatorKeysCodes: number[] = [ENTER, COMMA];
