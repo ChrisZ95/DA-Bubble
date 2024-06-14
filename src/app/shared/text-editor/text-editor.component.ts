@@ -83,6 +83,9 @@ export class TextEditorComponent implements OnInit {
     if (this.clearTextEditorValueSubcription) {
       this.clearTextEditorValueSubcription.unsubscribe();
     }
+    if (this.documentIDSubsrciption) {
+      this.documentIDSubsrciption.unsubscribe();
+    }
   }
 
   async userMention() {

@@ -196,6 +196,7 @@ async loadChatWithUser(chatDocID: any) {
 }
 
 async sendMessageToDatabase(imageFile: any, message: any, currentDocID: any) {
+  console.log(imageFile)
   const timestamp = this.FirestoreService.createTimeStamp();
   const currentuserID = localStorage.getItem('uid');
   const currentUserData = await this.loadUserDataFromDatabase(currentuserID);
