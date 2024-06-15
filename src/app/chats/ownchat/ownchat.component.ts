@@ -70,6 +70,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   username: any;
   currentUserID: any;
   users: Map<string, any> = new Map();
+  emojiReactionMessageID: any;
 
   emoji = [
     {
@@ -325,144 +326,47 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     }
   }
 
-
-
-
-  openEmojiMartPicker(message: { id: number; text: string }) {
-    this.emojiMessageId = message.id;
-    this.openEmojiPicker = true;
-    this.foundMessage = this.messages.find(
-      (msg: any) => msg.id === this.emojiMessageId
-    );
-
-    if (this.foundMessage) {
-    } else {
-      console.log('Message not found');
-    }
-  }
-
   async getMessageForSpefifiedEmoji(emoji: any, currentUserID:any, messageID:any) {
-  const emojiReactionID = emoji.id;
-  const emojiReactionDocRef = doc(
-    this.firestore,
-    'newchats',
-    this.currentChatID,
-    'messages',
-    messageID,
-    'emojiReactions',
-    emojiReactionID
-  );
+    const emojiReactionID = emoji.id;
+    const emojiReactionDocRef = doc( this.firestore, 'newchats', this.currentChatID, 'messages', messageID, 'emojiReactions', emojiReactionID);
 
-  this.uploadNewEmojiReaction(emoji, currentUserID, emojiReactionDocRef)
-  }
-
-  async uploadNewEmojiReaction(emoji: any, currentUserID: any, emojiReactionDocRef: any) {
-    const docSnapshot = await getDoc(emojiReactionDocRef);
-
-    if (docSnapshot.exists()) {
-      const reactionDocData: any = docSnapshot.data();
-      reactionDocData.emojiCounter++;
-      reactionDocData.reactedBy.push(currentUserID);
-
-      await updateDoc(emojiReactionDocRef, {
-        emojiCounter: reactionDocData.emojiCounter,
-        reactedBy: reactionDocData.reactedBy
-      });
-    } else {
-      const emojiReactionData = {
-        emojiIcon: emoji.native,
-        reactedBy: [currentUserID],
-        emojiCounter: 1,
-      };
-      await setDoc(emojiReactionDocRef, emojiReactionData);
-    }
-  }
-
-
-  // async getMessageForSpefifiedEmoji(emoji: any, currentUserID: any, messageID: any , message: any) {
-  //   console.log(emoji)
-  //   console.log(currentUserID)
-  //   console.log(messageID)
-  //   console.log(message)
-  //   console.log(this.currentChatID)
-  //   await setDoc(doc(this.firestore, "newchats", this.currentChatID, "messages", messageID, "emojiReactions"), {
-  //     emojiIcon: emoji.native
-  //   });
-
-  //   // if (emoji === 'white_check_mark' || 'raised_hands') {
-  //   //   this.emojiMessageId = message.id;
-  //   //   this.foundMessage = this.messages.find(
-  //   //     (msg: any) => msg.id === this.emojiMessageId
-  //   //   );
-  //   //   if (this.foundMessage) {
-  //   //   } else {
-  //   //     console.log('Message not found');
-  //   //   }
-  //   //   this.addSpecifiedEmoji(emoji);
-  //   // }
-  // }
-
-  setEmojiInData(emojiIcon: any, emojiID: any, currentUserID: any, reaction: any, message: any) {
-    if (!currentUserID || !reaction) {
-        console.log('Nachricht nicht gefunden');
-        return;
+    this.uploadNewEmojiReaction(emoji, currentUserID, emojiReactionDocRef)
     }
 
-   console.log(emojiIcon)
-   console.log(emojiID)
-   console.log(currentUserID)
-   console.log(reaction)
-   console.log(message)
-}
+    async uploadNewEmojiReaction(emoji: any, currentUserID: any, emojiReactionDocRef: any) {
+      const docSnapshot = await getDoc(emojiReactionDocRef);
 
+      if (docSnapshot.exists()) {
+        const reactionDocData: any = docSnapshot.data();
+        reactionDocData.emojiCounter++;
+        reactionDocData.reactedBy.push(currentUserID);
 
-
-  getEmojiReactions(message: any) {
-    const reactionsArray = [];
-    for (const emojiID in message.emojiReactions) {
-      if (message.emojiReactions.hasOwnProperty(emojiID)) {
-        const emojiReactions = message.emojiReactions[emojiID];
-        for (const emojiIcon in emojiReactions) {
-          if (emojiReactions.hasOwnProperty(emojiIcon)) {
-            reactionsArray.push({
-              id: emojiID,
-              icon: emojiIcon,
-              counter: emojiReactions[emojiIcon].emojiCounter,
-            });
-          }
-        }
+        await updateDoc(emojiReactionDocRef, {
+          emojiCounter: reactionDocData.emojiCounter,
+          reactedBy: reactionDocData.reactedBy
+        });
+      } else {
+        const emojiReactionData = {
+          emojiIcon: emoji.native,
+          reactedBy: [currentUserID],
+          emojiCounter: 1,
+        };
+        await setDoc(emojiReactionDocRef, emojiReactionData);
       }
     }
-    return reactionsArray;
-  }
 
-  addSpecifiedEmoji(emoji: any) {
-    console.log('Emoji selected', event);
-    const emojiIcon = emoji.native;
-    const emojiID = emoji.id;
-    const currentUserID = localStorage.getItem('uid');
-    const reaction = this.messages.find(
-      (msg: any) => msg.id === this.emojiMessageId
-    );
-    this.setEmojiInData(emojiIcon, emojiID, currentUserID, reaction, this.message);
+  openEmojiMartPicker(currentUserID: any ,messageID: any) {
+    this.openEmojiPicker = true;
+    this.emojiReactionMessageID = messageID;
   }
 
   addEmoji(event: any) {
-    console.log('Emoji selected', event);
-    const emojiIcon = event.emoji.native;
-    const emojiID = event.emoji.id;
     const currentUserID = localStorage.getItem('uid');
-    const reaction = this.messages.find(
-      (msg: any) => msg.id === this.emojiMessageId
-    );
-    this.setEmojiInData(emojiIcon, emojiID, currentUserID, reaction, this.message);
-  }
-
-  addReaction() {
-    console.log('emoji geklickt');
+    this.getMessageForSpefifiedEmoji(event.emoji, currentUserID, this.emojiReactionMessageID)
   }
 
   closeEmojiMartPicker() {
+    this.emojiReactionMessageID = '';
     this.openEmojiPicker = false;
     this.chatService.emojiPicker(false);
   }

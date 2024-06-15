@@ -70,7 +70,7 @@
             set="apple" [size]="20"></ngx-emoji>
           <ngx-emoji (click)="getMessageForSpefifiedEmoji(emoji[1], this.currentUserID, message.id)" class="emoji-icons" emoji="raised_hands"
             set="apple" [size]="20"></ngx-emoji>
-          <img class="emoji-icons" (click)="openEmojiMartPicker(message)" src="./../../../assets/images/add_reaction.png"
+          <img class="emoji-icons" (click)="openEmojiMartPicker(this.currentUserID, message.id)" src="./../../../assets/images/add_reaction.png"
             alt="">
           <img class="emoji-icons" (click)="openThread(message)" src="./../../../assets/images/comment.png" alt="">
         </div>
