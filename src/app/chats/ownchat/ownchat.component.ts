@@ -121,6 +121,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     this.documentIDSubsrciption = this.chatService.documentID$.subscribe(
       (docID)=> {
         if(docID) {
+          console.log('dokument wird aktualisiert')
           this.messages = []
           this.currentChatID = docID
           this.loadChatMessages(this.currentChatID)
@@ -217,44 +218,83 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   }
 
 
+  // async loadChatMessages(docID: any) {
+  //   const docRef = doc(this.firestore, "newchats", docID);
+  //   this.currentDocID = docID;
+  //   onSnapshot(docRef, (docSnap) => {
+  //     if (docSnap.exists()) {
+  //       const messagesRef = collection(this.firestore, "newchats", docID, "messages");
+  //       onSnapshot(messagesRef, async (messagesSnap) => {
+  //         const messagesMap = new Map();
+  //         const messagePromises = messagesSnap.docs.map(async (messageDoc) => {
+  //           let messageData = messageDoc.data();
+  //           messageData['id'] = messageDoc.id;
+  //           if (messageData['createdAt']) {
+  //             if (messageData['senderID']) {
+  //               const senderID = messageData['senderID'];
+  //               const senderData = await this.loadSenderData(senderID);
+  //               messageData['senderName'] = senderData ? senderData.username : "Unknown";
+  //               messageData['senderPhoto'] = senderData ? senderData.photo : null;
+  //             }
+  //             messagesMap.set(messageData['id'], messageData);
+  //           } else {
+  //             console.error("Invalid timestamp format:", messageData['createdAt']);
+  //           }
+  //         });
+  //         await Promise.all(messagePromises);
+  //         this.messages = Array.from(messagesMap.values());
+  //         this.messages.sort((a: any, b: any) => a.createdAt - b.createdAt);
+  //       });
+  //     } else {
+  //       console.log("No such document!");
+  //     }
+  //   });
+  // }
+
   async loadChatMessages(docID: any) {
     const docRef = doc(this.firestore, "newchats", docID);
     this.currentDocID = docID;
 
-    onSnapshot(docRef, (docSnap) => {
+    onSnapshot(docRef, async (docSnap) => {
       if (docSnap.exists()) {
         const messagesRef = collection(this.firestore, "newchats", docID, "messages");
+        const reactionsRef = collection(this.firestore, "newchats", docID, "messages");
         onSnapshot(messagesRef, async (messagesSnap) => {
-          const messagesMap = new Map();
-          const messagePromises = messagesSnap.docs.map(async (messageDoc) => {
-            let messageData = messageDoc.data();
-            messageData['id'] = messageDoc.id;
-            if (messageData['createdAt']) {
-              if (messageData['senderID']) {
-                const senderID = messageData['senderID'];
-                const senderData = await this.loadSenderData(senderID);
-                messageData['senderName'] = senderData ? senderData.username : "Unknown";
-                messageData['senderPhoto'] = senderData ? senderData.photo : null;
-              }
-              messagesMap.set(messageData['id'], messageData);
-            } else {
-              console.error("Invalid timestamp format:", messageData['createdAt']);
+          debugger
+        const messagesMap = new Map();
+        const messagePromises = messagesSnap.docs.map(async (messageDoc) => {
+          let messageData = messageDoc.data();
+          messageData['id'] = messageDoc.id;
+
+          if (messageData['createdAt']) {
+            if (messageData['senderID']) {
+              const senderID = messageData['senderID'];
+              const senderData = await this.loadSenderData(senderID);
+              messageData['senderName'] = senderData ? senderData.username : "Unknown";
+              messageData['senderPhoto'] = senderData ? senderData.photo : null;
             }
-          });
-
-          await Promise.all(messagePromises);
-
-          this.messages = Array.from(messagesMap.values());
-          this.messages.sort((a: any, b: any) => a.createdAt - b.createdAt);
+            const reactionsRef = collection(this.firestore, "newchats", docID, "messages", messageData['id'], "emojiReactions");
+            const reactionsSnap = await getDocs(reactionsRef);
+            const reactions = reactionsSnap.docs.map(doc => doc.data());
+            messageData['emojiReactions'] = reactions;
+            messagesMap.set(messageData['id'], messageData);
+          } else {
+            console.error("Invalid timestamp format:", messageData['createdAt']);
+          }
         });
+        await Promise.all(messagePromises);
+        this.messages = Array.from(messagesMap.values()).sort((a: any, b: any) => a.createdAt - b.createdAt);
+      });
       } else {
         console.log("No such document!");
       }
     });
   }
 
+
+
   ngAfterViewChecked() {
-    this.scrollToBottom();
+
   }
 
   async loadSenderData(senderID: any) {
@@ -327,6 +367,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   async getMessageForSpefifiedEmoji(emoji: any, currentUserID:any, messageID:any) {
+    console.log(emoji)
     const emojiReactionID = emoji.id;
     const emojiReactionDocRef = doc( this.firestore, 'newchats', this.currentChatID, 'messages', messageID, 'emojiReactions', emojiReactionID);
 
@@ -350,12 +391,14 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
           emojiIcon: emoji.native,
           reactedBy: [currentUserID],
           emojiCounter: 1,
+          emoji: emoji
         };
         await setDoc(emojiReactionDocRef, emojiReactionData);
       }
+      this.loadChatMessages(this.currentDocID)
     }
 
-  openEmojiMartPicker(currentUserID: any ,messageID: any) {
+  openEmojiMartPicker(messageID: any) {
     this.openEmojiPicker = true;
     this.emojiReactionMessageID = messageID;
   }

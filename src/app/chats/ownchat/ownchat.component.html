@@ -1,5 +1,5 @@
 <div class="chat-container">
-  <div class="header">
+  <div class="header-own-chat">
     <div class="active-channel">
       <div (click)="openChannelInfoDialog()"></div>
     </div>
@@ -29,9 +29,12 @@
          (mouseenter)="updateHoverState(i, true)"
          (mouseleave)="updateHoverState(i, false)">
          <div class="popup-window-own-message" *ngIf="isHoveredArray[i] && message.senderID === this.currentUserID">
-         <img src="./../../../assets/images/green-tick.png" alt="">
-         <img src="./../../../assets/images/hands-emoji.png" alt="">
-         <img src="./../../../assets/images/add_reaction.png" alt="">
+          <ngx-emoji (click)="getMessageForSpefifiedEmoji(emoji[0], this.currentUserID, message.id)" class="emoji-icons" emoji="white_check_mark"
+          set="apple" [size]="20"></ngx-emoji>
+          <ngx-emoji (click)="getMessageForSpefifiedEmoji(emoji[1], this.currentUserID, message.id)" class="emoji-icons" emoji="raised_hands"
+            set="apple" [size]="20"></ngx-emoji>
+            <img class="emoji-icons" (click)="openEmojiMartPicker(message.id)" src="./../../../assets/images/add_reaction.png"
+            alt="">
          <img (click)="openThread(message)" src="./../../../assets/images/comment.png" alt="">
          <ng-container *ngIf="currentTime(message.createdAt)">
            <button [matMenuTriggerFor]="editMessage" mat-icon-button (menuOpened)="menuOpened(i,message)">
@@ -60,8 +63,16 @@
               </div>
             </ng-container>
           </div>
-          <div class="open-thread">
-           <a (click)="openThread(message)"><h4>Antworten</h4></a>
+          <div class="reaction-container">
+            <div class="open-thread">
+              <a (click)="openThread(message)"><h4>Antworten</h4></a>
+             </div>
+             <div class="emoji-reaction-container" *ngFor="let reaction of message.emojiReactions.slice(0, 4)">
+              <div (click)="getMessageForSpefifiedEmoji(reaction.emoji, this.currentUserID, message.id)" class="reaction-sub-container">
+                {{ reaction.emojiCounter }}
+                {{ reaction.emojiIcon }}
+              </div>
+             </div>
           </div>
         </div>
       </div>
@@ -70,7 +81,7 @@
             set="apple" [size]="20"></ngx-emoji>
           <ngx-emoji (click)="getMessageForSpefifiedEmoji(emoji[1], this.currentUserID, message.id)" class="emoji-icons" emoji="raised_hands"
             set="apple" [size]="20"></ngx-emoji>
-          <img class="emoji-icons" (click)="openEmojiMartPicker(this.currentUserID, message.id)" src="./../../../assets/images/add_reaction.png"
+          <img class="emoji-icons" (click)="openEmojiMartPicker(message.id)" src="./../../../assets/images/add_reaction.png"
             alt="">
           <img class="emoji-icons" (click)="openThread(message)" src="./../../../assets/images/comment.png" alt="">
         </div>
