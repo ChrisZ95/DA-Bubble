@@ -140,6 +140,7 @@ export class MainComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.checkScreenWidth();
     if (!this.firestoreService.isScreenWide) {
       this.chatService.showOwnChat = false;
     }
@@ -177,8 +178,6 @@ export class MainComponent implements OnInit {
       this.chatService.associatedUser$.subscribe((state: boolean) => {
         this.associatedUser = state;
       });
-
-    this.checkScreenWidth();
   }
 
   @HostListener('window:resize', ['$event'])

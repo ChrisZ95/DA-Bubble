@@ -276,3 +276,134 @@
     }
   }
 }
+
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; 
+  height: calc(80vh + 20px);
+}
+
+.separator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: auto;
+  width: 90%;
+  margin: 0 auto;
+}
+
+.separator-line {
+  background-color: rgba(173, 176, 217, 1);
+  height: 1px;
+  width: 40%;
+}
+
+.separator-date {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  white-space: nowrap;
+  padding: 1% 2%;
+  border: 1px solid rgba(173, 176, 217, 1);
+  border-radius: 30px;
+}
+
+.conversation-container {
+  position: relative;
+  display: flex;
+  gap: 20px;
+  padding: 6px 75px;
+  &:hover {
+      background-color: rgba(236, 238, 254, 1);
+  }
+}
+
+.conversation {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.name-timestamp {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 20px;
+  h5 {
+    cursor: pointer;
+    &:hover {
+      color: rgba(83, 90, 241, 1);
+    }
+  }
+}
+
+.name-timestamp.reverse-order {
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+.answers {
+  color: #535AF1;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 400;
+}
+
+.last-answer {
+  font-size: 14px;
+  font-weight: 400;
+  color: #686868;
+}
+
+.name {
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  &:hover {
+    color: rgba(83, 90, 241, 1);
+  }
+}
+
+.time {
+  font-size: 14px;
+  font-weight: 400;
+  color: #686868;
+}
+
+.message-text {
+  font-size: 18px;
+  font-weight: 400;
+}
+
+.reply {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  a {
+    color: rgba(83, 90, 241, 1);
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 24px;
+  }
+
+  .emoji-reactions {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    height: 20px;
+    width: 30px;
+    border: 1px solid lightgrey ;
+    padding: 4px 10px 4px 10px;
+    border-radius: 20px;
+    gap: 5px;
+    background-color: transparent;
+
+    &:hover {
+      cursor: pointer;
+      background-color: green;
+    }
+  }
+}

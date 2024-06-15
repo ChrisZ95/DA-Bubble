@@ -31,15 +31,78 @@
 ::ng-deep.mat-mdc-dialog-surface{
     border-radius: 0px 30px 30px 30px !important;
 }
-  
+
 .header-channelchat {
     display: flex;
-    justify-content: space-between;
-    padding: 25px 45px;
+    padding: 25px 45px 25px 45px;
     align-items: center;
     box-shadow: 0 4px 2px rgba(225, 225, 225, 0.5);
-    flex: 0 0 auto; 
-}
+    flex: 0 0 auto;
+    justify-content: space-between;
+  
+    .images {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+  
+      .images-participants {
+        display: flex;
+        align-items: center;
+        padding: 5px 15px;
+        border-radius: 25px;
+  
+        &:hover {
+          background-color: #ECEEFE;
+          cursor: pointer;
+        }
+        img {
+          height: 50px;
+          width: 50px;
+        }
+        img:nth-child(1) {
+          border-radius: 100%;
+          height: 50px;
+          width: 50px;
+          object-fit: cover;
+        }
+        img:nth-child(2) {
+          margin-left: -10px;
+          border-radius: 100%;
+          height: 50px;
+          width: 50px;
+          object-fit: cover;
+        }
+        img:nth-child(3) {
+          margin-left: -10px;
+          border-radius: 100%;
+          height: 50px;
+          width: 50px;
+          object-fit: cover;
+        }
+  
+        h2 {
+          margin: 0;
+          padding-left: 10px;
+          font-family: "nunito-bold";
+        }
+      }
+  
+      .add-participants {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 40px;
+        width: 40px;
+        background-color: #ECEEFE;
+        border-radius: 20px;
+        cursor: pointer;
+        >img {
+          height: 24px;
+          width: 24px;
+        }
+      }
+    }
+  }
   
 .text-editor-channel {
     position: relative;
