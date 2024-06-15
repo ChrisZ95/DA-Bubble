@@ -42,7 +42,7 @@
            </button>
          </ng-container>
          <mat-menu #editMessage="matMenu" class="profile-menu">
-           <button mat-menu-item (click)="menuClosed(i)">Nachricht bearbeiten</button>
+           <button mat-menu-item (click)="EditMessage(i, message)">Nachricht bearbeiten</button>
            <button mat-menu-item (click)="deleteMessage(i, message.id)">LÖSCHEN</button>
          </mat-menu>
        </div>

@@ -200,11 +200,8 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
       this.menuClosed(index)
     } catch (error) {
       console.error('Fehler beim Löschen des Dokuments:', error);
+      this.menuClosed(index)
     }
-  }
-
-  getSenderData(senderID: string) {
-
   }
 
   scrollToBottom(): void {
@@ -216,40 +213,6 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
       console.error(err);
     }
   }
-
-
-  // async loadChatMessages(docID: any) {
-  //   const docRef = doc(this.firestore, "newchats", docID);
-  //   this.currentDocID = docID;
-  //   onSnapshot(docRef, (docSnap) => {
-  //     if (docSnap.exists()) {
-  //       const messagesRef = collection(this.firestore, "newchats", docID, "messages");
-  //       onSnapshot(messagesRef, async (messagesSnap) => {
-  //         const messagesMap = new Map();
-  //         const messagePromises = messagesSnap.docs.map(async (messageDoc) => {
-  //           let messageData = messageDoc.data();
-  //           messageData['id'] = messageDoc.id;
-  //           if (messageData['createdAt']) {
-  //             if (messageData['senderID']) {
-  //               const senderID = messageData['senderID'];
-  //               const senderData = await this.loadSenderData(senderID);
-  //               messageData['senderName'] = senderData ? senderData.username : "Unknown";
-  //               messageData['senderPhoto'] = senderData ? senderData.photo : null;
-  //             }
-  //             messagesMap.set(messageData['id'], messageData);
-  //           } else {
-  //             console.error("Invalid timestamp format:", messageData['createdAt']);
-  //           }
-  //         });
-  //         await Promise.all(messagePromises);
-  //         this.messages = Array.from(messagesMap.values());
-  //         this.messages.sort((a: any, b: any) => a.createdAt - b.createdAt);
-  //       });
-  //     } else {
-  //       console.log("No such document!");
-  //     }
-  //   });
-  // }
 
   async loadChatMessages(docID: any) {
     const docRef = doc(this.firestore, "newchats", docID);
@@ -290,12 +253,6 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     });
   }
 
-
-
-  ngAfterViewChecked() {
-
-  }
-
   async loadSenderData(senderID: any) {
     const docRef = doc(this.firestore, "users", senderID);
     const docSnap = await getDoc(docRef);
@@ -308,9 +265,6 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
       return null;
     }
   }
-
-
-
 
   async loadPrivateChat() {
     this.currentUserID = localStorage.getItem('uid');
@@ -537,5 +491,10 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     this.menuClicked = true;
     this.currentMessageIndex = index;
     this.isHoveredArray[index] = true;
+  }
+
+  EditMessage(index: any, messageData: any) {
+   console.log('index lautet', index)
+   console.log('nachrichten Dokument', messageData)
   }
 }
