@@ -68,7 +68,7 @@
               <a (click)="openThread(message)"><h4>Antworten</h4></a>
              </div>
              <div class="emoji-reaction-container" *ngFor="let reaction of message.emojiReactions.slice(0, 4)">
-              <div (click)="getMessageForSpefifiedEmoji(reaction.emoji, this.currentUserID, message.id)" class="reaction-sub-container">
+              <div *ngIf="reaction.emojiCounter > 0" (click)="addOrDeleteReaction(reaction.emoji, this.currentUserID, message.id)" class="reaction-sub-container">
                 {{ reaction.emojiCounter }}
                 {{ reaction.emojiIcon }}
               </div>

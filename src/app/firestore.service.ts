@@ -470,30 +470,6 @@ export class FirestoreService {
       participants: [userID],
       createdAt: timestamp,
     });
-
-    // Sub-Kollektion für nachrichten im chat dokument
-    const messagesCollection = collection(newChatRef, 'messages');
-    const messageDocRef = doc(messagesCollection);
-    const welcomeMessage = {
-        text: "Willkommen im Chat!",
-        sender: "System",
-        createdAt: timestamp,
-    };
-    await setDoc(messageDocRef, welcomeMessage);
-
-    // Sub-Kollektion für reaktionen in der nachricht
-    const emojiReactionsCollection = collection(messageDocRef, 'emojiReactions');
-    const welcomeReaction = {
-        emojiIcon: '😊',
-        emojiCounter: 1
-    };
-    await addDoc(emojiReactionsCollection, welcomeReaction);
-
-    const threadsCollection = collection(messageDocRef, 'threads');
-    const thraedsMessage = {
-
-    };
-    await addDoc(threadsCollection, thraedsMessage);
   }
 
   /* Nutzer wird eingeloggt */
@@ -579,6 +555,7 @@ export class FirestoreService {
           signUpdate: signUpDateUnixTimestamp,
         });
         await this.setCurrentUid(user.uid);
+        this.createPrivateChat(user.uid)
         await localStorage.setItem('uid', user.uid);
         this.router.navigate(['generalView']);
       } else {

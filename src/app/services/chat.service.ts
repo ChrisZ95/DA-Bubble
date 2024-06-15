@@ -119,29 +119,29 @@ async createChats(currentUserID: string, otherUserID: string) {
       };
       await setDoc(newDocRef, chatData);
 
-      // Sub-Kollektion für nachrichten im chat dokument
-      const messagesCollection = collection(newDocRef, 'messages');
-      const messageDocRef = doc(messagesCollection);
-      const welcomeMessage = {
-          text: "Willkommen im Chat!",
-          sender: "System",
-          createdAt: timestamp,
-      };
-      await setDoc(messageDocRef, welcomeMessage);
+      // // Sub-Kollektion für nachrichten im chat dokument
+      // const messagesCollection = collection(newDocRef, 'messages');
+      // const messageDocRef = doc(messagesCollection);
+      // const welcomeMessage = {
+      //     text: "Willkommen im Chat!",
+      //     sender: "System",
+      //     createdAt: timestamp,
+      // };
+      // await setDoc(messageDocRef, welcomeMessage);
 
-      // Sub-Kollektion für reaktionen in der nachricht
-      const emojiReactionsCollection = collection(messageDocRef, 'emojiReactions');
-      const welcomeReaction = {
-          emojiIcon: '😊',
-          emojiCounter: 1
-      };
-      await addDoc(emojiReactionsCollection, welcomeReaction);
+      // // Sub-Kollektion für reaktionen in der nachricht
+      // const emojiReactionsCollection = collection(messageDocRef, 'emojiReactions');
+      // const welcomeReaction = {
+      //     emojiIcon: '😊',
+      //     emojiCounter: 1
+      // };
+      // await addDoc(emojiReactionsCollection, welcomeReaction);
 
-      const threadsCollection = collection(messageDocRef, 'threads');
-      const thraedsMessage = {
+      // const threadsCollection = collection(messageDocRef, 'threads');
+      // const thraedsMessage = {
 
-      };
-      await addDoc(threadsCollection, thraedsMessage);
+      // };
+      // await addDoc(threadsCollection, thraedsMessage);
   } catch (error: any) {
       console.error("Fehler beim Erstellen des Chats:", error);
   }

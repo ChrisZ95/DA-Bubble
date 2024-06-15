@@ -260,7 +260,6 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
         const messagesRef = collection(this.firestore, "newchats", docID, "messages");
         const reactionsRef = collection(this.firestore, "newchats", docID, "messages");
         onSnapshot(messagesRef, async (messagesSnap) => {
-          debugger
         const messagesMap = new Map();
         const messagePromises = messagesSnap.docs.map(async (messageDoc) => {
           let messageData = messageDoc.data();
@@ -397,6 +396,44 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
       }
       this.loadChatMessages(this.currentDocID)
     }
+
+    async addOrDeleteReaction(emoji: any, currentUserID: any, messageID: any) {
+      const docRef = doc(this.firestore, "newchats", this.currentDocID, "messages", messageID, "emojiReactions", emoji.id);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+          const reactionData = docSnap.data();
+          const reactedByArray = reactionData['reactedBy'] || [];
+
+          if (reactedByArray.includes(currentUserID)) {
+           console.log('user hat bereits reagiert')
+           this.deleteEmojireaction(emoji, currentUserID, messageID)
+          } else {
+            this.getMessageForSpefifiedEmoji(emoji, currentUserID, messageID)
+          }
+        }
+  }
+
+  async deleteEmojireaction(emoji: any, currentUserID: any, messageID: any) {
+    const docRef = doc(this.firestore, "newchats", this.currentDocID, "messages", messageID, "emojiReactions", emoji.id);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      const reactionData = docSnap.data();
+      console.log(reactionData)
+      reactionData['emojiCounter'] --
+      reactionData['reactedBy'].splice(currentUserID)
+      console.log(reactionData['emojiCounter'])
+      console.log(reactionData['reactedBy'])
+
+      await updateDoc(docRef, {
+        emojiCounter: reactionData['emojiCounter'],
+        reactedBy: reactionData['reactedBy']
+      });
+
+      await this.loadChatMessages(this.currentDocID)
+    }
+  }
+
 
   openEmojiMartPicker(messageID: any) {
     this.openEmojiPicker = true;
