@@ -280,7 +280,6 @@
 .chat-container {
   display: flex;
   flex-direction: column;
-  height: 100vh; 
   height: calc(80vh + 20px);
 }
 
@@ -410,4 +409,23 @@
 
 .hovered-other-message {
   background-color: white !important;
+}
+
+@media(max-width: 850px) {
+  .conversation-container {
+    padding: 10px 16px 10px 16px;
+  }
+
+  .user-avatar {
+    height: 50px;
+    width: 50px;
+  }
+
+  .message-text {
+    font-size: 17px;
+  }
+
+  .chat-container {
+    height: calc(100vh - 80px);
+  }
 }
