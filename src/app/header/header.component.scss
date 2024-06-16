@@ -145,7 +145,17 @@
   cursor: pointer;
   transition: background-color 0.3s;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
+  align-items: center;
+  img{
+    height: 20px;
+  }
+}
+
+.user-photo-name{
+  display: flex;
+  justify-content: center;
+align-items: center;
 }
 
 .dropdown-item:hover {

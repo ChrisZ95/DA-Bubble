@@ -1,25 +1,55 @@
 import { Injectable } from '@angular/core';
-import { Firestore, getFirestore, onSnapshot, DocumentData, collectionData, docData } from '@angular/fire/firestore';
-import { doc, setDoc, addDoc, collection, getDoc, getDocs, updateDoc, query, where, arrayUnion, arrayRemove } from 'firebase/firestore';
+import {
+  Firestore,
+  getFirestore,
+  onSnapshot,
+  DocumentData,
+  collectionData,
+  docData,
+} from '@angular/fire/firestore';
+import {
+  doc,
+  setDoc,
+  addDoc,
+  collection,
+  getDoc,
+  getDocs,
+  updateDoc,
+  query,
+  where,
+  arrayUnion,
+  arrayRemove,
+} from 'firebase/firestore';
 import { ChannelService } from './channel.service';
 import { FirestoreService } from '../firestore.service';
-import { BehaviorSubject, Observable, catchError, combineLatest, map, of } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  catchError,
+  combineLatest,
+  map,
+  of,
+} from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ChatService {
-
   private userInformationSubject = new BehaviorSubject<any>(null);
-  userInformation$: Observable<any> = this.userInformationSubject.asObservable();
+  userInformation$: Observable<any> =
+    this.userInformationSubject.asObservable();
 
   private messagesSubject = new BehaviorSubject<any[]>([]);
   public messages$: Observable<any[]> = this.messagesSubject.asObservable();
 
-  private filteredUsersSubject: BehaviorSubject<any[]> = new BehaviorSubject<any>(null);
-  public filteredUsers$: Observable<any> = this.filteredUsersSubject.asObservable();
+  private filteredUsersSubject: BehaviorSubject<any[]> =
+    new BehaviorSubject<any>(null);
+  public filteredUsers$: Observable<any> =
+    this.filteredUsersSubject.asObservable();
 
-  private documentIDSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  private documentIDSubject: BehaviorSubject<any> = new BehaviorSubject<any>(
+    null
+  );
   public documentID$: Observable<any> = this.documentIDSubject.asObservable();
 
   private emojiPickerSubject = new BehaviorSubject<boolean>(false);
@@ -42,8 +72,8 @@ export class ChatService {
   filteredUsers: any;
   dataURL: any;
   currentuid: any;
-  existingParticipants: any [] = [];
-  usersArray: any [] = []
+  existingParticipants: any[] = [];
+  usersArray: any[] = [];
   chatList: any = [];
   messages: any[] = [];
   participants: any = [];
@@ -54,174 +84,191 @@ export class ChatService {
   loadCount: number = 0;
   editIndex: number = -1;
 
-  constructor( private firestore: Firestore, public channelService: ChannelService, public FirestoreService: FirestoreService) {
+  constructor(
+    private firestore: Firestore,
+    public channelService: ChannelService,
+    public FirestoreService: FirestoreService
+  ) {
     this.initializeService();
   }
 
   async checkForExistingChats() {
     const currentUserID: string | null = localStorage.getItem('uid');
     if (!currentUserID) {
-        console.log('CurrentUserId ist undefined | null');
-        return;
+      console.log('CurrentUserId ist undefined | null');
+      return;
     }
 
-    const usersCollection = collection(this.firestore, "users");
-    const chatsCollection = collection(this.firestore, "newchats");
+    const usersCollection = collection(this.firestore, 'users');
+    const chatsCollection = collection(this.firestore, 'newchats');
 
     const [querySnapshot, existingChats] = await Promise.all([
-        getDocs(usersCollection),
-        getDocs(chatsCollection)
+      getDocs(usersCollection),
+      getDocs(chatsCollection),
     ]);
 
     // Es wird ein Array erstellt in dem alle anderen User drin sind (nicht der eingeloggte Account)
     const usersArray: string[] = [];
     querySnapshot.forEach((doc) => {
-        const userData = doc.data();
-        if (typeof userData['uid'] === 'string' && userData['uid'] !== currentUserID) {
-            usersArray.push(userData['uid']);
-        }
+      const userData = doc.data();
+      if (
+        typeof userData['uid'] === 'string' &&
+        userData['uid'] !== currentUserID
+      ) {
+        usersArray.push(userData['uid']);
+      }
     });
 
     // Die Firestore sammlung newchats durchsuchen um zu prüfen ob bereits ein Chat vorhanden ist
     const existingChatsSet = new Set<string>();
     existingChats.forEach((doc) => {
-        const chatData = doc.data();
-        const participants = chatData['participants'] as string[];
-        if (participants.includes(currentUserID)) {
-            participants.forEach(participant => {
-                if (participant !== currentUserID) {
-                    existingChatsSet.add(participant);
-                }
-            });
-        }
+      const chatData = doc.data();
+      const participants = chatData['participants'] as string[];
+      if (participants.includes(currentUserID)) {
+        participants.forEach((participant) => {
+          if (participant !== currentUserID) {
+            existingChatsSet.add(participant);
+          }
+        });
+      }
     });
 
     // Überprüfen, ob es für jeden Benutzer im usersArray bereits einen Chat gibt
-    usersArray.forEach(userID => {
-        if (existingChatsSet.has(userID)) {
-            // console.log(`Einzelchat zwischen ${currentUserID} und ${userID} existiert bereits.`);
-        } else {
-            // console.log(`Kein Einzelchat zwischen ${currentUserID} und ${userID} gefunden.`);
-            this.createChats(currentUserID, userID)
-        }
+    usersArray.forEach((userID) => {
+      if (existingChatsSet.has(userID)) {
+        // console.log(`Einzelchat zwischen ${currentUserID} und ${userID} existiert bereits.`);
+      } else {
+        // console.log(`Kein Einzelchat zwischen ${currentUserID} und ${userID} gefunden.`);
+        this.createChats(currentUserID, userID);
+      }
     });
-}
+  }
 
-
-async createChats(currentUserID: string, otherUserID: string) {
-  try {
+  async createChats(currentUserID: string, otherUserID: string) {
+    try {
       const timestamp = this.FirestoreService.createTimeStamp();
       const newDocRef = doc(collection(this.firestore, 'newchats'));
       const chatData = {
-          participants: [currentUserID, otherUserID],
-          createdAt: timestamp,
+        participants: [currentUserID, otherUserID],
+        createdAt: timestamp,
       };
       await setDoc(newDocRef, chatData);
-  } catch (error: any) {
-      console.error("Fehler beim Erstellen des Chats:", error);
+    } catch (error: any) {
+      console.error('Fehler beim Erstellen des Chats:', error);
+    }
   }
-}
 
-async searchPrivateChat(userDetails: any) {
-  const currentUserID = localStorage.getItem('uid');
+  async searchPrivateChat(userDetails: any) {
+    const currentUserID = localStorage.getItem('uid');
 
-  if (userDetails.uid === currentUserID) {
-    const querySnapshot = await getDocs(
-      query(collection(this.firestore, 'newchats'), where('participants', '==', [currentUserID]))
-    );
+    if (userDetails.uid === currentUserID) {
+      const querySnapshot = await getDocs(
+        query(
+          collection(this.firestore, 'newchats'),
+          where('participants', '==', [currentUserID])
+        )
+      );
 
+      querySnapshot.forEach((doc) => {
+        const chatData = doc.data();
+        const usersInChat = chatData['participants'];
+        this.loadChatWithUser(doc.id);
+        this.filteredUsersSubject.next(usersInChat);
+        this.documentIDSubject.next(doc.id);
+      });
+    } else {
+      console.log('Die IDs sind nicht gleich');
+    }
+  }
+
+  async searchChatWithUser(userDetails: any) {
+    const querySnapshot = await getDocs(collection(this.firestore, 'newchats'));
+    const chatsWithBothUsers: any = [];
+    let chatDocID: string | undefined;
     querySnapshot.forEach((doc) => {
       const chatData = doc.data();
       const usersInChat = chatData['participants'];
-      this.loadChatWithUser(doc.id)
-      this.filteredUsersSubject.next( usersInChat );
-      this.documentIDSubject.next( doc.id );
+      if (
+        usersInChat.includes(this.currentuid) &&
+        usersInChat.includes(userDetails)
+      ) {
+        chatsWithBothUsers.push({ id: doc.id, ...chatData });
+        chatDocID = chatsWithBothUsers[0].id;
+        this.filteredUsersSubject.next(usersInChat);
+        this.documentIDSubject.next(doc.id);
+      }
     });
-  } else {
-    console.log('Die IDs sind nicht gleich');
+    this.loadChatWithUser(chatDocID);
+    return chatDocID;
   }
-}
 
-async searchChatWithUser(userDetails: any) {
-  const querySnapshot = await getDocs(collection(this.firestore, "newchats"));
-  const chatsWithBothUsers: any = [];
-  let chatDocID: string | undefined;
-  querySnapshot.forEach((doc) => {
-    const chatData = doc.data();
-    const usersInChat = chatData['participants'];
-    if (usersInChat.includes(this.currentuid) && usersInChat.includes(userDetails)) {
-      chatsWithBothUsers.push({ id: doc.id, ...chatData });
-      chatDocID =  chatsWithBothUsers[0].id;
-      this.filteredUsersSubject.next( usersInChat );
-      this.documentIDSubject.next( doc.id );
+  async loadChatWithUser(chatDocID: any) {
+    const docRef = doc(this.firestore, 'newchats', chatDocID);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      this.chatDataSubject.next(docSnap.data());
+    } else {
+      this.chatDataSubject.next(null);
     }
-  });
-  this.loadChatWithUser(chatDocID)
-  return chatDocID;
-}
-
-async loadChatWithUser(chatDocID: any) {
-  const docRef = doc(this.firestore, "newchats", chatDocID);
-  const docSnap = await getDoc(docRef);
-  if (docSnap.exists()) {
-    this.chatDataSubject.next(docSnap.data());
-  } else {
-    this.chatDataSubject.next(null);
   }
-}
 
-async sendMessageToDatabase(imageFile: any, message: any, currentDocID: any) {
-  const timestamp = this.FirestoreService.createTimeStamp();
-  const currentuserID = localStorage.getItem('uid');
-  const currentUserData = await this.loadUserDataFromDatabase(currentuserID);
-  if (!currentUserData) {
-    console.error('Fehler: Benutzer konnte nicht geladen werden.');
-    return;
+  async sendMessageToDatabase(imageFile: any, message: any, currentDocID: any) {
+    const timestamp = this.FirestoreService.createTimeStamp();
+    const currentuserID = localStorage.getItem('uid');
+    const currentUserData = await this.loadUserDataFromDatabase(currentuserID);
+    if (!currentUserData) {
+      console.error('Fehler: Benutzer konnte nicht geladen werden.');
+      return;
+    }
+    try {
+      const newThread = {
+        createdAt: timestamp,
+        createdBy: currentuserID,
+        participants: [currentuserID],
+      };
+      const threadDocRef = await addDoc(
+        collection(this.firestore, 'thread'),
+        newThread
+      );
+      const messagesCollectionRef = collection(
+        this.firestore,
+        `newchats/${currentDocID}/messages`
+      );
+      const newMessage = {
+        message: message,
+        image: imageFile,
+        createdAt: timestamp,
+        senderName: currentUserData.username,
+        senderID: currentUserData.uid,
+        threadID: threadDocRef.id,
+      };
+      const docRef = await addDoc(messagesCollectionRef, newMessage);
+    } catch (error) {
+      console.error('Fehler beim Speichern der Nachricht:', error);
+    }
   }
-  try {
-    const newThread = {
-      createdAt: timestamp,
-      createdBy: currentuserID,
-      participants: [currentuserID],
-    };
-    const threadDocRef = await addDoc(collection(this.firestore, "thread"), newThread);
-    const messagesCollectionRef = collection(this.firestore, `newchats/${currentDocID}/messages`);
-    const newMessage = {
-      message: message,
-      image: imageFile,
-      createdAt: timestamp,
-      senderName: currentUserData.username,
-      senderID: currentUserData.uid,
-      threadID: threadDocRef.id
-    };
-    const docRef = await addDoc(messagesCollectionRef, newMessage);
-  } catch (error) {
-    console.error('Fehler beim Speichern der Nachricht:', error);
+
+  async loadUserDataFromDatabase(userID: any) {
+    const docRef = doc(this.firestore, 'users', userID);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      const userData = docSnap.data();
+      const userDetails = {
+        username: userData['username'],
+        email: userData['email'],
+        photo: userData['photo'],
+        uid: userData['uid'],
+        signUpdate: userData['signUpdate'],
+        logIndate: userData['logIndate'],
+        logOutDate: userData['logOutDate'],
+      };
+      return userDetails;
+    } else {
+      console.log('No such document!');
+      return null;
+    }
   }
-}
-
-async loadUserDataFromDatabase(userID: any) {
-  const docRef = doc(this.firestore, "users", userID);
-  const docSnap = await getDoc(docRef);
-
-  if (docSnap.exists()) {
-    const userData = docSnap.data();
-    const userDetails = {
-      username: userData['username'],
-      email: userData['email'],
-      photo: userData['photo'],
-      uid: userData['uid'],
-      signUpdate: userData['signUpdate'],
-      logIndate: userData['logIndate'],
-      logOutDate: userData['logOutDate'],
-    };
-    return userDetails;
-  } else {
-    console.log("No such document!");
-    return null;
-  }
-}
-
 
   emojiPicker(state: boolean) {
     this.emojiPickerSubject.next(state);

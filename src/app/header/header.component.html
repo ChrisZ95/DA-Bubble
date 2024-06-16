@@ -33,13 +33,15 @@
 </div>
 <!-- Adrian -->
 <div class="dropdown-menu" *ngIf="showDropdown">
-  <div *ngIf="showUserChannelPlaceholder" class="dropdown-item" (click)="displayAllUsersAndChannels()">Show Users
+  <!-- <div *ngIf="showUserChannelPlaceholder" class="dropdown-item" (click)="displayAllUsersAndChannels()">Show Users
     and Channels</div>
   <div *ngIf="showUserPlaceholder" class="dropdown-item" (click)="displayAllUsers()">Search for User</div>
   <div *ngIf="showChannelPlaceholder" class="dropdown-item" (click)="displayAllChannels()">Search for Channel
-  </div>
+  </div> -->
   <div class="dropdown-item" *ngFor="let entity of filteredEntities" (click)="selectEntity(entity)">
-    {{ entity.username || entity.channelName }} <p *ngIf="entity.isChannel == true">Channel</p>
+    <div *ngIf="entity.isChannel == true">#</div>
+    <div *ngIf="entity.isUser == true" class="user-photo-name"><img [src]="entity.photo" alt="">&commat;</div>
+    {{ entity.username || entity.channelName }}
   </div>
 </div>
 <!-- Adrian -->
