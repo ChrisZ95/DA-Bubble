@@ -1,1 +1,49 @@
-<p>text-editor-thread works!</p>
+<div class="emoji-picker-container" *ngIf="openEmojiPicker">
+  <emoji-mart  (emojiClick)="addEmoji($event)" title="Pick your emoji…" emoji="point_up"></emoji-mart>
+</div>
+
+<div *ngIf="openAssociatedUser" class="show-associated-user">
+  <div class="user-parcel" *ngFor="let user of associatedUser">
+    <div class="choose-user-parcel" (click)="userInserted(user)">{{ user }}</div>
+  </div>
+</div>
+
+<form (submit)="submit()" class="text-editor-container">
+
+  <div class="input-section">
+    <textarea cols="30" rows="10" id="textArea" placeholder="Nachricht schreiben" [(ngModel)]="message" [(ngModel)]="comment" name="message"></textarea>
+    <div class="imageDisplay" id="imageDisplay">
+      <div *ngFor="let file of fileArray let i = index"  class="file-link-container">
+        <button class="delete-file-button" (click)="deleteFile(i)">
+          <img src="./../../../assets/images/close.png">
+        </button>
+        <a class="file-link" href="{{ file.url }}" target="_blank">{{ file.name }}</a>
+      </div>
+    </div>
+    <div class="button-container">
+
+      <div class="left-buttons">
+        <div class="input-button add-file">
+          <img src="../../../assets/images/add.png" alt="Add" (click)="triggerFileInput()">
+          <input type="file" accept="image/*" id="data-input" style="display: none;" #fileInput (change)="customDataURL()">
+        </div>
+
+        <div class="distance-line"></div>
+
+        <div class="input-button emoji-picker">
+          <img (click)="openEmojiMartPicker()" src="../../../assets/images/smiley.png" alt="Smiley">
+        </div>
+
+        <div (click)="userMention()" class="input-button">
+          <img src="../../../assets/images/atsign.png" alt="At Sign">
+        </div>
+      </div>
+
+      <div class="right-buttons">
+        <button class="send-message-button" type="submit"><img src="../../../assets/images/send.png" alt="Send"></button>
+      </div>
+
+    </div>
+  </div>
+</form>
+
