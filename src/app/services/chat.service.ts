@@ -118,30 +118,6 @@ async createChats(currentUserID: string, otherUserID: string) {
           createdAt: timestamp,
       };
       await setDoc(newDocRef, chatData);
-
-      // // Sub-Kollektion für nachrichten im chat dokument
-      // const messagesCollection = collection(newDocRef, 'messages');
-      // const messageDocRef = doc(messagesCollection);
-      // const welcomeMessage = {
-      //     text: "Willkommen im Chat!",
-      //     sender: "System",
-      //     createdAt: timestamp,
-      // };
-      // await setDoc(messageDocRef, welcomeMessage);
-
-      // // Sub-Kollektion für reaktionen in der nachricht
-      // const emojiReactionsCollection = collection(messageDocRef, 'emojiReactions');
-      // const welcomeReaction = {
-      //     emojiIcon: '😊',
-      //     emojiCounter: 1
-      // };
-      // await addDoc(emojiReactionsCollection, welcomeReaction);
-
-      // const threadsCollection = collection(messageDocRef, 'threads');
-      // const thraedsMessage = {
-
-      // };
-      // await addDoc(threadsCollection, thraedsMessage);
   } catch (error: any) {
       console.error("Fehler beim Erstellen des Chats:", error);
   }
@@ -204,6 +180,12 @@ async sendMessageToDatabase(imageFile: any, message: any, currentDocID: any) {
     return;
   }
   try {
+    const newThread = {
+      createdAt: timestamp,
+      createdBy: currentuserID,
+      participants: [currentuserID],
+    };
+    const threadDocRef = await addDoc(collection(this.firestore, "thread"), newThread);
     const messagesCollectionRef = collection(this.firestore, `newchats/${currentDocID}/messages`);
     const newMessage = {
       message: message,
@@ -211,7 +193,7 @@ async sendMessageToDatabase(imageFile: any, message: any, currentDocID: any) {
       createdAt: timestamp,
       senderName: currentUserData.username,
       senderID: currentUserData.uid,
-      // senderDetails: currentUserData,
+      threadID: threadDocRef.id
     };
     const docRef = await addDoc(messagesCollectionRef, newMessage);
   } catch (error) {
