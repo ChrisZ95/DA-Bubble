@@ -142,8 +142,6 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
         console.log('Ungültige Chatdaten');
       }
     });
-
-    // this.getSenderData(this.currentUserID)
   }
 
   ngOnDestroy(): void {
@@ -427,10 +425,8 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     });
   }
 
-  openThread(messageInformation: any) {
-    let chatDocId = this.chatService.chatDocId;
-    this.threadService.displayThread = true;
-    this.threadService.getMessage(messageInformation, chatDocId);
+  openThread(message: any) {
+    this.threadService.getMessage(message, this.currentChatID);
   }
 
   currentTime(currentMessageTime: any): boolean {

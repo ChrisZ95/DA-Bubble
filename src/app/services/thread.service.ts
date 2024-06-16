@@ -48,48 +48,8 @@ export class ThreadService {
   chatDocId: string = '';
 
   getMessage(messageInformation: any, chatDocId: any) {
-    this.messageInformation = messageInformation;
-    this.chatDocId = chatDocId;
-    this.messageInformationSubject.next(messageInformation);
-  }
-
-  getMessageInformation() {
-    return this.messageInformationSubject.asObservable();
-  }
-
-  async sendReply(messageReply: any) {
-    try {
-      const docRef = doc(this.firestore, 'chats', this.chatDocId);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        const data = docSnap.data() as ChatDocument;
-        const messages = data.messages || [];
-        const messageIndex = messages.findIndex((message) =>
-          message.id.includes(this.messageInformation.id)
-        );
-        if (messageIndex !== -1) {
-          const timestamp = new Date().getTime();
-          const id = this.generateId.generateId();
-          let reply = {
-            createdAt: timestamp,
-            creator: this.firestoreService.currentuid,
-            id: id,
-            reply: messageReply,
-          };
-          const message = messages[messageIndex];
-          if (!message.replies) {
-            message.replies = [];
-          }
-          message.replies.push(reply);
-          await updateDoc(docRef, { messages });
-        } else {
-          console.log('No such message!');
-        }
-      } else {
-        console.log('No such document!');
-      }
-    } catch (error) {
-      console.error('Error updating document: ', error);
-    }
+    console.log(messageInformation)
+    console.log(chatDocId)
+    // this.MessageObject.message = messageInformation.message
   }
 }

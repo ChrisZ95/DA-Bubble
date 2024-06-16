@@ -176,7 +176,7 @@ export class TextEditorChannelComponent implements OnInit {
   }
 
   sendReply() {
-    this.threadService.sendReply(this.message);
+    // this.threadService.sendReply(this.message);
   }
 
   sendMessageToChannel() {

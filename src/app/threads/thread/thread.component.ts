@@ -35,10 +35,7 @@ export class ThreadComponent implements OnInit, OnDestroy {
   }
 
   async loadMessages() {
-    this.threadSubscription = this.threadService.getMessageInformation().subscribe((info) => {
-      this.message = info;
-      this.replies = info.replies;
-    });
+
   }
 
   ngOnInit() {

@@ -3,7 +3,6 @@ import { Firestore, getFirestore, onSnapshot, DocumentData, collectionData, docD
 import { doc, setDoc, addDoc, collection, getDoc, getDocs, updateDoc, query, where, arrayUnion, arrayRemove } from 'firebase/firestore';
 import { ChannelService } from './channel.service';
 import { FirestoreService } from '../firestore.service';
-import { GenerateIdsService } from './generate-ids.service';
 import { BehaviorSubject, Observable, catchError, combineLatest, map, of } from 'rxjs';
 
 @Injectable({
@@ -55,7 +54,7 @@ export class ChatService {
   loadCount: number = 0;
   editIndex: number = -1;
 
-  constructor( private firestore: Firestore, public channelService: ChannelService, public FirestoreService: FirestoreService, public generateIdServie: GenerateIdsService) {
+  constructor( private firestore: Firestore, public channelService: ChannelService, public FirestoreService: FirestoreService) {
     this.initializeService();
   }
 
