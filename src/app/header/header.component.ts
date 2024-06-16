@@ -224,7 +224,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   @HostListener('document:click', ['$event'])
   clickOutside(event: Event) {
-    this.loadAllEntitys();
+    this.searchEntity(this.inputRef?.nativeElement.value);
     const clickedInsideInput =
       this.inputRef?.nativeElement.contains(event.target) || false;
     const clickedInsideDropdown =
@@ -233,9 +233,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
     if (!clickedInsideInput && !clickedInsideDropdown) {
       this.showDropdown = false;
     }
-    // if (!this.eRef.nativeElement.contains(event.target)) {
-    //   this.showDropdown = false;
-    // }
   }
 
   @HostListener('focusin', ['$event'])
