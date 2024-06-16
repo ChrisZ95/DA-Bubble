@@ -31,10 +31,12 @@
     </mat-menu>
   </div>
 </div>
-<div class="dropdown-menu" *ngIf="showDropdown">
+<div #dropdownMenu class="dropdown-menu" *ngIf="showDropdown">
   <div class="dropdown-item" *ngFor="let entity of filteredEntities" (click)="selectEntity(entity)">
     <div *ngIf="entity.isChannel == true">#</div>
-    <div *ngIf="entity.isUser == true" class="user-photo-name"><img [src]="entity.photo" alt="">&commat;</div>
+    <div *ngIf="entity.isUser == true" class="user-photo-name">
+      <img [src]="entity.photo" alt=""> <span class="at-symbol">&commat;</span>
+    </div>
     {{ entity.username || entity.channelName }}
   </div>
 </div>

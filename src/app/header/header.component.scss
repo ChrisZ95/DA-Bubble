@@ -138,6 +138,7 @@
   overflow-y: auto;
   z-index: 1000;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
 }
 
 .dropdown-item {
@@ -147,15 +148,20 @@
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  img{
-    height: 20px;
+  font-size: 18px;
+  img {
+    height: 30px;
   }
 }
 
-.user-photo-name{
+.user-photo-name {
   display: flex;
   justify-content: center;
-align-items: center;
+  align-items: center;
+  .at-symbol {
+    font-size: 20px;
+    padding-left: 5px; 
+  }
 }
 
 .dropdown-item:hover {

@@ -43,7 +43,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private unsubscribe: Unsubscribe | undefined;
   @Output() userDetails = new EventEmitter<string>();
   @Output() channelDetails = new EventEmitter<string>();
-  @ViewChild('inputRef') inputRef: ElementRef | undefined;
+  @ViewChild('inputRef', { static: false }) inputRef: ElementRef | undefined;
+  @ViewChild('dropdownMenu', { static: false }) dropdownMenu:
+    | ElementRef
+    | undefined;
   logInUid: any;
   userForm: any;
   userName: any;
@@ -222,9 +225,17 @@ export class HeaderComponent implements OnInit, OnDestroy {
   @HostListener('document:click', ['$event'])
   clickOutside(event: Event) {
     this.loadAllEntitys();
-    if (!this.eRef.nativeElement.contains(event.target)) {
+    const clickedInsideInput =
+      this.inputRef?.nativeElement.contains(event.target) || false;
+    const clickedInsideDropdown =
+      this.dropdownMenu?.nativeElement.contains(event.target) || false;
+
+    if (!clickedInsideInput && !clickedInsideDropdown) {
       this.showDropdown = false;
     }
+    // if (!this.eRef.nativeElement.contains(event.target)) {
+    //   this.showDropdown = false;
+    // }
   }
 
   @HostListener('focusin', ['$event'])
