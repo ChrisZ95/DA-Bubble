@@ -220,20 +220,24 @@ export class ChatService {
       console.error('Fehler: Benutzer konnte nicht geladen werden.');
       return;
     }
+
     try {
       const newThread = {
         createdAt: timestamp,
         createdBy: currentuserID,
         participants: [currentuserID],
       };
-      const threadDocRef = await addDoc(
-        collection(this.firestore, 'thread'),
-        newThread
-      );
-      const messagesCollectionRef = collection(
-        this.firestore,
-        `newchats/${currentDocID}/messages`
-      );
+      const threadDocRef = await addDoc(collection(this.firestore, 'threads'), newThread);
+      const threadCollectionRef = collection(this.firestore, `threads/${threadDocRef.id}/messages`);
+      const threadMessage = {
+      message: message,
+      image: imageFile,
+      createdAt: timestamp,
+      senderName: currentUserData.username,
+      senderID: currentUserData.uid,
+    };
+    await addDoc(threadCollectionRef, threadMessage);
+      const messagesCollectionRef = collection(this.firestore, `newchats/${currentDocID}/messages`);
       const newMessage = {
         message: message,
         image: imageFile,
@@ -242,11 +246,13 @@ export class ChatService {
         senderID: currentUserData.uid,
         threadID: threadDocRef.id,
       };
-      const docRef = await addDoc(messagesCollectionRef, newMessage);
+      await addDoc(messagesCollectionRef, newMessage);
+
     } catch (error) {
       console.error('Fehler beim Speichern der Nachricht:', error);
     }
   }
+
 
   async loadUserDataFromDatabase(userID: any) {
     const docRef = doc(this.firestore, 'users', userID);

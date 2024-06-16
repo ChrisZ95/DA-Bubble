@@ -184,7 +184,6 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
 
   async deleteMessage(index: any, messageID: any) {
     try {
-
       if (!this.firestore) {
         throw new Error("Firestore instance is not defined.");
       }
@@ -195,12 +194,35 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
         throw new Error("Message ID is not defined.");
       }
 
+      // Referenz zum Nachrichten-Dokument
       const messageDocRef = doc(this.firestore, 'newchats', this.currentDocID, 'messages', messageID);
-      await deleteDoc(messageDocRef);
-      this.menuClosed(index)
+      const messageDocSnap = await getDoc(messageDocRef);
+
+      if (messageDocSnap.exists()) {
+        const messageData = messageDocSnap.data();
+        console.log('Message data:', messageData);
+        const threadDocRef = doc(this.firestore, 'threads', messageData['threadID']);
+        const threadDocSnap = await getDoc(threadDocRef);
+
+        if (threadDocSnap.exists()) {
+          const threadMessagesCollectionRef = collection(this.firestore, `threads/${messageData['threadID']}/messages`);
+          const threadMessagesSnap = await getDocs(threadMessagesCollectionRef);
+          for (const doc of threadMessagesSnap.docs) {
+            await deleteDoc(doc.ref);
+          }
+          await deleteDoc(threadDocRef);
+        } else {
+          console.log('Thread not found with ID:', messageData['threadID']);
+        }
+        await deleteDoc(messageDocRef);
+      } else {
+        console.log('No document found with the ID:', messageID);
+      }
+
+      this.menuClosed(index);
     } catch (error) {
-      console.error('Fehler beim Löschen des Dokuments:', error);
-      this.menuClosed(index)
+      console.error('Error deleting document:', error);
+      this.menuClosed(index);
     }
   }
 
