@@ -51,16 +51,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
   userUid: any;
   guestLogIn = false;
   userIsVerified = false;
-
+  currentUid: any;
   allUsers: any = [];
   allChannels: any = [];
   filteredUser: any;
   filteredEntities: any = [];
   showDropdown: boolean = false;
-  // showUserPlaceholder: any;
-  // showChannelPlaceholder: any;
-
-  // showUserChannelPlaceholder: boolean = false;
   focusOnTextEditor: boolean = false;
 
   @HostListener('window:resize', ['$event'])
@@ -82,19 +78,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
     const lowerCaseInput = input.toLowerCase().trim();
     this.filteredEntities = [];
     if (input === '') {
-      this.showDropdown = true;
-
-      // this.showUserChannelPlaceholder = true;
-      // this.showUserPlaceholder = false;
-      // this.showChannelPlaceholder = false;
+      this.displayAllUsersAndChannels();
     } else if (input === '@') {
-      // this.showUserPlaceholder = true;
-      // this.showChannelPlaceholder = false;
-      // this.showUserChannelPlaceholder = false;
+      this.displayAllUsers();
     } else if (input === '#') {
-      // this.showUserPlaceholder = false;
-      // this.showChannelPlaceholder = true;
-      // this.showUserChannelPlaceholder = false;
+      this.displayAllChannels();
     } else if (input.startsWith('@')) {
       this.filteredEntities = this.allUsers.filter((item: any) => {
         return (
@@ -103,9 +91,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
           item.uid !== this.firestoreService.currentuid
         );
       });
-      // this.showUserPlaceholder = false;
-      // this.showChannelPlaceholder = false;
-      // this.showUserChannelPlaceholder = false;
     } else if (input.startsWith('#')) {
       this.filteredEntities = this.allChannels.filter((channel: any) => {
         return (
@@ -115,81 +100,45 @@ export class HeaderComponent implements OnInit, OnDestroy {
             .includes(lowerCaseInput.substring(1))
         );
       });
-      // this.showUserPlaceholder = false;
-      // this.showChannelPlaceholder = false;
-      // this.showUserChannelPlaceholder = false;
     } else {
       const users = this.allUsers.filter((item: any) => {
+        item.isUser = true;
         return (
           item.username &&
           item.username.toLowerCase().includes(lowerCaseInput) &&
           item.uid !== this.firestoreService.currentuid
         );
       });
-
       const channels = this.allChannels.filter((item: any) => {
-        return item.name && item.name.toLowerCase().includes(lowerCaseInput);
+        item.isChannel = true;
+        return (
+          item.channelName &&
+          item.channelName.toLowerCase().includes(lowerCaseInput)
+        );
       });
 
-      this.filteredEntities = [...users, ...channels];
-      // this.showUserPlaceholder = false;
-      // this.showChannelPlaceholder = false;
-      // this.showUserChannelPlaceholder = false;
+      this.filteredEntities = [...channels, ...users];
     }
-
-    this.showDropdown =
-      this.filteredEntities.length > 0 ||
-      input === '' ||
-      input === '@' ||
-      input === '#';
-  }
-
-  updatePlaceholder(input: string) {
-    if (input === '') {
-      // this.showUserChannelPlaceholder = true;
-      // this.showUserPlaceholder = false;
-      // this.showChannelPlaceholder = false;
-    } else if (input === '#') {
-      // this.showUserPlaceholder = true;
-      // this.showChannelPlaceholder = false;
-      // this.showUserChannelPlaceholder = false;
-    } else if (input === '@') {
-      // this.showUserPlaceholder = false;
-      // this.showChannelPlaceholder = true;
-      // this.showUserChannelPlaceholder = false;
-    } else {
-      // this.showUserPlaceholder = false;
-      // this.showChannelPlaceholder = false;
-      // this.showUserChannelPlaceholder = false;
-    }
-    this.showDropdown =
-      input === '' ||
-      input === '#' ||
-      input === '@' ||
-      this.filteredEntities.length > 0;
+    this.showDropdown = true;
   }
 
   displayAllUsersAndChannels() {
     this.filteredEntities = [
-      ...this.allUsers.filter((user: any) => {
-        return user.username && user.uid !== this.firestoreService.currentuid;
-      }),
       ...this.allChannels.map((channel: any) => {
         channel.isChannel = true;
         return channel;
       }),
+      ...this.allUsers.filter((user: any) => {
+        user.isUser = true;
+        return user.username && user.uid !== this.firestoreService.currentuid;
+      }),
     ];
-    // this.showUserChannelPlaceholder = false;
     this.showDropdown = true;
-
-    setTimeout(() => {
-      this.focusInputField();
-      // this.showUserChannelPlaceholder = false;
-    }, 0);
   }
 
   displayAllUsers() {
     this.filteredEntities = this.allUsers.filter((item: any) => {
+      item.isUser = true;
       return item.username && item.uid !== this.firestoreService.currentuid;
     });
 
@@ -204,15 +153,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       }
       return 0;
     });
-
-    // this.showUserPlaceholder = false;
-    // this.showChannelPlaceholder = false;
-    // this.showUserChannelPlaceholder = false;
     this.showDropdown = true;
-
-    setTimeout(() => {
-      this.focusInputField();
-    }, 0);
   }
 
   displayAllChannels() {
@@ -220,15 +161,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       channel.isChannel = true;
       return channel;
     });
-
-    // this.showUserPlaceholder = false;
-    // this.showChannelPlaceholder = false;
-    // this.showUserChannelPlaceholder = false;
     this.showDropdown = true;
-
-    setTimeout(() => {
-      this.focusInputField();
-    }, 0);
   }
 
   selectEntity(entity: any) {
@@ -258,7 +191,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       inputElement.blur();
     }
   }
-  currentUid: any;
+
   loadAllEntitys() {
     this.loadAllUsersAndAllChannels();
     this.currentUid = this.firestoreService.currentuid;
@@ -301,13 +234,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
     const isTextEditorFocused = this.focusOnTextEditor;
     const areFilteredEntitiesEmpty = this.filteredEntities.length === 0;
     if (isEventTargetInside && !isTextEditorFocused) {
-      if (areFilteredEntitiesEmpty && inputValue === '') {
-        // this.showUserChannelPlaceholder = true;
-      } else if (areFilteredEntitiesEmpty && inputValue === '@') {
-        // this.showUserPlaceholder = true;
-      } else if (areFilteredEntitiesEmpty && inputValue === '#') {
-        // this.showChannelPlaceholder = true;
-      }
       this.showDropdown = true;
     }
   }
