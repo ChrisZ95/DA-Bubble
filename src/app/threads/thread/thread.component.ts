@@ -22,21 +22,27 @@ export class ThreadComponent implements OnInit, OnDestroy {
   message: any = {};
   replies: any = [];
 
-  closeThreadWindow() {
-    this.threadService.displayThread = false;
-  }
-
-  async loadMessages() {
-
-  }
-
   ngOnInit() {
     this.loadMessages();
+    this.threadService.messageInformation
+    this.threadService.chatDocId
+
+    console.log(this.threadService.messageInformation)
+    console.log(this.threadService.chatDocId)
   }
 
   ngOnDestroy(): void {
     if(this.threadSubscription) {
       this.threadSubscription.unsubscribe();
     }
+  }
+
+
+  closeThreadWindow() {
+    this.threadService.displayThread = false;
+  }
+
+  async loadMessages() {
+
   }
 }

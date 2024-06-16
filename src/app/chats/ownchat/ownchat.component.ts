@@ -193,14 +193,11 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
       if (!messageID) {
         throw new Error("Message ID is not defined.");
       }
-
-      // Referenz zum Nachrichten-Dokument
       const messageDocRef = doc(this.firestore, 'newchats', this.currentDocID, 'messages', messageID);
       const messageDocSnap = await getDoc(messageDocRef);
 
       if (messageDocSnap.exists()) {
         const messageData = messageDocSnap.data();
-        console.log('Message data:', messageData);
         const threadDocRef = doc(this.firestore, 'threads', messageData['threadID']);
         const threadDocSnap = await getDoc(threadDocRef);
 

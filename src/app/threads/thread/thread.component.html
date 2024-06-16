@@ -1,52 +1,9 @@
 <div class="main">
-    <div class="header">
-        <div class="top-headline">
-            <h5><strong> Thread </strong></h5>
-            <p># ChannelName</p>
-        </div>
-        <img (click)="closeThreadWindow()" src="../../../assets/images/close.png" alt="">
+  <div class="header-thread">
+    <div class="top-headline">
+        <span class="thread">Thread</span>
+        <span class="channel-name"># Username</span>
     </div>
-
-    <div class="history">
-
-        <div class="creator">
-            <!-- [ngClass]="{'justify-end': comment.uid === this.firestoreService.currentuid, 'justify-start': comment.uid !== this.firestoreService.currentuid}" -->
-            <div class="avatar">
-                <img src="../../../assets/images/avatar.png" alt="">
-            </div>
-            <div class="conversation">
-                <div class="user-timestamp">
-                    <div class="user">
-                        <h5>AuthorName</h5>
-                        <p>{{ message.createdAt | timestamp: 'time' }}Uhr</p>
-                    </div>
-                    <div class="text">
-                        <p>{{ message.message}}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="separator">
-            <div class="line"></div>
-        </div>
-    </div>
-
-    <ng-container *ngFor="let reply of replies">
-        <div class="reply-container">
-            <div>
-                <img src="../../../assets/images/avatar.png" alt="">
-            </div>
-            <div class="replies">
-                <div class="name-timestamp">
-                    <h5>FullName</h5>
-                    <p>{{ reply.createdAt | timestamp: 'time' }}Uhr</p>
-                </div>
-                <div class="replies-text">
-                    <p>{{ reply.reply }}</p>
-                </div>
-            </div>
-        </div>
-    </ng-container>
-    <app-text-editor-thread></app-text-editor-thread>
+    <img (click)="closeThreadWindow()" src="../../../assets/images/close.png" alt="">
+</div>
 </div>

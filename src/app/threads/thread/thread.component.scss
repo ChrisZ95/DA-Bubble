@@ -1,0 +1,46 @@
+.main {
+  height: calc(80vh + 20px);
+  display: flex;
+  flex-direction: column;
+
+  .header-thread {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 38px 40px 38px 40px;
+    box-shadow: 0 4px 2px rgba(225, 225, 225, 0.5);
+
+    img {
+      height: 24px;
+      width: 24px;
+      padding: 7.5px;
+      border-radius: 100%;
+      &:hover {
+        cursor: pointer;
+        background-color: rgba(236, 238, 254, 1);
+      }
+    }
+
+    .top-headline {
+      display: flex;
+      justify-content: center;
+      flex-direction: row;
+      align-items: center;
+      width: auto;
+      height: 100%;
+      gap: 5%;
+
+      .thread {
+        font-size: 24px;
+        font-weight: 700;
+      }
+
+      .channel-name {
+        font-size: 14px;
+        font-weight: 400;
+        color: #797EF3;
+        width: 130px;
+      }
+    }
+  }
+}

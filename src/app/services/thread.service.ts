@@ -48,8 +48,8 @@ export class ThreadService {
   chatDocId: string = '';
 
   getMessage(messageInformation: any, chatDocId: any) {
-    console.log(messageInformation)
-    console.log(chatDocId)
-    // this.MessageObject.message = messageInformation.message
+    this.messageInformation = messageInformation;
+    this.chatDocId = chatDocId;
+    this.displayThread = true;
   }
 }

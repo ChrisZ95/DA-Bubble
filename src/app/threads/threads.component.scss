@@ -38,7 +38,9 @@ p {
 .top-headline {
   display: flex;
   justify-content: center;
+  flex-direction: row;
   align-items: center;
+  width: auto;
   height: 100%;
   gap: 5%;
 }
