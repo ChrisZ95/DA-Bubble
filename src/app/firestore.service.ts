@@ -1,14 +1,74 @@
 import { Injectable, EventEmitter, OnInit } from '@angular/core';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, sendEmailVerification, updatePassword, sendPasswordResetEmail, OAuthProvider, Auth, signOut, updateEmail, reauthenticateWithCredential, EmailAuthProvider, fetchSignInMethodsForEmail, verifyBeforeUpdateEmail, deleteUser,} from '@angular/fire/auth';
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  GoogleAuthProvider,
+  signInWithPopup,
+  sendEmailVerification,
+  updatePassword,
+  sendPasswordResetEmail,
+  OAuthProvider,
+  Auth,
+  signOut,
+  updateEmail,
+  reauthenticateWithCredential,
+  EmailAuthProvider,
+  fetchSignInMethodsForEmail,
+  verifyBeforeUpdateEmail,
+  deleteUser,
+} from '@angular/fire/auth';
 import { FirebaseApp } from '@angular/fire/app';
-import { getFirestore, doc, setDoc,addDoc, collection, getDocs, getDoc, updateDoc, where, QueryDocumentSnapshot, deleteField, deleteDoc, onSnapshot, query} from '@angular/fire/firestore';
-import { getStorage, provideStorage, ref, uploadBytes, getDownloadURL, deleteObject,} from '@angular/fire/storage';
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  addDoc,
+  collection,
+  getDocs,
+  getDoc,
+  updateDoc,
+  where,
+  QueryDocumentSnapshot,
+  deleteField,
+  deleteDoc,
+  onSnapshot,
+  query,
+} from '@angular/fire/firestore';
+import {
+  getStorage,
+  provideStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+} from '@angular/fire/storage';
 import { User } from '../models/user.class';
 import { Channel } from '../models/channel.class';
 import { Router } from '@angular/router';
 import { log } from 'console';
-import { BehaviorSubject, Observable, debounceTime, fromEvent, map, switchMap, timer, from,} from 'rxjs';
-import { Database, ref as reference, set, get, child, onValue, push, update, remove,} from '@angular/fire/database';
+import {
+  BehaviorSubject,
+  Observable,
+  debounceTime,
+  fromEvent,
+  map,
+  switchMap,
+  timer,
+  from,
+} from 'rxjs';
+import {
+  Database,
+  ref as reference,
+  set,
+  get,
+  child,
+  onValue,
+  push,
+  update,
+  remove,
+} from '@angular/fire/database';
 import { IdleService } from './services/idle.service';
 import { ChatService } from './services/chat.service';
 import { filter } from 'rxjs/operators';
@@ -38,7 +98,12 @@ export class FirestoreService {
   displayWorkspace: boolean = true;
   isScreenWide: boolean = false;
 
-  constructor(private myFirebaseApp: FirebaseApp, public router: Router, private rdb: Database, private idleService: IdleService) {
+  constructor(
+    private myFirebaseApp: FirebaseApp,
+    public router: Router,
+    private rdb: Database,
+    private idleService: IdleService
+  ) {
     this.auth = getAuth(myFirebaseApp);
     this.auth.languageCode = 'de';
     this.firestore = getFirestore(myFirebaseApp);
@@ -85,20 +150,24 @@ export class FirestoreService {
     }
   }
 
-  async deleteUserChats( uid: string) {
+  async deleteUserChats(uid: string) {
     try {
-      const q = query(collection(this.firestore, "chats"), where("participants", "array-contains", uid));
+      const q = query(
+        collection(this.firestore, 'chats'),
+        where('participants', 'array-contains', uid)
+      );
       const querySnapshot = await getDocs(q);
       const deletePromises = querySnapshot.docs.map((chatDoc) => {
-        return deleteDoc(doc(this.firestore, "chats", chatDoc.id));
+        return deleteDoc(doc(this.firestore, 'chats', chatDoc.id));
       });
       await Promise.all(deletePromises);
-      console.log(`Alle Chats für den Benutzer mit der ID ${uid} wurden gelöscht.`);
+      console.log(
+        `Alle Chats für den Benutzer mit der ID ${uid} wurden gelöscht.`
+      );
     } catch (error) {
-      console.error("Fehler beim Löschen der Chats: ", error);
+      console.error('Fehler beim Löschen der Chats: ', error);
     }
   }
-
 
   async deleteUserIcon(currentUserIcon: string, currentUserId: string) {
     console.log(currentUserIcon);
@@ -240,13 +309,17 @@ export class FirestoreService {
       localStorage.clear();
       this.router.navigate(['']);
       location.reload();
+      this.idleService.setData(`users/${this.currentuid}`, {
+        uid: this.currentuid,
+        activeStatus: 'offline',
+      });
     } catch (error) {
       console.error('Error signing out:', error);
     }
   }
 
   async logOutAfterDeleteAccount() {
-    await this.clearMessagesSubject.next( true );
+    await this.clearMessagesSubject.next(true);
     signOut(this.auth)
       .then(() => {
         this.router.navigate(['']);
@@ -438,7 +511,7 @@ export class FirestoreService {
 
       this.setuid(user.uid);
       this.sendEmailAfterSignUp(user);
-      this.createPrivateChat(user.uid)
+      this.createPrivateChat(user.uid);
       return 'auth';
     } catch (error: any) {
       console.error('Error creating user:', error);
@@ -463,9 +536,9 @@ export class FirestoreService {
   }
 
   async createPrivateChat(userID: any) {
-    console.log('pribter chat wird erstellt')
+    console.log('pribter chat wird erstellt');
     const timestamp = this.createTimeStamp();
-    const newChatRef = doc(collection(this.firestore, "newchats"));
+    const newChatRef = doc(collection(this.firestore, 'newchats'));
     await setDoc(newChatRef, {
       participants: [userID],
       createdAt: timestamp,
@@ -492,7 +565,7 @@ export class FirestoreService {
         logIndate: logIndate,
         logOutDate: 1,
       });
-      this.setuid(userCredential.user.uid)
+      this.setuid(userCredential.user.uid);
       this.setCurrentUid(userCredential.user.uid);
       this.idleService.setData(`users/${userCredential.user.uid}`, {
         uid: userCredential.user.uid,
@@ -555,7 +628,7 @@ export class FirestoreService {
           signUpdate: signUpDateUnixTimestamp,
         });
         await this.setCurrentUid(user.uid);
-        this.createPrivateChat(user.uid)
+        this.createPrivateChat(user.uid);
         await localStorage.setItem('uid', user.uid);
         this.router.navigate(['generalView']);
       } else {

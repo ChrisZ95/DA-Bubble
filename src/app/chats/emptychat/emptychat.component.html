@@ -1,6 +1,8 @@
 <app-chips [allEntitys]="filteredEntities" (addEntity)="selectEntity($event)" (removedEntity)="removeUser($event)"
     (searchEntity)="searchEntity($event)"></app-chips>
-<app-text-editor [componentName]="'emptyChat'" class="emptychat"/>
+
+<button (click)="shortSortUid()">Test</button>
+<app-text-editor [componentName]="'emptyChat'" class="emptychat" />
 
 <!-- Old -->
 <!-- <div class="header">

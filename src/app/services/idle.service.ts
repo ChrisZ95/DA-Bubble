@@ -42,7 +42,7 @@ export class IdleService {
       debounceTime(100)
     );
     this.noMouseMoveIdle$ = mouseMove$.pipe(
-      debounceTime(3000),
+      debounceTime(300000),
       switchMap(() => timer(500))
     );
     const keyPress$ = fromEvent(document, 'keydown');
@@ -55,7 +55,7 @@ export class IdleService {
       debounceTime(100)
     );
     this.noKeyPressIdle$ = keyPress$.pipe(
-      debounceTime(3000),
+      debounceTime(300000),
       switchMap(() => timer(500))
     );
   }
@@ -107,10 +107,6 @@ export class IdleService {
     this.updateActiveStatus(uid, status);
   }
 
-  // Adrian
-  // Für HTML
-  //<div class="active-circle" [ngClass]="idleService.getOtherUserStatus(user.uid) | async"></div>
-  // set idleService in Workspace to public
   public getOtherUserStatus(uid: string): Observable<any> {
     const statusRef = reference(this.rdb, `users/${uid}/activeStatus`);
     return new Observable((observer) => {

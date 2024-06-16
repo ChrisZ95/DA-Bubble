@@ -1,9 +1,26 @@
-import { Component, EventEmitter, OnInit, Output, ViewChild, OnDestroy, Input, OnChanges, SimpleChanges, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  OnInit,
+  Output,
+  ViewChild,
+  OnDestroy,
+  Input,
+  OnChanges,
+  SimpleChanges,
+  ChangeDetectorRef,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DialogCreateChannelComponent } from '../../dialog-create-channel/dialog-create-channel.component';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
-import { Firestore, onSnapshot, collection, doc, getDoc} from '@angular/fire/firestore';
+import {
+  Firestore,
+  onSnapshot,
+  collection,
+  doc,
+  getDoc,
+} from '@angular/fire/firestore';
 import { Channel } from './../../../models/channel.class';
 import { FirestoreService } from '../../firestore.service';
 import { ChannelService } from '../../services/channel.service';
@@ -46,9 +63,17 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
   showUserChannelPlaceholder: boolean = false;
   showUserPlaceholder: any;
   showDropdown: boolean = false;
-  
 
-  constructor( public dialog: MatDialog, private readonly firestore: Firestore, public firestoreService: FirestoreService, public channelService: ChannelService, public chatService: ChatService, private cdRef: ChangeDetectorRef, private idleService: IdleService, private groupService: GroupchatsService) {
+  constructor(
+    public dialog: MatDialog,
+    private readonly firestore: Firestore,
+    public firestoreService: FirestoreService,
+    public channelService: ChannelService,
+    public chatService: ChatService,
+    private cdRef: ChangeDetectorRef,
+    public idleService: IdleService,
+    private groupService: GroupchatsService
+  ) {
     onSnapshot(collection(this.firestore, 'channels'), (list) => {
       this.allChannels = list.docs.map((doc) => doc.data());
       this.filterChannels();
@@ -69,7 +94,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
     this.groupService.displayValue();
 
     setTimeout(() => {
-      this.chatService.checkForExistingChats()
+      this.chatService.checkForExistingChats();
     }, 2000);
   }
 
@@ -133,12 +158,12 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
     console.log(user);
     this.userDetails.emit(user);
     this.chatService.loadUserData(user);
-    if(this.currentUid == user.uid) {
-      this.chatService.searchPrivateChat(user)
-      console.log('privater chat wird gecheckt')
+    if (this.currentUid == user.uid) {
+      this.chatService.searchPrivateChat(user);
+      console.log('privater chat wird gecheckt');
     } else {
-      const chatDocID = this.chatService.searchChatWithUser(user.uid)
-      console.log('andere chats werden gecheckt')
+      const chatDocID = this.chatService.searchChatWithUser(user.uid);
+      console.log('andere chats werden gecheckt');
     }
     this.chatService.clearInputValue(true);
   }
@@ -154,6 +179,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
             this.currentUser = user;
           } else {
             this.otherUsers.push(user);
+            console.log('this.otherUsers', this.otherUsers);
           }
         }
         if (!this.currentUser) {

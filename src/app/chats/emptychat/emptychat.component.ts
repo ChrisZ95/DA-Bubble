@@ -6,7 +6,18 @@ import {
   Renderer2,
   Output,
   EventEmitter,
+  ViewEncapsulation,
 } from '@angular/core';
+import {
+  Firestore,
+  getFirestore,
+  onSnapshot,
+  DocumentData,
+  collectionData,
+  docData,
+  getDoc,
+} from '@angular/fire/firestore';
+
 import { FirestoreService } from '../../firestore.service';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -17,6 +28,7 @@ import { ChatService } from '../../services/chat.service';
 import { MatInputModule } from '@angular/material/input';
 import { ChipsComponent } from '../../shared/chips/chips.component';
 import { ChannelService } from '../../services/channel.service';
+import { doc, collection, setDoc, addDoc } from 'firebase/firestore';
 
 @Component({
   selector: 'app-emptychat',
@@ -37,7 +49,8 @@ export class EmptychatComponent implements OnInit {
     private eRef: ElementRef,
     private renderer: Renderer2,
     private chatService: ChatService,
-    private channelService: ChannelService
+    private channelService: ChannelService,
+    private firestore: Firestore
   ) {}
 
   allUsers: any = [];
@@ -48,6 +61,9 @@ export class EmptychatComponent implements OnInit {
   showUserPlaceholder: any;
   selectedUsers: any[] = [];
   currentUid: any;
+  currentUser: any;
+  shortedUid: any;
+  allParticipants: any;
   @Output() channelDetails = new EventEmitter<any>();
 
   searchEntity(input: string) {
@@ -188,7 +204,64 @@ export class EmptychatComponent implements OnInit {
     }
   }
 
-  loadAndMergeEntitys() {
+  async shortSortUid() {
+    this.selectedUsers.unshift(this.currentUser);
+    const shortedUids = this.selectedUsers.map((user: any) => {
+      return user.uid.substring(0, 5);
+    });
+    this.allParticipants = this.selectedUsers.map((user: any) => {
+      return user.uid;
+    });
+    // Sort the UIDs and join them with a hyphen
+    this.shortedUid = shortedUids.sort().join('-');
+    console.log('selectedUsers', this.selectedUsers);
+    console.log('shortedUid', this.shortedUid);
+    this.createGroupChats();
+  }
+
+  async createGroupChats() {
+    try {
+      const timestamp = this.firestoreService.createTimeStamp();
+      // Create the main chat document with a specific ID
+      const newDocRef = doc(
+        collection(this.firestore, 'newchats'),
+        this.shortedUid
+      );
+      const chatData = {
+        participants: this.allParticipants,
+        createdAt: timestamp,
+      };
+      await setDoc(newDocRef, chatData);
+
+      // Create sub-collection for messages within the chat document
+      const messagesCollection = collection(newDocRef, 'messages');
+      const messageDocRef = await addDoc(messagesCollection, {
+        text: 'Willkommen im Chat!',
+        sender: 'System',
+        createdAt: timestamp,
+      });
+
+      // Create sub-collection for reactions within the message document
+      const emojiReactionsCollection = collection(
+        messageDocRef,
+        'emojiReactions'
+      );
+      await addDoc(emojiReactionsCollection, {
+        emojiIcon: '😊',
+        emojiCounter: 1,
+      });
+
+      // Create sub-collection for threads within the message document
+      const threadsCollection = collection(messageDocRef, 'threads');
+      await addDoc(threadsCollection, {});
+
+      console.log('Group chat created successfully');
+    } catch (error: any) {
+      console.error('Fehler beim Erstellen des Chats:', error);
+    }
+  }
+
+  async loadAndMergeEntitys() {
     this.currentUid = this.firestoreService.currentuid;
     this.allUsers = this.firestoreService.allUsers;
     this.allUsers = this.allUsers.filter((user: any) => {
@@ -210,7 +283,9 @@ export class EmptychatComponent implements OnInit {
       return channel.users.includes(this.currentUid);
     });
     this.filteredEntities = [...this.allUsers, ...this.allChannels];
-    console.log('filteredEntities', this.filteredEntities);
+    let docRef = doc(this.firestore, 'users', this.currentUid);
+    let docSnap = await getDoc(docRef);
+    this.currentUser = docSnap.data();
   }
 
   ngOnInit(): void {

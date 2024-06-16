@@ -41,7 +41,7 @@ import { CommonModule } from '@angular/common';
   ],
   templateUrl: './chips.component.html',
   styleUrl: './chips.component.scss',
-  encapsulation: ViewEncapsulation.None,
+  // encapsulation: ViewEncapsulation.None,
 })
 export class ChipsComponent implements OnInit, OnChanges {
   separatorKeysCodes: number[] = [ENTER, COMMA];

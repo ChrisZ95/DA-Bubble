@@ -35,3 +35,7 @@ form {
   position: absolute;
   right: 2%;
 }
+
+::ng-deep .mat-chip-grid {
+  margin-top: 30px !important;
+}
