@@ -19,7 +19,6 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { EmojiComponent } from '@ctrl/ngx-emoji-mart/ngx-emoji';
-import { log } from 'console';
 import { Firestore } from '@angular/fire/firestore';
 import { from, Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
@@ -32,7 +31,9 @@ import { filter } from 'rxjs/operators';
   styleUrls: ['./ownchat.component.scss', '../chats.component.scss'],
 })
 export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
-  constructor(private firestore: Firestore,  public dialog: MatDialog, public chatService: ChatService, public threadService: ThreadService, public firestoreService: FirestoreService) {}
+  constructor(private firestore: Firestore,  public dialog: MatDialog, public chatService: ChatService, public threadService: ThreadService, public firestoreService: FirestoreService) {
+    this.isEditingArray.push(false);
+  }
   @Input() userDetails: any;
   @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
   @ViewChild('lastMessage') private lastMessage!: ElementRef;
@@ -71,6 +72,8 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   currentUserID: any;
   users: Map<string, any> = new Map();
   emojiReactionMessageID: any;
+  isEditingArray: boolean[] = [];
+  originalMessageContent = '';
 
   emoji = [
     {
@@ -121,7 +124,6 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     this.documentIDSubsrciption = this.chatService.documentID$.subscribe(
       (docID)=> {
         if(docID) {
-          console.log('dokument wird aktualisiert')
           this.messages = []
           this.currentChatID = docID
           this.loadChatMessages(this.currentChatID)
@@ -320,14 +322,13 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   async getMessageForSpefifiedEmoji(emoji: any, currentUserID:any, messageID:any) {
-    console.log(emoji)
     const emojiReactionID = emoji.id;
     const emojiReactionDocRef = doc( this.firestore, 'newchats', this.currentChatID, 'messages', messageID, 'emojiReactions', emojiReactionID);
 
     this.uploadNewEmojiReaction(emoji, currentUserID, emojiReactionDocRef)
-    }
+  }
 
-    async uploadNewEmojiReaction(emoji: any, currentUserID: any, emojiReactionDocRef: any) {
+  async uploadNewEmojiReaction(emoji: any, currentUserID: any, emojiReactionDocRef: any) {
       const docSnapshot = await getDoc(emojiReactionDocRef);
 
       if (docSnapshot.exists()) {
@@ -373,11 +374,8 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
       const reactionData = docSnap.data();
-      console.log(reactionData)
       reactionData['emojiCounter'] --
       reactionData['reactedBy'].splice(currentUserID)
-      console.log(reactionData['emojiCounter'])
-      console.log(reactionData['reactedBy'])
 
       await updateDoc(docRef, {
         emojiCounter: reactionData['emojiCounter'],
@@ -493,8 +491,27 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     this.isHoveredArray[index] = true;
   }
 
-  EditMessage(index: any, messageData: any) {
-   console.log('index lautet', index)
-   console.log('nachrichten Dokument', messageData)
+  editMessage(index: number) {
+    this.originalMessageContent = this.messages[index].message;
+    this.isEditingArray[index] = true;
+  }
+
+  cancelEdit(index: number) {
+    this.messages[index].message = this.originalMessageContent;
+    this.isEditingArray[index] = false;
+  }
+
+  async saveEdit(index: number, editMessage: any, messageID: any) {
+    this.isEditingArray[index] = false;
+    const messageDoc = doc( this.firestore, 'newchats', this.currentChatID, 'messages', messageID);
+    const messageDocSnapshot = await getDoc(messageDoc);
+
+    if(messageDocSnapshot.exists()) {
+      await updateDoc(messageDoc, {
+        message: editMessage
+      });
+      this.menuClosed(index)
+      await this.loadChatMessages(this.currentDocID)
+    }
   }
 }

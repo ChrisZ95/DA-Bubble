@@ -441,6 +441,66 @@
   background-color: white !important;
 }
 
+.edit-container {
+  display: flex;
+  flex-direction: column;
+  background-color: #f0f0f0;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-top: 5px;
+  margin-bottom: 5px;
+
+  .edit-textarea {
+    width: 90%;
+    height: auto;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    border: none;
+    outline: none;
+    resize: none;
+  }
+
+  .edit-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+
+    .save-button, .cancel-button {
+      padding: 5px 10px;
+      font-size: 14px;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .save-button {
+      background-color: #444DF2;
+
+      &:hover {
+        filter: brightness(1.6);
+      }
+    }
+
+    .cancel-button {
+      background-color: white;
+      color: black;
+
+      &:hover {
+        background-color: #444DF2;
+        color: white;
+      }
+    }
+  }
+}
+
+
 @media(max-width: 850px) {
   .conversation-container {
     padding: 10px 16px 10px 16px;
