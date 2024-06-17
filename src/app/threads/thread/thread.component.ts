@@ -39,12 +39,7 @@ export class ThreadComponent implements OnInit, OnDestroy {
     this.loadMessages();
     this.threadService.messageInformation
     this.threadService.chatDocId
-
     this.messageDetail.push(this.threadService.messageInformation)
-    console.log(this.messageDetail)
-
-    console.log(this.threadService.messageInformation)
-    console.log(this.threadService.chatDocId)
     this.currentUserID = localStorage.getItem('uid')
   }
 
@@ -105,6 +100,7 @@ export class ThreadComponent implements OnInit, OnDestroy {
 
 
   closeThreadWindow() {
+    debugger
     this.threadService.displayThread = false;
   }
 

@@ -70,9 +70,6 @@
               </ng-container>
             </div>
             <div class="reaction-container">
-              <!-- <div class="open-thread">
-                <a (click)="openThread(message)"><h4>Antworten</h4></a>
-              </div> -->
               <!-- <div class="emoji-reaction-container" *ngFor="let reaction of message.emojiReactions.slice(0, 4)">
                 <div *ngIf="reaction.emojiCounter > 0" (click)="addOrDeleteReaction(reaction.emoji, this.currentUserID, message.id)" class="reaction-sub-container">
                   {{ reaction.emojiCounter }}
@@ -98,5 +95,5 @@
     <emoji-mart (emojiClick)="addEmoji($event)" title="Pick your emoji…" emoji="point_up"></emoji-mart>
     <button (click)="closeEmojiMartPicker()">close</button>
   </div>
-  <app-text-editor-thread class="text-editor" [componentName]="'ownChat'" />
+  <app-text-editor-thread class="text-editor" [componentName]="'thread'" />
 </div>

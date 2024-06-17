@@ -30,7 +30,7 @@ export class TextEditorThreadComponent implements OnInit{
   allUsers: any[] = [];
   memberData: { username: string }[] = [];
   associatedUser: any[] = [];
-  currentDocID: any;
+  threadDocID: any;
   emojiPickerThreadSubscription: Subscription | null = null;
   AssociatedUserSubscription: Subscription | null = null;
   filteredUsersSubscription: Subscription | null = null;
@@ -59,9 +59,9 @@ export class TextEditorThreadComponent implements OnInit{
       }
     );
 
-    this.documentIDSubsrciption = this.chatService.documentID$.subscribe(
+    this.documentIDSubsrciption = this.threadService.documentID$.subscribe(
       (docID)=> {
-        this.currentDocID = docID;
+        this.threadDocID = docID;
       },
     );
   }
@@ -145,16 +145,10 @@ export class TextEditorThreadComponent implements OnInit{
     ) {
       console.log('wähle ein bild oder nachricht');
     } else {
-      if (this.componentName === 'ownChat') {
-        this.chatService.sendMessageToDatabase(this.fileArray, this.message, this.currentDocID)
-        this.clearInputValue();
-      } else if (this.componentName === 'thread') {
-        // this.sendReply();
-      } else if (this.componentName === 'channel') {
-        // this.sendMessageToChannel();
-      } else if (this.componentName === 'channelthread') {
-        // this.sendCommentToMessage();
+      if (this.componentName === 'thread') {
+        this.threadService.sendThreadMessageToDatabase(this.fileArray, this.message, this.threadDocID)
       }
+      this.clearInputValue();
       this.chatService.dataURL = null;
       this.openAssociatedUser = false;
       this.fileArray = [];

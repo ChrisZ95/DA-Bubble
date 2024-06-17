@@ -36,20 +36,15 @@ import {
 })
 export class ChatService {
   private userInformationSubject = new BehaviorSubject<any>(null);
-  userInformation$: Observable<any> =
-    this.userInformationSubject.asObservable();
+  userInformation$: Observable<any> = this.userInformationSubject.asObservable();
 
   private messagesSubject = new BehaviorSubject<any[]>([]);
   public messages$: Observable<any[]> = this.messagesSubject.asObservable();
 
-  private filteredUsersSubject: BehaviorSubject<any[]> =
-    new BehaviorSubject<any>(null);
-  public filteredUsers$: Observable<any> =
-    this.filteredUsersSubject.asObservable();
+  private filteredUsersSubject: BehaviorSubject<any[]> = new BehaviorSubject<any>(null);
+  public filteredUsers$: Observable<any> = this.filteredUsersSubject.asObservable();
 
-  private documentIDSubject: BehaviorSubject<any> = new BehaviorSubject<any>(
-    null
-  );
+  private documentIDSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   public documentID$: Observable<any> = this.documentIDSubject.asObservable();
 
   private emojiPickerSubjectChat = new BehaviorSubject<boolean>(false);
