@@ -70,6 +70,7 @@ export class MainComponent implements OnInit {
   channelDetails: any = '';
   selectedMessageId: string = '';
   emojiPickerChat = false;
+  emojiPickerChatReaction = false;
   emojiPickerThread = false;
   associatedUser = false;
   isIdle: number = 0;
@@ -80,6 +81,7 @@ export class MainComponent implements OnInit {
   private noKeyPress: Subscription | null = null;
   private keyPressSubscription: Subscription | null = null;
   private emojiPickerChatSubscription: Subscription | null = null;
+  private emojiPickerChatReactionSubscription: Subscription | null = null;
   private emojiPickerThreadSubscription: Subscription | null = null;
   private AssociatedUserSubscription: Subscription | null = null;
   private activityAfterIdleSubscription: Subscription | null = null;
@@ -120,6 +122,13 @@ export class MainComponent implements OnInit {
       }
     );
 
+    this.emojiPickerChatReactionSubscription = this.chatService.emojiPickerChatReaction$.subscribe(
+      (state: boolean) => {
+        this.emojiPickerChatReaction = state;
+        console.log( this.emojiPickerChatReaction)
+      }
+    );
+
     this.emojiPickerThreadSubscription = this.chatService.emojiPickerThread$.subscribe(
       (state: boolean) => {
         this.emojiPickerThread = state;
@@ -152,6 +161,9 @@ export class MainComponent implements OnInit {
     if (this.emojiPickerChatSubscription) {
       this.emojiPickerChatSubscription.unsubscribe();
     }
+    if (this.emojiPickerChatReactionSubscription) {
+      this.emojiPickerChatReactionSubscription.unsubscribe();
+    }
     if (this.emojiPickerThreadSubscription) {
       this.emojiPickerThreadSubscription.unsubscribe();
     }
@@ -163,9 +175,14 @@ export class MainComponent implements OnInit {
     // }
   }
 
-  closeEmojiPicker() {
+  closeEmojiPickerChat() {
     console.log('normal picker')
     this.chatService.emojiPickerChat(false);
+  }
+
+  closeEmojiPickerChatReaction() {
+    console.log('normal picker')
+    this.chatService.emojiPickerChatReaction(false);
   }
 
   closeEmojiPickerThread() {

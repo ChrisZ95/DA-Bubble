@@ -98,9 +98,8 @@
       </div>
     </ng-container>
   </div>
-  <div class="emoji-picker-container" *ngIf="openEmojiPicker">
+  <div class="emoji-picker-container" *ngIf="openEmojiPickerChatReaction">
     <emoji-mart (emojiClick)="addEmoji($event)" title="Pick your emoji…" emoji="point_up"></emoji-mart>
-    <button (click)="closeEmojiMartPicker()">close</button>
   </div>
   <app-text-editor class="text-editor" [componentName]="'ownChat'" />
 </div>

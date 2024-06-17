@@ -43,12 +43,13 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   private chatSubscription: Subscription | undefined;
   private documentIDSubsrciption: Subscription | null = null;
   private clearMessagesSubscription: Subscription | undefined;
+  emojiPickerChatReactionSubscription: Subscription | null = null;
 
   messages: any = [];
   allUsers: any[] = [];
   isHoveredArray: boolean[] = [];
   currentMessageIndex: number | null = null;
-  openEmojiPicker = false;
+  openEmojiPickerChatReaction = false;
   menuClicked = false;
   participants: any;
   filteredUsers: any;
@@ -98,6 +99,11 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.messages = [];
+    this.emojiPickerChatReactionSubscription = this.chatService.emojiPickerChatReaction$.subscribe(
+      (state: boolean) => {
+        this.openEmojiPickerChatReaction = state;
+      }
+    );
     this.userDetailsSubscription = this.chatService.userInformation$.subscribe(
       (data) => {
         this.userInformation = data;
@@ -146,6 +152,10 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.messages = []
+    if (this.emojiPickerChatReactionSubscription) {
+      this.emojiPickerChatReactionSubscription.unsubscribe();
+    }
+
     if (this.messagesSubscription) {
       this.messagesSubscription.unsubscribe();
     }
@@ -403,10 +413,10 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     }
   }
 
-
   openEmojiMartPicker(messageID: any) {
-    this.openEmojiPicker = true;
+    this.openEmojiPickerChatReaction = true;
     this.emojiReactionMessageID = messageID;
+    this.chatService.emojiPickerChatReaction(true);
   }
 
   addEmoji(event: any) {
@@ -416,8 +426,8 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
 
   closeEmojiMartPicker() {
     this.emojiReactionMessageID = '';
-    this.openEmojiPicker = false;
-    this.chatService.emojiPickerChat(false);
+    this.openEmojiPickerChatReaction = false;
+    this.chatService.emojiPickerChatReaction(false);
   }
 
   openMemberDialog() {
