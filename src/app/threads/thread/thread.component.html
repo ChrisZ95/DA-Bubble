@@ -95,7 +95,7 @@
     </ng-container>
   </div>
 </div> -->
-<div class="emoji-picker-container" *ngIf="openEmojiPicker">
+<div class="emoji-picker-container" *ngIf="openEmojiPickerThread">
   <emoji-mart (emojiClick)="addEmoji($event)" title="Pick your emoji…" emoji="point_up"></emoji-mart>
   <button (click)="closeEmojiMartPicker()">close</button>
 </div>

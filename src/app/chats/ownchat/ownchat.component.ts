@@ -417,7 +417,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   closeEmojiMartPicker() {
     this.emojiReactionMessageID = '';
     this.openEmojiPicker = false;
-    this.chatService.emojiPicker(false);
+    this.chatService.emojiPickerChat(false);
   }
 
   openMemberDialog() {

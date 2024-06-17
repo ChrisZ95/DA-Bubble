@@ -1,3 +1,4 @@
+import { ChatService } from './../../services/chat.service';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ThreadService } from '../../services/thread.service';
 import { Subscription } from 'rxjs';
@@ -16,14 +17,14 @@ import { EmojiComponent } from '@ctrl/ngx-emoji-mart/ngx-emoji';
   styleUrls: ['./thread.component.scss', '../threads.component.scss'],
 })
 export class ThreadComponent implements OnInit, OnDestroy {
-  constructor( public threadService: ThreadService, private firestore: Firestore) {}
+  constructor(private chatService: ChatService, public threadService: ThreadService, private firestore: Firestore) {}
   private messageInfoSubscription!: Subscription;
   private threadSubscription: Subscription | null = null;
   documentID: any;
   messageDetail: any [] = [];
   message: any = {};
   replies: any = [];
-  openEmojiPicker = false;
+  openEmojiPickerThread = false;
 
   ngOnInit() {
     this.loadMessages();
@@ -50,8 +51,8 @@ export class ThreadComponent implements OnInit, OnDestroy {
 
   closeEmojiMartPicker() {
     // this.emojiReactionMessageID = '';
-    // this.openEmojiPicker = false;
-    // this.chatService.emojiPicker(false);
+    this.openEmojiPickerThread = false;
+    this.chatService.emojiPickerThread(false);
   }
 
 

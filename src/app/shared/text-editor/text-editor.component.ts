@@ -23,7 +23,7 @@ export class TextEditorComponent implements OnInit {
   @ViewChild('fileInput', { static: true })
   fileInput!: ElementRef<HTMLInputElement>;
   @Input() componentName!: string;
-  openEmojiPicker = false;
+  openEmojiPickerChat = false;
   openAssociatedUser = false;
   message: string = '';
   comment: string = '';
@@ -33,7 +33,7 @@ export class TextEditorComponent implements OnInit {
   memberData: { username: string }[] = [];
   associatedUser: any[] = [];
   currentDocID: any;
-  emojiPickerSubscription: Subscription | null = null;
+  emojiPickerChatSubscription: Subscription | null = null;
   AssociatedUserSubscription: Subscription | null = null;
   filteredUsersSubscription: Subscription | null = null;
   documentIDSubsrciption: Subscription | null = null;
@@ -42,9 +42,9 @@ export class TextEditorComponent implements OnInit {
   constructor( private chatService: ChatService, private threadService: ThreadService, private generateId: GenerateIdsService, private firestore: Firestore, public channelService: ChannelService, private firestoreService: FirestoreService) {}
 
   ngOnInit(): void {
-    this.emojiPickerSubscription = this.chatService.emojiPicker$.subscribe(
+    this.emojiPickerChatSubscription = this.chatService.emojiPickerChat$.subscribe(
       (state: boolean) => {
-        this.openEmojiPicker = state;
+        this.openEmojiPickerChat = state;
       }
     );
 
@@ -69,8 +69,8 @@ export class TextEditorComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    if (this.emojiPickerSubscription) {
-      this.emojiPickerSubscription.unsubscribe();
+    if (this.emojiPickerChatSubscription) {
+      this.emojiPickerChatSubscription.unsubscribe();
     }
     if (this.filteredUsersSubscription) {
       this.filteredUsersSubscription.unsubscribe();
@@ -131,13 +131,13 @@ export class TextEditorComponent implements OnInit {
   }
 
   openEmojiMartPicker() {
-    this.openEmojiPicker = true;
-    this.chatService.emojiPicker(true);
+    this.openEmojiPickerChat = true;
+    this.chatService.emojiPickerChat(true);
   }
 
   closeEmojiMartPicker() {
-    this.openEmojiPicker = false;
-    this.chatService.emojiPicker(false);
+    this.openEmojiPickerChat = false;
+    this.chatService.emojiPickerChat(false);
   }
 
   submit() {
@@ -173,7 +173,7 @@ export class TextEditorComponent implements OnInit {
   }
 
   clearInputValue() {
-    this.openEmojiPicker = false;
+    this.openEmojiPickerChat = false;
     this.message = '';
     this.fileArray = [];
   }

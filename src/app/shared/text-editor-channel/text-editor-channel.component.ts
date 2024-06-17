@@ -47,11 +47,11 @@ export class TextEditorChannelComponent implements OnInit {
 
   ngOnInit(): void {
     this.subscribeToMessages();
-    this.emojiPickerSubscription = this.chatService.emojiPicker$.subscribe(
-      (state: boolean) => {
-        this.openEmojiPicker = state;
-      }
-    );
+    // this.emojiPickerSubscription = this.chatService.emojiPicker$.subscribe(
+    //   (state: boolean) => {
+    //     this.openEmojiPicker = state;
+    //   }
+    // );
     this.AssociatedUserSubscription = this.chatService.associatedUser$.subscribe(
       (state: boolean) => {
         this.openAssociatedUser = state;
@@ -118,13 +118,13 @@ export class TextEditorChannelComponent implements OnInit {
   }
 
   openEmojiMartPicker() {
-    this.openEmojiPicker = true;
-    this.chatService.emojiPicker(true);
+    // this.openEmojiPicker = true;
+    // this.chatService.emojiPicker(true);
   }
 
   closeEmojiMartPicker() {
-    this.openEmojiPicker = false;
-    this.chatService.emojiPicker(false);
+    // this.openEmojiPicker = false;
+    // this.chatService.emojiPicker(false);
   }
 
   submit() {

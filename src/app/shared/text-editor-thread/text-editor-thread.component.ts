@@ -21,7 +21,7 @@ export class TextEditorThreadComponent implements OnInit{
   @ViewChild('fileInput', { static: true })
   fileInput!: ElementRef<HTMLInputElement>;
   @Input() componentName!: string;
-  openEmojiPicker = false;
+  openEmojiPickerThread = false;
   openAssociatedUser = false;
   message: string = '';
   comment: string = '';
@@ -31,7 +31,7 @@ export class TextEditorThreadComponent implements OnInit{
   memberData: { username: string }[] = [];
   associatedUser: any[] = [];
   currentDocID: any;
-  emojiPickerSubscription: Subscription | null = null;
+  emojiPickerThreadSubscription: Subscription | null = null;
   AssociatedUserSubscription: Subscription | null = null;
   filteredUsersSubscription: Subscription | null = null;
   documentIDSubsrciption: Subscription | null = null;
@@ -40,9 +40,9 @@ export class TextEditorThreadComponent implements OnInit{
   constructor( private chatService: ChatService, private threadService: ThreadService, private generateId: GenerateIdsService, private firestore: Firestore, public channelService: ChannelService, private firestoreService: FirestoreService) {}
 
   ngOnInit(): void {
-    this.emojiPickerSubscription = this.chatService.emojiPicker$.subscribe(
+    this.emojiPickerThreadSubscription = this.chatService.emojiPickerThread$.subscribe(
       (state: boolean) => {
-        this.openEmojiPicker = state;
+        this.openEmojiPickerThread = state;
       }
     );
 
@@ -67,8 +67,8 @@ export class TextEditorThreadComponent implements OnInit{
   }
 
   ngOnDestroy(): void {
-    if (this.emojiPickerSubscription) {
-      this.emojiPickerSubscription.unsubscribe();
+    if (this.emojiPickerThreadSubscription) {
+      this.emojiPickerThreadSubscription.unsubscribe();
     }
     if (this.filteredUsersSubscription) {
       this.filteredUsersSubscription.unsubscribe();
@@ -129,13 +129,13 @@ export class TextEditorThreadComponent implements OnInit{
   }
 
   openEmojiMartPicker() {
-    this.openEmojiPicker = true;
-    this.chatService.emojiPicker(true);
+    this.openEmojiPickerThread = true;
+    this.chatService.emojiPickerThread(true);
   }
 
   closeEmojiMartPicker() {
-    this.openEmojiPicker = false;
-    this.chatService.emojiPicker(false);
+    this.openEmojiPickerThread = false;
+    this.chatService.emojiPickerThread(false);
   }
 
   submit() {
@@ -171,7 +171,7 @@ export class TextEditorThreadComponent implements OnInit{
   }
 
   clearInputValue() {
-    this.openEmojiPicker = false;
+    this.openEmojiPickerThread = false;
     this.message = '';
     this.fileArray = [];
   }

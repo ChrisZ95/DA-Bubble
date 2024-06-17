@@ -69,7 +69,8 @@ export class MainComponent implements OnInit {
   userDetails: any = '';
   channelDetails: any = '';
   selectedMessageId: string = '';
-  emojiPicker = false;
+  emojiPickerChat = false;
+  emojiPickerThread = false;
   associatedUser = false;
   isIdle: number = 0;
 
@@ -78,12 +79,98 @@ export class MainComponent implements OnInit {
   private mouseMoveSubscription: Subscription | null = null;
   private noKeyPress: Subscription | null = null;
   private keyPressSubscription: Subscription | null = null;
-  private emojiPickerSubscription: Subscription | null = null;
+  private emojiPickerChatSubscription: Subscription | null = null;
+  private emojiPickerThreadSubscription: Subscription | null = null;
   private AssociatedUserSubscription: Subscription | null = null;
   private activityAfterIdleSubscription: Subscription | null = null;
 
+  ngOnInit(): void {
+    this.checkScreenWidth();
+    if (!this.firestoreService.isScreenWide) {
+      this.chatService.showOwnChat = false;
+    }
+    this.idleSubscription = this.idleService
+      .isUserIdle()
+      .subscribe((idle) => {});
+
+    this.noMouseMove = this.idleService.noMouseMoveAfterIdle().subscribe(() => {
+      this.handleIdle();
+    });
+
+    this.mouseMoveSubscription = this.idleService
+      .onMouseMoveAfterIdle()
+      .subscribe(() => {
+        this.handleActive();
+      });
+
+    this.noKeyPress = this.idleService.noKeyPressAfterIdle().subscribe(() => {
+      this.handleIdle();
+    });
+
+    this.keyPressSubscription = this.idleService
+      .onKeyPressAfterIdle()
+      .subscribe(() => {
+        this.handleActive();
+      });
+
+    this.emojiPickerChatSubscription = this.chatService.emojiPickerChat$.subscribe(
+      (state: boolean) => {
+        this.emojiPickerChat = state;
+        console.log( this.emojiPickerChat)
+      }
+    );
+
+    this.emojiPickerThreadSubscription = this.chatService.emojiPickerThread$.subscribe(
+      (state: boolean) => {
+        this.emojiPickerThread = state;
+        console.log( this.emojiPickerThread)
+      }
+    );
+
+    this.AssociatedUserSubscription =
+      this.chatService.associatedUser$.subscribe((state: boolean) => {
+        this.associatedUser = state;
+      });
+  }
+
+  ngOnDestroy(): void {
+    // if (this.idleSubscription) {
+    //   this.idleSubscription.unsubscribe();
+    // }
+    // if (this.noMouseMove) {
+    //   this.noMouseMove.unsubscribe();
+    // }
+    // if (this.mouseMoveSubscription) {
+    //   this.mouseMoveSubscription.unsubscribe();
+    // }
+    // if (this.noKeyPress) {
+    //   this.noKeyPress.unsubscribe();
+    // }
+    // if (this.keyPressSubscription) {
+    //   this.keyPressSubscription.unsubscribe();
+    // }
+    if (this.emojiPickerChatSubscription) {
+      this.emojiPickerChatSubscription.unsubscribe();
+    }
+    if (this.emojiPickerThreadSubscription) {
+      this.emojiPickerThreadSubscription.unsubscribe();
+    }
+    if (this.AssociatedUserSubscription) {
+      this.AssociatedUserSubscription.unsubscribe();
+    }
+    // if (this.activityAfterIdleSubscription) {
+    //   this.activityAfterIdleSubscription.unsubscribe();
+    // }
+  }
+
   closeEmojiPicker() {
-    this.chatService.emojiPicker(false);
+    console.log('normal picker')
+    this.chatService.emojiPickerChat(false);
+  }
+
+  closeEmojiPickerThread() {
+    console.log('thread picker')
+    this.chatService.emojiPickerThread(false);
   }
 
   closeAssociatedUser() {
@@ -139,47 +226,6 @@ export class MainComponent implements OnInit {
     }
   }
 
-  ngOnInit(): void {
-    this.checkScreenWidth();
-    if (!this.firestoreService.isScreenWide) {
-      this.chatService.showOwnChat = false;
-    }
-    this.idleSubscription = this.idleService
-      .isUserIdle()
-      .subscribe((idle) => {});
-
-    this.noMouseMove = this.idleService.noMouseMoveAfterIdle().subscribe(() => {
-      this.handleIdle();
-    });
-
-    this.mouseMoveSubscription = this.idleService
-      .onMouseMoveAfterIdle()
-      .subscribe(() => {
-        this.handleActive();
-      });
-
-    this.noKeyPress = this.idleService.noKeyPressAfterIdle().subscribe(() => {
-      this.handleIdle();
-    });
-
-    this.keyPressSubscription = this.idleService
-      .onKeyPressAfterIdle()
-      .subscribe(() => {
-        this.handleActive();
-      });
-
-    this.emojiPickerSubscription = this.chatService.emojiPicker$.subscribe(
-      (state: boolean) => {
-        this.emojiPicker = state;
-      }
-    );
-
-    this.AssociatedUserSubscription =
-      this.chatService.associatedUser$.subscribe((state: boolean) => {
-        this.associatedUser = state;
-      });
-  }
-
   @HostListener('window:resize', ['$event'])
   onResize(event: Event) {
     this.checkScreenWidth();
@@ -187,32 +233,5 @@ export class MainComponent implements OnInit {
 
   checkScreenWidth() {
     this.firestoreService.isScreenWide = window.innerWidth > 850;
-  }
-
-  ngOnDestroy(): void {
-    // if (this.idleSubscription) {
-    //   this.idleSubscription.unsubscribe();
-    // }
-    // if (this.noMouseMove) {
-    //   this.noMouseMove.unsubscribe();
-    // }
-    // if (this.mouseMoveSubscription) {
-    //   this.mouseMoveSubscription.unsubscribe();
-    // }
-    // if (this.noKeyPress) {
-    //   this.noKeyPress.unsubscribe();
-    // }
-    // if (this.keyPressSubscription) {
-    //   this.keyPressSubscription.unsubscribe();
-    // }
-    if (this.emojiPickerSubscription) {
-      this.emojiPickerSubscription.unsubscribe();
-    }
-    if (this.AssociatedUserSubscription) {
-      this.AssociatedUserSubscription.unsubscribe();
-    }
-    // if (this.activityAfterIdleSubscription) {
-    //   this.activityAfterIdleSubscription.unsubscribe();
-    // }
   }
 }

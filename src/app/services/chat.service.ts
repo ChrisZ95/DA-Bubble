@@ -52,8 +52,11 @@ export class ChatService {
   );
   public documentID$: Observable<any> = this.documentIDSubject.asObservable();
 
-  private emojiPickerSubject = new BehaviorSubject<boolean>(false);
-  emojiPicker$ = this.emojiPickerSubject.asObservable();
+  private emojiPickerSubjectChat = new BehaviorSubject<boolean>(false);
+  emojiPickerChat$ = this.emojiPickerSubjectChat.asObservable();
+
+  private emojiPickerSubjectThread = new BehaviorSubject<boolean>(false);
+  emojiPickerThread$ = this.emojiPickerSubjectThread.asObservable();
 
   private AssociatedUserSubject = new BehaviorSubject<boolean>(false);
   associatedUser$ = this.AssociatedUserSubject.asObservable();
@@ -276,8 +279,14 @@ export class ChatService {
     }
   }
 
-  emojiPicker(state: boolean) {
-    this.emojiPickerSubject.next(state);
+  emojiPickerChat(state: boolean) {
+    console.log('normal picker')
+    this.emojiPickerSubjectChat.next(state);
+  }
+
+  emojiPickerThread(state: boolean) {
+    console.log('thread picker')
+    this.emojiPickerSubjectThread.next(state);
   }
 
   associatedUser(state: boolean) {

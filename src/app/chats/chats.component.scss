@@ -7,17 +7,18 @@
   .images {
     display: flex;
     gap: 25px;
+    border-radius: 25px;
+
+    &:hover {
+      background-color: #ECEEFE;
+      cursor: pointer;
+    }
 
     .images-participants {
       display: flex;
       align-items: center;
       padding: 5px 15px;
-      border-radius: 25px;
 
-      &:hover {
-        background-color: #ECEEFE;
-        cursor: pointer;
-      }
       img {
         height: 50px;
         width: 50px;
