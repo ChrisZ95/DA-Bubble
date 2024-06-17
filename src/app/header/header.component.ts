@@ -237,6 +237,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   @HostListener('focusin', ['$event'])
   onFocus(event: FocusEvent) {
+    this.loadAllUsersAndAllChannels();
     const inputValue = this.eRef.nativeElement.querySelector('input').value;
     const isEventTargetInside = this.eRef.nativeElement.contains(event.target);
     const isTextEditorFocused = this.focusOnTextEditor;

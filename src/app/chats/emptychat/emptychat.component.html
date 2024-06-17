@@ -1,24 +1,28 @@
-<app-chips [allEntitys]="filteredEntities" (addEntity)="selectEntity($event)" (removedEntity)="removeUser($event)"
+<!-- <app-chips [allEntitys]="filteredEntities" (addEntity)="selectEntity($event)" (removedEntity)="removeUser($event)"
     (searchEntity)="searchEntity($event)"></app-chips>
 
 <button (click)="shortSortUid()">Test</button>
-<app-text-editor [componentName]="'emptyChat'" class="emptychat" />
-
-<!-- <div class="header">
-    <div class="inputFieldContainer">
-        <span *ngFor="let user of selectedUsers" class="user-tag">
-            {{ user }}
-        </span>
-        <mat-form-field appearance="outline">
-            <mat-label>Search User</mat-label>
-            <input matInput (keyup)="searchEntity(inputRef.value)" (input)="updatePlaceholder(inputRef.value)" #inputRef
-                placeholder="Search users ..." value="" class="inputField">
-        </mat-form-field>
+<app-text-editor [componentName]="'emptyChat'" class="emptychat" /> -->
+<!-- <span *ngFor="let user of selectedUsers" class="user-tag">
+    {{ user }}
+</span> -->
+<div class="container">
+    <div class="header">
+        <div class="search-input">
+            <input class="serach-bar" type="text" placeholder="Code learning durchsuchen" id="" #inputRef
+                (keyup)="searchEntity(inputRef.value)">
+            <button class="search-button">
+                <img src="./../assets/images/search.png">
+            </button>
+        </div>
     </div>
-    <div class="dropdown-menu" *ngIf="showDropdown">
-        <div *ngIf="showUserPlaceholder" class="dropdown-item" (click)="displayAllUsers()">Search for User</div>
+    <div #dropdownMenu class="dropdown-menu" *ngIf="showDropdown">
         <div class="dropdown-item" *ngFor="let entity of filteredEntities" (click)="selectEntity(entity)">
+            <div *ngIf="entity.isChannel == true">#</div>
+            <div *ngIf="entity.isUser == true" class="user-photo-name">
+                <img [src]="entity.photo" alt=""> <span class="at-symbol">&commat;</span>
+            </div>
             {{ entity.username || entity.channelName }}
         </div>
     </div>
-</div> -->
+</div>
