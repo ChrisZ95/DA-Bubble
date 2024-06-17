@@ -6,7 +6,6 @@ import { ChatService } from '../../services/chat.service';
 import { TimestampPipe } from '../../shared/pipes/timestamp.pipe';
 import { TextEditorComponent } from '../../shared/text-editor/text-editor.component';
 import { MatDialog } from '@angular/material/dialog';
-import { DialogAddPeopleComponent } from '../../dialog-add-people/dialog-add-people.component';
 import { DialogChannelInfoComponent } from '../../dialog-channel-info/dialog-channel-info.component';
 import { DialogContactInfoComponent } from '../../dialog-contact-info/dialog-contact-info.component';
 import { DialogMembersComponent } from '../../dialog-members/dialog-members.component';
