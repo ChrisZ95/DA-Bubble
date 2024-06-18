@@ -59,8 +59,11 @@ export class ChatService {
   private emojiPickerSubjectThreadReaction = new BehaviorSubject<boolean>(false);
   emojiPickerThreadRection$ = this.emojiPickerSubjectThreadReaction.asObservable();
 
-  private AssociatedUserSubject = new BehaviorSubject<boolean>(false);
-  associatedUser$ = this.AssociatedUserSubject.asObservable();
+  private AssociatedUserSubjectChat = new BehaviorSubject<boolean>(false);
+  associatedUserChat$ = this.AssociatedUserSubjectChat.asObservable();
+
+  private AssociatedUserSubjectChatThread = new BehaviorSubject<boolean>(false);
+  associatedUserChatThread$ = this.AssociatedUserSubjectChatThread.asObservable();
 
   private clearTextEditorValueSubcription = new BehaviorSubject<boolean>(false);
   clearValue$ = this.clearTextEditorValueSubcription.asObservable();
@@ -300,8 +303,12 @@ export class ChatService {
     this.emojiPickerSubjectThreadReaction.next(state);
   }
 
-  associatedUser(state: boolean) {
-    this.AssociatedUserSubject.next(state);
+  associatedUserChat(state: boolean) {
+    this.AssociatedUserSubjectChat.next(state);
+  }
+
+  associatedUserChatThread(state: boolean) {
+    this.AssociatedUserSubjectChatThread.next(state);
   }
 
   clearInputValue(state: boolean) {

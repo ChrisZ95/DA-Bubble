@@ -73,7 +73,8 @@ export class MainComponent implements OnInit {
   emojiPickerChatReaction = false;
   emojiPickerThread = false;
   emojiPickerThreadReaction = false;
-  associatedUser = false;
+  associatedUserChat = false;
+  associatedUserChatThread = false;
   isIdle: number = 0;
 
   private idleSubscription: Subscription | null = null;
@@ -85,7 +86,8 @@ export class MainComponent implements OnInit {
   private emojiPickerChatReactionSubscription: Subscription | null = null;
   private emojiPickerThreadSubscription: Subscription | null = null;
   private emojiPickerThreadReactionSubscription: Subscription | null = null;
-  private AssociatedUserSubscription: Subscription | null = null;
+  private AssociatedUserChatSubscription: Subscription | null = null;
+  private AssociatedUserChatThreadSubscription: Subscription | null = null;
   private activityAfterIdleSubscription: Subscription | null = null;
 
   ngOnInit(): void {
@@ -145,9 +147,14 @@ export class MainComponent implements OnInit {
       }
     );
 
-    this.AssociatedUserSubscription =
-      this.chatService.associatedUser$.subscribe((state: boolean) => {
-        this.associatedUser = state;
+    this.AssociatedUserChatSubscription =
+      this.chatService.associatedUserChat$.subscribe((state: boolean) => {
+        this.associatedUserChat = state;
+      });
+
+      this.AssociatedUserChatThreadSubscription =
+      this.chatService.associatedUserChatThread$.subscribe((state: boolean) => {
+        this.associatedUserChatThread = state;
       });
   }
 
@@ -179,12 +186,13 @@ export class MainComponent implements OnInit {
     if (this.emojiPickerThreadReactionSubscription) {
       this.emojiPickerThreadReactionSubscription.unsubscribe();
     }
-    if (this.AssociatedUserSubscription) {
-      this.AssociatedUserSubscription.unsubscribe();
+    if (this.AssociatedUserChatSubscription) {
+      this.AssociatedUserChatSubscription.unsubscribe();
     }
-    // if (this.activityAfterIdleSubscription) {
-    //   this.activityAfterIdleSubscription.unsubscribe();
-    // }
+
+    if (this.AssociatedUserChatThreadSubscription) {
+      this.AssociatedUserChatThreadSubscription.unsubscribe();
+    }
   }
 
   closeEmojiPickerChat() {
@@ -207,8 +215,13 @@ export class MainComponent implements OnInit {
     this.chatService.emojiPickerThreadReaction(false);
   }
 
-  closeAssociatedUser() {
-    this.chatService.associatedUser(false);
+  closeAssociatedUserChat() {
+    this.chatService.associatedUserChat(false);
+    console.log('close');
+  }
+
+  closeAssociatedUserChatThread() {
+    this.chatService.associatedUserChatThread(false);
     console.log('close');
   }
 

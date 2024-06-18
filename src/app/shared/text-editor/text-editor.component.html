@@ -2,7 +2,7 @@
   <emoji-mart  (emojiClick)="addEmoji($event)" title="Pick your emoji…" emoji="point_up"></emoji-mart>
 </div>
 
-<div *ngIf="openAssociatedUser" class="show-associated-user">
+<div *ngIf="openAssociatedUserChat" class="show-associated-user">
   <div class="user-parcel" *ngFor="let user of associatedUser">
     <div class="choose-user-parcel" (click)="userInserted(user)">{{ user }}</div>
   </div>

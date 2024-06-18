@@ -52,7 +52,7 @@ export class TextEditorChannelComponent implements OnInit {
     //     this.openEmojiPicker = state;
     //   }
     // );
-    this.AssociatedUserSubscription = this.chatService.associatedUser$.subscribe(
+    this.AssociatedUserSubscription = this.chatService.associatedUserChat$.subscribe(
       (state: boolean) => {
         this.openAssociatedUser = state;
       }
@@ -104,13 +104,13 @@ export class TextEditorChannelComponent implements OnInit {
   openUserMention() {
     console.log(this.allUsers, this.memberData)
     this.openAssociatedUser = true;
-    this.chatService.associatedUser(true);
+    this.chatService.associatedUserChat(true);
   }
 
   closeuserMention() {
     console.log(this.allUsers, this.memberData)
     this.openAssociatedUser = false;
-    this.chatService.associatedUser(false);
+    this.chatService.associatedUserChat(false);
   }
 
   userInserted(user: any) {

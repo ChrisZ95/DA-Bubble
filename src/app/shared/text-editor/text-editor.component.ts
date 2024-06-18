@@ -24,7 +24,7 @@ export class TextEditorComponent implements OnInit {
   fileInput!: ElementRef<HTMLInputElement>;
   @Input() componentName!: string;
   openEmojiPickerChat = false;
-  openAssociatedUser = false;
+  openAssociatedUserChat = false;
   message: string = '';
   comment: string = '';
   currentMessageComments: any[] = [];
@@ -34,7 +34,7 @@ export class TextEditorComponent implements OnInit {
   associatedUser: any[] = [];
   currentDocID: any;
   emojiPickerChatSubscription: Subscription | null = null;
-  AssociatedUserSubscription: Subscription | null = null;
+  AssociatedUserChatSubscription: Subscription | null = null;
   filteredUsersSubscription: Subscription | null = null;
   documentIDSubsrciption: Subscription | null = null;
   clearTextEditorValueSubcription: Subscription | null = null;
@@ -48,9 +48,9 @@ export class TextEditorComponent implements OnInit {
       }
     );
 
-    this.AssociatedUserSubscription = this.chatService.associatedUser$.subscribe(
+    this.AssociatedUserChatSubscription = this.chatService.associatedUserChat$.subscribe(
       (state: boolean) => {
-        this.openAssociatedUser = state;
+        this.openAssociatedUserChat = state;
       }
     );
 
@@ -75,8 +75,8 @@ export class TextEditorComponent implements OnInit {
     if (this.filteredUsersSubscription) {
       this.filteredUsersSubscription.unsubscribe();
     }
-    if (this.AssociatedUserSubscription) {
-      this.AssociatedUserSubscription.unsubscribe();
+    if (this.AssociatedUserChatSubscription) {
+      this.AssociatedUserChatSubscription.unsubscribe();
     }
     if (this.clearTextEditorValueSubcription) {
       this.clearTextEditorValueSubcription.unsubscribe();
@@ -111,13 +111,14 @@ export class TextEditorComponent implements OnInit {
   }
 
   openUserMention() {
-    this.openAssociatedUser = true;
-    this.chatService.associatedUser(true);
+    this.openAssociatedUserChat = true;
+    this.chatService.associatedUserChat(true);
+    console.log('chat')
   }
 
   closeuserMention() {
-    this.openAssociatedUser = false;
-    this.chatService.associatedUser(false);
+    this.openAssociatedUserChat = false;
+    this.chatService.associatedUserChat(false);
   }
 
   userInserted(user: any) {
@@ -158,7 +159,7 @@ export class TextEditorComponent implements OnInit {
         // this.sendCommentToMessage();
       }
       this.chatService.dataURL = null;
-      this.openAssociatedUser = false;
+      this.openAssociatedUserChat = false;
       this.fileArray = [];
     }
   }
@@ -185,7 +186,7 @@ export class TextEditorComponent implements OnInit {
   async customDataURL() {
     const fileInput = this.fileInput.nativeElement;
     const file = fileInput.files?.[0];
-    this.openAssociatedUser = false;
+    this.openAssociatedUserChat = false;
     if (file && (this.fileArray.length) <= 2) {
       try {
         this.chatService.dataURL =

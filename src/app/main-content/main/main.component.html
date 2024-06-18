@@ -2,7 +2,8 @@
 <div (click)="closeEmojiPickerChatReaction()"  *ngIf="emojiPickerChatReaction" class="close-emoji-picker"></div>
 <div (click)="closeEmojiPickerThread()" *ngIf="emojiPickerThread" class="close-emoji-picker"></div>
 <div (click)="closeEmojiPickerThreadReaction()" *ngIf="emojiPickerThreadReaction" class="close-emoji-picker"></div>
-<div (click)="closeAssociatedUser()" *ngIf="associatedUser" class="close-emoji-picker"></div>
+<div (click)="closeAssociatedUserChat()" *ngIf="associatedUserChat" class="close-emoji-picker"></div>
+<div (click)="closeAssociatedUserChatThread()" *ngIf="associatedUserChatThread" class="close-emoji-picker"></div>
 <div class="main">
   <div class="container">
     <app-header (userDetails)="openChat($event)" (channelDetails)="channelInformaion($event)" class="header-container"></app-header>

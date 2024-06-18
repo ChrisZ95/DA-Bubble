@@ -22,7 +22,7 @@ export class TextEditorThreadComponent implements OnInit{
   fileInput!: ElementRef<HTMLInputElement>;
   @Input() componentName!: string;
   openEmojiPickerThread = false;
-  openAssociatedUser = false;
+  openAssociatedUserChatThread = false;
   message: string = '';
   comment: string = '';
   currentMessageComments: any[] = [];
@@ -32,7 +32,7 @@ export class TextEditorThreadComponent implements OnInit{
   associatedUser: any[] = [];
   threadDocID: any;
   emojiPickerThreadSubscription: Subscription | null = null;
-  AssociatedUserSubscription: Subscription | null = null;
+  AssociatedUserChatThreadSubscription: Subscription | null = null;
   filteredUsersSubscription: Subscription | null = null;
   documentIDSubsrciption: Subscription | null = null;
   clearTextEditorValueSubcription: Subscription | null = null;
@@ -46,9 +46,9 @@ export class TextEditorThreadComponent implements OnInit{
       }
     );
 
-    this.AssociatedUserSubscription = this.chatService.associatedUser$.subscribe(
+    this.AssociatedUserChatThreadSubscription = this.chatService.associatedUserChatThread$.subscribe(
       (state: boolean) => {
-        this.openAssociatedUser = state;
+        this.openAssociatedUserChatThread = state;
       }
     );
 
@@ -73,8 +73,8 @@ export class TextEditorThreadComponent implements OnInit{
     if (this.filteredUsersSubscription) {
       this.filteredUsersSubscription.unsubscribe();
     }
-    if (this.AssociatedUserSubscription) {
-      this.AssociatedUserSubscription.unsubscribe();
+    if (this.AssociatedUserChatThreadSubscription) {
+      this.AssociatedUserChatThreadSubscription.unsubscribe();
     }
     if (this.clearTextEditorValueSubcription) {
       this.clearTextEditorValueSubcription.unsubscribe();
@@ -109,13 +109,13 @@ export class TextEditorThreadComponent implements OnInit{
   }
 
   openUserMention() {
-    this.openAssociatedUser = true;
-    this.chatService.associatedUser(true);
+    this.openAssociatedUserChatThread = true;
+    this.chatService.associatedUserChatThread(true);
   }
 
   closeuserMention() {
-    this.openAssociatedUser = false;
-    this.chatService.associatedUser(false);
+    this.openAssociatedUserChatThread = false;
+    this.chatService.associatedUserChatThread(false);
   }
 
   userInserted(user: any) {
@@ -150,7 +150,7 @@ export class TextEditorThreadComponent implements OnInit{
       }
       this.clearInputValue();
       this.chatService.dataURL = null;
-      this.openAssociatedUser = false;
+      this.openAssociatedUserChatThread = false;
       this.fileArray = [];
     }
   }
@@ -177,7 +177,7 @@ export class TextEditorThreadComponent implements OnInit{
   async customDataURL() {
     const fileInput = this.fileInput.nativeElement;
     const file = fileInput.files?.[0];
-    this.openAssociatedUser = false;
+    this.openAssociatedUserChatThread = false;
     if (file && (this.fileArray.length) <= 2) {
       try {
         this.chatService.dataURL =
