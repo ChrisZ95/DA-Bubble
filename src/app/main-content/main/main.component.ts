@@ -72,6 +72,7 @@ export class MainComponent implements OnInit {
   emojiPickerChat = false;
   emojiPickerChatReaction = false;
   emojiPickerThread = false;
+  emojiPickerThreadReaction = false;
   associatedUser = false;
   isIdle: number = 0;
 
@@ -83,6 +84,7 @@ export class MainComponent implements OnInit {
   private emojiPickerChatSubscription: Subscription | null = null;
   private emojiPickerChatReactionSubscription: Subscription | null = null;
   private emojiPickerThreadSubscription: Subscription | null = null;
+  private emojiPickerThreadReactionSubscription: Subscription | null = null;
   private AssociatedUserSubscription: Subscription | null = null;
   private activityAfterIdleSubscription: Subscription | null = null;
 
@@ -136,6 +138,13 @@ export class MainComponent implements OnInit {
       }
     );
 
+    this.emojiPickerThreadReactionSubscription = this.chatService.emojiPickerThreadRection$.subscribe(
+      (state: boolean) => {
+        this.emojiPickerThreadReaction = state;
+        console.log('thread reaction', this.emojiPickerThreadReaction)
+      }
+    );
+
     this.AssociatedUserSubscription =
       this.chatService.associatedUser$.subscribe((state: boolean) => {
         this.associatedUser = state;
@@ -167,6 +176,9 @@ export class MainComponent implements OnInit {
     if (this.emojiPickerThreadSubscription) {
       this.emojiPickerThreadSubscription.unsubscribe();
     }
+    if (this.emojiPickerThreadReactionSubscription) {
+      this.emojiPickerThreadReactionSubscription.unsubscribe();
+    }
     if (this.AssociatedUserSubscription) {
       this.AssociatedUserSubscription.unsubscribe();
     }
@@ -188,6 +200,11 @@ export class MainComponent implements OnInit {
   closeEmojiPickerThread() {
     console.log('thread picker')
     this.chatService.emojiPickerThread(false);
+  }
+
+  closeEmojiPickerThreadReaction() {
+    console.log('thread Reaction picker')
+    this.chatService.emojiPickerThreadReaction(false);
   }
 
   closeAssociatedUser() {

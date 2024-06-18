@@ -7,6 +7,10 @@ import { CommonModule } from '@angular/common';
 import { Firestore, getFirestore, onSnapshot, DocumentData, doc, collection, getDocs, getDoc} from '@angular/fire/firestore';
 import { TimestampPipe } from '../../shared/pipes/timestamp.pipe';
 import { TextEditorThreadComponent } from '../../shared/text-editor-thread/text-editor-thread.component';
+import { FormsModule } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { EmojiComponent } from '@ctrl/ngx-emoji-mart/ngx-emoji';
 import { MatDialog } from '@angular/material/dialog';
@@ -17,7 +21,7 @@ import { DialogMembersComponent } from '../../dialog-members/dialog-members.comp
 @Component({
   selector: 'app-thread',
   standalone: true,
-  imports: [CommonModule, TextEditorThreadComponent, TimestampPipe, PickerComponent, EmojiComponent],
+  imports: [CommonModule, TextEditorThreadComponent, TimestampPipe, PickerComponent, EmojiComponent, FormsModule, MatIconModule, MatMenuModule, MatButtonModule],
   templateUrl: './thread.component.html',
   styleUrls: ['./thread.component.scss', '../threads.component.scss'],
 })
@@ -25,6 +29,7 @@ export class ThreadComponent implements OnInit, OnDestroy {
   constructor( public dialog: MatDialog, private chatService: ChatService, public threadService: ThreadService, private firestore: Firestore, private firestoreService: FirestoreService) {}
   private threadSubscription: Subscription | null = null;
   private threadDocumentIDSubsrciption: Subscription | null = null;
+  emojiPickerThreadReactionSubscription: Subscription | null = null;
   documentID: any;
   threadsMessages: any [] = [];
   replies: any = [];
@@ -34,8 +39,36 @@ export class ThreadComponent implements OnInit, OnDestroy {
   isHoveredArray: boolean[] = [];
   isEditingArray: boolean[] = [];
   currentThreadDocID: any;
+  openEmojiPickerChatThreadReaction = false;
+  emojiReactionThreadMessageID: any;
+
+  emoji = [
+    {
+      id: 'white_check_mark',
+      name: 'White Heavy Check Mark',
+      colons: ':white_check_mark::skin-tone-3:',
+      text: '',
+      emoticons: [],
+      skin: 3,
+      native: '✅',
+    },
+    {
+      id: 'raised_hands',
+      name: 'Person Raising Both Hands in Celebration',
+      colons: ':raised_hands::skin-tone-3:',
+      text: '',
+      emoticons: [],
+      skin: 3,
+      native: '🙌',
+    },
+  ];
 
   ngOnInit() {
+    this.emojiPickerThreadReactionSubscription = this.chatService.emojiPickerThreadRection$.subscribe(
+      (state: boolean) => {
+        this.openEmojiPickerChatThreadReaction = state;
+      }
+    );
     this.loadMessages();
     this.threadService.messageInformation
     this.threadService.chatDocId
@@ -60,6 +93,32 @@ export class ThreadComponent implements OnInit, OnDestroy {
     if(this.threadDocumentIDSubsrciption) {
       this.threadDocumentIDSubsrciption.unsubscribe();
     }
+
+    if(this.emojiPickerThreadReactionSubscription) {
+      this.emojiPickerThreadReactionSubscription.unsubscribe();
+    }
+  }
+
+  async getMessageForSpefifiedEmoji(emoji: any, currentUserID:any, messageID:any) {
+    const emojiReactionID = emoji.id;
+    const emojiReactionDocRef = doc( this.firestore, 'threads', this.currentThreadDocID, 'messages', messageID, 'emojiReactions', emojiReactionID);
+
+    // this.uploadNewEmojiReaction(emoji, currentUserID, emojiReactionDocRef)
+  }
+
+  openEmojiMartPicker(messageID :any) {
+    this.openEmojiPickerChatThreadReaction = true;
+    this.chatService.emojiPickerThreadReaction(true);
+  }
+
+  closeEmojiMartPicker() {
+    this.openEmojiPickerChatThreadReaction = false;
+    this.chatService.emojiPickerThreadReaction(false);
+  }
+
+  addEmoji(event: any) {
+    // const currentUserID = localStorage.getItem('uid');
+    // this.getMessageForSpefifiedEmoji(event.emoji, currentUserID, this.emojiReactionMessageID)
   }
 
   async loadChatMessages(docID: any) {
@@ -149,17 +208,6 @@ export class ThreadComponent implements OnInit, OnDestroy {
     this.dialog.open(DialogContactInfoComponent, {
       data: userDetails[0],
     });
-  }
-
-  addEmoji(event: any) {
-    // const currentUserID = localStorage.getItem('uid');
-    // this.getMessageForSpefifiedEmoji(event.emoji, currentUserID, this.emojiReactionMessageID)
-  }
-
-  closeEmojiMartPicker() {
-    // this.emojiReactionMessageID = '';
-    this.openEmojiPickerThread = false;
-    this.chatService.emojiPickerThread(false);
   }
 
 
