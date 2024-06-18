@@ -4,7 +4,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ThreadService } from '../../services/thread.service';
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { Firestore, getFirestore, onSnapshot, DocumentData, doc, collection, getDocs, getDoc} from '@angular/fire/firestore';
+import { Firestore, getFirestore, onSnapshot, DocumentData, doc, collection, getDocs, getDoc, updateDoc, setDoc} from '@angular/fire/firestore';
 import { TimestampPipe } from '../../shared/pipes/timestamp.pipe';
 import { TextEditorThreadComponent } from '../../shared/text-editor-thread/text-editor-thread.component';
 import { FormsModule } from '@angular/forms';
@@ -69,10 +69,8 @@ export class ThreadComponent implements OnInit, OnDestroy {
         this.openEmojiPickerChatThreadReaction = state;
       }
     );
-    this.loadMessages();
     this.threadService.messageInformation
     this.threadService.chatDocId
-    // this.threadsMessages.push(this.threadService.messageInformation)
     this.currentUserID = localStorage.getItem('uid')
 
     this.threadDocumentIDSubsrciption = this.threadService.threadDocumentID$.subscribe(
@@ -103,7 +101,7 @@ export class ThreadComponent implements OnInit, OnDestroy {
     const emojiReactionID = emoji.id;
     const emojiReactionDocRef = doc( this.firestore, 'threads', this.currentThreadDocID, 'messages', messageID, 'emojiReactions', emojiReactionID);
 
-    // this.uploadNewEmojiReaction(emoji, currentUserID, emojiReactionDocRef)
+    this.uploadNewEmojiReaction(emoji, currentUserID, emojiReactionDocRef)
   }
 
   openEmojiMartPicker(messageID :any) {
@@ -116,9 +114,34 @@ export class ThreadComponent implements OnInit, OnDestroy {
     this.chatService.emojiPickerThreadReaction(false);
   }
 
-  addEmoji(event: any) {
-    // const currentUserID = localStorage.getItem('uid');
-    // this.getMessageForSpefifiedEmoji(event.emoji, currentUserID, this.emojiReactionMessageID)
+  async uploadNewEmojiReaction(emoji: any, currentUserID: any, emojiReactionDocRef: any) {
+    const docSnapshot = await getDoc(emojiReactionDocRef);
+
+    if (docSnapshot.exists()) {
+      const reactionDocData: any = docSnapshot.data();
+      reactionDocData.emojiCounter++;
+      reactionDocData.reactedBy.push(currentUserID);
+
+      await updateDoc(emojiReactionDocRef, {
+        emojiCounter: reactionDocData.emojiCounter,
+        reactedBy: reactionDocData.reactedBy
+      });
+    } else {
+      const emojiReactionData = {
+        emojiIcon: emoji.native,
+        reactedBy: [currentUserID],
+        emojiCounter: 1,
+        emoji: emoji
+      };
+      await setDoc(emojiReactionDocRef, emojiReactionData);
+    }
+    this.loadChatMessages(this.currentThreadDocID)
+  }
+
+  addEmoji(event: any, messageThreadID: any) {
+    this.emojiReactionThreadMessageID = messageThreadID;
+    const currentUserID = localStorage.getItem('uid');
+    this.getMessageForSpefifiedEmoji(event.emoji, currentUserID, this.emojiReactionThreadMessageID)
   }
 
   async loadChatMessages(docID: any) {
@@ -212,11 +235,6 @@ export class ThreadComponent implements OnInit, OnDestroy {
 
 
   closeThreadWindow() {
-    debugger
     this.threadService.displayThread = false;
-  }
-
-  async loadMessages() {
-
   }
 }

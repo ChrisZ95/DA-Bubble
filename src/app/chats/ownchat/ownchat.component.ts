@@ -217,6 +217,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
             await deleteDoc(doc.ref);
           }
           await deleteDoc(threadDocRef);
+          this.threadService.displayThread = false;
         } else {
           console.log('Thread not found with ID:', messageData['threadID']);
         }

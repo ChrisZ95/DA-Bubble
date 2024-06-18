@@ -89,8 +89,10 @@
       </div>
     </ng-container>
   </div>
-  <div class="emoji-picker-container" *ngIf="openEmojiPickerChatThreadReaction">
-    <emoji-mart (emojiClick)="addEmoji($event)" title="Pick your emoji…" emoji="point_up"></emoji-mart>
+  <div *ngFor="let message of threadsMessages">
+    <div  class="emoji-picker-container" *ngIf="openEmojiPickerChatThreadReaction">
+      <emoji-mart  (emojiClick)="addEmoji($event, message.id)" title="Pick your emoji…" emoji="point_up"></emoji-mart>
+    </div>
   </div>
   <app-text-editor-thread class="text-editor" [componentName]="'thread'" />
 </div>
