@@ -1,5 +1,4 @@
-<div *ngFor="let message of messageDetail; let i = index" class="main">
-
+<div *ngFor="let message of threadsMessages; let i = index" class="main">
   <div class="header-thread">
     <div class="top-headline">
         <span class="thread">Thread</span>
@@ -9,7 +8,7 @@
   </div>
 
   <div class="scrollbar test" #scrollContainer>
-    <ng-container>
+    <ng-container *ngFor="let message of threadsMessages; let i = index">
       <ng-container *ngIf="shouldShowSeparator(i)">
         <div class="separator">
           <div class="separator-line"></div>

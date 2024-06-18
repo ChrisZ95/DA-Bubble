@@ -4,7 +4,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ThreadService } from '../../services/thread.service';
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { Firestore, getFirestore, onSnapshot, DocumentData,} from '@angular/fire/firestore';
+import { Firestore, getFirestore, onSnapshot, DocumentData, doc, collection, getDocs, getDoc} from '@angular/fire/firestore';
 import { TimestampPipe } from '../../shared/pipes/timestamp.pipe';
 import { TextEditorThreadComponent } from '../../shared/text-editor-thread/text-editor-thread.component';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
@@ -23,29 +23,93 @@ import { DialogMembersComponent } from '../../dialog-members/dialog-members.comp
 })
 export class ThreadComponent implements OnInit, OnDestroy {
   constructor( public dialog: MatDialog, private chatService: ChatService, public threadService: ThreadService, private firestore: Firestore, private firestoreService: FirestoreService) {}
-  private messageInfoSubscription!: Subscription;
   private threadSubscription: Subscription | null = null;
+  private threadDocumentIDSubsrciption: Subscription | null = null;
   documentID: any;
-  messageDetail: any [] = [];
+  threadsMessages: any [] = [];
   replies: any = [];
   openEmojiPickerThread = false;
   currentUserID: any;
   menuClicked = false;
   isHoveredArray: boolean[] = [];
-  messages: any
   isEditingArray: boolean[] = [];
+  currentThreadDocID: any;
 
   ngOnInit() {
     this.loadMessages();
     this.threadService.messageInformation
     this.threadService.chatDocId
-    this.messageDetail.push(this.threadService.messageInformation)
+    // this.threadsMessages.push(this.threadService.messageInformation)
     this.currentUserID = localStorage.getItem('uid')
+
+    this.threadDocumentIDSubsrciption = this.threadService.threadDocumentID$.subscribe(
+      (docID)=> {
+        if(docID) {
+          this.currentThreadDocID = docID
+          this.loadChatMessages(this.currentThreadDocID)
+        }
+      },
+    );
   }
 
   ngOnDestroy(): void {
     if(this.threadSubscription) {
       this.threadSubscription.unsubscribe();
+    }
+
+    if(this.threadDocumentIDSubsrciption) {
+      this.threadDocumentIDSubsrciption.unsubscribe();
+    }
+  }
+
+  async loadChatMessages(docID: any) {
+    const docRef = doc(this.firestore, "threads", docID);
+
+    onSnapshot(docRef, async (docSnap) => {
+      if (docSnap.exists()) {
+        const messagesRef = collection(this.firestore, "threads", docID, "messages");
+        onSnapshot(messagesRef, async (messagesSnap) => {
+        const messagesMap = new Map();
+        const messagePromises = messagesSnap.docs.map(async (messageDoc) => {
+          let messageData = messageDoc.data();
+          messageData['id'] = messageDoc.id;
+
+          if (messageData['createdAt']) {
+            if (messageData['senderID']) {
+              const senderID = messageData['senderID'];
+              const senderData = await this.loadSenderData(senderID);
+              messageData['senderName'] = senderData ? senderData.username : "Unknown";
+              messageData['senderPhoto'] = senderData ? senderData.photo : null;
+            }
+            const reactionsRef = collection(this.firestore, "threads", docID, "messages", messageData['id'], "emojiReactions");
+            const reactionsSnap = await getDocs(reactionsRef);
+            const reactions = reactionsSnap.docs.map(doc => doc.data());
+            messageData['emojiReactions'] = reactions;
+            messagesMap.set(messageData['id'], messageData);
+
+          } else {
+            console.error("Invalid timestamp format:", messageData['createdAt']);
+          }
+        });
+        await Promise.all(messagePromises);
+        this.threadsMessages = Array.from(messagesMap.values()).sort((a: any, b: any) => a.createdAt - b.createdAt);
+      });
+      } else {
+        console.log("No such document!");
+      }
+    });
+  }
+
+  async loadSenderData(senderID: any) {
+    const docRef = doc(this.firestore, "users", senderID);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      const senderData = docSnap.data();
+      return { username: senderData['username'], photo: senderData['photo'] };
+    } else {
+      console.log("No such document!");
+      return null;
     }
   }
 
@@ -53,8 +117,8 @@ export class ThreadComponent implements OnInit, OnDestroy {
     if (index === 0) {
       return true;
     }
-    const currentMessage = this.messages[index];
-    const previousMessage = this.messages[index - 1];
+    const currentMessage = this.threadsMessages[index];
+    const previousMessage = this.threadsMessages[index - 1];
     const currentDate = new Date(Number(currentMessage.createdAt));
     const previousDate = new Date(Number(previousMessage.createdAt));
     if (isNaN(currentDate.getTime()) || isNaN(previousDate.getTime())) {

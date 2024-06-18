@@ -13,7 +13,7 @@ export class ThreadService {
   constructor( private firestore: Firestore, private generateId: GenerateIdsService, private FirestoreService: FirestoreService) {}
 
   private documentIDSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
-  public documentID$: Observable<any> = this.documentIDSubject.asObservable();
+  public threadDocumentID$: Observable<any> = this.documentIDSubject.asObservable();
 
   displayThread: boolean = false;
   messageInformation: any;

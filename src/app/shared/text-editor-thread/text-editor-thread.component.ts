@@ -59,7 +59,7 @@ export class TextEditorThreadComponent implements OnInit{
       }
     );
 
-    this.documentIDSubsrciption = this.threadService.documentID$.subscribe(
+    this.documentIDSubsrciption = this.threadService.threadDocumentID$.subscribe(
       (docID)=> {
         this.threadDocID = docID;
       },
