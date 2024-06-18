@@ -4,7 +4,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ThreadService } from '../../services/thread.service';
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { Firestore, getFirestore, onSnapshot, DocumentData, doc, collection, getDocs, getDoc, updateDoc, setDoc} from '@angular/fire/firestore';
+import { Firestore, getFirestore, onSnapshot, DocumentData, doc, collection, getDocs, getDoc, updateDoc, setDoc, deleteDoc} from '@angular/fire/firestore';
 import { TimestampPipe } from '../../shared/pipes/timestamp.pipe';
 import { TextEditorThreadComponent } from '../../shared/text-editor-thread/text-editor-thread.component';
 import { FormsModule } from '@angular/forms';
@@ -41,6 +41,8 @@ export class ThreadComponent implements OnInit, OnDestroy {
   currentThreadDocID: any;
   openEmojiPickerChatThreadReaction = false;
   emojiReactionThreadMessageID: any;
+  currentThreadMessageIndex: number | null = null;
+  originalThreadMessageContent = '';
 
   emoji = [
     {
@@ -98,6 +100,7 @@ export class ThreadComponent implements OnInit, OnDestroy {
   }
 
   async getMessageForSpefifiedEmoji(emoji: any, currentUserID:any, messageID:any) {
+    console.log(messageID)
     const emojiReactionID = emoji.id;
     const emojiReactionDocRef = doc( this.firestore, 'threads', this.currentThreadDocID, 'messages', messageID, 'emojiReactions', emojiReactionID);
 
@@ -106,6 +109,7 @@ export class ThreadComponent implements OnInit, OnDestroy {
 
   openEmojiMartPicker(messageID :any) {
     this.openEmojiPickerChatThreadReaction = true;
+    this.emojiReactionThreadMessageID = messageID;
     this.chatService.emojiPickerThreadReaction(true);
   }
 
@@ -139,10 +143,43 @@ export class ThreadComponent implements OnInit, OnDestroy {
   }
 
   addEmoji(event: any, messageThreadID: any) {
-    this.emojiReactionThreadMessageID = messageThreadID;
     const currentUserID = localStorage.getItem('uid');
     this.getMessageForSpefifiedEmoji(event.emoji, currentUserID, this.emojiReactionThreadMessageID)
   }
+
+  async addOrDeleteReaction(emoji: any, currentUserID: any, messageID: any) {
+    const docRef = doc(this.firestore, "threads", this.currentThreadDocID, "messages", messageID, "emojiReactions", emoji.id);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+        const reactionData = docSnap.data();
+        const reactedByArray = reactionData['reactedBy'] || [];
+
+        if (reactedByArray.includes(currentUserID)) {
+         console.log('user hat bereits reagiert')
+         this.deleteEmojireaction(emoji, currentUserID, messageID)
+        } else {
+          this.getMessageForSpefifiedEmoji(emoji, currentUserID, messageID)
+        }
+      }
+}
+
+async deleteEmojireaction(emoji: any, currentUserID: any, messageID: any) {
+  const docRef = doc(this.firestore, "threads", this.currentThreadDocID, "messages", messageID, "emojiReactions", emoji.id);
+  const docSnap = await getDoc(docRef);
+  if (docSnap.exists()) {
+    const reactionData = docSnap.data();
+    reactionData['emojiCounter'] --
+    reactionData['reactedBy'].splice(currentUserID)
+
+    await updateDoc(docRef, {
+      emojiCounter: reactionData['emojiCounter'],
+      reactedBy: reactionData['reactedBy']
+    });
+
+    await this.loadChatMessages(this.currentThreadDocID)
+  }
+}
 
   async loadChatMessages(docID: any) {
     const docRef = doc(this.firestore, "threads", docID);
@@ -237,4 +274,96 @@ export class ThreadComponent implements OnInit, OnDestroy {
   closeThreadWindow() {
     this.threadService.displayThread = false;
   }
+
+  currentTime(currentMessageTime: any): boolean {
+    const currentDate = new Date();
+    const currentDateMilliseconds = currentDate.getTime();
+    const timestampMilliseconds = currentMessageTime;
+    const differenceMilliseconds =
+      currentDateMilliseconds - timestampMilliseconds;
+    const thirtyMinutesMilliseconds = 60 * 24 * 60 * 1000;
+    if (differenceMilliseconds <= thirtyMinutesMilliseconds) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  menuClosed(index: any) {
+    if (this.currentThreadMessageIndex !== null && !this.menuClicked) {
+      this.isHoveredArray[this.currentThreadMessageIndex] = true;
+    }
+    this.menuClicked = false;
+    this.currentThreadMessageIndex = null;
+    this.chatService.editMessage = true;
+    this.chatService.editIndex = index;
+  }
+
+  menuOpened(index: number, message: any) {
+    this.menuClicked = true;
+    this.currentThreadMessageIndex = index;
+    this.isHoveredArray[index] = true;
+  }
+
+  editMessage(index: number) {
+    this.originalThreadMessageContent = this.threadsMessages[index].message;
+    this.isEditingArray[index] = true;
+  }
+
+  async deleteMessage(index: any, messageID: any) {
+    console.log(messageID)
+    try {
+        if (!this.firestore) {
+            throw new Error("Firestore instance is not defined.");
+        }
+        if (!this.currentThreadDocID) {
+            throw new Error("CurrentDocID is not defined.");
+        }
+        if (!messageID) {
+            throw new Error("Message ID is not defined.");
+        }
+
+        const threadDocRef = doc(this.firestore, 'threads', this.currentThreadDocID);
+        const threadDocSnap = await getDoc(threadDocRef);
+
+        if (threadDocSnap.exists()) {
+            const messageDocRef = doc(this.firestore, `threads/${this.currentThreadDocID}/messages`, messageID);
+            const messageDocSnap = await getDoc(messageDocRef);
+
+            if (messageDocSnap.exists()) {
+                await deleteDoc(messageDocRef);
+                console.log('Message deleted with ID:', messageID);
+            } else {
+                console.log('Message not found with ID:', messageID);
+            }
+        } else {
+            console.log('Thread not found with ID:', this.currentThreadDocID);
+        }
+
+        this.menuClosed(index);
+    } catch (error: any) {
+        console.error('Error deleting document:', error);
+        this.menuClosed(index);
+    }
+}
+
+
+cancelEdit(index: number) {
+  this.threadsMessages[index].message = this.originalThreadMessageContent;
+  this.isEditingArray[index] = false;
+}
+
+async saveEdit(index: number, editMessage: any, messageID: any) {
+  this.isEditingArray[index] = false;
+  const messageDoc = doc( this.firestore, 'threads', this.currentThreadDocID, 'messages', messageID);
+  const messageDocSnapshot = await getDoc(messageDoc);
+
+  if(messageDocSnapshot.exists()) {
+    await updateDoc(messageDoc, {
+      message: editMessage
+    });
+    this.menuClosed(index)
+    await this.loadChatMessages(this.currentThreadDocID)
+  }
+}
 }
