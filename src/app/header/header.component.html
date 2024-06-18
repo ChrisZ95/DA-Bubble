@@ -21,8 +21,17 @@
     <div *ngIf="userIsVerified">
       <img title="Konto verifiziert" class="user-verified" src="./../../assets/images/verified-user.png">
     </div>
-    <img class="avatar-icon" src="{{ userPhoto }}" alt=""
-      onerror="this.onerror=null;this.src='./../../assets/images/Property 1=Default (8).png'">
+    <div class="user-icon-circle">
+      <img class="avatar-icon" src="{{ userPhoto }}" alt=""
+        onerror="this.onerror=null;this.src='./../../assets/images/Property 1=Default (8).png'">
+      <div class="active-circle" [ngClass]="userStatus$ | async">
+        <select (change)="changeStatus($event)">
+          <option value="active" [selected]="(userStatus$ | async) === 'active'">Active</option>
+          <option value="away" [selected]="(userStatus$ | async) === 'away'">Away</option>
+          <option value="busy" [selected]="(userStatus$ | async) === 'busy'">Busy</option>
+        </select>
+      </div>
+    </div>
     <img class="open-dialog" [matMenuTriggerFor]="profilMenu" src="./../../assets/images/keyboard_arrow_down.svg"
       alt="">
     <mat-menu #profilMenu="matMenu" class="profile-menu">

@@ -11,9 +11,6 @@
         <div class="search-input">
             <input class="serach-bar" type="text" placeholder="Code learning durchsuchen" id="" #inputRef
                 (keyup)="searchEntity(inputRef.value)">
-            <button class="search-button">
-                <img src="./../assets/images/search.png">
-            </button>
         </div>
     </div>
     <div #dropdownMenu class="dropdown-menu" *ngIf="showDropdown">

@@ -21,6 +21,8 @@ import { doc, onSnapshot } from 'firebase/firestore';
 import { Unsubscribe } from '@angular/fire/firestore';
 import { ChatService } from '../services/chat.service';
 import { ChannelService } from '../services/channel.service';
+import { Subscription } from 'rxjs';
+import { IdleService } from '../services/idle.service';
 
 @Component({
   selector: 'app-header',
@@ -38,7 +40,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private chatService: ChatService,
     private eRef: ElementRef,
     private renderer: Renderer2,
-    public channelService: ChannelService
+    public channelService: ChannelService,
+    public idleService: IdleService
   ) {}
   private unsubscribe: Unsubscribe | undefined;
   @Output() userDetails = new EventEmitter<string>();
@@ -47,6 +50,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   @ViewChild('dropdownMenu', { static: false }) dropdownMenu:
     | ElementRef
     | undefined;
+  private userStatusSubscription: Subscription | undefined;
+  userStatus: any = 'active';
+  userStatus$: any;
   logInUid: any;
   userForm: any;
   userName: any;
@@ -299,11 +305,22 @@ export class HeaderComponent implements OnInit, OnDestroy {
     });
     this.loadAllUsersAndAllChannels();
     this.checkScreenWidth();
+    this.userStatus$ = this.idleService.getUserStatus(
+      this.firestoreService.currentuid
+    );
+  }
+
+  changeStatus(event: Event) {
+    const newStatus = (event.target as HTMLSelectElement).value;
+    this.idleService.setUserStatus(this.firestoreService.currentuid, newStatus);
   }
 
   ngOnDestroy() {
     if (this.unsubscribe) {
       this.unsubscribe();
+    }
+    if (this.userStatusSubscription) {
+      this.userStatusSubscription.unsubscribe();
     }
   }
 

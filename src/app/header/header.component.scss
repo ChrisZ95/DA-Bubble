@@ -83,6 +83,46 @@
   }
 }
 
+.user-icon-circle {
+  position: relative;
+}
+
+.active-circle {
+  position: absolute;
+  height: 15px;
+  width: 15px;
+  border-radius: 100%;
+  right: 7.5px;
+  bottom: 7.5px;
+
+  select {
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    height: 20px;
+    width: 20px;
+    opacity: 0;
+    cursor: pointer;
+  }
+}
+
+.active {
+  background-color: green;
+}
+
+.away,
+.simpleaway {
+  background-color: yellow;
+}
+
+.busy {
+  background-color: red;
+}
+
+.offline {
+  background-color: grey;
+}
+
 ::ng-deep.cdk-overlay-pane {
   margin-top: 30px !important;
 }
@@ -160,7 +200,7 @@
   align-items: center;
   .at-symbol {
     font-size: 20px;
-    padding-left: 5px; 
+    padding-left: 5px;
   }
 }
 

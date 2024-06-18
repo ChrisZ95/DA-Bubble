@@ -1,10 +1,26 @@
-import {Component,EventEmitter,OnInit,Output,ViewChild,OnDestroy,Input,OnChanges,SimpleChanges,ChangeDetectorRef,
+import {
+  Component,
+  EventEmitter,
+  OnInit,
+  Output,
+  ViewChild,
+  OnDestroy,
+  Input,
+  OnChanges,
+  SimpleChanges,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DialogCreateChannelComponent } from '../../dialog-create-channel/dialog-create-channel.component';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
-import { Firestore,onSnapshot,collection, doc, getDoc} from '@angular/fire/firestore';
+import {
+  Firestore,
+  onSnapshot,
+  collection,
+  doc,
+  getDoc,
+} from '@angular/fire/firestore';
 import { Channel } from './../../../models/channel.class';
 import { FirestoreService } from '../../firestore.service';
 import { ChannelService } from '../../services/channel.service';
@@ -12,7 +28,6 @@ import { ChatService } from '../../services/chat.service';
 import { ChannelchatComponent } from '../../chats/channelchat/channelchat.component';
 import { IdleService } from '../../services/idle.service';
 import { GroupchatsService } from '../../services/groupchats.service';
-
 @Component({
   selector: 'app-workspace',
   standalone: true,
@@ -47,7 +62,15 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
   showUserPlaceholder: any;
   showDropdown: boolean = false;
 
-  constructor( public dialog: MatDialog, private readonly firestore: Firestore, public firestoreService: FirestoreService, public channelService: ChannelService, public chatService: ChatService, private cdRef: ChangeDetectorRef, public idleService: IdleService, private groupService: GroupchatsService
+  constructor(
+    public dialog: MatDialog,
+    private readonly firestore: Firestore,
+    public firestoreService: FirestoreService,
+    public channelService: ChannelService,
+    public chatService: ChatService,
+    private cdRef: ChangeDetectorRef,
+    public idleService: IdleService,
+    private groupService: GroupchatsService
   ) {
     onSnapshot(collection(this.firestore, 'channels'), (list) => {
       this.allChannels = list.docs.map((doc) => doc.data());
@@ -113,6 +136,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
     this.chatService.showOwnChat = false;
     this.channelService.showThreadWindow = false;
     this.chatService.clearInputValue(true);
+    this.chatService.showEmptyChat = false;
     if (window.innerWidth <= 850) {
       this.firestoreService.displayWorkspace = false;
     }
