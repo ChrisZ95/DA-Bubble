@@ -155,7 +155,10 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
     this.channelService.showChannelChat = false;
   }
 
-  async openChat(user: any) {
+  async openChat(event: Event, user: any) {
+    if ((event.target as HTMLElement).tagName.toLowerCase() === 'select') {
+      return;
+    }
     if (window.innerWidth <= 850) {
       this.firestoreService.displayWorkspace = false;
     }
@@ -196,7 +199,12 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
       });
   }
 
+  stopPropagation(event: Event) {
+    event.stopPropagation();
+  }
+
   changeStatus(event: Event) {
+    event.stopPropagation();
     const newStatus = (event.target as HTMLSelectElement).value;
     this.idleService.setUserStatus(this.firestoreService.currentuid, newStatus);
   }

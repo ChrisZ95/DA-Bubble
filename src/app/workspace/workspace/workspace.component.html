@@ -53,26 +53,26 @@
       </div>
 
       <div *ngIf="displayUsers" class="users scrollbar">
-        <div class="own-user" (click)="openChat(currentUser)">
+        <div class="own-user" (click)="openChat($event, currentUser)">
           <div class="user-icon-circle">
             <img id="user-icon" class="user-icon" src="{{ currentUser?.photo }}" alt="User Icon"
               onerror="this.onerror=null;this.src='./../../../assets/images/Property 1=Default (8).png'">
             <div class="active-circle" [ngClass]="userStatus$ | async">
-              <select (change)="changeStatus($event)">
+              <select (click)="stopPropagation($event)" (change)="changeStatus($event)">
                 <option value="active" [selected]="(userStatus$ | async) === 'active'">Active</option>
                 <option value="away" [selected]="(userStatus$ | async) === 'away'">Away</option>
                 <option value="busy" [selected]="(userStatus$ | async) === 'busy'">Busy</option>
               </select>
               <span class="status-text">{{ userStatus$ | async }}</span>
             </div>
-
           </div>
           <div>
             <h2>{{ currentUser?.username }} ( Du )</h2>
           </div>
         </div>
+
         <div *ngFor="let user of otherUsers, let i = index">
-          <div class="other-user" (click)="openChat(user)">
+          <div class="other-user" (click)="openChat($event, user)">
             <div class="user-icon-circle">
               <img id="user-icon" class="user-icon" src="{{ user.photo }}" alt="User Icon"
                 onerror="this.onerror=null;this.src='./../../../assets/images/Property 1=Default (8).png'">
