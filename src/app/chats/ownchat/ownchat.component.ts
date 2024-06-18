@@ -381,7 +381,17 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
 
     async addOrDeleteReaction(emoji: any, currentUserID: any, messageID: any) {
       const docRef = doc(this.firestore, "newchats", this.currentDocID, "messages", messageID, "emojiReactions", emoji.id);
-      const docSnap = await getDoc(docRef);
+      const docSnap = await getDoc(docRef)
+
+      const threadDocRef = doc(this.firestore, "newchats", this.currentDocID, "messages", messageID);
+      const threadDocSnap = await getDoc(threadDocRef)
+
+      if(threadDocSnap.exists()) {
+        const messageData = threadDocSnap.data();
+        if(messageData) {
+          const threadID = messageData['threadID'];
+        }
+      }
 
       if (docSnap.exists()) {
           const reactionData = docSnap.data();
