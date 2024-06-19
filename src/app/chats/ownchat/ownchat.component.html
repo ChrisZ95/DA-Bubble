@@ -6,7 +6,7 @@
     <div *ngFor="let user of participantUser" class="images">
       <div class="images-participants"
         (click)="openContactInfoDialogHeader(user)">
-        <img [src]="user.photo" alt="">
+        <img [src]="user.photo || './../../../assets/images/80. avatar interaction (1).png'" alt="">
         <h2>{{ user.username }} {{this.chatData?.participants?.length === 1 ? '( Du )' : '' }}</h2>
       </div>
     </div>
@@ -46,7 +46,7 @@
           </mat-menu>
         </div>
         <div [ngClass]="{'row-reverse': message.senderID === currentUserID}" class="message-wrapper">
-          <img class="user-avatar" [src]="message.senderPhoto">
+          <img class="user-avatar" [src]="message.senderPhoto || './../../../assets/images/80. avatar interaction (1).png'">
           <div class="message">
             <div [ngClass]="{'row': message.senderID === this.currentUserID, 'row-reverse': message.senderID !== this.currentUserID}" class="message-user-information">
               <span class="time">{{ message.createdAt | timestamp: 'time' }} Uhr</span>

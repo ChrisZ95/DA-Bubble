@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { DialogAddPeopleComponent } from '../../dialog-add-people/dialog-add-people.component';
 import { DialogContactInfoComponent } from '../../dialog-contact-info/dialog-contact-info.component';
 import { ChatService } from '../../services/chat.service';
-import { collection, doc, getDocs, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { collection, doc, getDocs, getDoc, setDoc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { CommonModule, NgFor } from '@angular/common';
 import { TimestampPipe } from '../../shared/pipes/timestamp.pipe';
 import { Channel } from './../../../models/channel.class';
@@ -20,6 +20,7 @@ import { FormsModule } from '@angular/forms';
 import { TextEditorChannelComponent } from '../../shared/text-editor-channel/text-editor-channel.component';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { EmojiComponent } from '@ctrl/ngx-emoji-mart/ngx-emoji';
+import { ThreadService } from '../../services/thread.service';
 
 @Component({
   selector: 'app-channelchat',
@@ -29,7 +30,7 @@ import { EmojiComponent } from '@ctrl/ngx-emoji-mart/ngx-emoji';
   styleUrls: ['./channelchat.component.scss', '../chats.component.scss'],
 })
 export class ChannelchatComponent implements OnInit, OnDestroy {
-  constructor( public dialog: MatDialog, public channelService: ChannelService, private readonly firestore: Firestore, public firestoreService: FirestoreService, public chatService: ChatService) {
+  constructor( public dialog: MatDialog, public channelService: ChannelService, private readonly firestore: Firestore, public firestoreService: FirestoreService, public chatService: ChatService, public threadService: ThreadService) {
     this.isEditingArray.push(false);
   }
   @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
@@ -59,6 +60,7 @@ export class ChannelchatComponent implements OnInit, OnDestroy {
   openEmojiPickerChannelReaction = false;
   emojiReactionMessageID: any;
   emojiPickerChannelReactionSubscription: Subscription | null = null;
+  originalMessageContent = '';
 
   emoji = [
     {
@@ -200,7 +202,7 @@ export class ChannelchatComponent implements OnInit, OnDestroy {
 
   async getMessageForSpefifiedEmoji(emoji: any, currentUserID:any, messageID:any) {
     const emojiReactionID = emoji.id;
-    const emojiReactionDocRef = doc( this.firestore, 'newchats', this.currentDocID, 'messages', messageID, 'emojiReactions', emojiReactionID);
+    const emojiReactionDocRef = doc( this.firestore, 'channels', this.currentDocID, 'messages', messageID, 'emojiReactions', emojiReactionID);
 
     this.uploadNewEmojiReaction(emoji, currentUserID, emojiReactionDocRef)
   }
@@ -234,6 +236,68 @@ export class ChannelchatComponent implements OnInit, OnDestroy {
       this.emojiReactionMessageID = messageID;
       this.chatService.emojiPickerChannelReaction(true);
     }
+
+    openThread(message: any) {
+      this.threadService.getMessage(message, this.currentDocID);
+    }
+
+    currentTime(currentMessageTime: any): boolean {
+      const currentDate = new Date();
+      const currentDateMilliseconds = currentDate.getTime();
+      const timestampMilliseconds = currentMessageTime;
+      const differenceMilliseconds =
+        currentDateMilliseconds - timestampMilliseconds;
+      const thirtyMinutesMilliseconds = 60 * 24 * 60 * 1000;
+      if (differenceMilliseconds <= thirtyMinutesMilliseconds) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    async addOrDeleteReaction(emoji: any, currentUserID: any, messageID: any) {
+      const docRef = doc(this.firestore, "channels", this.currentDocID, "messages", messageID, "emojiReactions", emoji.id);
+      const docSnap = await getDoc(docRef)
+
+      const threadDocRef = doc(this.firestore, "channels", this.currentDocID, "messages", messageID);
+      const threadDocSnap = await getDoc(threadDocRef)
+
+      if(threadDocSnap.exists()) {
+        const messageData = threadDocSnap.data();
+        if(messageData) {
+          const threadID = messageData['threadID'];
+        }
+      }
+
+      if (docSnap.exists()) {
+          const reactionData = docSnap.data();
+          const reactedByArray = reactionData['reactedBy'] || [];
+
+          if (reactedByArray.includes(currentUserID)) {
+           console.log('user hat bereits reagiert')
+           this.deleteEmojireaction(emoji, currentUserID, messageID)
+          } else {
+            this.getMessageForSpefifiedEmoji(emoji, currentUserID, messageID)
+          }
+        }
+  }
+
+  async deleteEmojireaction(emoji: any, currentUserID: any, messageID: any) {
+    const docRef = doc(this.firestore, "channels", this.currentDocID, "messages", messageID, "emojiReactions", emoji.id);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      const reactionData = docSnap.data();
+      reactionData['emojiCounter'] --
+      reactionData['reactedBy'].splice(currentUserID)
+
+      await updateDoc(docRef, {
+        emojiCounter: reactionData['emojiCounter'],
+        reactedBy: reactionData['reactedBy']
+      });
+
+      await this.loadChannelMessages(this.currentDocID)
+    }
+  }
 
   handleUserDocSnapshot(doc: any) {
     if (doc.exists()) {
@@ -327,13 +391,82 @@ export class ChannelchatComponent implements OnInit, OnDestroy {
     return member ? member.photo : '';
   }
 
-  menuClosed() {
+  menuClosed(index: any) {
     if (this.currentMessageIndex !== null && !this.menuClicked) {
       this.isHoveredArray[this.currentMessageIndex] = true;
     }
     this.menuClicked = false;
     this.currentMessageIndex = null;
+    this.chatService.editMessage = true;
+    this.chatService.editIndex = index;
   }
+
+  editMessage(index: number) {
+    this.originalMessageContent = this.messages[index].message;
+    this.isEditingArray[index] = true;
+  }
+
+  cancelEdit(index: number) {
+    this.messages[index].message = this.originalMessageContent;
+    this.isEditingArray[index] = false;
+  }
+
+  async saveEdit(index: number, editMessage: any, messageID: any) {
+    this.isEditingArray[index] = false;
+    const messageDoc = doc( this.firestore, 'channels', this.currentDocID, 'messages', messageID);
+    const messageDocSnapshot = await getDoc(messageDoc);
+
+    if(messageDocSnapshot.exists()) {
+      await updateDoc(messageDoc, {
+        message: editMessage
+      });
+      this.menuClosed(index)
+      await this.loadChannelMessages(this.currentDocID)
+    }
+  }
+
+  async deleteMessage(index: any, messageID: any) {
+    try {
+      if (!this.firestore) {
+        throw new Error("Firestore instance is not defined.");
+      }
+      if (!this.currentDocID) {
+        throw new Error("CurrentDocID is not defined.");
+      }
+      if (!messageID) {
+        throw new Error("Message ID is not defined.");
+      }
+      const messageDocRef = doc(this.firestore, 'channels', this.currentDocID, 'messages', messageID);
+      const messageDocSnap = await getDoc(messageDocRef);
+
+      if (messageDocSnap.exists()) {
+        const messageData = messageDocSnap.data();
+        const threadDocRef = doc(this.firestore, 'threads', messageData['threadID']);
+        const threadDocSnap = await getDoc(threadDocRef);
+
+        if (threadDocSnap.exists()) {
+          const threadMessagesCollectionRef = collection(this.firestore, `threads/${messageData['threadID']}/messages`);
+          const threadMessagesSnap = await getDocs(threadMessagesCollectionRef);
+          for (const doc of threadMessagesSnap.docs) {
+            await deleteDoc(doc.ref);
+          }
+          await deleteDoc(threadDocRef);
+          this.threadService.displayThread = false;
+        } else {
+          console.log('Thread not found with ID:', messageData['threadID']);
+        }
+        await deleteDoc(messageDocRef);
+      } else {
+        console.log('No document found with the ID:', messageID);
+      }
+
+      this.menuClosed(index);
+    } catch (error) {
+      console.error('Error deleting document:', error);
+      this.menuClosed(index);
+    }
+  }
+
 
   menuOpened(index: number) {
     this.menuClicked = true;
