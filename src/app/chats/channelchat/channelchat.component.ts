@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { DialogAddPeopleComponent } from '../../dialog-add-people/dialog-add-people.component';
 import { DialogContactInfoComponent } from '../../dialog-contact-info/dialog-contact-info.component';
 import { ChatService } from '../../services/chat.service';
-import { collection } from 'firebase/firestore';
+import { collection, doc, getDocs, getDoc } from 'firebase/firestore';
 import { CommonModule, NgFor } from '@angular/common';
 import { TimestampPipe } from '../../shared/pipes/timestamp.pipe';
 import { Channel } from './../../../models/channel.class';
@@ -39,59 +39,98 @@ export class ChannelchatComponent implements OnInit, OnDestroy {
   allUsers: any[] = [];
   currentMessageComments: { id: string, comment: string, createdAt: string }[] = [];
   isHoveredArray: boolean[] = [];
-  private channelSubscription: Subscription | undefined;
   menuClicked = false;
   currentMessageIndex: number | null = null;
   editingMessageIndex: number | null = null;
   editedMessageText: string = '';
   userForm: any;
-  private channelSnapshotUnsubscribe: Unsubscribe | undefined;
-  private chatSnapshotUnsubscribe: Unsubscribe | undefined;
-  private unsubscribe: Unsubscribe | undefined;
 
-  constructor(
-    public dialog: MatDialog,
-    public channelService: ChannelService,
-    private readonly firestore: Firestore,
-    public firestoreService: FirestoreService,
-    public chatService: ChatService
-  ) {
-    this.channelSnapshotUnsubscribe = onSnapshot(collection(this.firestore, 'channels'), (list) => {
-      this.allChannels = list.docs.map((doc) => doc.data());
-    });
-    this.chatSnapshotUnsubscribe = onSnapshot(collection(this.firestore, 'chats'), (list) => {
-      this.allChats = list.docs.map((doc) => doc.data());
-    });
+  channelDocumentIDSubsrciption: Subscription | null = null;
 
-    for (let i = 0; i < this.channelService.messages.length; i++) {
-      this.isHoveredArray.push(false);
-    }
-    this.channelSubscription = this.channelService.currentChannelIdChanged.subscribe((channelId: string) => {
-      this.onChannelChange(channelId);
-      console.log(channelId)
-    });
+  currentDocID: any;
+  messages: any = [];
+
+  constructor( public dialog: MatDialog, public channelService: ChannelService, private readonly firestore: Firestore, public firestoreService: FirestoreService, public chatService: ChatService) {
+
   }
 
   async ngOnInit(): Promise<void> {
     this.currentChannelId = this.channelService.getCurrentChannelId();
-    await Promise.all([this.loadChannels(), this.loadUsers(), this.loadMessages()]);
-    this.initializeHoverArray();
+    // await Promise.all([this.loadChannels(), this.loadUsers(), this.loadChannelMessages(this.currentChannelId)]);
+    // this.initializeHoverArray();
+
+    this.channelDocumentIDSubsrciption = this.channelService.currentChannelId$.subscribe(
+      (channelId)=> {
+        debugger
+        console.log(channelId)
+        this.messages = []
+        this.loadChannelMessages(channelId)
+        this.loadUsers()
+      },
+    );
   }
 
   ngOnDestroy() {
-    if (this.channelSnapshotUnsubscribe) {
-      this.channelSnapshotUnsubscribe();
-    }
-    if (this.chatSnapshotUnsubscribe) {
-      this.chatSnapshotUnsubscribe();
-    }
-    if (this.channelSubscription) {
-      this.channelSubscription.unsubscribe();
-    }
-    if (this.unsubscribe) {
-      this.unsubscribe();
+    if (this.channelDocumentIDSubsrciption) {
+      this.channelDocumentIDSubsrciption.unsubscribe();
     }
   }
+
+  async loadChannelMessages(docID: any) {
+    debugger
+    const docRef = doc(this.firestore, "channels", docID);
+    this.currentDocID = docID;
+
+    onSnapshot(docRef, async (docSnap) => {
+      if (docSnap.exists()) {
+        const messagesRef = collection(this.firestore, "channels", docID, "messages");
+        const reactionsRef = collection(this.firestore, "channels", docID, "messages");
+        onSnapshot(messagesRef, async (messagesSnap) => {
+        const messagesMap = new Map();
+        const messagePromises = messagesSnap.docs.map(async (messageDoc) => {
+          let messageData = messageDoc.data();
+          messageData['id'] = messageDoc.id;
+
+          if (messageData['createdAt']) {
+            if (messageData['senderID']) {
+              const senderID = messageData['senderID'];
+              const senderData = await this.loadSenderData(senderID);
+              messageData['senderName'] = senderData ? senderData.username : "Unknown";
+              messageData['senderPhoto'] = senderData ? senderData.photo : null;
+              console.log('nachrichten erfolgreich geladen ')
+            }
+            const reactionsRef = collection(this.firestore, "channels", docID, "messages", messageData['id'], "emojiReactions");
+            const reactionsSnap = await getDocs(reactionsRef);
+            const reactions = reactionsSnap.docs.map(doc => doc.data());
+            messageData['emojiReactions'] = reactions;
+            messagesMap.set(messageData['id'], messageData);
+            console.log('nachrichten reaktionen erfolgreich geladen ')
+          } else {
+            console.error("Invalid timestamp format:", messageData['createdAt']);
+          }
+        });
+        await Promise.all(messagePromises);
+        this.messages = Array.from(messagesMap.values()).sort((a: any, b: any) => a.createdAt - b.createdAt);
+      });
+      } else {
+        console.log("No such document!");
+      }
+    });
+  }
+
+  async loadSenderData(senderID: any) {
+    const docRef = doc(this.firestore, "users", senderID);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      const senderData = docSnap.data();
+      return { username: senderData['username'], photo: senderData['photo'] };
+    } else {
+      console.log("No such document!");
+      return null;
+    }
+  }
+
 
   updateHoverState(index: number, isHovered: boolean) {
     if (!this.menuClicked) {
@@ -114,7 +153,7 @@ export class ChannelchatComponent implements OnInit, OnDestroy {
 
   openContactInfoDialog(userDetails: any) {
     const userDocRef = this.firestoreService.getUserDocRef(userDetails);
-    this.unsubscribe = onSnapshot(userDocRef, (doc) => this.handleUserDocSnapshot(doc));
+    // this.unsubscribe = onSnapshot(userDocRef, (doc) => this.handleUserDocSnapshot(doc));
   }
 
   handleUserDocSnapshot(doc: any) {
@@ -163,19 +202,20 @@ export class ChannelchatComponent implements OnInit, OnDestroy {
     }
   }
 
-  async loadMessages(): Promise<void> {
-    try {
-      const messages = await this.channelService.loadMessagesForChannel(this.currentChannelId);
-      this.channelService.messagesWithAuthors = await Promise.all(
-        messages.map(async (message) => {
-          const authorName = await this.channelService.getAuthorName(message.uid);
-          return { ...message, authorName };
-        })
-      );
-    } catch (error) {
-      console.error('Error loading messages:', error);
-    }
-  }
+  // async loadMessages(): Promise<void> {
+  //   console.log('loadMessages wird aufgerufen')
+  //   try {
+  //     const messages = await this.channelService.loadMessagesForChannel(this.currentChannelId);
+  //     this.channelService.messagesWithAuthors = await Promise.all(
+  //       messages.map(async (message) => {
+  //         const authorName = await this.channelService.getAuthorName(message.uid);
+  //         return { ...message, authorName };
+  //       })
+  //     );
+  //   } catch (error) {
+  //     console.error('Error loading messages:', error);
+  //   }
+  // }
 
   initializeHoverArray(): void {
     this.isHoveredArray = new Array(this.channelService.messagesWithAuthors.length).fill(false);

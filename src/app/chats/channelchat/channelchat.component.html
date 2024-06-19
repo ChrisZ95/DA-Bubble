@@ -23,7 +23,7 @@
   </div>
 
   <div class="scrollbar" #scrollContainer>
-    <div *ngFor="let message of channelService.messagesWithAuthors; let i = index">
+    <div *ngFor="let message of messages; let i = index">
       <ng-container *ngIf="shouldShowSeparator(i)">
         <div class="separator">
           <div class="separator-line"></div>
@@ -57,7 +57,7 @@
               'own-message-bubble': message.uid === firestoreService.currentuid,
               'hovered-other-message': isHoveredArray[i] && message.uid !== firestoreService.currentuid
             }" *ngIf="editingMessageIndex !== i">
-              <span class="message-text">{{ message.message }}</span>
+              <span class="message-text">{{ message.messages }}</span>
             </div>
             <div class="edit-message-container" *ngIf="editingMessageIndex === i">
               <textarea class="edit-textarea" [(ngModel)]="editedMessageText"></textarea>
