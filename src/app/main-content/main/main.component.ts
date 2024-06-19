@@ -1,12 +1,5 @@
 import { DialogCreateChannelComponent } from './../../dialog-create-channel/dialog-create-channel.component';
-import {
-  ChangeDetectorRef,
-  Component,
-  ElementRef,
-  HostListener,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, HostListener, OnInit, ViewChild,} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
@@ -15,13 +8,7 @@ import { WorkspaceComponent } from '../../workspace/workspace/workspace.componen
 import { ChannelchatComponent } from '../../chats/channelchat/channelchat.component';
 import { DialogProfileComponent } from '../../dialog-profile/dialog-profile.component';
 import { CommonModule } from '@angular/common';
-import {
-  trigger,
-  state,
-  style,
-  transition,
-  animate,
-} from '@angular/animations';
+import { trigger, state, style, transition, animate,} from '@angular/animations';
 import { DialogChannelInfoComponent } from '../../dialog-channel-info/dialog-channel-info.component';
 import { DialogMembersComponent } from '../../dialog-members/dialog-members.component';
 import { ThreadComponent } from '../../threads/thread/thread.component';
@@ -39,31 +26,12 @@ import { IdleService } from '../../services/idle.service';
 @Component({
   selector: 'app-main',
   standalone: true,
-  imports: [
-    MatMenuModule,
-    MatButtonModule,
-    RouterOutlet,
-    CommonModule,
-    WorkspaceComponent,
-    ChannelchatComponent,
-    ThreadComponent,
-    ChannelthreadComponent,
-    EmptychatComponent,
-    OwnchatComponent,
-    HeaderComponent,
-  ],
+  imports: [ MatMenuModule, MatButtonModule, RouterOutlet, CommonModule, WorkspaceComponent, ChannelchatComponent, ThreadComponent, ChannelthreadComponent, EmptychatComponent, OwnchatComponent, HeaderComponent,],
   templateUrl: './main.component.html',
   styleUrl: './main.component.scss',
 })
 export class MainComponent implements OnInit {
-  constructor(
-    public channelService: ChannelService,
-    public firestoreService: FirestoreService,
-    public chatService: ChatService,
-    public threadService: ThreadService,
-    private cdRef: ChangeDetectorRef,
-    private idleService: IdleService
-  ) {}
+  constructor( public channelService: ChannelService, public firestoreService: FirestoreService, public chatService: ChatService, public threadService: ThreadService, private cdRef: ChangeDetectorRef, private idleService: IdleService) {}
 
   displayThread: boolean = false;
   userDetails: any = '';
@@ -73,6 +41,7 @@ export class MainComponent implements OnInit {
   emojiPickerChatReaction = false;
   emojiPickerThread = false;
   emojiPickerThreadReaction = false;
+  emojiPickerChannel = false;
   associatedUserChat = false;
   associatedUserChatThread = false;
   isIdle: number = 0;
@@ -84,10 +53,16 @@ export class MainComponent implements OnInit {
   private keyPressSubscription: Subscription | null = null;
   private emojiPickerChatSubscription: Subscription | null = null;
   private emojiPickerChatReactionSubscription: Subscription | null = null;
+
   private emojiPickerThreadSubscription: Subscription | null = null;
   private emojiPickerThreadReactionSubscription: Subscription | null = null;
+
+  private emojiPickerChannelSubscription: Subscription | null = null;
+  private emojiPickerChannelReactionSubscription: Subscription | null = null;
+
   private AssociatedUserChatSubscription: Subscription | null = null;
   private AssociatedUserChatThreadSubscription: Subscription | null = null;
+
   private activityAfterIdleSubscription: Subscription | null = null;
 
   ngOnInit(): void {
@@ -144,6 +119,13 @@ export class MainComponent implements OnInit {
       (state: boolean) => {
         this.emojiPickerThreadReaction = state;
         console.log('thread reaction', this.emojiPickerThreadReaction)
+      }
+    );
+
+    this.emojiPickerChannelSubscription = this.chatService.emojiPickerChannel$.subscribe(
+      (state: boolean) => {
+        this.emojiPickerChannel = state;
+        console.log( this.emojiPickerChannel)
       }
     );
 
@@ -213,6 +195,11 @@ export class MainComponent implements OnInit {
   closeEmojiPickerThreadReaction() {
     console.log('thread Reaction picker')
     this.chatService.emojiPickerThreadReaction(false);
+  }
+
+  closeEmojiPickerChannel() {
+    console.log('thread Reaction picker')
+    this.chatService.emojiPickerChannel(false);
   }
 
   closeAssociatedUserChat() {

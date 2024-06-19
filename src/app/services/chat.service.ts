@@ -35,6 +35,10 @@ import {
   providedIn: 'root',
 })
 export class ChatService {
+  constructor( private firestore: Firestore, public channelService: ChannelService, public FirestoreService: FirestoreService) {
+    this.initializeService();
+  }
+
   private userInformationSubject = new BehaviorSubject<any>(null);
   userInformation$: Observable<any> = this.userInformationSubject.asObservable();
 
@@ -58,6 +62,9 @@ export class ChatService {
 
   private emojiPickerSubjectThreadReaction = new BehaviorSubject<boolean>(false);
   emojiPickerThreadRection$ = this.emojiPickerSubjectThreadReaction.asObservable();
+
+  private emojiPickerSubjectChannel = new BehaviorSubject<boolean>(false);
+  emojiPickerChannel$ = this.emojiPickerSubjectChannel.asObservable();
 
   private AssociatedUserSubjectChat = new BehaviorSubject<boolean>(false);
   associatedUserChat$ = this.AssociatedUserSubjectChat.asObservable();
@@ -90,14 +97,6 @@ export class ChatService {
   chatDocId: string | null = null;
   loadCount: number = 0;
   editIndex: number = -1;
-
-  constructor(
-    private firestore: Firestore,
-    public channelService: ChannelService,
-    public FirestoreService: FirestoreService
-  ) {
-    this.initializeService();
-  }
 
   async checkForExistingChats() {
     const currentUserID: string | null = localStorage.getItem('uid');
@@ -301,6 +300,11 @@ export class ChatService {
   emojiPickerThreadReaction(state: boolean) {
     console.log('thread reaction picker')
     this.emojiPickerSubjectThreadReaction.next(state);
+  }
+
+  emojiPickerChannel(state: boolean) {
+    console.log('thread reaction picker')
+    this.emojiPickerSubjectChannel.next(state);
   }
 
   associatedUserChat(state: boolean) {

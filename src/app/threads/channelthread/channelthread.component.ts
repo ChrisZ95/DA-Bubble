@@ -45,9 +45,6 @@ export class ChannelthreadComponent implements OnInit, OnDestroy {
   editedCurrentMessage: boolean = false;
 
   userForm: any;
-  private channelSnapshotUnsubscribe: Unsubscribe | undefined;
-  private chatSnapshotUnsubscribe: Unsubscribe | undefined;
-  private unsubscribe: Unsubscribe | undefined;
 
   constructor(
     public channelService: ChannelService,
@@ -63,19 +60,19 @@ export class ChannelthreadComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit(): Promise<void> {
-    this.messageIdSubscription = this.channelService.currentMessageIdChanged.subscribe((messageId) => {
-      this.loadCommentsForCurrentMessage(messageId);
-    });
-    this.channelSubscription = this.channelService.currentMessageCommentsChanged.subscribe((comments) => {
-      this.currentMessageComments = comments;
-    });
-    this.messageSubscription = this.channelService.currentMessageChanged.subscribe((message) => {
-      this.currentMessage = message;
-    });
-    this.currentMessage = this.channelService.getCurrentMessage();
-    this.allUsers = await this.firestoreService.getAllUsers();
-    this.currentMessageId = this.channelService.getCurrentMessageId();
-    this.loadCommentsForCurrentMessage(this.currentMessageId);
+    // this.messageIdSubscription = this.channelService.currentMessageIdChanged.subscribe((messageId) => {
+    //   this.loadCommentsForCurrentMessage(messageId);
+    // });
+    // this.channelSubscription = this.channelService.currentMessageCommentsChanged.subscribe((comments) => {
+    //   this.currentMessageComments = comments;
+    // });
+    // this.messageSubscription = this.channelService.currentMessageChanged.subscribe((message) => {
+    //   this.currentMessage = message;
+    // });
+    // this.currentMessage = this.channelService.getCurrentMessage();
+    // this.allUsers = await this.firestoreService.getAllUsers();
+    // this.currentMessageId = this.channelService.getCurrentMessageId();
+    // this.loadCommentsForCurrentMessage(this.currentMessageId);
   }
 
   ngOnDestroy(): void {
@@ -99,13 +96,13 @@ export class ChannelthreadComponent implements OnInit, OnDestroy {
       this.currentMessageComments = [];
     }
   }
-  
+
   getCurrentMessageById(messageId: string) {
     return this.channelService.messages.find(
       (message: any) => message.messageId === messageId
     );
   }
-  
+
   async loadCommentsWithAuthorNames(comments: any[]): Promise<any[]> {
     if (!comments || comments.length === 0) {
       return [];
@@ -198,11 +195,8 @@ export class ChannelthreadComponent implements OnInit, OnDestroy {
 
   openContactInfoDialog(userDetails: any) {
     const userDocRef = this.firestoreService.getUserDocRef(userDetails);
-    this.unsubscribe = onSnapshot(userDocRef, (doc) => {
-      this.handleUserDocumentSnapshot(doc);
-    });
   }
-  
+
   private handleUserDocumentSnapshot(doc: any) {
     if (doc.exists()) {
       const userData = doc.data();
@@ -211,11 +205,11 @@ export class ChannelthreadComponent implements OnInit, OnDestroy {
       this.openUserDialog();
     }
   }
-  
+
   private setUserForm(id: string, userData: any) {
     this.userForm = { id, ...userData };
   }
-  
+
   private setUserDialogData() {
     this.userDialogData = {
       username: this.userForm['username'],
@@ -228,7 +222,7 @@ export class ChannelthreadComponent implements OnInit, OnDestroy {
       emailVerified: this.firestoreService.auth.currentUser.emailVerified
     };
   }
-  
+
   private openUserDialog() {
     this.dialog.open(DialogContactInfoComponent, {
       data: this.userDialogData

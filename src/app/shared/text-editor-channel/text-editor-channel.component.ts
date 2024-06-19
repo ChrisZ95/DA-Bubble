@@ -29,7 +29,7 @@ export class TextEditorChannelComponent implements OnInit {
   memberData: { username: string }[] = [];
   openEmojiPickerChannel = false;
   openAssociatedUser = false;
-  emojiPickerSubscription: Subscription | null = null;
+  emojiPickerChannelSubscription: Subscription | null = null;
   AssociatedUserSubscription: Subscription | null = null;
   filteredUsersSubscription: Subscription | null = null;
   clearTextEditorValueSubcription: Subscription | null = null;
@@ -42,11 +42,11 @@ export class TextEditorChannelComponent implements OnInit {
 
   ngOnInit(): void {
     this.subscribeToMessages();
-    // this.emojiPickerSubscription = this.chatService.emojiPicker$.subscribe(
-    //   (state: boolean) => {
-    //     this.openEmojiPicker = state;
-    //   }
-    // );
+    this.emojiPickerChannelSubscription = this.chatService.emojiPickerChannel$.subscribe(
+      (state: boolean) => {
+        this.openEmojiPickerChannel = state;
+      }
+    );
     this.AssociatedUserSubscription = this.chatService.associatedUserChat$.subscribe(
       (state: boolean) => {
         this.openAssociatedUser = state;
@@ -74,8 +74,8 @@ export class TextEditorChannelComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    if (this.emojiPickerSubscription) {
-      this.emojiPickerSubscription.unsubscribe();
+    if (this.emojiPickerChannelSubscription) {
+      this.emojiPickerChannelSubscription.unsubscribe();
     }
     if (this.filteredUsersSubscription) {
       this.filteredUsersSubscription.unsubscribe();
@@ -120,13 +120,13 @@ export class TextEditorChannelComponent implements OnInit {
   }
 
   openEmojiMartPicker() {
-    // this.openEmojiPicker = true;
-    // this.chatService.emojiPicker(true);
+    this.openEmojiPickerChannel = true;
+    this.chatService.emojiPickerChannel(true);
   }
 
   closeEmojiMartPicker() {
-    // this.openEmojiPicker = false;
-    // this.chatService.emojiPicker(false);
+    this.openEmojiPickerChannel = false;
+    this.chatService.emojiPickerChannel(false);
   }
 
   submit() {

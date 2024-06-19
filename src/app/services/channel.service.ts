@@ -25,10 +25,6 @@ export class ChannelService {
   commentsWithAuthors: any[] = [];
   currentMessage: any;
   channels: any[] = [];
-  currentMessageIdChanged: EventEmitter<string> = new EventEmitter<string>();
-  currentMessageChanged: EventEmitter<any> = new EventEmitter<any>();
-  currentChannelIdChanged: EventEmitter<string> = new EventEmitter<string>();
-  currentMessageCommentsChanged: EventEmitter<any[]> = new EventEmitter<any[]>();
   private currentChannelIdSource = new BehaviorSubject<string | null>(null);
   currentChannelId$ = this.currentChannelIdSource.asObservable();
 
@@ -98,19 +94,19 @@ export class ChannelService {
   }
 
   updateMessageInMessagesList(messageId: string, newComment: any): void {
-    const messageIndex = this.messages.findIndex(
-      (msg) => msg.messageId === messageId
-    );
-    if (messageIndex > -1) {
-      if (!this.messages[messageIndex].comments) {
-        this.messages[messageIndex].comments = [];
-      }
-      this.messages[messageIndex].comments.push(newComment);
-      this.updateMessagesWithAuthors();
-      this.currentMessageCommentsChanged.emit(
-        this.messages[messageIndex].comments
-      );
-    }
+    // const messageIndex = this.messages.findIndex(
+    //   (msg) => msg.messageId === messageId
+    // );
+    // if (messageIndex > -1) {
+    //   if (!this.messages[messageIndex].comments) {
+    //     this.messages[messageIndex].comments = [];
+    //   }
+    //   this.messages[messageIndex].comments.push(newComment);
+    //   this.updateMessagesWithAuthors();
+    //   this.currentMessageCommentsChanged.emit(
+    //     this.messages[messageIndex].comments
+    //   );
+    // }
   }
 
   getChannelRef() {
@@ -281,15 +277,12 @@ export class ChannelService {
   setCurrentChannelId(channelId: string) {
     this.currentChannelId = channelId;
     console.log('Current channel ID changed to:', channelId);
-    this.currentChannelIdChanged.emit(channelId);
     this.currentChannelIdSource.next(channelId);
   }
 
   setCurrentMessageId(messageId: string) {
     this.currentMessageId = messageId;
-    this.currentMessageIdChanged.emit(messageId);
     const currentMessage = this.messages.find(message => message.messageId === messageId);
-    this.currentMessageChanged.emit(currentMessage);
   }
 
   getCurrentChannelId(): string {

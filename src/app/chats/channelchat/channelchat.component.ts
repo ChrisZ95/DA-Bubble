@@ -18,15 +18,20 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { FormsModule } from '@angular/forms';
 import { TextEditorChannelComponent } from '../../shared/text-editor-channel/text-editor-channel.component';
+import { PickerComponent } from '@ctrl/ngx-emoji-mart';
+import { EmojiComponent } from '@ctrl/ngx-emoji-mart/ngx-emoji';
 
 @Component({
   selector: 'app-channelchat',
   standalone: true,
-  imports: [TextEditorChannelComponent, NgFor, TimestampPipe, CommonModule, MatButtonModule, MatIconModule, MatMenuModule, FormsModule, CommonModule],
+  imports: [TextEditorChannelComponent, PickerComponent, EmojiComponent, NgFor, TimestampPipe, CommonModule, MatButtonModule, MatIconModule, MatMenuModule, FormsModule, CommonModule],
   templateUrl: './channelchat.component.html',
   styleUrls: ['./channelchat.component.scss', '../chats.component.scss'],
 })
 export class ChannelchatComponent implements OnInit, OnDestroy {
+  constructor( public dialog: MatDialog, public channelService: ChannelService, private readonly firestore: Firestore, public firestoreService: FirestoreService, public chatService: ChatService) {
+    this.isEditingArray.push(false);
+  }
   @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
   @Input() userDialogData: any;
   currentChannel: Channel | null = null;
@@ -49,19 +54,40 @@ export class ChannelchatComponent implements OnInit, OnDestroy {
 
   currentDocID: any;
   messages: any = [];
+  currentUserID:any
+  isEditingArray: boolean[] = [];
+  openEmojiPickerChannelReaction = false;
 
-  constructor( public dialog: MatDialog, public channelService: ChannelService, private readonly firestore: Firestore, public firestoreService: FirestoreService, public chatService: ChatService) {
-
-  }
+  emoji = [
+    {
+      id: 'white_check_mark',
+      name: 'White Heavy Check Mark',
+      colons: ':white_check_mark::skin-tone-3:',
+      text: '',
+      emoticons: [],
+      skin: 3,
+      native: '✅',
+    },
+    {
+      id: 'raised_hands',
+      name: 'Person Raising Both Hands in Celebration',
+      colons: ':raised_hands::skin-tone-3:',
+      text: '',
+      emoticons: [],
+      skin: 3,
+      native: '🙌',
+    },
+  ];
 
   async ngOnInit(): Promise<void> {
     this.currentChannelId = this.channelService.getCurrentChannelId();
+    this.currentUserID = this.firestoreService.getCurrentUid()
+    console.log(this.currentUserID)
     // await Promise.all([this.loadChannels(), this.loadUsers(), this.loadChannelMessages(this.currentChannelId)]);
     // this.initializeHoverArray();
 
     this.channelDocumentIDSubsrciption = this.channelService.currentChannelId$.subscribe(
       (channelId)=> {
-        debugger
         console.log(channelId)
         this.messages = []
         this.loadChannelMessages(channelId)
@@ -77,7 +103,6 @@ export class ChannelchatComponent implements OnInit, OnDestroy {
   }
 
   async loadChannelMessages(docID: any) {
-    debugger
     const docRef = doc(this.firestore, "channels", docID);
     this.currentDocID = docID;
 
@@ -111,6 +136,7 @@ export class ChannelchatComponent implements OnInit, OnDestroy {
         });
         await Promise.all(messagePromises);
         this.messages = Array.from(messagesMap.values()).sort((a: any, b: any) => a.createdAt - b.createdAt);
+        console.log(this.messages)
       });
       } else {
         console.log("No such document!");
@@ -200,6 +226,11 @@ export class ChannelchatComponent implements OnInit, OnDestroy {
     } catch (error) {
       console.error('Error fetching users:', error);
     }
+  }
+
+  addEmoji(event: any) {
+    // const currentUserID = localStorage.getItem('uid');
+    // this.getMessageForSpefifiedEmoji(event.emoji, currentUserID, this.emojiReactionMessageID)
   }
 
   // async loadMessages(): Promise<void> {

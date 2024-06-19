@@ -22,8 +22,8 @@
     </div>
   </div>
 
-  <div class="scrollbar" #scrollContainer>
-    <div *ngFor="let message of messages; let i = index">
+  <div class="scrollbar test" #scrollContainer>
+    <ng-container *ngFor="let message of messages; let i = index">
       <ng-container *ngIf="shouldShowSeparator(i)">
         <div class="separator">
           <div class="separator-line"></div>
@@ -33,74 +33,83 @@
           <div class="separator-line"></div>
         </div>
       </ng-container>
-
       <div class="conversation-container"
-        (mouseenter)="updateHoverState(i, true)"
-        (mouseleave)="updateHoverState(i, false)"
-        [ngClass]="{'justify-end': message.uid === firestoreService.currentuid, 'justify-start': message.uid !== firestoreService.currentuid}">
-
-        <div *ngIf="message.uid !== firestoreService.currentuid" class="user-avatar-container">
-          <img [src]="getMemberAvatar(message.uid)" alt="" class="user-avatar">
-        </div>
-
-        <div class="conversation">
-          <div class="name-timestamp" [ngClass]="{'reverse-order': message.uid === firestoreService.currentuid}">
-            <span class="name" (click)="openContactInfoDialog(message.uid)">{{ message.authorName }}</span>
-            <span class="time">{{ message.createdAt | timestamp: 'time' }} Uhr</span>
-          </div>
-
-          <div class="messages-container">
-            <div [ngClass]="{
-              'speechbubble': message.uid !== firestoreService.currentuid,
-              'bg-color-own-message': message.uid === firestoreService.currentuid,
-              'bg-color-message': message.uid !== firestoreService.currentuid,
-              'own-message-bubble': message.uid === firestoreService.currentuid,
-              'hovered-other-message': isHoveredArray[i] && message.uid !== firestoreService.currentuid
-            }" *ngIf="editingMessageIndex !== i">
-              <span class="message-text">{{ message.messages }}</span>
-            </div>
-            <div class="edit-message-container" *ngIf="editingMessageIndex === i">
-              <textarea class="edit-textarea" [(ngModel)]="editedMessageText"></textarea>
-              <div class="edit-message-buttons">
-                <div class="smiley"><img src="./../../../assets/images/smiley.png" alt=""></div>
-                <div class="buttons">
-                  <button class="cancel" (click)="cancelEditingMessage()">Abbrechen</button>
-                  <button class="save" (click)="saveEditedMessage(i)">Speichern</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="reply" *ngIf="message.commentCount > 0">
-            <div class="answers" (click)="openThreadWindow(message, message.messageId)">{{ message.commentCount }} Antworten</div>
-            <span class="last-answer"> Letzte Antwort {{ message.lastCommentTime | timestamp: 'time' }}</span>
-          </div>
-        </div>
-
-        <div *ngIf="message.uid === firestoreService.currentuid" class="user-avatar-container">
-          <img [src]="getMemberAvatar(message.uid)" alt="" class="user-avatar">
-        </div>
-
-        <div class="popup-window-own-message" *ngIf="isHoveredArray[i] && message.uid === firestoreService.currentuid">
-          <img src="./../../../assets/images/green-tick.png" alt="">
-          <img src="./../../../assets/images/hands-emoji.png" alt="">
-          <img src="./../../../assets/images/add_reaction.png" alt="">
-          <img (click)="openThreadWindow(message, message.messageId)" src="./../../../assets/images/comment.png" alt="">
-          <button [matMenuTriggerFor]="editMessage" mat-icon-button (menuOpened)="menuOpened(i)">
-            <mat-icon>more_vert</mat-icon>
-          </button>
-          <mat-menu #editMessage="matMenu" class="profile-menu" (closed)="menuClosed()">
-            <button mat-menu-item (click)="startEditingMessage(i, message.message)">Nachricht bearbeiten</button>
+           [ngClass]="{'justify-end': message.senderID === currentUserID, 'justify-start': message.senderID !== currentUserID}"
+           (mouseenter)="updateHoverState(i, true)"
+           (mouseleave)="updateHoverState(i, false)">
+        <!-- <div class="popup-window-own-message" *ngIf="isHoveredArray[i] && message.senderID === this.currentUserID">
+          <ngx-emoji (click)="getMessageForSpefifiedEmoji(emoji[0], this.currentUserID, message.id)" class="emoji-icons" emoji="white_check_mark"
+            set="apple" [size]="20"></ngx-emoji>
+          <ngx-emoji (click)="getMessageForSpefifiedEmoji(emoji[1], this.currentUserID, message.id)" class="emoji-icons" emoji="raised_hands"
+            set="apple" [size]="20"></ngx-emoji>
+          <img class="emoji-icons" (click)="openEmojiMartPicker(message.id)" src="./../../../assets/images/add_reaction.png"
+            alt="">
+          <img class="emoji-icons" (click)="openThread(message)" src="./../../../assets/images/comment.png" alt="">
+          <ng-container *ngIf="currentTime(message.createdAt)">
+            <button [matMenuTriggerFor]="editMessageMenu" mat-icon-button (menuOpened)="menuOpened(i,message)">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+          </ng-container>
+          <mat-menu #editMessageMenu="matMenu" class="profile-menu">
+            <button mat-menu-item (click)="editMessage(i)">Nachricht bearbeiten</button>
+            <button mat-menu-item (click)="deleteMessage(i, message.id)">LÖSCHEN</button>
           </mat-menu>
+        </div> -->
+        <div [ngClass]="{'row-reverse': message.senderID === currentUserID}" class="message-wrapper">
+          <img class="user-avatar" [src]="message.senderPhoto">
+          <div class="message">
+            <div [ngClass]="{'row': message.senderID === this.currentUserID, 'row-reverse': message.senderID !== this.currentUserID}" class="message-user-information">
+              <span class="time">{{ message.createdAt | timestamp: 'time' }} Uhr</span>
+              <a (click)="openContactInfoDialog(message.senderID)"><h4>{{ message.senderName }}</h4></a>
+            </div>
+            <div [ngClass]="{'own-message-bubble': message.senderID === currentUserID, 'speechbubble': message.senderID !== currentUserID}">
+              <ng-container *ngIf="!isEditingArray[i]; else editMode">
+                <span>{{ message.message }}</span>
+              </ng-container>
+              <ng-template #editMode>
+                <div class="edit-container">
+                  <textarea class="edit-textarea" [(ngModel)]="message.message"></textarea>
+                  <!-- <div class="edit-buttons">
+                    <button class="save-button" (click)="saveEdit(i, message.message, message.id)">Speichern</button>
+                    <button class="cancel-button" (click)="cancelEdit(i)">Abbrechen</button>
+                  </div> -->
+                </div>
+              </ng-template>
+              <ng-container *ngIf="message.image[0]">
+                <div class="message-image">
+                  <a href="{{ message.image[0].url }}" target="_blank" rel="noopener noreferrer">
+                    <img [src]="message.image[0].url" alt="">
+                  </a>
+                </div>
+              </ng-container>
+            </div>
+            <div class="reaction-container">
+              <!-- <div class="open-thread">
+                <a (click)="openThread(message)"><h4>Antworten</h4></a>
+              </div> -->
+              <!-- <div class="emoji-reaction-container" *ngFor="let reaction of message.emojiReactions.slice(0, 4)">
+                <div *ngIf="reaction.emojiCounter > 0" (click)="addOrDeleteReaction(reaction.emoji, this.currentUserID, message.id)" class="reaction-sub-container">
+                  {{ reaction.emojiCounter }}
+                  {{ reaction.emojiIcon }}
+                </div>
+              </div> -->
+            </div>
+          </div>
         </div>
-        <div class="popup-window" *ngIf="isHoveredArray[i] && message.uid !== firestoreService.currentuid">
-          <img src="./../../../assets/images/green-tick.png" alt="">
-          <img src="./../../../assets/images/hands-emoji.png" alt="">
-          <img src="./../../../assets/images/add_reaction.png" alt="">
-          <img (click)="openThreadWindow(message, message.messageId)" src="./../../../assets/images/comment.png" alt="">
-        </div>
+        <!-- <div class="popup-window" *ngIf="isHoveredArray[i] && message.senderID !== this.currentUserID">
+          <ngx-emoji (click)="getMessageForSpefifiedEmoji(emoji[0], this.currentUserID, message.id)" class="emoji-icons" emoji="white_check_mark"
+            set="apple" [size]="20"></ngx-emoji>
+          <ngx-emoji (click)="getMessageForSpefifiedEmoji(emoji[1], this.currentUserID, message.id)" class="emoji-icons" emoji="raised_hands"
+            set="apple" [size]="20"></ngx-emoji>
+          <img class="emoji-icons" (click)="openEmojiMartPicker(message.id)" src="./../../../assets/images/add_reaction.png"
+            alt="">
+          <img class="emoji-icons" (click)="openThread(message)" src="./../../../assets/images/comment.png" alt="">
+        </div> -->
       </div>
-    </div>
+    </ng-container>
   </div>
-  <app-text-editor-channel class="text-editor-channel" [componentName]="'channel'"></app-text-editor-channel>
+  <div class="emoji-picker-container" *ngIf="openEmojiPickerChannelReaction">
+    <emoji-mart (emojiClick)="addEmoji($event)" title="Pick your emoji…" emoji="point_up"></emoji-mart>
+  </div>
+  <app-text-editor-channel class="text-editor" [componentName]="'channel'" />
 </div>
