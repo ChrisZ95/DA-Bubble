@@ -66,6 +66,9 @@ export class ChatService {
   private emojiPickerSubjectChannel = new BehaviorSubject<boolean>(false);
   emojiPickerChannel$ = this.emojiPickerSubjectChannel.asObservable();
 
+  private emojiPickerSubjectChannelReaction = new BehaviorSubject<boolean>(false);
+  emojiPickerChannelReaction$ = this.emojiPickerSubjectChannelReaction.asObservable();
+
   private AssociatedUserSubjectChat = new BehaviorSubject<boolean>(false);
   associatedUserChat$ = this.AssociatedUserSubjectChat.asObservable();
 
@@ -305,6 +308,11 @@ export class ChatService {
   emojiPickerChannel(state: boolean) {
     console.log('thread reaction picker')
     this.emojiPickerSubjectChannel.next(state);
+  }
+
+  emojiPickerChannelReaction(state: boolean) {
+    console.log('thread reaction picker')
+    this.emojiPickerSubjectChannelReaction.next(state);
   }
 
   associatedUserChat(state: boolean) {

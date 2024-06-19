@@ -42,6 +42,7 @@ export class MainComponent implements OnInit {
   emojiPickerThread = false;
   emojiPickerThreadReaction = false;
   emojiPickerChannel = false;
+  emojiPickerChannelReaction = false;
   associatedUserChat = false;
   associatedUserChatThread = false;
   isIdle: number = 0;
@@ -129,6 +130,13 @@ export class MainComponent implements OnInit {
       }
     );
 
+    this.emojiPickerChannelReactionSubscription = this.chatService.emojiPickerChannelReaction$.subscribe(
+      (state: boolean) => {
+        this.emojiPickerChannelReaction = state;
+        console.log( this.emojiPickerChannelReaction)
+      }
+    );
+
     this.AssociatedUserChatSubscription =
       this.chatService.associatedUserChat$.subscribe((state: boolean) => {
         this.associatedUserChat = state;
@@ -168,6 +176,12 @@ export class MainComponent implements OnInit {
     if (this.emojiPickerThreadReactionSubscription) {
       this.emojiPickerThreadReactionSubscription.unsubscribe();
     }
+    if (this.emojiPickerChannelSubscription) {
+      this.emojiPickerChannelSubscription.unsubscribe();
+    }
+    if (this.emojiPickerChannelReactionSubscription) {
+      this.emojiPickerChannelReactionSubscription.unsubscribe();
+    }
     if (this.AssociatedUserChatSubscription) {
       this.AssociatedUserChatSubscription.unsubscribe();
     }
@@ -200,6 +214,11 @@ export class MainComponent implements OnInit {
   closeEmojiPickerChannel() {
     console.log('thread Reaction picker')
     this.chatService.emojiPickerChannel(false);
+  }
+
+  closeEmojiPickerChannelReaction() {
+    console.log('thread Reaction picker')
+    this.chatService.emojiPickerChannelReaction(false);
   }
 
   closeAssociatedUserChat() {

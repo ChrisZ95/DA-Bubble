@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { DialogAddPeopleComponent } from '../../dialog-add-people/dialog-add-people.component';
 import { DialogContactInfoComponent } from '../../dialog-contact-info/dialog-contact-info.component';
 import { ChatService } from '../../services/chat.service';
-import { collection, doc, getDocs, getDoc } from 'firebase/firestore';
+import { collection, doc, getDocs, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { CommonModule, NgFor } from '@angular/common';
 import { TimestampPipe } from '../../shared/pipes/timestamp.pipe';
 import { Channel } from './../../../models/channel.class';
@@ -57,6 +57,8 @@ export class ChannelchatComponent implements OnInit, OnDestroy {
   currentUserID:any
   isEditingArray: boolean[] = [];
   openEmojiPickerChannelReaction = false;
+  emojiReactionMessageID: any;
+  emojiPickerChannelReactionSubscription: Subscription | null = null;
 
   emoji = [
     {
@@ -81,7 +83,7 @@ export class ChannelchatComponent implements OnInit, OnDestroy {
 
   async ngOnInit(): Promise<void> {
     this.currentChannelId = this.channelService.getCurrentChannelId();
-    this.currentUserID = this.firestoreService.getCurrentUid()
+    this.currentUserID = localStorage.getItem('uid');
     console.log(this.currentUserID)
     // await Promise.all([this.loadChannels(), this.loadUsers(), this.loadChannelMessages(this.currentChannelId)]);
     // this.initializeHoverArray();
@@ -94,11 +96,20 @@ export class ChannelchatComponent implements OnInit, OnDestroy {
         this.loadUsers()
       },
     );
+
+    this.emojiPickerChannelReactionSubscription = this.chatService.emojiPickerChannelReaction$.subscribe(
+      (state: boolean) => {
+        this.openEmojiPickerChannelReaction = state;
+      }
+    );
   }
 
   ngOnDestroy() {
     if (this.channelDocumentIDSubsrciption) {
       this.channelDocumentIDSubsrciption.unsubscribe();
+    }
+    if (this.emojiPickerChannelReactionSubscription) {
+      this.emojiPickerChannelReactionSubscription.unsubscribe();
     }
   }
 
@@ -177,10 +188,52 @@ export class ChannelchatComponent implements OnInit, OnDestroy {
     this.currentChannelId = this.channelService.getCurrentChannelId();
   }
 
-  openContactInfoDialog(userDetails: any) {
-    const userDocRef = this.firestoreService.getUserDocRef(userDetails);
-    // this.unsubscribe = onSnapshot(userDocRef, (doc) => this.handleUserDocSnapshot(doc));
+  async openContactInfoDialog(uid: any) {
+    let allUsers = await this.firestoreService.getAllUsers();
+    let userDetails = allUsers.filter(
+      (user) => user.uid == uid
+    );
+    this.dialog.open(DialogContactInfoComponent, {
+      data: userDetails[0],
+    });
   }
+
+  async getMessageForSpefifiedEmoji(emoji: any, currentUserID:any, messageID:any) {
+    const emojiReactionID = emoji.id;
+    const emojiReactionDocRef = doc( this.firestore, 'newchats', this.currentDocID, 'messages', messageID, 'emojiReactions', emojiReactionID);
+
+    this.uploadNewEmojiReaction(emoji, currentUserID, emojiReactionDocRef)
+  }
+
+  async uploadNewEmojiReaction(emoji: any, currentUserID: any, emojiReactionDocRef: any) {
+      const docSnapshot = await getDoc(emojiReactionDocRef);
+
+      if (docSnapshot.exists()) {
+        const reactionDocData: any = docSnapshot.data();
+        reactionDocData.emojiCounter++;
+        reactionDocData.reactedBy.push(currentUserID);
+
+        await updateDoc(emojiReactionDocRef, {
+          emojiCounter: reactionDocData.emojiCounter,
+          reactedBy: reactionDocData.reactedBy
+        });
+      } else {
+        const emojiReactionData = {
+          emojiIcon: emoji.native,
+          reactedBy: [currentUserID],
+          emojiCounter: 1,
+          emoji: emoji
+        };
+        await setDoc(emojiReactionDocRef, emojiReactionData);
+      }
+      this.loadChannelMessages(this.currentDocID)
+    }
+
+    openEmojiMartPicker(messageID: any) {
+      this.openEmojiPickerChannelReaction = true;
+      this.emojiReactionMessageID = messageID;
+      this.chatService.emojiPickerChannelReaction(true);
+    }
 
   handleUserDocSnapshot(doc: any) {
     if (doc.exists()) {

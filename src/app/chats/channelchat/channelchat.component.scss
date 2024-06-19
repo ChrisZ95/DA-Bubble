@@ -1,3 +1,9 @@
+.emoji-picker-container {
+  position: absolute;
+  bottom: 50px;
+  z-index: 1000;
+}
+
 .d-flex{
     display: flex;
     gap: 10px;
@@ -39,18 +45,18 @@
     box-shadow: 0 4px 2px rgba(225, 225, 225, 0.5);
     flex: 0 0 auto;
     justify-content: space-between;
-  
+
     .images {
       display: flex;
       align-items: center;
       gap: 25px;
-  
+
       .images-participants {
         display: flex;
         align-items: center;
         padding: 5px 15px;
         border-radius: 25px;
-  
+
         &:hover {
           background-color: #ECEEFE;
           cursor: pointer;
@@ -79,14 +85,14 @@
           width: 50px;
           object-fit: cover;
         }
-  
+
         h2 {
           margin: 0;
           padding-left: 10px;
           font-family: "nunito-bold";
         }
       }
-  
+
       .add-participants {
         display: flex;
         justify-content: center;
@@ -103,10 +109,10 @@
       }
     }
   }
-  
+
 .text-editor-channel {
     position: relative;
-    flex: 0 0 auto; 
+    flex: 0 0 auto;
     width: 100%;
     margin-bottom: 20px;
 }
