@@ -15,6 +15,15 @@
     <button class="search-button">
       <img src="./../assets/images/search.png">
     </button>
+    <div #dropdownMenu class="dropdown-menu" *ngIf="showDropdown">
+      <div class="dropdown-item" *ngFor="let entity of filteredEntities" (click)="selectEntity(entity)">
+        <div *ngIf="entity.isChannel == true">#</div>
+        <div *ngIf="entity.isUser == true" class="user-photo-name">
+          <img [src]="entity.photo" alt=""> <span class="at-symbol">&commat;</span>
+        </div>
+        {{ entity.username || entity.channelName }}
+      </div>
+    </div>
   </div>
   <div class="profile">
     <span class="user-name">{{ userName }}</span>
@@ -38,14 +47,5 @@
       <button *ngIf="!guestLogIn" mat-menu-item (click)="openProfileDialog()">Profil</button>
       <button (click)="logOut()" mat-menu-item>Log out</button>
     </mat-menu>
-  </div>
-</div>
-<div #dropdownMenu class="dropdown-menu" *ngIf="showDropdown">
-  <div class="dropdown-item" *ngFor="let entity of filteredEntities" (click)="selectEntity(entity)">
-    <div *ngIf="entity.isChannel == true">#</div>
-    <div *ngIf="entity.isUser == true" class="user-photo-name">
-      <img [src]="entity.photo" alt=""> <span class="at-symbol">&commat;</span>
-    </div>
-    {{ entity.username || entity.channelName }}
   </div>
 </div>

@@ -2,7 +2,7 @@
   position: relative;
   height: 15vh;
   width: calc(100vw - 90px);
-  overflow: hidden;
+  // overflow: hidden;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -12,6 +12,7 @@
 }
 
 .search-input {
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -168,9 +169,9 @@
 
 .dropdown-menu {
   position: absolute;
-  top: 12.5%;
-  left: 25%;
-  width: 45%;
+  top: 90%;
+  left: 5%;
+  width: 90%;
   background: white;
   border: 1px solid #ccc;
   border-top: none;
@@ -179,6 +180,29 @@
   z-index: 1000;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 12px;
+
+  /* Custom Scrollbar for WebKit browsers */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+
+  /* Custom Scrollbar for Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: lightgrey #eceefe;
 }
 
 .dropdown-item {

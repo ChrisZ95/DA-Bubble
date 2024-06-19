@@ -1,16 +1,5 @@
 import { FirestoreService } from './../firestore.service';
-import {
-  Component,
-  OnInit,
-  OnDestroy,
-  HostListener,
-  ElementRef,
-  Renderer2,
-  Output,
-  EventEmitter,
-  ViewChild,
-  ViewEncapsulation,
-} from '@angular/core';
+import { Component,OnInit,OnDestroy,HostListener,ElementRef,Renderer2,Output,EventEmitter,ViewChild,ViewEncapsulation} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
