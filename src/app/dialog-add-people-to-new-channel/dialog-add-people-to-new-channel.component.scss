@@ -16,8 +16,14 @@
     justify-content: space-between;
     font-size: 24px;
     font-weight: 700;
-    img{
+
+    .close-button {
+
+      &:hover {
+        filter: brightness(0) saturate(100%) invert(26%) sepia(95%)
+        saturate(2195%) hue-rotate(217deg) brightness(95%) contrast(89%);
         cursor: pointer;
+      }
     }
 }
 
@@ -75,9 +81,9 @@
     width: 50%;
     margin-left: 15px;
     position: absolute;
-    top: 70%; 
-    overflow-y: scroll; 
-    height: fit-content; 
+    top: 70%;
+    overflow-y: scroll;
+    height: fit-content;
     max-height: 110px;
 }
 

@@ -76,17 +76,8 @@
 
           &:hover {
             cursor: pointer;
-            background-color: rgba(128, 128, 128, 0.211);
-            border-radius: 100%;
-
-            img {
-              filter: brightness(0) saturate(100%) invert(26%) sepia(95%)
-                saturate(2195%) hue-rotate(217deg) brightness(95%) contrast(89%);
-            }
-          }
-
-          &:active {
-            background-color: rgba(128, 128, 128, 0.492);
+            filter: brightness(0) saturate(100%) invert(26%) sepia(95%)
+              saturate(2195%) hue-rotate(217deg) brightness(95%) contrast(89%);
           }
         }
       }
@@ -253,7 +244,7 @@
             pointer-events: none;
             margin-top: 5px;
           }
-      
+
           &:hover .status-text {
             opacity: 1;
           }

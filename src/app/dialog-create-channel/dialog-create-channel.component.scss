@@ -70,10 +70,11 @@
         height: 24px;
         width: 24px;
         padding: 5px;
-        cursor: pointer;
+
         &:hover{
-            border-radius: 100%;
-            background-color: #ECEEFE;
+          cursor: pointer;
+          filter: brightness(0) saturate(100%) invert(26%) sepia(95%)
+          saturate(2195%) hue-rotate(217deg) brightness(95%) contrast(89%);
         }
     }
 }

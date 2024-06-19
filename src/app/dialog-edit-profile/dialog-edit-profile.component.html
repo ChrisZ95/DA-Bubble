@@ -2,7 +2,9 @@
   <mat-progress-bar *ngIf="loadingScreen" mode="indeterminate"></mat-progress-bar>
 </div>
 <div class="profile-dialog-container">
-    <div class="profile-title"><span class="edit-profile-title">Dein Profil bearbeiten</span><img class="back-button" src="./../../assets/images/close.png" alt="" (click)="closeEditProfileDialog()"></div>
+    <div class="profile-title"><span class="edit-profile-title">Dein Profil bearbeiten</span>
+      <img class="back-button" src="./../../assets/images/close.png" alt="" (click)="closeEditProfileDialog()">
+    </div>
     <div class="avatar-big">
       <img *ngIf="!imageSelected" class="user-icon" [src]="userPhoto" alt="User Photo">
       <img *ngIf="imageSelected" class="image" id="profile-picture-preview" [src]="imageSrc" alt="Ihr Bild" style="height: 200px; width: 200px; border-radius: 500px;"/>

@@ -346,8 +346,8 @@ export class ChannelchatComponent implements OnInit, OnDestroy {
   }
 
   addEmoji(event: any) {
-    // const currentUserID = localStorage.getItem('uid');
-    // this.getMessageForSpefifiedEmoji(event.emoji, currentUserID, this.emojiReactionMessageID)
+    const currentUserID = localStorage.getItem('uid');
+    this.getMessageForSpefifiedEmoji(event.emoji, currentUserID, this.emojiReactionMessageID)
   }
 
   // async loadMessages(): Promise<void> {
@@ -474,56 +474,25 @@ export class ChannelchatComponent implements OnInit, OnDestroy {
     this.isHoveredArray[index] = true;
   }
 
-  startEditingMessage(index: number, message: string) {
-    this.editingMessageIndex = index;
-    this.editedMessageText = message;
-  }
-
-  saveEditedMessage(index: number) {
-    if (this.editedMessageText.trim()) {
-      this.channelService.messagesWithAuthors[index].message = this.editedMessageText;
-      this.channelService.updateMessage(this.channelService.messagesWithAuthors[index].messageId, this.editedMessageText);
-    }
-    this.editingMessageIndex = null;
-    this.editedMessageText = '';
-  }
-
-  cancelEditingMessage() {
-    this.editingMessageIndex = null;
-    this.editedMessageText = '';
-  }
-
   shouldShowSeparator(index: number): boolean {
-    if (index === 0) return true;
-    return this.isDifferentDay(index);
-  }
-
-  isDifferentDay(index: number): boolean {
-    const { currentMessage, previousMessage } = this.getMessagesAt(index);
-    const { currentDate, previousDate } = this.getDates(currentMessage, previousMessage);
-    if (this.isInvalidDate(currentDate, previousDate, currentMessage, previousMessage)) return false;
-    return currentDate.toDateString() !== previousDate.toDateString();
-  }
-
-  getMessagesAt(index: number) {
-    return {
-      currentMessage: this.channelService.messagesWithAuthors[index],
-      previousMessage: this.channelService.messagesWithAuthors[index - 1]
-    };
-  }
-
-  getDates(currentMessage: any, previousMessage: any) {
-    return {
-      currentDate: new Date(Number(currentMessage.createdAt)),
-      previousDate: new Date(Number(previousMessage.createdAt))
-    };
-  }
-
-  isInvalidDate(currentDate: Date, previousDate: Date, currentMessage: any, previousMessage: any): boolean {
-    const invalid = isNaN(currentDate.getTime()) || isNaN(previousDate.getTime());
-    if (invalid) {
-      console.error(`Invalid Date - Current Message: ${JSON.stringify(currentMessage)}, Previous Message: ${JSON.stringify(previousMessage)}`);
+    if (index === 0) {
+      return true;
     }
-    return invalid;
+    const currentMessage = this.messages[index];
+    const previousMessage = this.messages[index - 1];
+    const currentDate = new Date(Number(currentMessage.createdAt));
+    const previousDate = new Date(Number(previousMessage.createdAt));
+    if (isNaN(currentDate.getTime()) || isNaN(previousDate.getTime())) {
+      console.error(
+        `Invalid Date - Current Message: ${JSON.stringify(
+          currentMessage
+        )}, Previous Message: ${JSON.stringify(previousMessage)}`
+      );
+      return false;
+    }
+    const currentDateString = currentDate.toDateString();
+    const previousDateString = previousDate.toDateString();
+    const showSeparator = currentDateString !== previousDateString;
+    return showSeparator;
   }
 }
