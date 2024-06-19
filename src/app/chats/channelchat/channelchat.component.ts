@@ -68,11 +68,29 @@ export class ChannelchatComponent implements OnInit, OnDestroy {
     }
     this.channelSubscription = this.channelService.currentChannelIdChanged.subscribe((channelId: string) => {
       this.onChannelChange(channelId);
+      console.log(channelId)
     });
   }
 
-  ngOnChanges() {
-    this.scrollToBottom();
+  async ngOnInit(): Promise<void> {
+    this.currentChannelId = this.channelService.getCurrentChannelId();
+    await Promise.all([this.loadChannels(), this.loadUsers(), this.loadMessages()]);
+    this.initializeHoverArray();
+  }
+
+  ngOnDestroy() {
+    if (this.channelSnapshotUnsubscribe) {
+      this.channelSnapshotUnsubscribe();
+    }
+    if (this.chatSnapshotUnsubscribe) {
+      this.chatSnapshotUnsubscribe();
+    }
+    if (this.channelSubscription) {
+      this.channelSubscription.unsubscribe();
+    }
+    if (this.unsubscribe) {
+      this.unsubscribe();
+    }
   }
 
   updateHoverState(index: number, isHovered: boolean) {
@@ -98,7 +116,7 @@ export class ChannelchatComponent implements OnInit, OnDestroy {
     const userDocRef = this.firestoreService.getUserDocRef(userDetails);
     this.unsubscribe = onSnapshot(userDocRef, (doc) => this.handleUserDocSnapshot(doc));
   }
-  
+
   handleUserDocSnapshot(doc: any) {
     if (doc.exists()) {
       const userData = doc.data();
@@ -107,11 +125,11 @@ export class ChannelchatComponent implements OnInit, OnDestroy {
       this.openUserDialog();
     }
   }
-  
+
   populateUserForm(id: string, userData: any) {
     this.userForm = { id, ...userData };
   }
-  
+
   setUserDialogData() {
     this.userDialogData = {
       username: this.userForm['username'],
@@ -124,23 +142,9 @@ export class ChannelchatComponent implements OnInit, OnDestroy {
       emailVerified: this.firestoreService.auth.currentUser.emailVerified
     };
   }
-  
+
   openUserDialog() {
     this.dialog.open(DialogContactInfoComponent, { data: this.userDialogData });
-  }
-
-  ngAfterViewChecked() {
-    this.scrollToBottom();
-  }
-
-  scrollToBottom(): void {
-    this.scrollContainer.nativeElement.scrollTop = this.scrollContainer.nativeElement.scrollHeight;
-  }
-
-  async ngOnInit(): Promise<void> {
-    this.currentChannelId = this.channelService.getCurrentChannelId();
-    await Promise.all([this.loadChannels(), this.loadUsers(), this.loadMessages()]);
-    this.initializeHoverArray();
   }
 
   async loadChannels(): Promise<void> {
@@ -150,7 +154,7 @@ export class ChannelchatComponent implements OnInit, OnDestroy {
       console.error('Error fetching channels:', error);
     }
   }
-  
+
   async loadUsers(): Promise<void> {
     try {
       this.allUsers = await this.firestoreService.getAllUsers();
@@ -158,7 +162,7 @@ export class ChannelchatComponent implements OnInit, OnDestroy {
       console.error('Error fetching users:', error);
     }
   }
-  
+
   async loadMessages(): Promise<void> {
     try {
       const messages = await this.channelService.loadMessagesForChannel(this.currentChannelId);
@@ -172,24 +176,9 @@ export class ChannelchatComponent implements OnInit, OnDestroy {
       console.error('Error loading messages:', error);
     }
   }
-  
+
   initializeHoverArray(): void {
     this.isHoveredArray = new Array(this.channelService.messagesWithAuthors.length).fill(false);
-  }
-
-  ngOnDestroy() {
-    if (this.channelSnapshotUnsubscribe) {
-      this.channelSnapshotUnsubscribe();
-    }
-    if (this.chatSnapshotUnsubscribe) {
-      this.chatSnapshotUnsubscribe();
-    }
-    if (this.channelSubscription) {
-      this.channelSubscription.unsubscribe();
-    }
-    if (this.unsubscribe) {
-      this.unsubscribe();
-    }
   }
 
   async onChannelChange(channelId: string) {
@@ -251,28 +240,28 @@ export class ChannelchatComponent implements OnInit, OnDestroy {
     if (index === 0) return true;
     return this.isDifferentDay(index);
   }
-  
+
   isDifferentDay(index: number): boolean {
     const { currentMessage, previousMessage } = this.getMessagesAt(index);
     const { currentDate, previousDate } = this.getDates(currentMessage, previousMessage);
     if (this.isInvalidDate(currentDate, previousDate, currentMessage, previousMessage)) return false;
     return currentDate.toDateString() !== previousDate.toDateString();
   }
-  
+
   getMessagesAt(index: number) {
     return {
       currentMessage: this.channelService.messagesWithAuthors[index],
       previousMessage: this.channelService.messagesWithAuthors[index - 1]
     };
   }
-  
+
   getDates(currentMessage: any, previousMessage: any) {
     return {
       currentDate: new Date(Number(currentMessage.createdAt)),
       previousDate: new Date(Number(previousMessage.createdAt))
     };
   }
-  
+
   isInvalidDate(currentDate: Date, previousDate: Date, currentMessage: any, previousMessage: any): boolean {
     const invalid = isNaN(currentDate.getTime()) || isNaN(previousDate.getTime());
     if (invalid) {

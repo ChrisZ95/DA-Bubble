@@ -1,30 +1,12 @@
 import { Injectable } from '@angular/core';
-import {
-  Firestore,
-  collection,
-  addDoc,
-  DocumentReference,
-  DocumentData,
-  doc,
-  updateDoc,
-  getDoc,
-  query,
-  where,
-  getDocs,
-  Query,
-  QuerySnapshot,
-  QueryDocumentSnapshot,
-  deleteDoc
-} from '@angular/fire/firestore';
+import { Firestore, collection, addDoc, DocumentReference, DocumentData, doc, updateDoc, getDoc, query, where, getDocs, Query, QuerySnapshot, QueryDocumentSnapshot, deleteDoc} from '@angular/fire/firestore';
 import { Channel } from './../../models/channel.class';
 import { FirestoreService } from '../firestore.service';
 import { EventEmitter } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { ChannelchatComponent } from '../chats/channelchat/channelchat.component';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({providedIn: 'root'})
 export class ChannelService {
   channel = new Channel();
   channelID: string = '';
@@ -46,16 +28,74 @@ export class ChannelService {
   currentMessageIdChanged: EventEmitter<string> = new EventEmitter<string>();
   currentMessageChanged: EventEmitter<any> = new EventEmitter<any>();
   currentChannelIdChanged: EventEmitter<string> = new EventEmitter<string>();
-  currentMessageCommentsChanged: EventEmitter<any[]> = new EventEmitter<
-    any[]
-  >();
+  currentMessageCommentsChanged: EventEmitter<any[]> = new EventEmitter<any[]>();
   private currentChannelIdSource = new BehaviorSubject<string | null>(null);
   currentChannelId$ = this.currentChannelIdSource.asObservable();
 
-  constructor(
-    private readonly firestore: Firestore,
-    public FirestoreService: FirestoreService
-  ) {}
+  constructor( private readonly firestore: Firestore, public FirestoreService: FirestoreService) {}
+
+  async sendMessageToDatabase(imageFile: any, message: any, currentDocID: any) {
+    const timestamp = this.FirestoreService.createTimeStamp();
+    const currentuserID = localStorage.getItem('uid');
+    const currentUserData = await this.loadUserDataFromDatabase(currentuserID);
+    if (!currentUserData) {
+      console.error('Fehler: Benutzer konnte nicht geladen werden.');
+      return;
+    }
+
+    try {
+      const newThread = {
+        createdAt: timestamp,
+        createdBy: currentuserID,
+        participants: [currentuserID],
+      };
+      const threadDocRef = await addDoc(collection(this.firestore, 'threads'), newThread);
+      const threadCollectionRef = collection(this.firestore, `threads/${threadDocRef.id}/messages`);
+      const threadMessage = {
+      message: message,
+      image: imageFile,
+      createdAt: timestamp,
+      senderName: currentUserData.username,
+      senderID: currentUserData.uid,
+    };
+    await addDoc(threadCollectionRef, threadMessage);
+      const messagesCollectionRef = collection(this.firestore, `channels/${currentDocID}/messages`);
+      const newMessage = {
+        message: message,
+        image: imageFile,
+        createdAt: timestamp,
+        senderName: currentUserData.username,
+        senderID: currentUserData.uid,
+        threadID: threadDocRef.id,
+      };
+      await addDoc(messagesCollectionRef, newMessage);
+
+    } catch (error) {
+      console.error('Fehler beim Speichern der Nachricht:', error);
+    }
+  }
+
+  async loadUserDataFromDatabase(userID: any) {
+    const docRef = doc(this.firestore, 'users', userID);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      const userData = docSnap.data();
+      const userDetails = {
+        username: userData['username'],
+        email: userData['email'],
+        photo: userData['photo'],
+        uid: userData['uid'],
+        signUpdate: userData['signUpdate'],
+        logIndate: userData['logIndate'],
+        logOutDate: userData['logOutDate'],
+      };
+      return userDetails;
+    } else {
+      console.log('No such document!');
+      return null;
+    }
+  }
 
   updateMessageInMessagesList(messageId: string, newComment: any): void {
     const messageIndex = this.messages.findIndex(
@@ -126,7 +166,7 @@ export class ChannelService {
         .catch(reject);
     });
   }
-  
+
   createNewChannel(channelData: any): Promise<string> {
     return addDoc(collection(this.firestore, 'channels'), channelData)
       .then((result: any) => result.id)
@@ -135,7 +175,7 @@ export class ChannelService {
         throw error;
       });
   }
-  
+
   updateChannelData(channelId: string, channelData: any): Promise<void> {
     const channelDocRef = doc(this.firestore, 'channels', channelId);
     return updateDoc(channelDocRef, { ...channelData, channelId })
@@ -180,11 +220,11 @@ export class ChannelService {
       throw error;
     }
   }
-  
+
   getUserDocumentReference(uid: string): DocumentReference {
     return doc(this.firestore, 'users', uid);
   }
-  
+
   async getUserData(userDocRef: DocumentReference): Promise<DocumentData | null> {
     const userSnapshot = await getDoc(userDocRef);
     if (userSnapshot.exists()) {
@@ -194,7 +234,7 @@ export class ChannelService {
       return null;
     }
   }
-  
+
   extractUsername(userData: DocumentData): string | null {
     if (userData && userData['username']) {
       return userData['username'];
@@ -214,11 +254,11 @@ export class ChannelService {
       throw error;
     }
   }
-  
+
   getChannelDocumentReference(channelId: string): DocumentReference {
     return doc(this.firestore, 'channels', channelId);
   }
-  
+
   async getChannelData(channelDocRef: DocumentReference): Promise<DocumentData | null> {
     const channelSnapshot = await getDoc(channelDocRef);
     if (channelSnapshot.exists()) {
@@ -228,7 +268,7 @@ export class ChannelService {
       return null;
     }
   }
-  
+
   extractChannelAuthor(channelData: DocumentData | null): string | null {
     if (channelData && channelData['author']) {
       return channelData['author'];
@@ -242,6 +282,7 @@ export class ChannelService {
     this.currentChannelId = channelId;
     console.log('Current channel ID changed to:', channelId);
     this.currentChannelIdChanged.emit(channelId);
+    this.currentChannelIdSource.next(channelId);
   }
 
   setCurrentMessageId(messageId: string) {
@@ -277,13 +318,13 @@ export class ChannelService {
       return [];
     }
   }
-  
+
   private async queryChannelMessages(channelId: string): Promise<QuerySnapshot<DocumentData>> {
     const chatsRef = collection(this.firestore, 'chats');
     const q: Query<DocumentData> = query(chatsRef, where('channelId', '==', channelId));
     return await getDocs(q);
   }
-  
+
   private processQuerySnapshot(querySnapshot: QuerySnapshot<DocumentData>): void {
     this.messages = [];
     querySnapshot.forEach((doc) => {
@@ -291,7 +332,7 @@ export class ChannelService {
       this.processChatDataMessages(chatData);
     });
   }
-  
+
   private processChatDataMessages(chatData: DocumentData): void {
     if (chatData['messages'] && Array.isArray(chatData['messages'])) {
       const messagesWithCommentCount = chatData['messages'].map((message: any) => {
@@ -300,7 +341,7 @@ export class ChannelService {
       this.messages.push(...messagesWithCommentCount);
     }
   }
-  
+
   private processMessageWithCommentCount(message: any): any {
     const commentCount = message.comments ? message.comments.length : 0;
     const lastCommentTime = message.comments
@@ -352,12 +393,12 @@ export class ChannelService {
       throw error;
     }
   }
-  
+
   async getChatsSnapshot(): Promise<QuerySnapshot<DocumentData>> {
     const chatsRef = collection(this.firestore, 'chats');
     return await getDocs(chatsRef);
   }
-  
+
   findAndUpdateMessage(snapshot: QuerySnapshot<DocumentData>, messageId: string, newMessageText: string): boolean {
     for (const chatDoc of snapshot.docs) {
       const chatData = chatDoc.data();
@@ -372,7 +413,7 @@ export class ChannelService {
     }
     return false;
   }
-  
+
   async updateMessageInChatDocument(chatDoc: QueryDocumentSnapshot<DocumentData>, messages: any[], messageIndex: number, newMessageText: string): Promise<void> {
     messages[messageIndex].message = newMessageText;
     await updateDoc(doc(this.firestore, 'chats', chatDoc.id), { messages });
@@ -390,7 +431,7 @@ export class ChannelService {
       throw error;
     }
   }
-  
+
   private async findAndUpdateComment(snapshot: QuerySnapshot<DocumentData>, messageId: string, commentId: string, newCommentText: string): Promise<boolean> {
     for (const chatDoc of snapshot.docs) {
       const chatData = chatDoc.data();
@@ -405,7 +446,7 @@ export class ChannelService {
     }
     return false;
   }
-  
+
   updateCommentInMessages(messages: any[], messageId: string, commentId: string, newCommentText: string): boolean {
     for (const message of messages) {
       if (message.messageId === messageId && message.comments && Array.isArray(message.comments)) {
@@ -418,7 +459,7 @@ export class ChannelService {
     }
     return false;
   }
-  
+
   async updateMessagesInChatDocument(chatDoc: QueryDocumentSnapshot<DocumentData>, messages: any[]): Promise<void> {
     await updateDoc(doc(this.firestore, 'chats', chatDoc.id), { messages });
   }
@@ -441,16 +482,16 @@ export class ChannelService {
   async deleteChannel(channelId: string) {
     const channelDocRef = this.getChannelDocByID(channelId);
     await deleteDoc(channelDocRef);
-    await this.loadChannels(); 
-    this.setCurrentChannelId(''); 
-    this.channelName = null; 
+    await this.loadChannels();
+    this.setCurrentChannelId('');
+    this.channelName = null;
   }
 
   async loadChannels() {
     const channelsSnapshot = await getDocs(collection(this.firestore, 'channels'));
     this.channels = channelsSnapshot.docs.map(doc => doc.data());
   }
-  
+
   async getCurrentChannelUsers(channelDocRef: any): Promise<string[]> {
     const channelSnap = await getDoc(channelDocRef);
     if (!channelSnap.exists()) {
@@ -459,7 +500,7 @@ export class ChannelService {
     const currentChannelData = channelSnap.data() as { users: string[] };
     return currentChannelData.users || [];
   }
-  
+
   filterCurrentUser(users: string[]): string[] {
     return users.filter(userId => userId !== this.FirestoreService.currentuid);
   }

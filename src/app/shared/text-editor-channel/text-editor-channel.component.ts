@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, HostListener, Input, OnInit, ViewChild,} from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, Input, OnInit, ViewChild,} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../services/chat.service';
 import { GenerateIdsService } from '../../services/generate-ids.service';
@@ -20,30 +20,25 @@ import { Subscription } from 'rxjs';
 export class TextEditorChannelComponent implements OnInit {
   @ViewChild('fileInput', { static: true })
   fileInput!: ElementRef<HTMLInputElement>;
+  @Input() componentName!: string;
   message: string = '';
   comment: string = '';
   currentMessageComments: any[] = [];
   fileArray: any[] = [];
-  openEmojiPicker = false;
-  emojiPickerSubscription: Subscription | null = null;
+  allUsers: any[] = [];
+  memberData: { username: string }[] = [];
+  openEmojiPickerChannel = false;
   openAssociatedUser = false;
+  emojiPickerSubscription: Subscription | null = null;
   AssociatedUserSubscription: Subscription | null = null;
   filteredUsersSubscription: Subscription | null = null;
   clearTextEditorValueSubcription: Subscription | null = null;
   associatedUser: any;
-  allUsers: any[] = [];
-  memberData: { username: string }[] = [];
 
-  constructor(
-    private chatService: ChatService,
-    private threadService: ThreadService,
-    private generateId: GenerateIdsService,
-    private firestore: Firestore,
-    public channelService: ChannelService,
-    private firestoreService: FirestoreService
-  ) {}
+  currentDocID: any;
+  channelDocumentIDSubsrciption: Subscription | null = null;
 
-  @Input() componentName!: string;
+  constructor(private chatService: ChatService, private threadService: ThreadService, private generateId: GenerateIdsService, private firestore: Firestore, public channelService: ChannelService, private firestoreService: FirestoreService) {}
 
   ngOnInit(): void {
     this.subscribeToMessages();
@@ -69,6 +64,13 @@ export class TextEditorChannelComponent implements OnInit {
     }).catch(error => {
       console.error('Error fetching users:', error);
     });
+
+    this.channelDocumentIDSubsrciption = this.channelService.currentChannelId$.subscribe(
+      (docID)=> {
+        this.currentDocID = docID;
+        console.log('Channel id im text-editor', this.currentDocID)
+      },
+    );
   }
 
   ngOnDestroy(): void {
@@ -134,19 +136,20 @@ export class TextEditorChannelComponent implements OnInit {
     ) {
       console.log('wähle ein bild oder nachricht');
     } else {
-      if (this.componentName === 'ownChat') {
-        this.sendMessage();
-      } else if (this.componentName === 'thread') {
-        this.sendReply();
-      } else if (this.componentName === 'channel') {
-        this.sendMessageToChannel();
-      } else if (this.componentName === 'channelthread') {
-        this.sendCommentToMessage();
+      if (this.componentName === 'channel') {
+        this.channelService.sendMessageToDatabase(this.fileArray, this.message, this.currentDocID)
+        this.clearInputValue();
       }
       this.chatService.dataURL = null;
       this.openAssociatedUser = false;
       this.fileArray = [];
     }
+  }
+
+  clearInputValue() {
+    this.openEmojiPickerChannel = false;
+    this.message = '';
+    this.fileArray = [];
   }
 
   @HostListener('focusin', ['$event'])
@@ -166,17 +169,14 @@ export class TextEditorChannelComponent implements OnInit {
   }
 
   sendMessage() {
-    this.openEmojiPicker = false;
+    this.openEmojiPickerChannel = false;
     this.message = '';
   }
+
   sendGroupMessage() {
     console.log('Participants', this.chatService.participants);
     console.log('message', this.message);
     console.log('chatDocId', this.chatService.chatDocId);
-  }
-
-  sendReply() {
-    // this.threadService.sendReply(this.message);
   }
 
   sendMessageToChannel() {
@@ -312,19 +312,8 @@ export class TextEditorChannelComponent implements OnInit {
     if (file && (this.fileArray.length) <= 4) {
       try {
         this.chatService.dataURL =
-          await this.firestoreService.uploadDataIntoStorage(file);
-        console.log('dataURL', this.chatService.dataURL);
+        await this.firestoreService.uploadDataIntoStorage(file);
         this.insertImage(file?.type, this.chatService.dataURL, file?.name);
-        // if(file.type === 'image/png') {
-        //   this.insertImage(file?.type,this.chatService.dataURL ,file?.name);
-        //   console.log('Bild hochgeladen')
-        // } else if(file.type === 'video/mp4') {
-        //   this.insertImage(file?.type,this.chatService.dataURL ,file?.name);
-        //   console.log('Video hochgeladen')
-        // }  else if(file.type === 'audio/wav') {
-        //   this.insertImage(file?.type, this.chatService.dataURL ,file?.name);
-        //   console.log('audio hochgeladen')
-        // }
       } catch (error) {
         console.error('Error uploading file:', error);
       }
