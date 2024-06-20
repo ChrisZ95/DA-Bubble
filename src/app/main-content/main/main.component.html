@@ -1,5 +1,5 @@
-<div (click)="closeEmojiPickerChat()"  *ngIf="emojiPickerChat" class="close-emoji-picker"></div>
-<div (click)="closeEmojiPickerChatReaction()"  *ngIf="emojiPickerChatReaction" class="close-emoji-picker"></div>
+<div (click)="closeEmojiPickerChat()" *ngIf="emojiPickerChat" class="close-emoji-picker"></div>
+<div (click)="closeEmojiPickerChatReaction()" *ngIf="emojiPickerChatReaction" class="close-emoji-picker"></div>
 <div (click)="closeEmojiPickerThread()" *ngIf="emojiPickerThread" class="close-emoji-picker"></div>
 <div (click)="closeEmojiPickerThreadReaction()" *ngIf="emojiPickerThreadReaction" class="close-emoji-picker"></div>
 <div (click)="closeEmojiPickerChannel()" *ngIf="emojiPickerChannel" class="close-emoji-picker"></div>
@@ -8,13 +8,14 @@
 <div (click)="closeAssociatedUserChatThread()" *ngIf="associatedUserChatThread" class="close-emoji-picker"></div>
 <div class="main">
   <div class="container">
-    <app-header (userDetails)="openChat($event)" (channelDetails)="channelInformaion($event)" class="header-container"></app-header>
+    <app-header (userDetails)="openChat($event)" (channelDetails)="channelInformaion($event)"
+      class="header-container"></app-header>
     <div class="main-container">
       <div class="workspace-chat-thread">
 
-        <div *ngIf="firestoreService.displayWorkspace" class="workspace" [@displayWorkspaceTrigger]="firestoreService.displayWorkspace">
-          <app-workspace (userDetails)="openChat($event)" (disyplayEmptyChat)="openEmptyChat()"
-            [channelDetails]="channelDetails" />
+        <div *ngIf="firestoreService.displayWorkspace" class="workspace"
+          [@displayWorkspaceTrigger]="firestoreService.displayWorkspace">
+          <app-workspace (userDetails)="openChat($event)" [channelDetails]="channelDetails" />
         </div>
 
         <div *ngIf="channelService.showChannelChat" class="chat">

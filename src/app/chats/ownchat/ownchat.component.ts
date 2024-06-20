@@ -25,12 +25,12 @@ import { filter } from 'rxjs/operators';
 @Component({
   selector: 'app-ownchat',
   standalone: true,
-  imports: [ TextEditorComponent, EmojiComponent, PickerComponent, TimestampPipe, CommonModule, TimestampPipe, FormsModule, MatIconModule, MatMenuModule, MatButtonModule],
+  imports: [TextEditorComponent, EmojiComponent, PickerComponent, TimestampPipe, CommonModule, TimestampPipe, FormsModule, MatIconModule, MatMenuModule, MatButtonModule],
   templateUrl: './ownchat.component.html',
   styleUrls: ['./ownchat.component.scss', '../chats.component.scss'],
 })
 export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
-  constructor(private firestore: Firestore,  public dialog: MatDialog, public chatService: ChatService, public threadService: ThreadService, public firestoreService: FirestoreService) {
+  constructor(private firestore: Firestore,public dialog: MatDialog, public chatService: ChatService, public threadService: ThreadService, public firestoreService: FirestoreService) {
     this.isEditingArray.push(false);
   }
   @Input() userDetails: any;
@@ -70,6 +70,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   uid: any;
   username: any;
   currentUserID: any;
+  currentUser: any;
   users: Map<string, any> = new Map();
   emojiReactionMessageID: any;
   isEditingArray: boolean[] = [];
@@ -98,11 +99,10 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.messages = [];
-    this.emojiPickerChatReactionSubscription = this.chatService.emojiPickerChatReaction$.subscribe(
-      (state: boolean) => {
+    this.emojiPickerChatReactionSubscription =
+      this.chatService.emojiPickerChatReaction$.subscribe((state: boolean) => {
         this.openEmojiPickerChatReaction = state;
-      }
-    );
+      });
     this.userDetailsSubscription = this.chatService.userInformation$.subscribe(
       (data) => {
         this.userInformation = data;
@@ -121,36 +121,42 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
       }
     );
 
-
-    this.clearMessagesSubscription = this.firestoreService.clearMessages$.subscribe(() => {
-      this.clearVariables();
-    });
+    this.clearMessagesSubscription =
+      this.firestoreService.clearMessages$.subscribe(() => {
+        this.clearVariables();
+      });
 
     this.documentIDSubsrciption = this.chatService.documentID$.subscribe(
-      (docID)=> {
-        if(docID) {
-          this.messages = []
-          this.currentChatID = docID
-          this.loadChatMessages(this.currentChatID)
+      (docID) => {
+        if (docID) {
+          this.messages = [];
+          this.currentChatID = docID;
+          this.loadChatMessages(this.currentChatID);
         }
-      },
+      }
     );
 
-    this.chatSubscription = this.chatService.chatData$.subscribe(data => {
+    this.chatSubscription = this.chatService.chatData$.subscribe((data) => {
       this.chatData = data;
 
       if (this.chatData?.participants?.length === 1) {
-        this.loadPrivateChat()
+        this.loadPrivateChat();
       } else if (this.chatData?.participants?.length > 1) {
         this.loadParticipantUserData();
       } else {
         console.log('Ungültige Chatdaten');
       }
     });
+
+    this.firestoreService
+      .getUserData(this.firestoreService.currentuid)
+      .then((user) => {
+        this.currentUser = user;
+      });
   }
 
   ngOnDestroy(): void {
-    this.messages = []
+    this.messages = [];
     if (this.emojiPickerChatReactionSubscription) {
       this.emojiPickerChatReactionSubscription.unsubscribe();
     }
@@ -188,34 +194,33 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   clearVariables() {
-    this.messages = []
+    this.messages = [];
   }
 
   async deleteMessage(index: any, messageID: any) {
     try {
       if (!this.firestore) {
-        throw new Error("Firestore instance is not defined.");
+        throw new Error('Firestore instance is not defined.');
       }
       if (!this.currentDocID) {
-        throw new Error("CurrentDocID is not defined.");
+        throw new Error('CurrentDocID is not defined.');
       }
       if (!messageID) {
-        throw new Error("Message ID is not defined.");
+        throw new Error('Message ID is not defined.');
       }
-      const messageDocRef = doc(this.firestore, 'newchats', this.currentDocID, 'messages', messageID);
+      const messageDocRef = doc(this.firestore,'newchats', this.currentDocID,'messages', messageID );
       const messageDocSnap = await getDoc(messageDocRef);
 
       if (messageDocSnap.exists()) {
         const messageData = messageDocSnap.data();
-        const threadDocRef = doc(this.firestore, 'threads', messageData['threadID']);
+        const threadDocRef = doc( this.firestore,'threads', messageData['threadID']
+        );
         const threadDocSnap = await getDoc(threadDocRef);
 
         if (threadDocSnap.exists()) {
-          const threadMessagesCollectionRef = collection(this.firestore, `threads/${messageData['threadID']}/messages`);
+          const threadMessagesCollectionRef = collection(this.firestore,`threads/${messageData['threadID']}/messages`);
           const threadMessagesSnap = await getDocs(threadMessagesCollectionRef);
-          for (const doc of threadMessagesSnap.docs) {
-            await deleteDoc(doc.ref);
-          }
+          for (const doc of threadMessagesSnap.docs) {await deleteDoc(doc.ref); }
           await deleteDoc(threadDocRef);
           this.threadService.displayThread = false;
         } else {
@@ -236,7 +241,8 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   scrollToBottom(): void {
     try {
       if (this.scrollContainer && this.scrollContainer.nativeElement) {
-        this.scrollContainer.nativeElement.scrollTop = this.scrollContainer.nativeElement.scrollHeight;
+        this.scrollContainer.nativeElement.scrollTop =
+          this.scrollContainer.nativeElement.scrollHeight;
       }
     } catch (err) {
       console.error(err);
@@ -244,53 +250,70 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   async loadChatMessages(docID: any) {
-    const docRef = doc(this.firestore, "newchats", docID);
+    const docRef = doc(this.firestore, 'newchats', docID);
     this.currentDocID = docID;
 
     onSnapshot(docRef, async (docSnap) => {
       if (docSnap.exists()) {
-        const messagesRef = collection(this.firestore, "newchats", docID, "messages");
-        const reactionsRef = collection(this.firestore, "newchats", docID, "messages");
+        const messagesRef = collection(this.firestore, 'newchats', docID,'messages');
+        const reactionsRef = collection(this.firestore, 'newchats', docID, 'messages');
         onSnapshot(messagesRef, async (messagesSnap) => {
-        const messagesMap = new Map();
-        const messagePromises = messagesSnap.docs.map(async (messageDoc) => {
-          let messageData = messageDoc.data();
-          messageData['id'] = messageDoc.id;
+          const messagesMap = new Map();
+          const messagePromises = messagesSnap.docs.map(async (messageDoc) => {
+            let messageData = messageDoc.data();
+            messageData['id'] = messageDoc.id;
 
-          if (messageData['createdAt']) {
-            if (messageData['senderID']) {
-              const senderID = messageData['senderID'];
-              const senderData = await this.loadSenderData(senderID);
-              messageData['senderName'] = senderData ? senderData.username : "Unknown";
-              messageData['senderPhoto'] = senderData ? senderData.photo : null;
+            if (messageData['createdAt']) {
+              if (messageData['senderID']) {
+                const senderID = messageData['senderID'];
+                const senderData = await this.loadSenderData(senderID);
+                messageData['senderName'] = senderData ? senderData.username: 'Unknown';
+                messageData['senderPhoto'] = senderData ? senderData.photo : null;
+              }
+              const reactionsRef = collection( this.firestore, 'newchats', docID, 'messages', messageData['id'], 'emojiReactions');
+              const reactionsSnap = await getDocs(reactionsRef);
+              const reactions = reactionsSnap.docs.map((doc) => doc.data());
+              messageData['emojiReactions'] = reactions;
+              messagesMap.set(messageData['id'], messageData);
+            } else {
+              console.error(
+                'Invalid timestamp format:', messageData['createdAt']
+              );
             }
-            const reactionsRef = collection(this.firestore, "newchats", docID, "messages", messageData['id'], "emojiReactions");
-            const reactionsSnap = await getDocs(reactionsRef);
-            const reactions = reactionsSnap.docs.map(doc => doc.data());
-            messageData['emojiReactions'] = reactions;
-            messagesMap.set(messageData['id'], messageData);
-          } else {
-            console.error("Invalid timestamp format:", messageData['createdAt']);
-          }
+          });
+          await Promise.all(messagePromises);
+          this.messages = Array.from(messagesMap.values()).sort(
+            (a: any, b: any) => a.createdAt - b.createdAt
+          );
         });
-        await Promise.all(messagePromises);
-        this.messages = Array.from(messagesMap.values()).sort((a: any, b: any) => a.createdAt - b.createdAt);
-      });
       } else {
-        console.log("No such document!");
+        console.log('No such document!');
       }
+    });
+    this.loadParticipant();
+  }
+
+  currentParticipant: any;
+  loadParticipant() {
+    this.currentParticipant = this.firestoreService.allUsers.filter((user: any) => {
+        console.log('user:', user);
+        return (
+            this.chatService.currentChatParticipants.includes(user.uid) &&
+            user.uid !== this.firestoreService.currentuid
+        );
     });
   }
 
+
   async loadSenderData(senderID: any) {
-    const docRef = doc(this.firestore, "users", senderID);
+    const docRef = doc(this.firestore, 'users', senderID);
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
       const senderData = docSnap.data();
       return { username: senderData['username'], photo: senderData['photo'] };
     } else {
-      console.log("No such document!");
+      console.log('No such document!');
       return null;
     }
   }
@@ -298,21 +321,22 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   async loadPrivateChat() {
     this.currentUserID = localStorage.getItem('uid');
     if (this.currentUserID) {
-      const docRef = doc(this.firestore, "users", this.currentUserID);
+      const docRef = doc(this.firestore, 'users', this.currentUserID);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
         const userData = docSnap.data();
-        this.participantUser = [{
-          email: userData['email'],
-          signUpdate: userData['signUpdate'],
-          logIndate: userData['logIndate'],
-          logOutDate: userData['logOutDate'],
-          photo: userData['photo'],
-          uid: userData['uid'],
-          username: userData['username']
-      }];
+        this.participantUser = [
+          { email: userData['email'],
+            signUpdate: userData['signUpdate'],
+            logIndate: userData['logIndate'],
+            logOutDate: userData['logOutDate'],
+            photo: userData['photo'],
+            uid: userData['uid'],
+            username: userData['username'],
+          },
+        ];
       } else {
-        console.log("Kein Dokument des Users gefunden");
+        console.log('Kein Dokument des Users gefunden');
         window.location.reload();
       }
     }
@@ -321,105 +345,115 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   async loadParticipantUserData() {
     this.currentUserID = localStorage.getItem('uid');
     if (this.chatData && this.chatData.participants) {
-      const otherParticipant = this.chatData.participants.find((participant: string) => participant !== this.currentUserID);
+      const otherParticipant = this.chatData.participants.find(
+        (participant: string) => participant !== this.currentUserID
+      );
       if (otherParticipant) {
-        const docRef = doc(this.firestore, "users", otherParticipant);
+        const docRef = doc(this.firestore, 'users', otherParticipant);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           const userData = docSnap.data();
-          this.participantUser = [{
-            email: userData['email'],
-            signUpdate: userData['signUpdate'],
-            logIndate: userData['logIndate'],
-            logOutDate: userData['logOutDate'],
-            photo: userData['photo'],
-            uid: userData['uid'],
-            username: userData['username']
-        }];
+          this.participantUser = [
+            { email: userData['email'],
+              signUpdate: userData['signUpdate'],
+              logIndate: userData['logIndate'],
+              logOutDate: userData['logOutDate'],
+              photo: userData['photo'],
+              uid: userData['uid'],
+              username: userData['username'],
+            },
+          ];
         } else {
-          console.log("Kein Dokument des Users gefunden");
+          console.log('Kein Dokument des Users gefunden');
           window.location.reload();
         }
       } else {
-        console.log("Kein anderer Teilnehmer gefunden");
+        console.log('Kein anderer Teilnehmer gefunden');
       }
     } else {
       console.log('Chat data or participants are not available yet');
     }
   }
 
-  async getMessageForSpefifiedEmoji(emoji: any, currentUserID:any, messageID:any) {
+  async getMessageForSpefifiedEmoji(
+    emoji: any,
+    currentUserID: any,
+    messageID: any
+  ) {
     const emojiReactionID = emoji.id;
-    const emojiReactionDocRef = doc( this.firestore, 'newchats', this.currentChatID, 'messages', messageID, 'emojiReactions', emojiReactionID);
+    const emojiReactionDocRef = doc(this.firestore, 'newchats', this.currentChatID, 'messages', messageID, 'emojiReactions',emojiReactionID);
 
-    this.uploadNewEmojiReaction(emoji, currentUserID, emojiReactionDocRef)
+    this.uploadNewEmojiReaction(emoji, currentUserID, emojiReactionDocRef);
   }
 
-  async uploadNewEmojiReaction(emoji: any, currentUserID: any, emojiReactionDocRef: any) {
-      const docSnapshot = await getDoc(emojiReactionDocRef);
+  async uploadNewEmojiReaction(
+    emoji: any,
+    currentUserID: any,
+    emojiReactionDocRef: any
+  ) {
+    const docSnapshot = await getDoc(emojiReactionDocRef);
 
-      if (docSnapshot.exists()) {
-        const reactionDocData: any = docSnapshot.data();
-        reactionDocData.emojiCounter++;
-        reactionDocData.reactedBy.push(currentUserID);
+    if (docSnapshot.exists()) {
+      const reactionDocData: any = docSnapshot.data();
+      reactionDocData.emojiCounter++;
+      reactionDocData.reactedBy.push(currentUserID);
 
-        await updateDoc(emojiReactionDocRef, {
-          emojiCounter: reactionDocData.emojiCounter,
-          reactedBy: reactionDocData.reactedBy
-        });
-      } else {
-        const emojiReactionData = {
-          emojiIcon: emoji.native,
-          reactedBy: [currentUserID],
-          emojiCounter: 1,
-          emoji: emoji
-        };
-        await setDoc(emojiReactionDocRef, emojiReactionData);
+      await updateDoc(emojiReactionDocRef, {
+        emojiCounter: reactionDocData.emojiCounter,
+        reactedBy: reactionDocData.reactedBy,
+      });
+    } else {
+      const emojiReactionData = {
+        emojiIcon: emoji.native,
+        reactedBy: [currentUserID],
+        emojiCounter: 1,
+        emoji: emoji,
+      };
+      await setDoc(emojiReactionDocRef, emojiReactionData);
+    }
+    this.loadChatMessages(this.currentDocID);
+  }
+
+  async addOrDeleteReaction(emoji: any, currentUserID: any, messageID: any) {
+    const docRef = doc(this.firestore, 'newchats', this.currentDocID,'messages', messageID, 'emojiReactions', emoji.id);
+    const docSnap = await getDoc(docRef);
+    const threadDocRef = doc(this.firestore, 'newchats', this.currentDocID, 'messages', messageID);
+    const threadDocSnap = await getDoc(threadDocRef);
+
+    if (threadDocSnap.exists()) {
+      const messageData = threadDocSnap.data();
+      if (messageData) {
+        const threadID = messageData['threadID'];
       }
-      this.loadChatMessages(this.currentDocID)
     }
 
-    async addOrDeleteReaction(emoji: any, currentUserID: any, messageID: any) {
-      const docRef = doc(this.firestore, "newchats", this.currentDocID, "messages", messageID, "emojiReactions", emoji.id);
-      const docSnap = await getDoc(docRef)
+    if (docSnap.exists()) {
+      const reactionData = docSnap.data();
+      const reactedByArray = reactionData['reactedBy'] || [];
 
-      const threadDocRef = doc(this.firestore, "newchats", this.currentDocID, "messages", messageID);
-      const threadDocSnap = await getDoc(threadDocRef)
-
-      if(threadDocSnap.exists()) {
-        const messageData = threadDocSnap.data();
-        if(messageData) {
-          const threadID = messageData['threadID'];
-        }
+      if (reactedByArray.includes(currentUserID)) {
+        console.log('user hat bereits reagiert');
+        this.deleteEmojireaction(emoji, currentUserID, messageID);
+      } else {
+        this.getMessageForSpefifiedEmoji(emoji, currentUserID, messageID);
       }
-
-      if (docSnap.exists()) {
-          const reactionData = docSnap.data();
-          const reactedByArray = reactionData['reactedBy'] || [];
-
-          if (reactedByArray.includes(currentUserID)) {
-           console.log('user hat bereits reagiert')
-           this.deleteEmojireaction(emoji, currentUserID, messageID)
-          } else {
-            this.getMessageForSpefifiedEmoji(emoji, currentUserID, messageID)
-          }
-        }
+    }
   }
 
   async deleteEmojireaction(emoji: any, currentUserID: any, messageID: any) {
-    const docRef = doc(this.firestore, "newchats", this.currentDocID, "messages", messageID, "emojiReactions", emoji.id);
+    const docRef = doc(this.firestore, 'newchats', this.currentDocID, 'messages', messageID, 'emojiReactions', emoji.id);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
       const reactionData = docSnap.data();
-      reactionData['emojiCounter'] --
-      reactionData['reactedBy'].splice(currentUserID)
+      reactionData['emojiCounter']--;
+      reactionData['reactedBy'].splice(currentUserID);
 
       await updateDoc(docRef, {
         emojiCounter: reactionData['emojiCounter'],
-        reactedBy: reactionData['reactedBy']
+        reactedBy: reactionData['reactedBy'],
       });
 
-      await this.loadChatMessages(this.currentDocID)
+      await this.loadChatMessages(this.currentDocID);
     }
   }
 
@@ -431,7 +465,11 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
 
   addEmoji(event: any) {
     const currentUserID = localStorage.getItem('uid');
-    this.getMessageForSpefifiedEmoji(event.emoji, currentUserID, this.emojiReactionMessageID)
+    this.getMessageForSpefifiedEmoji(
+      event.emoji,
+      currentUserID,
+      this.emojiReactionMessageID
+    );
   }
 
   closeEmojiMartPicker() {
@@ -456,9 +494,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
 
   async openContactInfoDialog(uid: any) {
     let allUsers = await this.firestoreService.getAllUsers();
-    let userDetails = allUsers.filter(
-      (user) => user.uid == uid
-    );
+    let userDetails = allUsers.filter((user) => user.uid == uid);
     this.dialog.open(DialogContactInfoComponent, {
       data: userDetails[0],
     });
@@ -538,15 +574,15 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
 
   async saveEdit(index: number, editMessage: any, messageID: any) {
     this.isEditingArray[index] = false;
-    const messageDoc = doc( this.firestore, 'newchats', this.currentChatID, 'messages', messageID);
+    const messageDoc = doc(this.firestore, 'newchats', this.currentChatID, 'messages', messageID);
     const messageDocSnapshot = await getDoc(messageDoc);
 
-    if(messageDocSnapshot.exists()) {
+    if (messageDocSnapshot.exists()) {
       await updateDoc(messageDoc, {
-        message: editMessage
+        message: editMessage,
       });
-      this.menuClosed(index)
-      await this.loadChatMessages(this.currentDocID)
+      this.menuClosed(index);
+      await this.loadChatMessages(this.currentDocID);
     }
   }
 }

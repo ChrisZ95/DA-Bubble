@@ -1,54 +1,33 @@
 import { Injectable } from '@angular/core';
-import {
-  Firestore,
-  getFirestore,
-  onSnapshot,
-  DocumentData,
-  collectionData,
-  docData,
-} from '@angular/fire/firestore';
-import {
-  doc,
-  setDoc,
-  addDoc,
-  collection,
-  getDoc,
-  getDocs,
-  updateDoc,
-  query,
-  where,
-  arrayUnion,
-  arrayRemove,
-} from 'firebase/firestore';
+import { Firestore, getFirestore, onSnapshot, DocumentData, collectionData, docData } from '@angular/fire/firestore';
+import {doc, setDoc, addDoc, collection, getDoc, getDocs, updateDoc, query, where, arrayUnion, arrayRemove } from 'firebase/firestore';
 import { ChannelService } from './channel.service';
 import { FirestoreService } from '../firestore.service';
-import {
-  BehaviorSubject,
-  Observable,
-  catchError,
-  combineLatest,
-  map,
-  of,
-} from 'rxjs';
+import { BehaviorSubject, Observable, catchError, combineLatest, map, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ChatService {
-  constructor( private firestore: Firestore, public channelService: ChannelService, public FirestoreService: FirestoreService) {
+  constructor(private firestore: Firestore, public channelService: ChannelService, public FirestoreService: FirestoreService) {
     this.initializeService();
   }
 
   private userInformationSubject = new BehaviorSubject<any>(null);
-  userInformation$: Observable<any> = this.userInformationSubject.asObservable();
+  userInformation$: Observable<any> =
+    this.userInformationSubject.asObservable();
 
   private messagesSubject = new BehaviorSubject<any[]>([]);
   public messages$: Observable<any[]> = this.messagesSubject.asObservable();
 
-  private filteredUsersSubject: BehaviorSubject<any[]> = new BehaviorSubject<any>(null);
-  public filteredUsers$: Observable<any> = this.filteredUsersSubject.asObservable();
+  private filteredUsersSubject: BehaviorSubject<any[]> =
+    new BehaviorSubject<any>(null);
+  public filteredUsers$: Observable<any> =
+    this.filteredUsersSubject.asObservable();
 
-  private documentIDSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  private documentIDSubject: BehaviorSubject<any> = new BehaviorSubject<any>(
+    null
+  );
   public documentID$: Observable<any> = this.documentIDSubject.asObservable();
 
   private emojiPickerSubjectChat = new BehaviorSubject<boolean>(false);
@@ -60,20 +39,27 @@ export class ChatService {
   private emojiPickerSubjectThread = new BehaviorSubject<boolean>(false);
   emojiPickerThread$ = this.emojiPickerSubjectThread.asObservable();
 
-  private emojiPickerSubjectThreadReaction = new BehaviorSubject<boolean>(false);
-  emojiPickerThreadRection$ = this.emojiPickerSubjectThreadReaction.asObservable();
+  private emojiPickerSubjectThreadReaction = new BehaviorSubject<boolean>(
+    false
+  );
+  emojiPickerThreadRection$ =
+    this.emojiPickerSubjectThreadReaction.asObservable();
 
   private emojiPickerSubjectChannel = new BehaviorSubject<boolean>(false);
   emojiPickerChannel$ = this.emojiPickerSubjectChannel.asObservable();
 
-  private emojiPickerSubjectChannelReaction = new BehaviorSubject<boolean>(false);
-  emojiPickerChannelReaction$ = this.emojiPickerSubjectChannelReaction.asObservable();
+  private emojiPickerSubjectChannelReaction = new BehaviorSubject<boolean>(
+    false
+  );
+  emojiPickerChannelReaction$ =
+    this.emojiPickerSubjectChannelReaction.asObservable();
 
   private AssociatedUserSubjectChat = new BehaviorSubject<boolean>(false);
   associatedUserChat$ = this.AssociatedUserSubjectChat.asObservable();
 
   private AssociatedUserSubjectChatThread = new BehaviorSubject<boolean>(false);
-  associatedUserChatThread$ = this.AssociatedUserSubjectChatThread.asObservable();
+  associatedUserChatThread$ =
+    this.AssociatedUserSubjectChatThread.asObservable();
 
   private clearTextEditorValueSubcription = new BehaviorSubject<boolean>(false);
   clearValue$ = this.clearTextEditorValueSubcription.asObservable();
@@ -81,10 +67,10 @@ export class ChatService {
   private chatDataSubject = new BehaviorSubject<DocumentData | null>(null);
   chatData$ = this.chatDataSubject.asObservable();
 
-  showEmptyChat: boolean = false;
+  showEmptyChat: boolean = true;
   editMessage: boolean = false;
   focusOnTextEditor: boolean = false;
-  showOwnChat: boolean = true;
+  showOwnChat: boolean = false;
   allUsers: any;
   filteredUsers: any;
   dataURL: any;
@@ -100,6 +86,7 @@ export class ChatService {
   chatDocId: string | null = null;
   loadCount: number = 0;
   editIndex: number = -1;
+  currentChatParticipants: any;
 
   async checkForExistingChats() {
     const currentUserID: string | null = localStorage.getItem('uid');
@@ -169,6 +156,7 @@ export class ChatService {
 
   async searchPrivateChat(userDetails: any) {
     const currentUserID = localStorage.getItem('uid');
+    this.currentChatParticipants = "1";
 
     if (userDetails.uid === currentUserID) {
       const querySnapshot = await getDocs(
@@ -203,6 +191,7 @@ export class ChatService {
       ) {
         chatsWithBothUsers.push({ id: doc.id, ...chatData });
         chatDocID = chatsWithBothUsers[0].id;
+        this.currentChatParticipants = usersInChat;
         this.filteredUsersSubject.next(usersInChat);
         this.documentIDSubject.next(doc.id);
       }
@@ -236,17 +225,26 @@ export class ChatService {
         createdBy: currentuserID,
         participants: [currentuserID],
       };
-      const threadDocRef = await addDoc(collection(this.firestore, 'threads'), newThread);
-      const threadCollectionRef = collection(this.firestore, `threads/${threadDocRef.id}/messages`);
+      const threadDocRef = await addDoc(
+        collection(this.firestore, 'threads'),
+        newThread
+      );
+      const threadCollectionRef = collection(
+        this.firestore,
+        `threads/${threadDocRef.id}/messages`
+      );
       const threadMessage = {
-      message: message,
-      image: imageFile,
-      createdAt: timestamp,
-      senderName: currentUserData.username,
-      senderID: currentUserData.uid,
-    };
-    await addDoc(threadCollectionRef, threadMessage);
-      const messagesCollectionRef = collection(this.firestore, `newchats/${currentDocID}/messages`);
+        message: message,
+        image: imageFile,
+        createdAt: timestamp,
+        senderName: currentUserData.username,
+        senderID: currentUserData.uid,
+      };
+      await addDoc(threadCollectionRef, threadMessage);
+      const messagesCollectionRef = collection(
+        this.firestore,
+        `newchats/${currentDocID}/messages`
+      );
       const newMessage = {
         message: message,
         image: imageFile,
@@ -256,12 +254,10 @@ export class ChatService {
         threadID: threadDocRef.id,
       };
       await addDoc(messagesCollectionRef, newMessage);
-
     } catch (error) {
       console.error('Fehler beim Speichern der Nachricht:', error);
     }
   }
-
 
   async loadUserDataFromDatabase(userID: any) {
     const docRef = doc(this.firestore, 'users', userID);
@@ -286,32 +282,32 @@ export class ChatService {
   }
 
   emojiPickerChat(state: boolean) {
-    console.log('normal picker')
+    console.log('normal picker');
     this.emojiPickerSubjectChat.next(state);
   }
 
   emojiPickerChatReaction(state: boolean) {
-    console.log('normal picker')
+    console.log('normal picker');
     this.emojiPickerSubjectChatReaction.next(state);
   }
 
   emojiPickerThread(state: boolean) {
-    console.log('thread picker')
+    console.log('thread picker');
     this.emojiPickerSubjectThread.next(state);
   }
 
   emojiPickerThreadReaction(state: boolean) {
-    console.log('thread reaction picker')
+    console.log('thread reaction picker');
     this.emojiPickerSubjectThreadReaction.next(state);
   }
 
   emojiPickerChannel(state: boolean) {
-    console.log('thread reaction picker')
+    console.log('thread reaction picker');
     this.emojiPickerSubjectChannel.next(state);
   }
 
   emojiPickerChannelReaction(state: boolean) {
-    console.log('thread reaction picker')
+    console.log('thread reaction picker');
     this.emojiPickerSubjectChannelReaction.next(state);
   }
 

@@ -247,11 +247,6 @@ export class MainComponent implements OnInit {
     return this.channelService.showThreadWindow;
   }
 
-  openEmptyChat() {
-    this.chatService.showEmptyChat = !this.chatService.showEmptyChat;
-    this.chatService.showOwnChat = false;
-  }
-
   openChat(userDetails: any) {
     this.chatService.showEmptyChat = false;
     this.chatService.showOwnChat = true;

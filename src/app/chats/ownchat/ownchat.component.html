@@ -4,8 +4,7 @@
       <div (click)="openChannelInfoDialog()"></div>
     </div>
     <div *ngFor="let user of participantUser" class="images">
-      <div class="images-participants"
-        (click)="openContactInfoDialogHeader(user)">
+      <div class="images-participants" (click)="openContactInfoDialogHeader(user)">
         <img [src]="user.photo || './../../../assets/images/80. avatar interaction (1).png'" alt="">
         <h2>{{ user.username }} {{this.chatData?.participants?.length === 1 ? '( Du )' : '' }}</h2>
       </div>
@@ -13,6 +12,16 @@
   </div>
 
   <div class="scrollbar test" #scrollContainer>
+    <ng-container *ngIf="messages.length == 0">
+      <img [src]="currentUser?.photo" alt="">
+      <h2>{{ currentUser?.username}}</h2>
+      <div *ngIf="this.chatService?.currentChatParticipants?.length == 1">
+        Dies ist dein privater Chat.
+      </div>
+      <div *ngIf="this.chatService?.currentChatParticipants?.length > 1">
+        Dies ist dein Chat mit {{currentParticipant[0].username}}
+      </div>
+    </ng-container>
     <ng-container *ngFor="let message of messages; let i = index">
       <ng-container *ngIf="shouldShowSeparator(i)">
         <div class="separator">
@@ -24,16 +33,15 @@
         </div>
       </ng-container>
       <div class="conversation-container"
-           [ngClass]="{'justify-end': message.senderID === currentUserID, 'justify-start': message.senderID !== currentUserID}"
-           (mouseenter)="updateHoverState(i, true)"
-           (mouseleave)="updateHoverState(i, false)">
+        [ngClass]="{'justify-end': message.senderID === currentUserID, 'justify-start': message.senderID !== currentUserID}"
+        (mouseenter)="updateHoverState(i, true)" (mouseleave)="updateHoverState(i, false)">
         <div class="popup-window-own-message" *ngIf="isHoveredArray[i] && message.senderID === this.currentUserID">
-          <ngx-emoji (click)="getMessageForSpefifiedEmoji(emoji[0], this.currentUserID, message.id)" class="emoji-icons" emoji="white_check_mark"
-            set="apple" [size]="20"></ngx-emoji>
-          <ngx-emoji (click)="getMessageForSpefifiedEmoji(emoji[1], this.currentUserID, message.id)" class="emoji-icons" emoji="raised_hands"
-            set="apple" [size]="20"></ngx-emoji>
-          <img class="emoji-icons" (click)="openEmojiMartPicker(message.id)" src="./../../../assets/images/add_reaction.png"
-            alt="">
+          <ngx-emoji (click)="getMessageForSpefifiedEmoji(emoji[0], this.currentUserID, message.id)" class="emoji-icons"
+            emoji="white_check_mark" set="apple" [size]="20"></ngx-emoji>
+          <ngx-emoji (click)="getMessageForSpefifiedEmoji(emoji[1], this.currentUserID, message.id)" class="emoji-icons"
+            emoji="raised_hands" set="apple" [size]="20"></ngx-emoji>
+          <img class="emoji-icons" (click)="openEmojiMartPicker(message.id)"
+            src="./../../../assets/images/add_reaction.png" alt="">
           <img class="emoji-icons" (click)="openThread(message)" src="./../../../assets/images/comment.png" alt="">
           <ng-container *ngIf="currentTime(message.createdAt)">
             <button [matMenuTriggerFor]="editMessageMenu" mat-icon-button (menuOpened)="menuOpened(i,message)">
@@ -46,13 +54,19 @@
           </mat-menu>
         </div>
         <div [ngClass]="{'row-reverse': message.senderID === currentUserID}" class="message-wrapper">
-          <img class="user-avatar" [src]="message.senderPhoto || './../../../assets/images/80. avatar interaction (1).png'">
+          <img class="user-avatar"
+            [src]="message.senderPhoto || './../../../assets/images/80. avatar interaction (1).png'">
           <div class="message">
-            <div [ngClass]="{'row': message.senderID === this.currentUserID, 'row-reverse': message.senderID !== this.currentUserID}" class="message-user-information">
+            <div
+              [ngClass]="{'row': message.senderID === this.currentUserID, 'row-reverse': message.senderID !== this.currentUserID}"
+              class="message-user-information">
               <span class="time">{{ message.createdAt | timestamp: 'time' }} Uhr</span>
-              <a (click)="openContactInfoDialog(message.senderID)"><h4>{{ message.senderName }}</h4></a>
+              <a (click)="openContactInfoDialog(message.senderID)">
+                <h4>{{ message.senderName }}</h4>
+              </a>
             </div>
-            <div [ngClass]="{'own-message-bubble': message.senderID === currentUserID, 'speechbubble': message.senderID !== currentUserID}">
+            <div
+              [ngClass]="{'own-message-bubble': message.senderID === currentUserID, 'speechbubble': message.senderID !== currentUserID}">
               <ng-container *ngIf="!isEditingArray[i]; else editMode">
                 <span>{{ message.message }}</span>
               </ng-container>
@@ -75,10 +89,14 @@
             </div>
             <div class="reaction-container">
               <div class="open-thread">
-                <a (click)="openThread(message)"><h4>Antworten</h4></a>
+                <a (click)="openThread(message)">
+                  <h4>Antworten</h4>
+                </a>
               </div>
               <div class="emoji-reaction-container" *ngFor="let reaction of message.emojiReactions.slice(0, 4)">
-                <div *ngIf="reaction.emojiCounter > 0" (click)="addOrDeleteReaction(reaction.emoji, this.currentUserID, message.id)" class="reaction-sub-container">
+                <div *ngIf="reaction.emojiCounter > 0"
+                  (click)="addOrDeleteReaction(reaction.emoji, this.currentUserID, message.id)"
+                  class="reaction-sub-container">
                   {{ reaction.emojiCounter }}
                   {{ reaction.emojiIcon }}
                 </div>
@@ -87,12 +105,12 @@
           </div>
         </div>
         <div class="popup-window" *ngIf="isHoveredArray[i] && message.senderID !== this.currentUserID">
-          <ngx-emoji (click)="getMessageForSpefifiedEmoji(emoji[0], this.currentUserID, message.id)" class="emoji-icons" emoji="white_check_mark"
-            set="apple" [size]="20"></ngx-emoji>
-          <ngx-emoji (click)="getMessageForSpefifiedEmoji(emoji[1], this.currentUserID, message.id)" class="emoji-icons" emoji="raised_hands"
-            set="apple" [size]="20"></ngx-emoji>
-          <img class="emoji-icons" (click)="openEmojiMartPicker(message.id)" src="./../../../assets/images/add_reaction.png"
-            alt="">
+          <ngx-emoji (click)="getMessageForSpefifiedEmoji(emoji[0], this.currentUserID, message.id)" class="emoji-icons"
+            emoji="white_check_mark" set="apple" [size]="20"></ngx-emoji>
+          <ngx-emoji (click)="getMessageForSpefifiedEmoji(emoji[1], this.currentUserID, message.id)" class="emoji-icons"
+            emoji="raised_hands" set="apple" [size]="20"></ngx-emoji>
+          <img class="emoji-icons" (click)="openEmojiMartPicker(message.id)"
+            src="./../../../assets/images/add_reaction.png" alt="">
           <img class="emoji-icons" (click)="openThread(message)" src="./../../../assets/images/comment.png" alt="">
         </div>
       </div>
