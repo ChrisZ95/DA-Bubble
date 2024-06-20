@@ -61,7 +61,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   participantUser: any = [];
   currentChatID: any;
   currentDocID: any;
-
+  currentParticipant: any;
   email: any;
   signUpdate: any;
   logIndate: any;
@@ -241,8 +241,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   scrollToBottom(): void {
     try {
       if (this.scrollContainer && this.scrollContainer.nativeElement) {
-        this.scrollContainer.nativeElement.scrollTop =
-          this.scrollContainer.nativeElement.scrollHeight;
+        this.scrollContainer.nativeElement.scrollTop = this.scrollContainer.nativeElement.scrollHeight;
       }
     } catch (err) {
       console.error(err);
@@ -293,13 +292,10 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     this.loadParticipant();
   }
 
-  currentParticipant: any;
   loadParticipant() {
     this.currentParticipant = this.firestoreService.allUsers.filter((user: any) => {
-        console.log('user:', user);
         return (
-            this.chatService.currentChatParticipants.includes(user.uid) &&
-            user.uid !== this.firestoreService.currentuid
+            this.chatService.currentChatParticipants.includes(user.uid) && user.uid !== this.firestoreService.currentuid
         );
     });
   }
@@ -375,11 +371,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     }
   }
 
-  async getMessageForSpefifiedEmoji(
-    emoji: any,
-    currentUserID: any,
-    messageID: any
-  ) {
+  async getMessageForSpefifiedEmoji(emoji: any, currentUserID: any, messageID: any) {
     const emojiReactionID = emoji.id;
     const emojiReactionDocRef = doc(this.firestore, 'newchats', this.currentChatID, 'messages', messageID, 'emojiReactions',emojiReactionID);
 
@@ -448,10 +440,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
       reactionData['emojiCounter']--;
       reactionData['reactedBy'].splice(currentUserID);
 
-      await updateDoc(docRef, {
-        emojiCounter: reactionData['emojiCounter'],
-        reactedBy: reactionData['reactedBy'],
-      });
+      await updateDoc(docRef, { emojiCounter: reactionData['emojiCounter'], reactedBy: reactionData['reactedBy']});
 
       await this.loadChatMessages(this.currentDocID);
     }
@@ -465,11 +454,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
 
   addEmoji(event: any) {
     const currentUserID = localStorage.getItem('uid');
-    this.getMessageForSpefifiedEmoji(
-      event.emoji,
-      currentUserID,
-      this.emojiReactionMessageID
-    );
+    this.getMessageForSpefifiedEmoji(event.emoji, currentUserID, this.emojiReactionMessageID );
   }
 
   closeEmojiMartPicker() {
@@ -508,8 +493,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     const currentDate = new Date();
     const currentDateMilliseconds = currentDate.getTime();
     const timestampMilliseconds = currentMessageTime;
-    const differenceMilliseconds =
-      currentDateMilliseconds - timestampMilliseconds;
+    const differenceMilliseconds = currentDateMilliseconds - timestampMilliseconds;
     const thirtyMinutesMilliseconds = 60 * 24 * 60 * 1000;
     if (differenceMilliseconds <= thirtyMinutesMilliseconds) {
       return true;
@@ -578,9 +562,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     const messageDocSnapshot = await getDoc(messageDoc);
 
     if (messageDocSnapshot.exists()) {
-      await updateDoc(messageDoc, {
-        message: editMessage,
-      });
+      await updateDoc(messageDoc, { message: editMessage,});
       this.menuClosed(index);
       await this.loadChatMessages(this.currentDocID);
     }
