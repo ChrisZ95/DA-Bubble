@@ -12,16 +12,22 @@
   </div>
 
   <div class="scrollbar" #scrollContainer>
+
     <ng-container *ngIf="messages.length == 0">
-      <img [src]="currentUser?.photo" alt="">
-      <h2>{{ currentUser?.username}}</h2>
-      <div *ngIf="this.chatService?.currentChatParticipants?.length == 1">
-        Dies ist dein privater Chat.
-      </div>
-      <div *ngIf="this.chatService?.currentChatParticipants?.length > 1">
-        Dies ist dein Chat mit {{currentParticipant[0].username}}
+      <div class="no-messages-container">
+        <div class="name-img">
+          <img [src]="currentUser?.photo" alt="">
+          <h2>{{ currentUser?.username}}</h2>
+        </div>
+        <div *ngIf="this.chatService?.currentChatParticipants?.length == 1">
+          Dies ist dein privater Chat.
+        </div>
+        <div *ngIf="this.chatService?.currentChatParticipants?.length > 1">
+          Dies ist dein Chat mit 	&commat;{{currentParticipant[0].username}}
+        </div>
       </div>
     </ng-container>
+
     <ng-container *ngFor="let message of messages; let i = index">
       <ng-container *ngIf="shouldShowSeparator(i)">
         <div class="separator">

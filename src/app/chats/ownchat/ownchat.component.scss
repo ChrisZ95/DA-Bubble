@@ -3,3 +3,25 @@
   bottom: 50px;
   z-index: 1000;
 }
+
+.no-messages-container {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  bottom: 50px;
+  left: 50px;
+}
+
+.name-img {
+  display: flex;
+  align-items: flex-end;
+  position: relative;
+  left: 0;
+  bottom: 0;
+  img {
+    width: 75px;
+  }
+  h2 {
+    margin: 0;
+  }
+}
