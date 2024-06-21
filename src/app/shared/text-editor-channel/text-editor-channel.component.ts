@@ -1,11 +1,9 @@
-import { AfterViewInit, Component, ElementRef, HostListener, Input, OnInit, ViewChild,} from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild,} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../services/chat.service';
-import { GenerateIdsService } from '../../services/generate-ids.service';
 import { Firestore, collection, onSnapshot, query,} from '@angular/fire/firestore';
 import { ChannelService } from '../../services/channel.service';
 import { FirestoreService } from '../../firestore.service';
-import { ThreadService } from '../../services/thread.service';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
@@ -23,7 +21,6 @@ export class TextEditorChannelComponent implements OnInit {
   @Input() componentName!: string;
   message: string = '';
   comment: string = '';
-  currentMessageComments: any[] = [];
   fileArray: any[] = [];
   allUsers: any[] = [];
   memberData: { username: string }[] = [];
@@ -34,14 +31,12 @@ export class TextEditorChannelComponent implements OnInit {
   filteredUsersSubscription: Subscription | null = null;
   clearTextEditorValueSubcription: Subscription | null = null;
   associatedUser: any;
-
   currentDocID: any;
   channelDocumentIDSubsrciption: Subscription | null = null;
 
-  constructor(private chatService: ChatService, private threadService: ThreadService, private generateId: GenerateIdsService, private firestore: Firestore, public channelService: ChannelService, private firestoreService: FirestoreService) {}
+  constructor(private chatService: ChatService, private firestore: Firestore, public channelService: ChannelService, private firestoreService: FirestoreService) {}
 
   ngOnInit(): void {
-    this.subscribeToMessages();
     this.emojiPickerChannelSubscription = this.chatService.emojiPickerChannel$.subscribe(
       (state: boolean) => {
         this.openEmojiPickerChannel = state;
@@ -152,16 +147,6 @@ export class TextEditorChannelComponent implements OnInit {
     this.fileArray = [];
   }
 
-  @HostListener('focusin', ['$event'])
-  onFocus(event: FocusEvent) {
-    if (this.componentName === 'emptyChat') {
-      this.chatService.focusOnTextEditor = true;
-      this.chatService.showEmptyChat = false;
-      this.chatService.showOwnChat = true;
-      this.chatService.focusOnTextEditor = false;
-    }
-  }
-
   addEmoji(event: any) {
     console.log('Emoji selected', event);
     const emoji = event.emoji.native;
@@ -171,134 +156,6 @@ export class TextEditorChannelComponent implements OnInit {
   sendMessage() {
     this.openEmojiPickerChannel = false;
     this.message = '';
-  }
-
-  sendGroupMessage() {
-    console.log('Participants', this.chatService.participants);
-    console.log('message', this.message);
-    console.log('chatDocId', this.chatService.chatDocId);
-  }
-
-  sendMessageToChannel() {
-    const currentChannelId = this.channelService.getCurrentChannelId();
-    const currentUid = this.firestoreService.currentuid;
-    if (this.isChannelAndUserValid(currentChannelId, currentUid)) {
-      const message = this.createMessage(currentUid);
-      this.addAuthorNameToMessage(message, currentChannelId);
-    } else {
-      console.error('Kein aktueller Kanal ausgewählt oder Benutzer nicht angemeldet.');
-    }
-  }
-
-  isChannelAndUserValid(channelId: string | null, uid: string | null): boolean {
-    return !!channelId && !!uid;
-  }
-
-  createMessage(uid: string) {
-    const timestamp = Date.now().toString();
-    return {
-      messageId: this.generateId.generateId(),
-      message: this.message,
-      createdAt: timestamp,
-      uid: uid,
-      comments: [],
-      commentCount: 0,
-      lastCommentTime: null,
-    };
-  }
-
-  async addAuthorNameToMessage(messageWithoutAuthor: any, channelId: string) {
-    try {
-      const authorName = await this.channelService.getAuthorName(messageWithoutAuthor.uid);
-      const message = {
-        ...messageWithoutAuthor,
-        authorName: authorName ?? messageWithoutAuthor.uid,
-      };
-      this.addMessageToChannel(message, channelId);
-      this.message = '';
-    } catch (error) {
-      console.error('Error fetching author name:', error);
-    }
-  }
-
-  addMessageToChannel(message: any, channelId: string) {
-    this.channelService.messagesWithAuthors.push(message);
-    this.channelService.messages.push(message);
-  }
-
-  async sendCommentToMessage() {
-    const currentMessageId = this.channelService.getCurrentMessageId();
-    const currentUid = this.firestoreService.currentuid;
-
-    if (!currentMessageId) {
-      console.error('Kein aktueller Kanal ausgewählt.');
-      return;
-    }
-
-    const newComment = await this.createComment(currentUid);
-    this.updateMessageWithComment(currentMessageId, newComment);
-  }
-
-  async createComment(uid: string) {
-    const timestamp = Date.now().toString();
-    const newComment = {
-      id: this.generateId.generateId(),
-      comment: this.comment,
-      createdAt: timestamp,
-      uid: uid,
-      authorName: '',
-      authorNameStatus: 'loading',
-    };
-    try {
-      const authorName = await this.channelService.getAuthorName(uid);
-      newComment.authorName = authorName ?? uid;
-      newComment.authorNameStatus = 'loaded';
-    } catch (error) {
-      console.error('Error fetching author name:', error);
-      newComment.authorName = uid;
-      newComment.authorNameStatus = 'error';
-    }
-    return newComment;
-  }
-
-  updateMessageWithComment(messageId: string, comment: any) {
-    this.channelService.updateMessageInMessagesList(messageId, comment);
-    this.updateCommentCount(messageId);
-    this.updateLastCommentTime(messageId, comment.createdAt);
-    this.comment = '';
-  }
-
-  updateMessageInMessagesList(messageId: string, newComment: any): void {
-    const messageIndex = this.channelService.messages.findIndex(
-      (msg) => msg.messageId === messageId
-    );
-    if (messageIndex > -1) {
-      if (!this.channelService.messages[messageIndex].comments) {
-        this.channelService.messages[messageIndex].comments = [];
-      }
-      this.channelService.messages[messageIndex].comments.push(newComment);
-      this.channelService.updateMessagesWithAuthors();
-    }
-  }
-
-  updateLastCommentTime(messageId: string, timestamp: string): void {
-    const message = this.channelService.messages.find(
-      (msg) => msg.messageId === messageId
-    );
-    if (message) {
-      message.lastCommentTime = timestamp;
-      this.channelService.updateMessagesWithAuthors();
-    }
-  }
-
-  updateCommentCount(messageId: string): void {
-    const message = this.channelService.messages.find(
-      (msg) => msg.messageId === messageId
-    );
-    if (message) {
-      message.commentCount++;
-      this.channelService.updateMessagesWithAuthors();
-    }
   }
 
   triggerFileInput(): void {
@@ -330,23 +187,6 @@ export class TextEditorChannelComponent implements OnInit {
 
   deleteFile(index: number): void {
     this.fileArray.splice(index, 1);
-  }
-
-  subscribeToMessages() {
-    const currentChannelId = this.channelService.getCurrentChannelId();
-    if (currentChannelId) {
-      const q = query(
-        collection(this.firestore, 'channels', currentChannelId, 'messages')
-      );
-      onSnapshot(q, (snapshot) => {
-        snapshot.docChanges().forEach((change) => {
-          if (change.type === 'added') {
-            const messageData = change.doc.data();
-            this.channelService.messagesWithAuthors.push(messageData);
-          }
-        });
-      });
-    }
   }
 }
 
