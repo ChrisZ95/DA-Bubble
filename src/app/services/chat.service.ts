@@ -1,33 +1,26 @@
 import { Injectable } from '@angular/core';
 import { Firestore, getFirestore, onSnapshot, DocumentData, collectionData, docData } from '@angular/fire/firestore';
-import {doc, setDoc, addDoc, collection, getDoc, getDocs, updateDoc, query, where, arrayUnion, arrayRemove } from 'firebase/firestore';
+import { doc, setDoc, addDoc, collection, getDoc, getDocs, updateDoc, query, where, arrayUnion, arrayRemove } from 'firebase/firestore';
 import { ChannelService } from './channel.service';
 import { FirestoreService } from '../firestore.service';
 import { BehaviorSubject, Observable, catchError, combineLatest, map, of } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class ChatService {
   constructor(private firestore: Firestore, public channelService: ChannelService, public FirestoreService: FirestoreService) {
     this.initializeService();
   }
 
   private userInformationSubject = new BehaviorSubject<any>(null);
-  userInformation$: Observable<any> =
-    this.userInformationSubject.asObservable();
+  userInformation$: Observable<any> = this.userInformationSubject.asObservable();
 
   private messagesSubject = new BehaviorSubject<any[]>([]);
   public messages$: Observable<any[]> = this.messagesSubject.asObservable();
 
-  private filteredUsersSubject: BehaviorSubject<any[]> =
-    new BehaviorSubject<any>(null);
-  public filteredUsers$: Observable<any> =
-    this.filteredUsersSubject.asObservable();
+  private filteredUsersSubject: BehaviorSubject<any[]> = new BehaviorSubject<any>(null);
+  public filteredUsers$: Observable<any> = this.filteredUsersSubject.asObservable();
 
-  private documentIDSubject: BehaviorSubject<any> = new BehaviorSubject<any>(
-    null
-  );
+  private documentIDSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   public documentID$: Observable<any> = this.documentIDSubject.asObservable();
 
   private emojiPickerSubjectChat = new BehaviorSubject<boolean>(false);
@@ -39,27 +32,20 @@ export class ChatService {
   private emojiPickerSubjectThread = new BehaviorSubject<boolean>(false);
   emojiPickerThread$ = this.emojiPickerSubjectThread.asObservable();
 
-  private emojiPickerSubjectThreadReaction = new BehaviorSubject<boolean>(
-    false
-  );
-  emojiPickerThreadRection$ =
-    this.emojiPickerSubjectThreadReaction.asObservable();
+  private emojiPickerSubjectThreadReaction = new BehaviorSubject<boolean>(false);
+  emojiPickerThreadRection$ = this.emojiPickerSubjectThreadReaction.asObservable();
 
   private emojiPickerSubjectChannel = new BehaviorSubject<boolean>(false);
   emojiPickerChannel$ = this.emojiPickerSubjectChannel.asObservable();
 
-  private emojiPickerSubjectChannelReaction = new BehaviorSubject<boolean>(
-    false
-  );
-  emojiPickerChannelReaction$ =
-    this.emojiPickerSubjectChannelReaction.asObservable();
+  private emojiPickerSubjectChannelReaction = new BehaviorSubject<boolean>(false);
+  emojiPickerChannelReaction$ = this.emojiPickerSubjectChannelReaction.asObservable();
 
   private AssociatedUserSubjectChat = new BehaviorSubject<boolean>(false);
   associatedUserChat$ = this.AssociatedUserSubjectChat.asObservable();
 
   private AssociatedUserSubjectChatThread = new BehaviorSubject<boolean>(false);
-  associatedUserChatThread$ =
-    this.AssociatedUserSubjectChatThread.asObservable();
+  associatedUserChatThread$ = this.AssociatedUserSubjectChatThread.asObservable();
 
   private clearTextEditorValueSubcription = new BehaviorSubject<boolean>(false);
   clearValue$ = this.clearTextEditorValueSubcription.asObservable();
@@ -86,7 +72,8 @@ export class ChatService {
   chatDocId: string | null = null;
   loadCount: number = 0;
   editIndex: number = -1;
-  currentChatParticipants: any;
+  currentChatParticipants: any = '';
+  otherParticipant: any;
 
   async checkForExistingChats() {
     const currentUserID: string | null = localStorage.getItem('uid');
@@ -98,19 +85,13 @@ export class ChatService {
     const usersCollection = collection(this.firestore, 'users');
     const chatsCollection = collection(this.firestore, 'newchats');
 
-    const [querySnapshot, existingChats] = await Promise.all([
-      getDocs(usersCollection),
-      getDocs(chatsCollection),
-    ]);
+    const [querySnapshot, existingChats] = await Promise.all([getDocs(usersCollection), getDocs(chatsCollection)]);
 
     // Es wird ein Array erstellt in dem alle anderen User drin sind (nicht der eingeloggte Account)
     const usersArray: string[] = [];
     querySnapshot.forEach((doc) => {
       const userData = doc.data();
-      if (
-        typeof userData['uid'] === 'string' &&
-        userData['uid'] !== currentUserID
-      ) {
+      if (typeof userData['uid'] === 'string' && userData['uid'] !== currentUserID) {
         usersArray.push(userData['uid']);
       }
     });
@@ -144,10 +125,7 @@ export class ChatService {
     try {
       const timestamp = this.FirestoreService.createTimeStamp();
       const newDocRef = doc(collection(this.firestore, 'newchats'));
-      const chatData = {
-        participants: [currentUserID, otherUserID],
-        createdAt: timestamp,
-      };
+      const chatData = { participants: [currentUserID, otherUserID], createdAt: timestamp };
       await setDoc(newDocRef, chatData);
     } catch (error: any) {
       console.error('Fehler beim Erstellen des Chats:', error);
@@ -156,15 +134,10 @@ export class ChatService {
 
   async searchPrivateChat(userDetails: any) {
     const currentUserID = localStorage.getItem('uid');
-    this.currentChatParticipants = "1";
+    // this.currentChatParticipants = '1';
 
     if (userDetails.uid === currentUserID) {
-      const querySnapshot = await getDocs(
-        query(
-          collection(this.firestore, 'newchats'),
-          where('participants', '==', [currentUserID])
-        )
-      );
+      const querySnapshot = await getDocs(query(collection(this.firestore, 'newchats'), where('participants', '==', [currentUserID])));
 
       querySnapshot.forEach((doc) => {
         const chatData = doc.data();
@@ -176,6 +149,56 @@ export class ChatService {
     } else {
       console.log('Die IDs sind nicht gleich');
     }
+    this.checkAndSetParticipants(userDetails);
+  }
+
+  allChats: any[] = [];
+  async loadAllChats() {
+    try {
+      const chatCollection = collection(this.firestore, 'newchats');
+      const querySnapshot = await getDocs(chatCollection);
+
+      const chats = await Promise.all(querySnapshot.docs.map(async (doc) => {
+        const chatData = { id: doc.id, ...(doc.data() as any) };
+        const messagesCollection = collection(this.firestore, 'newchats', doc.id, 'messages');
+        const messagesSnapshot = await getDocs(messagesCollection);
+
+        return { ...chatData, hasMessages: !messagesSnapshot.empty };
+      }));
+
+      this.allChats = chats.filter((chat) => (chat.participants as any[]).includes(this.FirestoreService.currentuid));
+    } catch (error) {
+      console.error('Error loading chats:', error);
+    }
+  }
+
+  async checkAndSetParticipants(input: any) {
+    this.currentChatParticipants = '';
+    try {
+      let filteredChats: any[] = [];
+      if (typeof input === 'object' && input !== null) {
+        filteredChats = this.allChats.filter((chat) => chat.participants && chat.participants.length === 1 && chat.participants.includes(input.uid));
+      } else if (typeof input === 'string') {
+        const currentUserUid = this.FirestoreService.currentuid;
+        filteredChats = this.allChats.filter((chat) => chat.participants && chat.participants.length === 2 && chat.participants.includes(input) && chat.participants.includes(currentUserUid));
+        this.otherParticipant = this.FirestoreService.allUsers.filter((user: any) => { return user.uid == input; });
+      } else {
+        throw new Error('Invalid input');
+      }
+      for (const chat of filteredChats) {
+        if (!chat.hasMessages) {
+          if (typeof input === 'object' && input !== null) {
+            this.currentChatParticipants = 1;
+          } else if (typeof input === 'string') {
+            this.currentChatParticipants = 2;
+          }
+        } else {
+          this.currentChatParticipants = 0;
+        }
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
   }
 
   async searchChatWithUser(userDetails: any) {
@@ -185,18 +208,16 @@ export class ChatService {
     querySnapshot.forEach((doc) => {
       const chatData = doc.data();
       const usersInChat = chatData['participants'];
-      if (
-        usersInChat.includes(this.currentuid) &&
-        usersInChat.includes(userDetails)
-      ) {
+      if (usersInChat.includes(this.currentuid) && usersInChat.includes(userDetails)) {
         chatsWithBothUsers.push({ id: doc.id, ...chatData });
         chatDocID = chatsWithBothUsers[0].id;
-        this.currentChatParticipants = usersInChat;
+        // this.currentChatParticipants = usersInChat;
         this.filteredUsersSubject.next(usersInChat);
         this.documentIDSubject.next(doc.id);
       }
     });
     this.loadChatWithUser(chatDocID);
+    this.checkAndSetParticipants(userDetails);
     return chatDocID;
   }
 
@@ -225,34 +246,12 @@ export class ChatService {
         createdBy: currentuserID,
         participants: [currentuserID],
       };
-      const threadDocRef = await addDoc(
-        collection(this.firestore, 'threads'),
-        newThread
-      );
-      const threadCollectionRef = collection(
-        this.firestore,
-        `threads/${threadDocRef.id}/messages`
-      );
-      const threadMessage = {
-        message: message,
-        image: imageFile,
-        createdAt: timestamp,
-        senderName: currentUserData.username,
-        senderID: currentUserData.uid,
-      };
+      const threadDocRef = await addDoc(collection(this.firestore, 'threads'), newThread);
+      const threadCollectionRef = collection(this.firestore, `threads/${threadDocRef.id}/messages`);
+      const threadMessage = { message: message, image: imageFile, createdAt: timestamp, senderName: currentUserData.username, senderID: currentUserData.uid };
       await addDoc(threadCollectionRef, threadMessage);
-      const messagesCollectionRef = collection(
-        this.firestore,
-        `newchats/${currentDocID}/messages`
-      );
-      const newMessage = {
-        message: message,
-        image: imageFile,
-        createdAt: timestamp,
-        senderName: currentUserData.username,
-        senderID: currentUserData.uid,
-        threadID: threadDocRef.id,
-      };
+      const messagesCollectionRef = collection(this.firestore, `newchats/${currentDocID}/messages`);
+      const newMessage = { message: message, image: imageFile, createdAt: timestamp, senderName: currentUserData.username, senderID: currentUserData.uid, threadID: threadDocRef.id };
       await addDoc(messagesCollectionRef, newMessage);
     } catch (error) {
       console.error('Fehler beim Speichern der Nachricht:', error);
@@ -265,15 +264,7 @@ export class ChatService {
 
     if (docSnap.exists()) {
       const userData = docSnap.data();
-      const userDetails = {
-        username: userData['username'],
-        email: userData['email'],
-        photo: userData['photo'],
-        uid: userData['uid'],
-        signUpdate: userData['signUpdate'],
-        logIndate: userData['logIndate'],
-        logOutDate: userData['logOutDate'],
-      };
+      const userDetails = { username: userData['username'], email: userData['email'], photo: userData['photo'], uid: userData['uid'], signUpdate: userData['signUpdate'], logIndate: userData['logIndate'], logOutDate: userData['logOutDate'] };
       return userDetails;
     } else {
       console.log('No such document!');
@@ -285,60 +276,56 @@ export class ChatService {
     console.log('normal picker');
     this.emojiPickerSubjectChat.next(state);
   }
-
+  
   emojiPickerChatReaction(state: boolean) {
     console.log('normal picker');
     this.emojiPickerSubjectChatReaction.next(state);
   }
-
+  
   emojiPickerThread(state: boolean) {
     console.log('thread picker');
     this.emojiPickerSubjectThread.next(state);
   }
-
+  
   emojiPickerThreadReaction(state: boolean) {
     console.log('thread reaction picker');
     this.emojiPickerSubjectThreadReaction.next(state);
   }
-
+  
   emojiPickerChannel(state: boolean) {
     console.log('thread reaction picker');
     this.emojiPickerSubjectChannel.next(state);
   }
-
+  
   emojiPickerChannelReaction(state: boolean) {
     console.log('thread reaction picker');
     this.emojiPickerSubjectChannelReaction.next(state);
   }
-
+  
   associatedUserChat(state: boolean) {
     this.AssociatedUserSubjectChat.next(state);
   }
-
+  
   associatedUserChatThread(state: boolean) {
     this.AssociatedUserSubjectChatThread.next(state);
   }
-
+  
   clearInputValue(state: boolean) {
     this.clearTextEditorValueSubcription.next(state);
   }
 
   async initializeService() {
     this.currentuid = await this.getCurrentUid();
-    if (!this.currentuid) {
-      console.error('Currentuid nicht gefunden');
-    }
+    if (!this.currentuid) { console.error('Currentuid nicht gefunden'); }
+    this.loadAllChats();
   }
 
   async getCurrentUid(): Promise<string | null> {
     return new Promise((resolve) => {
       const checkUid = () => {
         const uid = this.FirestoreService.currentuid;
-        if (uid) {
-          resolve(uid);
-        } else {
-          setTimeout(checkUid, 100);
-        }
+        if (uid) { resolve(uid); }
+        else { setTimeout(checkUid, 100); }
       };
       checkUid();
     });
@@ -354,20 +341,13 @@ export class ChatService {
     return docSnap.docs.map((doc) => doc.id);
   }
 
-  loadUserData(userDetails: any) {
-    this.userInformationSubject.next(userDetails);
-  }
-
+  loadUserData(userDetails: any) { this.userInformationSubject.next(userDetails); }
   async loadUser() {
-    let allUsers = await this.FirestoreService.getAllUsers().then(
-      (user: any) => {
-        return user;
-      }
-    );
+    let allUsers = await this.FirestoreService.getAllUsers().then((user: any) => { return user; });
     this.allUsers = allUsers;
     return allUsers;
   }
-
+  
   getCombinedChatId(uid1: string, uid2: string): string {
     let slicedUid1 = uid1.slice(0, 5);
     let slicedUid2 = uid2.slice(0, 5);

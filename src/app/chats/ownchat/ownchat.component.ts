@@ -289,7 +289,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
         console.log('No such document!');
       }
     });
-    this.loadParticipant();
+    // this.loadParticipant();
   }
 
   loadParticipant() {
