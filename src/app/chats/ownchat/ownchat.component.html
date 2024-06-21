@@ -59,7 +59,7 @@
             <button mat-menu-item (click)="deleteMessage(i, message.id)">LÖSCHEN</button>
           </mat-menu>
         </div>
-        <div  class="message-wrapper" [ngClass]="{'row-reverse': message.senderID === currentUserID}">
+        <div [ngClass]="{'row-reverse': message.senderID === currentUserID}" class="message-wrapper">
           <img class="user-avatar"
             [src]="message.senderPhoto || './../../../assets/images/80. avatar interaction (1).png'">
           <div class="message">

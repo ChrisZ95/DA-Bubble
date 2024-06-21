@@ -289,17 +289,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
         console.log('No such document!');
       }
     });
-    // this.loadParticipant();
   }
-
-  loadParticipant() {
-    this.currentParticipant = this.firestoreService.allUsers.filter((user: any) => {
-        return (
-            this.chatService.currentChatParticipants.includes(user.uid) && user.uid !== this.firestoreService.currentuid
-        );
-    });
-  }
-
 
   async loadSenderData(senderID: any) {
     const docRef = doc(this.firestore, 'users', senderID);
