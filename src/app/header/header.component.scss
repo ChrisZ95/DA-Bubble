@@ -373,10 +373,56 @@
   .da-bubble-logo {
     height: 45px;
     width: 161.5px;
+    margin-left: 40px;
   }
 
   .avatar-icon {
     height: 50px !important;
     width: 50px !important;
+    margin-right: 40px;
+  }
+
+  .active-circle {
+    margin-right: 40px;
+  }
+}
+
+@media (max-width: 450px) {
+
+  .da-bubble-logo {
+    height: 35px;
+    width: auto;
+    margin-left: 20px;
+  }
+
+  .avatar-icon {
+    height: 40px !important;
+    width: 40px !important;
+    margin-right: 20px;
+  }
+
+  .active-circle {
+    margin-right: 20px;
+    height: 8px;
+    width: 8px;
+  }
+
+  .user-verified {
+    display: none;
+  }
+}
+
+@media (max-width: 380px) {
+
+  .da-bubble-logo {
+    margin-left: 10px;
+  }
+
+  .avatar-icon {
+    margin-right: 10px;
+  }
+
+  .active-circle {
+    margin-right: 10px;
   }
 }
