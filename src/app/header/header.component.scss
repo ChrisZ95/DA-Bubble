@@ -248,6 +248,108 @@
   }
 }
 
+@media (max-width: 1350px) {
+
+  .da-bubble-logo {
+    height: 45px;
+    width: auto;
+  }
+
+  .search-input {
+    width: 40%;
+    height: 68px;
+
+    .serach-bar {
+      width: 100%;
+      height: 56px;
+      font-size: 22px;
+    }
+  }
+}
+
+@media (max-width: 1150px) {
+  .search-input {
+
+    .serach-bar {
+      font-size: 18px;
+    }
+  }
+
+  .profile {
+
+    span {
+      font-size: 14px;
+    }
+
+    .user-verified {
+      height: 20px;
+      width: auto;
+    }
+
+    .avatar-icon {
+      height: 50px;
+      width: 50px;
+    }
+  }
+
+  .active-circle {
+    height: 10px;
+    width: 10px;
+    right: 7.5px;
+    bottom: 7.5px;
+
+    select {
+      top: -5px;
+      left: -5px;
+      height: 20px;
+      width: 20px;
+    }
+  }
+}
+
+@media (max-width: 1050px) {
+  .search-input {
+    height: 60px;
+
+    .serach-bar {
+     height: 50px;
+
+    }
+  }
+
+  .search-button {
+
+    img {
+      height: 30px !important;
+      width: auto !important;
+    }
+  }
+}
+
+@media (max-width: 950px) {
+
+  .da-bubble-logo {
+    height: 35px;
+    width: auto;
+  }
+
+  .search-input {
+    height: 50px;
+
+    .serach-bar {
+     height: 40px;
+     font-size: 14px;
+    }
+  }
+
+  .search-button {
+
+    img {
+      height: 25px !important;
+    }
+  }
+}
+
 @media (max-width: 850px) {
   .search-input {
     display: none;
