@@ -1,11 +1,9 @@
-import { AfterViewInit, Component, ElementRef, HostListener, Input, OnInit, ViewChild,} from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild,} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../services/chat.service';
-import { GenerateIdsService } from '../../services/generate-ids.service';
-import { Firestore, collection, onSnapshot, query, doc, getDoc} from '@angular/fire/firestore';
+import { Firestore, doc, getDoc} from '@angular/fire/firestore';
 import { ChannelService } from '../../services/channel.service';
 import { FirestoreService } from '../../firestore.service';
-import { ThreadService } from '../../services/thread.service';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
@@ -19,7 +17,6 @@ import { Subscription } from 'rxjs';
 })
 
 export class TextEditorComponent implements OnInit {
-  // @HostListener('focusin', ['$event'])
   @ViewChild('fileInput', { static: true })
   fileInput!: ElementRef<HTMLInputElement>;
   @Input() componentName!: string;
@@ -39,7 +36,7 @@ export class TextEditorComponent implements OnInit {
   documentIDSubsrciption: Subscription | null = null;
   clearTextEditorValueSubcription: Subscription | null = null;
 
-  constructor( private chatService: ChatService, private threadService: ThreadService, private generateId: GenerateIdsService, private firestore: Firestore, public channelService: ChannelService, private firestoreService: FirestoreService) {}
+  constructor( private chatService: ChatService, private firestore: Firestore, public channelService: ChannelService, private firestoreService: FirestoreService) {}
 
   ngOnInit(): void {
     this.emojiPickerChatSubscription = this.chatService.emojiPickerChat$.subscribe(
@@ -151,25 +148,10 @@ export class TextEditorComponent implements OnInit {
       if (this.componentName === 'ownChat') {
         this.chatService.sendMessageToDatabase(this.fileArray, this.message, this.currentDocID)
         this.clearInputValue();
-      } else if (this.componentName === 'thread') {
-        // this.sendReply();
-      } else if (this.componentName === 'channel') {
-        // this.sendMessageToChannel();
-      } else if (this.componentName === 'channelthread') {
-        // this.sendCommentToMessage();
       }
       this.chatService.dataURL = null;
       this.openAssociatedUserChat = false;
       this.fileArray = [];
-    }
-  }
-
-  onFocus(event: FocusEvent) {
-    if (this.componentName === 'emptyChat') {
-      this.chatService.focusOnTextEditor = true;
-      this.chatService.showEmptyChat = false;
-      this.chatService.showOwnChat = true;
-      this.chatService.focusOnTextEditor = false;
     }
   }
 
