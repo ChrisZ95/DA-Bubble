@@ -1,10 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { ChannelService } from '../services/channel.service';
 import { Firestore, updateDoc, doc, getDoc, deleteDoc } from '@angular/fire/firestore';
 import { FirestoreService } from '../firestore.service';
+import { DialogContactInfoComponent } from '../dialog-contact-info/dialog-contact-info.component';
+import { DialogAddPeopleComponent } from '../dialog-add-people/dialog-add-people.component';
 
 @Component({
   selector: 'app-dialog-channel-info',
@@ -24,8 +26,10 @@ export class DialogChannelInfoComponent implements OnInit {
   isEditing: boolean = false;
   authorName!: string;
   isChannelAuthor: boolean = false;
+  memberData: { username: string, photo: string, uid: any }[] = [];
+  allUsers: any[] = [];
 
-  constructor(private dialogRef: MatDialogRef<DialogChannelInfoComponent>, public channelService: ChannelService, private readonly firestore: Firestore, public firestoreService: FirestoreService) {}
+  constructor(private dialogRef: MatDialogRef<DialogChannelInfoComponent>, public dialog: MatDialog, public channelService: ChannelService, private readonly firestore: Firestore, public firestoreService: FirestoreService) {}
 
   closeChannelInfoDialog(): void {
   this.dialogRef.close();
@@ -44,6 +48,16 @@ export class DialogChannelInfoComponent implements OnInit {
     } catch (error) {
       console.error('Fehler beim Abrufen des Autors oder des Benutzernamens:', error);
     }
+    this.firestoreService.getAllUsers().then(users => {
+      this.allUsers = users;
+      this.updateMemberData();
+    }).catch(error => {
+      console.error('Error fetching users:', error);
+    });
+  }
+
+  updateMemberData(): void {
+    this.memberData = this.allUsers.filter(user => this.channelService.UserName.includes(user.uid)).map(user => ({ username: user.username, photo: user.photo, uid: user.uid }));
   }
   
   toggleEditing(field: string) {
@@ -126,5 +140,21 @@ export class DialogChannelInfoComponent implements OnInit {
     } catch (error) {
       console.error('Error deleting the channel:', error);
     }
+  }
+
+  async openContactInfo(userid:any ) {
+    let allUsers = await this.firestoreService.getAllUsers();
+    console.log(allUsers)
+    let userDetails = allUsers.filter(
+      (user) => user.uid == userid
+    );
+    this.dialog.open(DialogContactInfoComponent, {
+      data: userDetails[0],
+    });
+  }
+
+  openAddPeopleDialog() {
+    this.dialog.open(DialogAddPeopleComponent);
+    this.dialogRef.close();
   }
 }
