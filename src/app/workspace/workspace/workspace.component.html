@@ -21,7 +21,7 @@
           <img [src]="showChannel ? '../assets/images/arrowDropDown.svg' : '../assets/images/arrow_drop_down.svg'"
             alt="" class="channels-dropdown">
           <img src="../assets/images/workspaces.svg" alt="" class="channels-dropdown">
-          <h2>Channels</h2>
+          <h2 class="headline-name">Channels</h2>
         </div>
         <img (click)="openCreateChannelDialog()" src="../assets/images/add.svg" alt="" class="open-create-channel">
       </div>
@@ -49,7 +49,7 @@
         <img [src]="displayUsers ? '../assets/images/arrowDropDown.svg' : '../assets/images/arrow_drop_down.svg'" alt=""
           class="channels-dropdown">
         <img src="../assets/images/accountCircle.svg" alt="" class="workspaces-icon">
-        <h2>Direktnachrichten</h2>
+        <h2 class="headline-name">Direktnachrichten</h2>
       </div>
 
       <div *ngIf="displayUsers" class="users scrollbar">
@@ -67,7 +67,7 @@
             </div>
           </div>
           <div>
-            <h2 class="user-name">{{ currentUser?.username }} ( Du )</h2>
+            <h2 class="user-name-workspace">{{ currentUser?.username }} ( Du )</h2>
           </div>
         </div>
 
@@ -80,7 +80,7 @@
                 <span class="status-text">{{ idleService.getOtherUserStatus(user.uid) | async }}</span>
               </div> -->
             </div>
-            <h2 class="user-name">{{ user.username }}</h2>
+            <h2 class="user-name-workspace">{{ user.username }}</h2>
           </div>
         </div>
       </div>

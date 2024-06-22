@@ -51,7 +51,7 @@
           justify-content: flex-start;
           gap: 15px;
 
-          h2 {
+          .headline-name {
             margin: 0;
             font-size: 20px;
             font-weight: 700;
@@ -144,7 +144,7 @@
         gap: 15px;
         padding: 5px 10px 5px 0px;
 
-        h2 {
+        .headline-name {
           margin: 0;
           font-size: 20px;
           font-weight: 700;
@@ -407,23 +407,17 @@
 
     .open-channel-overview {
 
-      h2 {
+      .headline-name {
         font-size: 18px;
       }
     }
 
-    .reveal-channels {
+    .channel-name {
+      font-size: 16px;
+    }
 
-      .active-channel {
-
-        .channel-name {
-          font-size: 16px !important;
-        }
-      }
-
-      .create-channel {
-        font-size: 16px !important;
-      }
+    .create-channel {
+      font-size: 16px;
     }
   }
 
@@ -431,29 +425,22 @@
 
     .direct-messages-overview {
 
-      h2 {
+      .headline-name {
         font-size: 18px;
       }
     }
 
     .users {
 
-      .own-user {
-        padding: 4px 10px 4px 10px !important;
-
-        .user-name {
-          font-size: 16px;
-        }
-      }
-
+      .own-user,
       .other-user {
         padding: 4px 10px 4px 10px !important;
-
-        .user-name {
-          font-size: 16px;
-        }
       }
     }
+  }
+
+  .user-name-workspace {
+    font-size: 16px;
   }
 }
 
@@ -476,8 +463,8 @@
     .open-channel-overview {
       gap: 5px !important;
 
-      h2 {
-        font-size: 16px !important;
+      .headline-name {
+        font-size: 16px;
       }
 
       .open-create-channel {
@@ -489,18 +476,18 @@
     .direct-messages-overview {
       gap: 5px !important;
 
-      h2 {
-        font-size: 16px !important;
+      .headline-name {
+        font-size: 16px;
       }
     }
 
   .user-icon{
-    height: 30px !important;
-    width: 30px !important;
+    height: 30px;
+    width: 30px;
   }
 
-  .user-name {
-    font-size: 12px !important;
+  .user-name-workspace {
+    font-size: 12px;
   }
 }
 
@@ -529,15 +516,15 @@
     }
     .open-channel-overview {
 
-      h2 {
-        font-size: 14px !important;
+      .headline-name {
+        font-size: 14px;
       }
     }
 
     .direct-messages-overview {
 
-      h2 {
-        font-size: 14px !important;
+      .headline-name {
+        font-size: 14px;
       }
     }
   }
@@ -573,5 +560,22 @@
       height: 32px !important;
       width: 32px !important;
     }
+  }
+
+  .headline-name {
+    font-size: 20px;
+  }
+
+  .user-icon {
+    height: 50px;
+    width: 50px;
+  }
+
+  .user-name-workspace {
+    font-size: 16px;
+  }
+
+  .channel-name {
+    font-size: 16px;
   }
 }

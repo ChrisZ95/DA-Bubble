@@ -236,6 +236,12 @@
   display: flex;
   align-items: center;
   gap: 5px;
+
+  .back-to-workspace-button {
+    height: 20px;
+    width: auto;
+    margin-right: 20px;
+  }
 }
 
 .logo-devspace {
