@@ -203,6 +203,15 @@
               }
             }
           }
+
+          .add-reaction-button {
+            border: none;
+            background-color: transparent;
+
+            &:hover {
+              cursor: pointer;
+            }
+          }
         }
       }
     }
