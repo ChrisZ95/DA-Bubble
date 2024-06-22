@@ -71,29 +71,29 @@ export class MainComponent implements OnInit {
     if (!this.firestoreService.isScreenWide) {
       this.chatService.showOwnChat = false;
     }
-    this.idleSubscription = this.idleService
-      .isUserIdle()
-      .subscribe((idle) => {});
+    // this.idleSubscription = this.idleService
+    //   .isUserIdle()
+    //   .subscribe((idle) => {});
 
-    this.noMouseMove = this.idleService.noMouseMoveAfterIdle().subscribe(() => {
-      this.handleIdle();
-    });
+    // this.noMouseMove = this.idleService.noMouseMoveAfterIdle().subscribe(() => {
+    //   this.handleIdle();
+    // });
 
-    this.mouseMoveSubscription = this.idleService
-      .onMouseMoveAfterIdle()
-      .subscribe(() => {
-        this.handleActive();
-      });
+    // this.mouseMoveSubscription = this.idleService
+    //   .onMouseMoveAfterIdle()
+    //   .subscribe(() => {
+    //     this.handleActive();
+    //   });
 
-    this.noKeyPress = this.idleService.noKeyPressAfterIdle().subscribe(() => {
-      this.handleIdle();
-    });
+    // this.noKeyPress = this.idleService.noKeyPressAfterIdle().subscribe(() => {
+    //   this.handleIdle();
+    // });
 
-    this.keyPressSubscription = this.idleService
-      .onKeyPressAfterIdle()
-      .subscribe(() => {
-        this.handleActive();
-      });
+    // this.keyPressSubscription = this.idleService
+    //   .onKeyPressAfterIdle()
+    //   .subscribe(() => {
+    //     this.handleActive();
+    //   });
 
     this.emojiPickerChatSubscription = this.chatService.emojiPickerChat$.subscribe(
       (state: boolean) => {
@@ -259,19 +259,19 @@ export class MainComponent implements OnInit {
   }
 
   handleIdle() {
-    if (this.idleService.currentUserStatus == 'active') {
-      let key = this.firestoreService.currentuid;
-      let status = 'simpleaway';
-      this.idleService.updateActiveStatus(key, status);
-    }
+    // if (this.idleService.currentUserStatus == 'active') {
+    //   let key = this.firestoreService.currentuid;
+    //   let status = 'simpleaway';
+    //   this.idleService.updateActiveStatus(key, status);
+    // }
   }
 
   handleActive() {
-    if (this.idleService.currentUserStatus == 'simpleaway') {
-      let key = this.firestoreService.currentuid;
-      let status = 'active';
-      this.idleService.updateActiveStatus(key, status);
-    }
+    // if (this.idleService.currentUserStatus == 'simpleaway') {
+    //   let key = this.firestoreService.currentuid;
+    //   let status = 'active';
+    //   this.idleService.updateActiveStatus(key, status);
+    // }
   }
 
   @HostListener('window:resize', ['$event'])

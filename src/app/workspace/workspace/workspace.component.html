@@ -76,9 +76,9 @@
             <div class="user-icon-circle">
               <img id="user-icon" class="user-icon" src="{{ user.photo }}" alt="User Icon"
                 onerror="this.onerror=null;this.src='./../../../assets/images/Property 1=Default (8).png'">
-              <div class="active-circle" [ngClass]="idleService.getOtherUserStatus(user.uid) | async">
+              <!-- <div class="active-circle" [ngClass]="idleService.getOtherUserStatus(user.uid) | async">
                 <span class="status-text">{{ idleService.getOtherUserStatus(user.uid) | async }}</span>
-              </div>
+              </div> -->
             </div>
 
             <h2>{{ user.username }}</h2>
