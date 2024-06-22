@@ -67,7 +67,7 @@
             </div>
           </div>
           <div>
-            <h2>{{ currentUser?.username }} ( Du )</h2>
+            <h2 class="user-name">{{ currentUser?.username }} ( Du )</h2>
           </div>
         </div>
 
@@ -80,9 +80,7 @@
                 <span class="status-text">{{ idleService.getOtherUserStatus(user.uid) | async }}</span>
               </div> -->
             </div>
-
-            <h2>{{ user.username }}</h2>
-
+            <h2 class="user-name">{{ user.username }}</h2>
           </div>
         </div>
       </div>
