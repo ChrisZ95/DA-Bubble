@@ -22,8 +22,9 @@
         <div *ngIf="chatService?.currentChatParticipants == 1">
           Dies ist dein privater Chat.
         </div>
-        <div *ngIf="chatService?.currentChatParticipants == 2">
-          Dies ist dein Chat mit &commat; {{ chatService.otherParticipant[0]?.username }}
+        <div *ngIf="chatService?.currentChatParticipants == 2" class="test">
+          Dies ist dein Chat mit <div (click)="openContactInfoDialogHeader(chatService.otherParticipant[0])"
+            class="dialog-participant">&commat;{{ chatService.otherParticipant[0]?.username }}</div>
         </div>
       </div>
     </ng-container>
@@ -63,36 +64,39 @@
           <img class="user-avatar"
             [src]="message.senderPhoto || './../../../assets/images/80. avatar interaction (1).png'">
           <div class="message">
-            <div [ngClass]="{'flex-end': message.senderID === this.currentUserID, 'flex-start': message.senderID !== this.currentUserID}"
-             class="message-sub-container">
-              <div [ngClass]="{'row': message.senderID === this.currentUserID, 'row-reverse': message.senderID !== this.currentUserID}"
-              class="message-user-information">
-              <span class="time">{{ message.createdAt | timestamp: 'time' }} Uhr</span>
-              <a (click)="openContactInfoDialog(message.senderID)">
-                <h4>{{ message.senderName }}</h4>
-              </a>
-            </div>
-            <div [ngClass]="{'own-message-bubble': message.senderID === currentUserID, 'speechbubble': message.senderID !== currentUserID}">
-              <ng-container *ngIf="!isEditingArray[i]; else editMode">
-                <span>{{ message.message }}</span>
-              </ng-container>
-              <ng-template #editMode>
-                <div class="edit-container">
-                  <textarea class="edit-textarea" [(ngModel)]="message.message"></textarea>
-                  <div class="edit-buttons">
-                    <button class="save-button" (click)="saveEdit(i, message.message, message.id)">Speichern</button>
-                    <button class="cancel-button" (click)="cancelEdit(i)">Abbrechen</button>
+            <div
+              [ngClass]="{'flex-end': message.senderID === this.currentUserID, 'flex-start': message.senderID !== this.currentUserID}"
+              class="message-sub-container">
+              <div
+                [ngClass]="{'row': message.senderID === this.currentUserID, 'row-reverse': message.senderID !== this.currentUserID}"
+                class="message-user-information">
+                <span class="time">{{ message.createdAt | timestamp: 'time' }} Uhr</span>
+                <a (click)="openContactInfoDialog(message.senderID)">
+                  <h4>{{ message.senderName }}</h4>
+                </a>
+              </div>
+              <div
+                [ngClass]="{'own-message-bubble': message.senderID === currentUserID, 'speechbubble': message.senderID !== currentUserID}">
+                <ng-container *ngIf="!isEditingArray[i]; else editMode">
+                  <span>{{ message.message }}</span>
+                </ng-container>
+                <ng-template #editMode>
+                  <div class="edit-container">
+                    <textarea class="edit-textarea" [(ngModel)]="message.message"></textarea>
+                    <div class="edit-buttons">
+                      <button class="save-button" (click)="saveEdit(i, message.message, message.id)">Speichern</button>
+                      <button class="cancel-button" (click)="cancelEdit(i)">Abbrechen</button>
+                    </div>
                   </div>
-                </div>
-              </ng-template>
-              <ng-container *ngIf="message.image[0]">
-                <div class="message-image">
-                  <a href="{{ message.image[0].url }}" target="_blank" rel="noopener noreferrer">
-                    <img [src]="message.image[0].url" alt="">
-                  </a>
-                </div>
-              </ng-container>
-            </div>
+                </ng-template>
+                <ng-container *ngIf="message.image[0]">
+                  <div class="message-image">
+                    <a href="{{ message.image[0].url }}" target="_blank" rel="noopener noreferrer">
+                      <img [src]="message.image[0].url" alt="">
+                    </a>
+                  </div>
+                </ng-container>
+              </div>
 
             </div>
             <div class="reaction-container">

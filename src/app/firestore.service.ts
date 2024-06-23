@@ -309,10 +309,10 @@ export class FirestoreService {
       localStorage.clear();
       this.router.navigate(['']);
       location.reload();
-      // this.idleService.setData(`users/${this.currentuid}`, {
-      //   uid: this.currentuid,
-      //   activeStatus: 'offline',
-      // });
+      this.idleService.setData(`users/${this.currentuid}`, {
+        uid: this.currentuid,
+        activeStatus: 'offline',
+      });
     } catch (error) {
       console.error('Error signing out:', error);
     }
@@ -567,10 +567,10 @@ export class FirestoreService {
       });
       this.setuid(userCredential.user.uid);
       this.setCurrentUid(userCredential.user.uid);
-      // this.idleService.setData(`users/${userCredential.user.uid}`, {
-      //   uid: userCredential.user.uid,
-      //   activeStatus: 'active',
-      // });
+      this.idleService.setData(`users/${userCredential.user.uid}`, {
+        uid: userCredential.user.uid,
+        activeStatus: 'active',
+      });
       localStorage.setItem('uid', userCredential.user.uid);
       console.log('User log in erfolgreich');
       this.observeAuthState();

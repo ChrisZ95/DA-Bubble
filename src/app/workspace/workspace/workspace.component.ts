@@ -60,9 +60,9 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
       this.filterChannels();
     });
 
-    // this.userStatus$ = this.idleService.getUserStatus(
-    //   this.firestoreService.currentuid
-    // );
+    this.userStatus$ = this.idleService.getUserStatus(
+      this.firestoreService.currentuid
+    );
   }
 
   ngOnDestroy(): void {
@@ -174,7 +174,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
   changeStatus(event: Event) {
     event.stopPropagation();
     const newStatus = (event.target as HTMLSelectElement).value;
-    // this.idleService.setUserStatus(this.firestoreService.currentuid, newStatus);
+    this.idleService.setUserStatus(this.firestoreService.currentuid, newStatus);
   }
 
   filterChannels() {

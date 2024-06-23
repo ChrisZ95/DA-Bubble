@@ -226,25 +226,6 @@
             font-size: 18px;
             font-weight: 400;
           }
-          .status-text {
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #333;
-            color: #fff;
-            padding: 2px 5px;
-            border-radius: 3px;
-            white-space: nowrap;
-            opacity: 0;
-            transition: opacity 0.3s ease-in-out 0.5s;
-            pointer-events: none;
-            margin-top: 5px;
-          }
-
-          &:hover .status-text {
-            opacity: 1;
-          }
         }
       }
     }
@@ -386,9 +367,7 @@
 
 @media screen and (max-width: 1350px) {
   .workspace-content {
-
     header {
-
       .workspace-logo-headline {
         display: flex;
         align-items: center;
@@ -406,7 +385,6 @@
     }
 
     .open-channel-overview {
-
       .headline-name {
         font-size: 18px;
       }
@@ -422,16 +400,13 @@
   }
 
   .direct-messages-container {
-
     .direct-messages-overview {
-
       .headline-name {
         font-size: 18px;
       }
     }
 
     .users {
-
       .own-user,
       .other-user {
         padding: 4px 10px 4px 10px !important;
@@ -445,43 +420,40 @@
 }
 
 @media screen and (max-width: 1150px) {
-
-    header {
-
-      .workspace-logo-headline {
-
-        .workspace-logo {
-          height: 30px;
-          width: auto;
-        }
-        h1 {
-          font-size: 20px;
-        }
-      }
-    }
-
-    .open-channel-overview {
-      gap: 5px !important;
-
-      .headline-name {
-        font-size: 16px;
-      }
-
-      .open-create-channel {
-        height: 20px;
+  header {
+    .workspace-logo-headline {
+      .workspace-logo {
+        height: 30px;
         width: auto;
       }
-    }
-
-    .direct-messages-overview {
-      gap: 5px !important;
-
-      .headline-name {
-        font-size: 16px;
+      h1 {
+        font-size: 20px;
       }
     }
+  }
 
-  .user-icon{
+  .open-channel-overview {
+    gap: 5px !important;
+
+    .headline-name {
+      font-size: 16px;
+    }
+
+    .open-create-channel {
+      height: 20px;
+      width: auto;
+    }
+  }
+
+  .direct-messages-overview {
+    gap: 5px !important;
+
+    .headline-name {
+      font-size: 16px;
+    }
+  }
+
+  .user-icon {
     height: 30px;
     width: 30px;
   }
@@ -491,19 +463,15 @@
   }
 }
 
-@media screen and (max-width: 950px){
-
+@media screen and (max-width: 950px) {
   .workspace-content {
-
     header {
-
       .workspace-logo {
         height: 30px !important;
         width: auto;
       }
 
       .workspace-logo-headline {
-
         h1 {
           font-size: 16px;
         }
@@ -515,14 +483,12 @@
       }
     }
     .open-channel-overview {
-
       .headline-name {
         font-size: 14px;
       }
     }
 
     .direct-messages-overview {
-
       .headline-name {
         font-size: 14px;
       }

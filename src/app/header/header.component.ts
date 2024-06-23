@@ -294,14 +294,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
     });
     this.loadAllUsersAndAllChannels();
     this.checkScreenWidth();
-    // this.userStatus$ = this.idleService.getUserStatus(
-    //   this.firestoreService.currentuid
-    // );
+    this.userStatus$ = this.idleService.getUserStatus(
+      this.firestoreService.currentuid
+    );
   }
 
   changeStatus(event: Event) {
     const newStatus = (event.target as HTMLSelectElement).value;
-    // this.idleService.setUserStatus(this.firestoreService.currentuid, newStatus);
+    this.idleService.setUserStatus(this.firestoreService.currentuid, newStatus);
   }
 
   ngOnDestroy() {
