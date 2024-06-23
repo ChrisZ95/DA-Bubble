@@ -522,11 +522,32 @@
   }
 }
 
+@media screen and (max-width: 1000px) {
+  .speechbubble {
+    max-width: 250px;
+  }
 
-@media(max-width: 850px) {
+  .own-message-bubble {
+    max-width: 250px;
+  }
+}
+
+@media screen and (max-width: 900px) {
   .conversation-container {
     padding: 10px 16px 10px 16px;
   }
+
+  .speechbubble {
+    max-width: 200px;
+  }
+
+  .own-message-bubble {
+    max-width: 200px;
+  }
+}
+
+
+@media screen and (max-width: 850px) {
 
   .user-avatar {
     height: 50px;
