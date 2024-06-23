@@ -10,14 +10,17 @@
     padding: 38px 40px 38px 40px;
     box-shadow: 0 4px 2px rgba(225, 225, 225, 0.5);
 
-    img {
-      height: 24px;
-      width: 24px;
-      padding: 7.5px;
-      border-radius: 100%;
-      &:hover {
-        cursor: pointer;
-        background-color: rgba(236, 238, 254, 1);
+      .close-button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: none;
+        background-color: transparent;
+        border-radius: 100%;
+
+        &:hover {
+          cursor: pointer;
+
       }
     }
 

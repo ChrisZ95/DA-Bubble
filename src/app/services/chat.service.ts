@@ -74,6 +74,7 @@ export class ChatService {
   editIndex: number = -1;
   currentChatParticipants: any = '';
   otherParticipant: any;
+  lastOpenedChat: any;
 
   async checkForExistingChats() {
     const currentUserID: string | null = localStorage.getItem('uid');
@@ -276,40 +277,40 @@ export class ChatService {
     console.log('normal picker');
     this.emojiPickerSubjectChat.next(state);
   }
-  
+
   emojiPickerChatReaction(state: boolean) {
     console.log('normal picker');
     this.emojiPickerSubjectChatReaction.next(state);
   }
-  
+
   emojiPickerThread(state: boolean) {
     console.log('thread picker');
     this.emojiPickerSubjectThread.next(state);
   }
-  
+
   emojiPickerThreadReaction(state: boolean) {
     console.log('thread reaction picker');
     this.emojiPickerSubjectThreadReaction.next(state);
   }
-  
+
   emojiPickerChannel(state: boolean) {
     console.log('thread reaction picker');
     this.emojiPickerSubjectChannel.next(state);
   }
-  
+
   emojiPickerChannelReaction(state: boolean) {
     console.log('thread reaction picker');
     this.emojiPickerSubjectChannelReaction.next(state);
   }
-  
+
   associatedUserChat(state: boolean) {
     this.AssociatedUserSubjectChat.next(state);
   }
-  
+
   associatedUserChatThread(state: boolean) {
     this.AssociatedUserSubjectChatThread.next(state);
   }
-  
+
   clearInputValue(state: boolean) {
     this.clearTextEditorValueSubcription.next(state);
   }
@@ -347,7 +348,7 @@ export class ChatService {
     this.allUsers = allUsers;
     return allUsers;
   }
-  
+
   getCombinedChatId(uid1: string, uid2: string): string {
     let slicedUid1 = uid1.slice(0, 5);
     let slicedUid2 = uid2.slice(0, 5);

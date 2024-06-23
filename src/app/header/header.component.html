@@ -3,8 +3,9 @@
     <img class="da-bubble-logo" src="./../assets/images/dabubble-logo.png" alt="">
   </div>
   <div *ngIf="!firestoreService.displayWorkspace && !firestoreService.isScreenWide" class="mobile-header-menu">
-    <img class="back-to-workspace-button" (click)="backToWorkspace()"
-      src="./../../assets/images/keyboard-arrow-left.png" alt="">
+    <button (click)="backToWorkspace()" class="back-to-workspace-button">
+      <img src="./../../assets/images/keyboard-arrow-left.png" alt="">
+    </button>
     <div class="logo-devspace">
       <img src="./../../assets/images/workspace-logo.png" alt="">
       <span>Devspace</span>

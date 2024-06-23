@@ -70,6 +70,8 @@ export class MainComponent implements OnInit {
     this.checkScreenWidth();
     if (!this.firestoreService.isScreenWide) {
       this.chatService.showOwnChat = false;
+      this.chatService.showEmptyChat = false;
+      this.threadService.displayThread = false;
     }
     this.idleSubscription = this.idleService
       .isUserIdle()

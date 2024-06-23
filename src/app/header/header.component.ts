@@ -1,3 +1,4 @@
+import { ThreadService } from './../services/thread.service';
 import { FirestoreService } from './../firestore.service';
 import { Component,OnInit,OnDestroy,HostListener,ElementRef,Renderer2,Output,EventEmitter,ViewChild,ViewEncapsulation} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -30,7 +31,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private eRef: ElementRef,
     private renderer: Renderer2,
     public channelService: ChannelService,
-    public idleService: IdleService
+    public idleService: IdleService,
+    public threadService: ThreadService
   ) {}
   private unsubscribe: Unsubscribe | undefined;
   @Output() userDetails = new EventEmitter<string>();
@@ -67,9 +69,21 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   backToWorkspace() {
-    this.channelService.showChannelChat = false;
-    this.chatService.showOwnChat = false;
-    this.firestoreService.displayWorkspace = true;
+    if (this.threadService.displayThread === true && this.channelService.lastOpenedChannel === true) {
+      this.threadService.displayThread = false;
+      this.channelService.showChannelChat = true;
+      this.channelService.lastOpenedChannel = false;
+    } else if (this.threadService.displayThread === true && this.chatService.lastOpenedChat === true) {
+      this.threadService.displayThread = false;
+      this.chatService.showOwnChat = true;
+      this.chatService.lastOpenedChat = false;
+    } else if (this.channelService.showChannelChat === true) {
+      this.channelService.showChannelChat = false;
+      this.firestoreService.displayWorkspace = true;
+    } else if (this.chatService.showOwnChat === true) {
+      this.chatService.showOwnChat = false;
+      this.firestoreService.displayWorkspace = true;
+    }
   }
 
   searchEntity(input: string) {

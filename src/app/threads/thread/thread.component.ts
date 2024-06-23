@@ -26,7 +26,7 @@ import { DialogMembersComponent } from '../../dialog-members/dialog-members.comp
   styleUrls: ['./thread.component.scss', '../threads.component.scss'],
 })
 export class ThreadComponent implements OnInit, OnDestroy {
-  constructor( public dialog: MatDialog, private chatService: ChatService, public threadService: ThreadService, private firestore: Firestore, private firestoreService: FirestoreService) {}
+  constructor( public dialog: MatDialog, private chatService: ChatService, public threadService: ThreadService, private firestore: Firestore, public firestoreService: FirestoreService) {}
   private threadSubscription: Subscription | null = null;
   private threadDocumentIDSubsrciption: Subscription | null = null;
   emojiPickerThreadReactionSubscription: Subscription | null = null;

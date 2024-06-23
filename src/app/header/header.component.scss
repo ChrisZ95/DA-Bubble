@@ -280,9 +280,23 @@
   gap: 5px;
 
   .back-to-workspace-button {
-    height: 20px;
-    width: auto;
-    margin-right: 20px;
+    margin-right: 10px;
+    border: none;
+    background-color: transparent;
+
+    img {
+      height: 20px;
+      width: auto
+    }
+
+    &:hover {
+      cursor: pointer;
+
+      img {
+        filter: brightness(0) saturate(100%) invert(26%) sepia(95%)
+          saturate(2195%) hue-rotate(217deg) brightness(95%) contrast(89%);
+      }
+    }
   }
 }
 

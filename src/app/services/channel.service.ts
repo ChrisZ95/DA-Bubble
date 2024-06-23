@@ -27,6 +27,7 @@ export class ChannelService {
   channels: any[] = [];
   private currentChannelIdSource = new BehaviorSubject<string | null>(null);
   currentChannelId$ = this.currentChannelIdSource.asObservable();
+  lastOpenedChannel = false;
 
   constructor( private readonly firestore: Firestore, public FirestoreService: FirestoreService) {}
 

@@ -4,7 +4,9 @@
         <span class="thread">Thread</span>
         <span class="channel-name"># {{ message.senderName }}</span>
     </div>
-    <img (click)="closeThreadWindow()" src="../../../assets/images/close.png" alt="">
+    <button class="close-button" (click)="closeThreadWindow()" *ngIf="firestoreService.isScreenWide">
+      <img src="../../../assets/images/close.png" alt="">
+    </button>
   </div>
 
   <div class="scrollbar test" #scrollContainer>
