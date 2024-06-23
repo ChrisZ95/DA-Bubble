@@ -63,16 +63,16 @@
           <img class="user-avatar"
             [src]="message.senderPhoto || './../../../assets/images/80. avatar interaction (1).png'">
           <div class="message">
-            <div
-              [ngClass]="{'row': message.senderID === this.currentUserID, 'row-reverse': message.senderID !== this.currentUserID}"
+            <div [ngClass]="{'flex-end': message.senderID === this.currentUserID, 'flex-start': message.senderID !== this.currentUserID}"
+             class="message-sub-container">
+              <div [ngClass]="{'row': message.senderID === this.currentUserID, 'row-reverse': message.senderID !== this.currentUserID}"
               class="message-user-information">
               <span class="time">{{ message.createdAt | timestamp: 'time' }} Uhr</span>
               <a (click)="openContactInfoDialog(message.senderID)">
                 <h4>{{ message.senderName }}</h4>
               </a>
             </div>
-            <div
-              [ngClass]="{'own-message-bubble': message.senderID === currentUserID, 'speechbubble': message.senderID !== currentUserID}">
+            <div [ngClass]="{'own-message-bubble': message.senderID === currentUserID, 'speechbubble': message.senderID !== currentUserID}">
               <ng-container *ngIf="!isEditingArray[i]; else editMode">
                 <span>{{ message.message }}</span>
               </ng-container>
@@ -92,6 +92,8 @@
                   </a>
                 </div>
               </ng-container>
+            </div>
+
             </div>
             <div class="reaction-container">
               <div class="open-thread">

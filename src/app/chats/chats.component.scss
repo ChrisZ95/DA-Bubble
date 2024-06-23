@@ -230,10 +230,12 @@
 
 .row {
   flex-direction: row;
+  justify-content: end;
 }
 
 .row-reverse {
   flex-direction: row-reverse;
+  justify-content: start;
 }
 
 .additional-members {
@@ -243,20 +245,30 @@
 
 .row-reverse {
   flex-direction: row-reverse;
+  justify-content: flex-end;
 }
 
 .speechbubble {
   padding: 15px;
+  max-width: 300px;
+  min-width: 100px;
   background-color: #ECEEFE;
   border-radius: 0px 30px 30px 30px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .own-message-bubble {
   padding: 15px;
+  max-width: 300px;
+  min-width: 100px;
   background-color: #797EF3;
   border-radius: 30px 0px 30px 30px;
   color: white;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
+
 
 .justify-end {
   justify-content: flex-end;
@@ -528,4 +540,17 @@
   .chat-container {
     height: calc(100vh - 80px);
   }
+}
+
+.message-sub-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-start {
+  align-items: flex-start;
+}
+
+.flex-end {
+  align-items: flex-end;
 }
