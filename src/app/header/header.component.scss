@@ -124,11 +124,20 @@
   background-color: grey;
 }
 
-::ng-deep.cdk-overlay-pane {
+.cdk-overlay-pane {
   margin-top: 30px !important;
 }
 
-::ng-deep.mat-mdc-menu-panel {
+.mat-mdc-menu-panel {
+  min-width: 112px;
+  max-width: 280px;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  box-sizing: border-box;
+  outline: 0;
+  border-radius: var(--mat-menu-container-shape);
+  background-color: var(--mat-menu-container-color);
+  will-change: transform, opacity;
   border-top-left-radius: 30px !important;
   border-bottom-left-radius: 30px !important;
   border-top-right-radius: 0px !important;
@@ -138,11 +147,11 @@
   justify-content: center;
 }
 
-::ng-deep.mat-mdc-menu-item-text {
+.mat-mdc-menu-item-text {
   text-align: center !important;
 }
 
-::ng-deep.mat-mdc-menu-item {
+.mat-mdc-menu-item {
   width: calc(100% - 40px) !important;
   border-radius: 40px !important;
   margin-left: 20px !important;
@@ -215,6 +224,8 @@
   font-size: 18px;
   img {
     height: 30px;
+    width: 30px;
+    border-radius: 100%;
   }
 }
 
