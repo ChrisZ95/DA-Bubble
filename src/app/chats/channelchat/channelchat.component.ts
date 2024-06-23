@@ -242,6 +242,8 @@ export class ChannelchatComponent implements OnInit, OnDestroy {
       this.channelService.lastOpenedChannel = true;
       if(!this.firestoreService.isScreenWide) {
         this.channelService.showChannelChat = false;
+      } else if(!this.firestoreService.isScreenWide1300px) {
+        this.channelService.showChannelChat = false;
       }
     }
 

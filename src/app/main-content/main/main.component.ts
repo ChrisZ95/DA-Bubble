@@ -279,9 +279,14 @@ export class MainComponent implements OnInit {
   @HostListener('window:resize', ['$event'])
   onResize(event: Event) {
     this.checkScreenWidth();
+    this.checkScreenWidth1300px();
   }
 
   checkScreenWidth() {
     this.firestoreService.isScreenWide = window.innerWidth > 850;
+  }
+
+  checkScreenWidth1300px() {
+    this.firestoreService.isScreenWide1300px = window.innerWidth > 1300;
   }
 }

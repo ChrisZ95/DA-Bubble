@@ -480,6 +480,10 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     this.chatService.lastOpenedChat = true;
     if(!this.firestoreService.isScreenWide) {
       this.chatService.showOwnChat = false;
+      console.log('850px')
+    } else if(!this.firestoreService.isScreenWide1300px) {
+      console.log('1300px')
+      this.chatService.showOwnChat = false;
     }
   }
 

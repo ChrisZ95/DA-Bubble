@@ -80,6 +80,7 @@
   border-radius: 30px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   position: relative;
+  height: calc(80vh + 20px);
 }
 
 .thread {
@@ -88,12 +89,25 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   border-radius: 30px;
   position: relative;
+  height: calc(80vh + 20px);
 }
 
 .header-container {
   display: flex;
   justify-content: center;
   width: 100vw;
+}
+
+@media screen and (max-width: 1450px) {
+  .chat {
+    width: 60vw;
+  }
+}
+
+@media screen and (max-width: 1300px){
+  .thread {
+    width: 60vw;
+  }
 }
 
 @media screen and (max-width: 1250px) {

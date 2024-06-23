@@ -1,77 +1,14 @@
-import { Injectable, EventEmitter, OnInit } from '@angular/core';
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  onAuthStateChanged,
-  GoogleAuthProvider,
-  signInWithPopup,
-  sendEmailVerification,
-  updatePassword,
-  sendPasswordResetEmail,
-  OAuthProvider,
-  Auth,
-  signOut,
-  updateEmail,
-  reauthenticateWithCredential,
-  EmailAuthProvider,
-  fetchSignInMethodsForEmail,
-  verifyBeforeUpdateEmail,
-  deleteUser,
-} from '@angular/fire/auth';
+import { Injectable, EventEmitter } from '@angular/core';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, sendEmailVerification, updatePassword, sendPasswordResetEmail, signOut, verifyBeforeUpdateEmail, deleteUser,} from '@angular/fire/auth';
 import { FirebaseApp } from '@angular/fire/app';
-import {
-  getFirestore,
-  doc,
-  setDoc,
-  addDoc,
-  collection,
-  getDocs,
-  getDoc,
-  updateDoc,
-  where,
-  QueryDocumentSnapshot,
-  deleteField,
-  deleteDoc,
-  onSnapshot,
-  query,
-} from '@angular/fire/firestore';
-import {
-  getStorage,
-  provideStorage,
-  ref,
-  uploadBytes,
-  getDownloadURL,
-  deleteObject,
-} from '@angular/fire/storage';
+import { getFirestore, doc, setDoc, collection, getDocs, getDoc, updateDoc, where, deleteField, deleteDoc, query,} from '@angular/fire/firestore';
+import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject,} from '@angular/fire/storage';
 import { User } from '../models/user.class';
 import { Channel } from '../models/channel.class';
 import { Router } from '@angular/router';
-import { log } from 'console';
-import {
-  BehaviorSubject,
-  Observable,
-  debounceTime,
-  fromEvent,
-  map,
-  switchMap,
-  timer,
-  from,
-} from 'rxjs';
-import {
-  Database,
-  ref as reference,
-  set,
-  get,
-  child,
-  onValue,
-  push,
-  update,
-  remove,
-} from '@angular/fire/database';
+import { BehaviorSubject, Observable,} from 'rxjs';
+import { Database, ref as reference} from '@angular/fire/database';
 import { IdleService } from './services/idle.service';
-import { ChatService } from './services/chat.service';
-import { filter } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -97,13 +34,9 @@ export class FirestoreService {
   allChannels: any;
   displayWorkspace: boolean = true;
   isScreenWide: boolean = false;
+  isScreenWide1300px: boolean = false;
 
-  constructor(
-    private myFirebaseApp: FirebaseApp,
-    public router: Router,
-    private rdb: Database,
-    private idleService: IdleService
-  ) {
+  constructor( private myFirebaseApp: FirebaseApp, public router: Router, private rdb: Database, private idleService: IdleService) {
     this.auth = getAuth(myFirebaseApp);
     this.auth.languageCode = 'de';
     this.firestore = getFirestore(myFirebaseApp);

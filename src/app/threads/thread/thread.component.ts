@@ -1,3 +1,4 @@
+import { ChannelService } from './../../services/channel.service';
 import { FirestoreService } from './../../firestore.service';
 import { ChatService } from './../../services/chat.service';
 import { Component, OnDestroy, OnInit } from '@angular/core';
@@ -26,7 +27,7 @@ import { DialogMembersComponent } from '../../dialog-members/dialog-members.comp
   styleUrls: ['./thread.component.scss', '../threads.component.scss'],
 })
 export class ThreadComponent implements OnInit, OnDestroy {
-  constructor( public dialog: MatDialog, private chatService: ChatService, public threadService: ThreadService, private firestore: Firestore, public firestoreService: FirestoreService) {}
+  constructor( public dialog: MatDialog, private chatService: ChatService, private channelService: ChannelService, public threadService: ThreadService, private firestore: Firestore, public firestoreService: FirestoreService) {}
   private threadSubscription: Subscription | null = null;
   private threadDocumentIDSubsrciption: Subscription | null = null;
   emojiPickerThreadReactionSubscription: Subscription | null = null;
@@ -272,6 +273,13 @@ async deleteEmojireaction(emoji: any, currentUserID: any, messageID: any) {
 
 
   closeThreadWindow() {
+    if(this.firestoreService.isScreenWide1300px === false && this.chatService.lastOpenedChat === true) {
+     this.chatService.showOwnChat = true
+     this.chatService.lastOpenedChat = false;
+    } else if (this.firestoreService.isScreenWide1300px === false && this.channelService.lastOpenedChannel === true) {
+      this.channelService.showChannelChat = true
+      this.channelService.lastOpenedChannel = false;
+    }
     this.threadService.displayThread = false;
   }
 
