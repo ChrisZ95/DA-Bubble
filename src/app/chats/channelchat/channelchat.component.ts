@@ -186,8 +186,13 @@ export class ChannelchatComponent implements OnInit, OnDestroy {
   }
 
   openAddPeopleDialog() {
-    this.dialog.open(DialogAddPeopleComponent);
-    this.currentChannelId = this.channelService.getCurrentChannelId();
+    if(this.firestoreService.isScreenWide) {
+      this.dialog.open(DialogAddPeopleComponent);
+      this.currentChannelId = this.channelService.getCurrentChannelId();
+    } else {
+      this.dialog.open(DialogMembersComponent);
+      this.currentChannelId = this.channelService.getCurrentChannelId();
+    }
   }
 
   async openContactInfoDialog(uid: any) {
