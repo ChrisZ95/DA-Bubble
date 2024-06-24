@@ -46,10 +46,7 @@ export class DialogCreateChannelComponent {
         return;
       }
       const newChannelId = await this.addChannel(authorUid);
-      if(this.firestoreService.isScreenWide) {
-        console.log('Screen with is:', this.firestoreService.isScreenWide)
-        this.dialogRef.close();
-      }
+      this.dialogRef.close();
       this.openAddPeopleToNewChannelDialog(newChannelId);
     } catch (error) {
       console.error('Fehler beim Erstellen des Kanals:', error);
