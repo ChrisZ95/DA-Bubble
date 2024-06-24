@@ -48,6 +48,7 @@
     <img class="open-dialog" [matMenuTriggerFor]="profilMenu" src="./../../assets/images/keyboard_arrow_down.svg"
       alt="">
     <mat-menu #profilMenu="matMenu" class="profile-menu">
+      <div *ngIf="!firestoreService.isScreenWide" class="mobile-menu-line"><img src="./../../assets/images/mobile-menu-line.png" alt=""></div>
       <button *ngIf="!guestLogIn" mat-menu-item (click)="openProfileDialog()">Profil</button>
       <button (click)="logOut()" mat-menu-item>Log out</button>
     </mat-menu>
