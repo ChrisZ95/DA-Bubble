@@ -1,6 +1,6 @@
 import { FirestoreService } from './../../firestore.service';
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, Input, OnChanges, OnInit, SimpleChanges, OnDestroy, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges, OnDestroy, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { collection, doc, getDoc, getDocs, query, where, onSnapshot, deleteDoc, setDoc, addDoc, updateDoc } from 'firebase/firestore';
 import { ChatService } from '../../services/chat.service';
 import { TimestampPipe } from '../../shared/pipes/timestamp.pipe';
@@ -19,9 +19,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { EmojiComponent } from '@ctrl/ngx-emoji-mart/ngx-emoji';
 import { Firestore } from '@angular/fire/firestore';
-import { from, Observable } from 'rxjs';
-import { filter } from 'rxjs/operators';
 import { TruncatePipe } from '../../shared/pipes/truncate.pipe';
+import { TruncateWordsService } from '../../services/truncate-words.service';
 
 
 @Component({
@@ -32,7 +31,7 @@ import { TruncatePipe } from '../../shared/pipes/truncate.pipe';
   styleUrls: ['./ownchat.component.scss', '../chats.component.scss'],
 })
 export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
-  constructor(private firestore: Firestore,public dialog: MatDialog, public chatService: ChatService, public threadService: ThreadService, public firestoreService: FirestoreService) {
+  constructor(public truncateService: TruncateWordsService, private firestore: Firestore,public dialog: MatDialog, public chatService: ChatService, public threadService: ThreadService, public firestoreService: FirestoreService) {
     this.isEditingArray.push(false);
   }
   @Input() userDetails: any;
@@ -77,6 +76,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   emojiReactionMessageID: any;
   isEditingArray: boolean[] = [];
   originalMessageContent = '';
+  public truncateLimitChatHeader: number | any; // Initial nicht gesetzt
 
   emoji = [
     {
@@ -99,8 +99,16 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     },
   ];
 
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event): void {
+    const width = (event.target as Window).innerWidth;
+    this.truncateLimitChatHeader = this.truncateService.setTruncateLimitChatHeader(width)
+    console.log(this.truncateLimitChatHeader)
+  }
+
   ngOnInit(): void {
     this.messages = [];
+    this.truncateLimitChatHeader = this.truncateService.setTruncateLimitChatHeader(window.innerWidth);
     this.emojiPickerChatReactionSubscription =
       this.chatService.emojiPickerChatReaction$.subscribe((state: boolean) => {
         this.openEmojiPickerChatReaction = state;

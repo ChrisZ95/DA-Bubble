@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output, ViewChild, OnDestroy, Input, OnChanges, SimpleChanges, ChangeDetectorRef} from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ViewChild, OnDestroy, Input, OnChanges, SimpleChanges, ChangeDetectorRef, HostListener} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DialogCreateChannelComponent } from '../../dialog-create-channel/dialog-create-channel.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -11,6 +11,7 @@ import { ChatService } from '../../services/chat.service';
 import { ChannelchatComponent } from '../../chats/channelchat/channelchat.component';
 import { IdleService } from '../../services/idle.service';
 import { TruncatePipe } from '../../shared/pipes/truncate.pipe';
+import { TruncateWordsService } from '../../services/truncate-words.service';
 
 @Component({
   selector: 'app-workspace',
@@ -46,7 +47,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
   showUserPlaceholder: any;
   showDropdown: boolean = false;
 
-  constructor( public dialog: MatDialog, private readonly firestore: Firestore, public firestoreService: FirestoreService, public channelService: ChannelService, public chatService: ChatService, private cdRef: ChangeDetectorRef, public idleService: IdleService,
+  constructor( public truncateService: TruncateWordsService, public dialog: MatDialog, private readonly firestore: Firestore, public firestoreService: FirestoreService, public channelService: ChannelService, public chatService: ChatService, private cdRef: ChangeDetectorRef, public idleService: IdleService,
   ) {
     onSnapshot(collection(this.firestore, 'channels'), (list) => {
       this.allChannels = list.docs.map((doc) => doc.data());
@@ -54,8 +55,17 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
     });
   }
 
+  truncateLimitWorkspace: number = 0;
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event): void {
+    const width = (event.target as Window).innerWidth;
+    this.truncateLimitWorkspace = this.truncateService.setTruncateLimitWorkspace(width)
+  }
+
   ngOnInit(): void {
     this.getallUsers();
+    this.truncateLimitWorkspace = this.truncateService.setTruncateLimitWorkspace(window.innerWidth);
     this.channelService.getChannels().then((channels) => {
       this.allChannels = channels;
       this.filterChannels();

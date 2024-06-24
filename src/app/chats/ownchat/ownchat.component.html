@@ -6,7 +6,7 @@
     <div *ngFor="let user of participantUser" class="images">
       <div class="images-participants" (click)="openContactInfoDialogHeader(user)">
         <img [src]="user.photo || './../../../assets/images/80. avatar interaction (1).png'" alt="">
-        <h2>{{ user.username | truncate:10 }} {{this.chatData?.participants?.length === 1 ? '( Du )' : '' }}</h2>
+        <h2>{{ user.username | truncate: truncateLimitChatHeader }} {{this.chatData?.participants?.length === 1 ? '( Du )' : '' }}</h2>
       </div>
     </div>
   </div>
