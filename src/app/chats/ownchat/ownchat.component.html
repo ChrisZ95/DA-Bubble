@@ -1,12 +1,12 @@
 <div class="chat-container">
   <div class="header-own-chat">
-    <div class="active-channel">
+    <!-- <div class="active-channel">
       <div (click)="openChannelInfoDialog()"></div>
-    </div>
+    </div> -->
     <div *ngFor="let user of participantUser" class="images">
       <div class="images-participants" (click)="openContactInfoDialogHeader(user)">
         <img [src]="user.photo || './../../../assets/images/80. avatar interaction (1).png'" alt="">
-        <h2>{{ user.username }} {{this.chatData?.participants?.length === 1 ? '( Du )' : '' }}</h2>
+        <h2>{{ user.username | truncate:10 }} {{this.chatData?.participants?.length === 1 ? '( Du )' : '' }}</h2>
       </div>
     </div>
   </div>
@@ -15,7 +15,11 @@
 
     <ng-container *ngIf="chatService?.currentChatParticipants != ''">
       <div class="no-messages-container">
-        <div class="name-img">
+        <div *ngIf="chatService?.currentChatParticipants == 2" class="name-img">
+          <img [src]="chatService.otherParticipant[0]?.photo" alt="">
+          <h2>{{ chatService.otherParticipant[0]?.username }}</h2>
+        </div>
+        <div *ngIf="chatService?.currentChatParticipants == 1" class="name-img">
           <img [src]="currentUser?.photo" alt="">
           <h2>{{ currentUser?.username}}</h2>
         </div>

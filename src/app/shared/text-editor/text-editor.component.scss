@@ -184,14 +184,14 @@
   }
 }
 
-@media(max-width: 800px) {
-
-  .text-editor-container {
-    margin-bottom: 10vw;
+@media screen and (max-width: 650px) {
+  .show-associated-user {
+    bottom: 150px;
+    left: 20px;
   }
 }
 
-@media(max-width: 400px) {
+@media screen and (max-width: 400px) {
 
   .text-editor-container {
     margin-bottom: 15vw;

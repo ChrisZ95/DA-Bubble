@@ -10,11 +10,12 @@ import { ChannelService } from '../../services/channel.service';
 import { ChatService } from '../../services/chat.service';
 import { ChannelchatComponent } from '../../chats/channelchat/channelchat.component';
 import { IdleService } from '../../services/idle.service';
+import { TruncatePipe } from '../../shared/pipes/truncate.pipe';
 
 @Component({
   selector: 'app-workspace',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TruncatePipe],
   templateUrl: './workspace.component.html',
   styleUrl: './workspace.component.scss',
 })

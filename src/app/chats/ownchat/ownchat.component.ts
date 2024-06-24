@@ -21,11 +21,13 @@ import { EmojiComponent } from '@ctrl/ngx-emoji-mart/ngx-emoji';
 import { Firestore } from '@angular/fire/firestore';
 import { from, Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
+import { TruncatePipe } from '../../shared/pipes/truncate.pipe';
+
 
 @Component({
   selector: 'app-ownchat',
   standalone: true,
-  imports: [TextEditorComponent, EmojiComponent, PickerComponent, TimestampPipe, CommonModule, TimestampPipe, FormsModule, MatIconModule, MatMenuModule, MatButtonModule],
+  imports: [TextEditorComponent,TruncatePipe, EmojiComponent, PickerComponent, TimestampPipe, CommonModule, TimestampPipe, FormsModule, MatIconModule, MatMenuModule, MatButtonModule],
   templateUrl: './ownchat.component.html',
   styleUrls: ['./ownchat.component.scss', '../chats.component.scss'],
 })

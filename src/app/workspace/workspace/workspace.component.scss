@@ -575,3 +575,10 @@
     bottom: 3px;
   }
 }
+
+@media screen and (max-width: 650px) {
+  .mobile-button {
+    bottom: 100px;
+    right: 20px;
+  }
+}

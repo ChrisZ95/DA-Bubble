@@ -33,7 +33,7 @@
               (click)="channelService.getUserName(channel.users)" (click)="channelService.getAuthor(channel.author)"
               (click)="openChannelChat(channel.channelId)">
               <span>#</span>
-              <span>{{ channel.channelName }}</span>
+              <span>{{ channel.channelName | truncate:15 }}</span>
             </div>
           </div>
         </div>
@@ -67,7 +67,7 @@
             </div>
           </div>
           <div>
-            <h2 class="user-name-workspace">{{ currentUser?.username }} ( Du )</h2>
+            <h2 class="user-name-workspace">{{ currentUser?.username | truncate:15 }} ( Du )</h2>
           </div>
         </div>
 
@@ -82,7 +82,7 @@
                 </div>
               </div>
             </div>
-            <h2 class="user-name-workspace">{{ user.username }}</h2>
+            <h2 class="user-name-workspace">{{ user.username | truncate:15 }}</h2>
           </div>
         </div>
       </div>

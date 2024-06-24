@@ -21,11 +21,12 @@ import { TextEditorChannelComponent } from '../../shared/text-editor-channel/tex
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { EmojiComponent } from '@ctrl/ngx-emoji-mart/ngx-emoji';
 import { ThreadService } from '../../services/thread.service';
+import { TruncatePipe } from '../../shared/pipes/truncate.pipe';
 
 @Component({
   selector: 'app-channelchat',
   standalone: true,
-  imports: [TextEditorChannelComponent, PickerComponent, EmojiComponent, NgFor, TimestampPipe, CommonModule, MatButtonModule, MatIconModule, MatMenuModule, FormsModule, CommonModule],
+  imports: [TextEditorChannelComponent, TruncatePipe, PickerComponent, EmojiComponent, NgFor, TimestampPipe, CommonModule, MatButtonModule, MatIconModule, MatMenuModule, FormsModule, CommonModule],
   templateUrl: './channelchat.component.html',
   styleUrls: ['./channelchat.component.scss', '../chats.component.scss'],
 })

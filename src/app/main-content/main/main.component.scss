@@ -139,3 +139,25 @@
     height: calc(100vh - 100px);
   }
 }
+
+@media (max-width: 650px) {
+  .workspace {
+    width: 100vw;
+    height: 100vh;
+  }
+
+  .chat {
+    width: 100vw;
+    height: 100vh;
+  }
+
+  .thread {
+    width: 100vw;
+    height: 100vh;
+  }
+
+  .workspace-chat-thread {
+    width: 100vw;
+    height: 100vh;
+  }
+}

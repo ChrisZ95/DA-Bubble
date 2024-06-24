@@ -2,7 +2,7 @@
   <div class="header-channelchat">
     <div class="active-channel">
       <span>#</span>
-      <div (click)="openChannelInfoDialog()">{{ channelService.channelName }}</div>
+      <div (click)="openChannelInfoDialog()">{{ channelService.channelName | truncate:10 }}</div>
       <img src="./../../../assets/images/arrow-down.png" alt="">
     </div>
     <div class="images">
