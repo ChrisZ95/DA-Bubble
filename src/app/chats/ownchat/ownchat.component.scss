@@ -14,12 +14,15 @@
 
 .name-img {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   position: relative;
   left: 0;
   bottom: 0;
+  gap: 10px;
   img {
-    width: 75px;
+    width: 50px;
+    height: 50px;
+    border-radius: 100%;
   }
   h2 {
     margin: 0;
@@ -32,6 +35,6 @@
 
 .dialog-participant{
   cursor: pointer;
-  text-decoration: underline;
   color: #797EF3;
+  margin-left: 5px;
 }

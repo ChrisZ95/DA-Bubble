@@ -221,4 +221,16 @@ p {
   .amount-answers {
     font-size: 18px;
   }
+
+  .conversation-container {
+    padding: 10px 16px 10px 16px;
+  }
+
+  .speechbubble {
+    max-width: 200px;
+  }
+
+  .own-message-bubble {
+    max-width: 200px;
+  }
 }

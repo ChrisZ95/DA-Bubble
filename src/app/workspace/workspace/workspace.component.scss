@@ -268,6 +268,7 @@
     transition: opacity 0.3s ease-in-out 0.5s;
     pointer-events: none;
     margin-top: 5px;
+    z-index: 1000;
   }
 
   &:hover .status-text {
@@ -543,5 +544,11 @@
 
   .channel-name {
     font-size: 16px;
+  }
+
+  .active-circle {
+    right: 0;
+    left: 26px;
+    bottom: 3px;
   }
 }

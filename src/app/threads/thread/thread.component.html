@@ -1,8 +1,8 @@
-<div *ngFor="let message of threadsMessages; let i = index" class="main">
+<div class="main">
   <div class="header-thread">
     <div class="top-headline">
-        <span class="thread">Thread</span>
-        <span class="channel-name"># {{ message.senderName }}</span>
+      <span class="thread">Thread</span>
+      <span class="channel-name"># {{ threadsMessages[0]?.senderName }}</span>
     </div>
     <button class="close-button" (click)="closeThreadWindow()" *ngIf="firestoreService.isScreenWide">
       <img src="../../../assets/images/close.png" alt="">

@@ -508,3 +508,17 @@
   z-index: 1000;
   top: 0;
 }
+
+@media screen and (max-width: 900px) {
+  .conversation-container {
+    padding: 10px !important;
+  }
+
+  .speechbubble {
+    max-width: 200px;
+  }
+
+  .own-message-bubble {
+    max-width: 200px;
+  }
+}
