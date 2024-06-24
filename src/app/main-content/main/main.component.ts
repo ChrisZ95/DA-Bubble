@@ -67,7 +67,7 @@ export class MainComponent implements OnInit {
   private activityAfterIdleSubscription: Subscription | null = null;
 
   ngOnInit(): void {
-    this.checkScreenWidth();
+    this.updateScreenWidthFlags();
     if (!this.firestoreService.isScreenWide) {
       this.chatService.showOwnChat = false;
       this.chatService.showEmptyChat = false;
@@ -277,16 +277,14 @@ export class MainComponent implements OnInit {
   }
 
   @HostListener('window:resize', ['$event'])
-  onResize(event: Event) {
-    this.checkScreenWidth();
-    this.checkScreenWidth1300px();
-  }
+onResize(event: Event) {
+  this.updateScreenWidthFlags();
+}
 
-  checkScreenWidth() {
-    this.firestoreService.isScreenWide = window.innerWidth > 850;
-  }
+updateScreenWidthFlags() {
+  const width = window.innerWidth;
+  this.firestoreService.isScreenWide = width > 850;
+  this.firestoreService.isScreenWide1300px = width > 1300;
+}
 
-  checkScreenWidth1300px() {
-    this.firestoreService.isScreenWide1300px = window.innerWidth > 1300;
-  }
 }

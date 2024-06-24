@@ -10,7 +10,7 @@
     justify-content: center;
     width: 100%;
 }
-  
+
 .chat-input-container {
     display: flex;
     justify-content: center;
@@ -42,7 +42,7 @@
       background-color: transparent;
     }
 }
-  
+
 .img-container {
     position: absolute;
     display: flex;
@@ -58,7 +58,7 @@
       }
     }
 }
-  
+
 .images {
     display: flex;
     justify-content: center;
@@ -66,7 +66,7 @@
     width: 125px;
     gap: 5px;
 }
-  
+
 .img {
     display: flex;
     justify-content: center;
@@ -78,7 +78,7 @@
       background-color: rgba(236, 238, 254, 1);
     }
 }
-  
+
 .chat-input-line {
     background-color: rgba(173, 176, 217, 1);
     height: 40px;
@@ -339,7 +339,7 @@
   position: relative;
   flex: 0 0 auto;
   width: 100%;
-  margin-bottom: 20px;
+
 }
 
 @media(max-width: 850px) {

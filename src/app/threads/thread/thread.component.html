@@ -44,10 +44,12 @@
         <div [ngClass]="{'row-reverse': message.senderID === currentUserID}" class="message-wrapper">
           <img class="user-avatar" [src]="message.senderPhoto">
           <div class="message">
-            <div [ngClass]="{'justify-end': message.senderID === this.currentUserID, 'justify-start': message.senderID !== this.currentUserID}"
-             class="message-sub-container">
-              <div [ngClass]="{'row': message.senderID === this.currentUserID, 'row-reverse': message.senderID !== this.currentUserID}"
-              class="message-user-information">
+            <div>
+             <div [ngClass]="{
+              'row justify-end': message.senderID === this.currentUserID,
+              'row-reverse justify-start': message.senderID !== this.currentUserID
+            }" class="message-user-information">
+
               <span class="time">{{ message.createdAt | timestamp: 'time' }} Uhr</span>
               <a (click)="openContactInfoDialog(message.senderID)">
                 <h4>{{ message.senderName }}</h4>

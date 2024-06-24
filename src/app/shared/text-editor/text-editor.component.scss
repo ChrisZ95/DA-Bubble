@@ -180,6 +180,24 @@
   }
 
   .text-editor-container {
+    margin-bottom: 5vw;
+  }
+}
+
+@media(max-width: 800px) {
+
+  .text-editor-container {
     margin-bottom: 10vw;
+  }
+}
+
+@media(max-width: 400px) {
+
+  .text-editor-container {
+    margin-bottom: 15vw;
+  }
+
+  textarea {
+   width: 80% !important;
   }
 }
