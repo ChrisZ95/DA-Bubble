@@ -57,7 +57,17 @@ export class DialogAddPeopleToNewChannelComponent implements OnInit {
   }
 
   closeAddPeopleToNewChannelDialog(): void {
-    this.dialogRef.close();
+    if(!this.firestoreService.isScreenWide) {
+      const dialogElement = document.querySelector('.mat-mdc-dialog-panel') as HTMLElement;
+      if (dialogElement) {
+        dialogElement.classList.add('slide-down');
+        setTimeout(() => {
+          this.dialogRef.close();
+        }, 500);
+      }
+    } else {
+      this.dialogRef.close();
+    }
   }
 
   selectUser(user: any): void {
