@@ -278,13 +278,17 @@
   }
 
   ::ng-deep.cdk-overlay-pane.mat-mdc-dialog-panel {
-      --mat-dialog-container-small-max-width: 100vw !important;
-      max-width: var(--mat-dialog-container-small-max-width, 100vw) !important;
-      width: calc(100vw - 40px) !important;
+    --mat-dialog-container-small-max-width: 100vw !important;
+    max-width: var(--mat-dialog-container-small-max-width, 100vw) !important;
+    width: calc(100vw - 40px) !important;
   }
 
   .profile-dialog-container {
-      padding: 45px 20px 45px 20px;
-      width: calc(100vw - 80px);
+    padding: 45px 20px 45px 20px;
+    width: calc(100vw - 80px);
+  }
+
+  ::ng-deep.mat-mdc-dialog-surface{
+    border-radius: 30px !important;
   }
 }

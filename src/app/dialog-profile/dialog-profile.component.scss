@@ -13,6 +13,7 @@
 
     .email-span {
       color: #1381FF;
+      margin-left: 50px;
     }
 }
 
@@ -30,6 +31,7 @@
 .profile-name{
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
 
 .profile-full-name{
@@ -65,6 +67,11 @@
 .edit-button{
     color: #535AF1;
     cursor: pointer;
+}
+
+.edit-button-mobile {
+    display: flex;
+    align-items: center;
 }
 
 .profile-title-left{
@@ -112,5 +119,9 @@
     .profile-dialog-container {
         padding: 45px 20px 45px 20px;
         width: calc(100vw - 80px);
+    }
+
+    ::ng-deep.mat-mdc-dialog-surface{
+        border-radius: 30px !important;
     }
 }

@@ -478,6 +478,9 @@
 
   .mat-mdc-menu-item-text {
     text-align: left !important;
+    display: flex;
+    align-items: center;
+    gap: 15px;
   }
 
   .mobile-menu-line {
@@ -498,6 +501,10 @@
     margin-right: 0 !important;
     width: fit-content !important;
     padding: 10px 30px 10px 30px !important;
+  }
+
+  .cdk-overlay-pane {
+    margin-top: 0px !important;
   }
 }
 

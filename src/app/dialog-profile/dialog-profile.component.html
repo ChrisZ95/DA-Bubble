@@ -5,7 +5,8 @@
     <div class="avatar-big"><img src="{{ userPhoto }}" alt=""></div>
     <div class="profile-name">
       <span class="profile-full-name">{{ userName }}</span>
-      <div (click)="openDialogEditProfile()" class="edit-button">Bearbeiten</div>
+      <div *ngIf="firestoreService.isScreenWide" (click)="openDialogEditProfile()" class="edit-button">Bearbeiten</div>
+      <div *ngIf="!firestoreService.isScreenWide" (click)="openDialogEditProfile()" class="edit-button-mobile"><img src="./../../assets/images/edit.png" alt=""></div>
     </div>
     <img class="status" src="./../../assets/images/active.png" alt="">
     <div class="email">

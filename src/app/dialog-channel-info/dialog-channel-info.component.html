@@ -6,7 +6,15 @@
     <div class="channel-name-container" [ngClass]="{'editing': editingName}">
         <div class="channel-name">
             <span>Channel-Name</span>
-            <span class="purple-color" (click)="toggleEditing('name')">{{ editingName ? 'Speichern' : 'Bearbeiten' }}</span>
+            <span *ngIf="firestoreService.isScreenWide" class="purple-color" (click)="toggleEditing('name')">{{ editingName ? 'Speichern' : 'Bearbeiten' }}</span>
+            <div *ngIf="!firestoreService.isScreenWide" (click)="toggleEditing('name')" class="edit-button-mobile">
+                <ng-container *ngIf="editingName">
+                    <img src="./../../assets/images/save.png" alt="">
+                </ng-container>
+                <ng-container *ngIf="!editingName">
+                    <img src="./../../assets/images/edit.png" alt="">
+                </ng-container>
+            </div>
         </div>
         <input type="text" [(ngModel)]="editedChannelName" *ngIf="editingName"/>
         <span class="channel-name-small" *ngIf="!editingName">{{ channelService.channelName }}</span>
@@ -14,7 +22,15 @@
     <div class="description-container" [ngClass]="{'editing': editingDescription}">
         <div class="description-title">
             <span>Beschreibung</span>
-            <span class="purple-color" (click)="toggleEditing('description')">{{ editingDescription ? 'Speichern' : 'Bearbeiten' }}</span>
+            <span *ngIf="firestoreService.isScreenWide" class="purple-color" (click)="toggleEditing('description')">{{ editingDescription ? 'Speichern' : 'Bearbeiten' }}</span>
+            <div *ngIf="!firestoreService.isScreenWide" (click)="toggleEditing('description')" class="edit-button-mobile">
+                <ng-container *ngIf="editingDescription">
+                    <img src="./../../assets/images/save.png" alt="">
+                </ng-container>
+                <ng-container *ngIf="!editingDescription">
+                    <img src="./../../assets/images/edit.png" alt="">
+                </ng-container>
+            </div>
         </div>
         <input type="text" [(ngModel)]="editedDescription" *ngIf="editingDescription"/>
         <span class="description-text" *ngIf="!editingDescription">{{ channelService.channelDescription }}</span>

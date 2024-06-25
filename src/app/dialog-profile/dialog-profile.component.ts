@@ -3,16 +3,18 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { DialogEditProfileComponent } from '../dialog-edit-profile/dialog-edit-profile.component';
 import { FirestoreService } from '../firestore.service';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-dialog-profile',
   standalone: true,
-  imports: [  ],
+  imports: [ FormsModule, CommonModule ],
   templateUrl: './dialog-profile.component.html',
   styleUrl: './dialog-profile.component.scss'
 })
 export class DialogProfileComponent implements OnInit{
-  constructor(private dialogRef: MatDialogRef<DialogProfileComponent>, public dialog: MatDialog, private firestoreService: FirestoreService) {}
+  constructor(private dialogRef: MatDialogRef<DialogProfileComponent>, public dialog: MatDialog, public firestoreService: FirestoreService) {}
 
   logInUid: any;
   userForm: any;

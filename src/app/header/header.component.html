@@ -49,8 +49,14 @@
       alt="">
     <mat-menu #profilMenu="matMenu" class="profile-menu">
       <div *ngIf="!firestoreService.isScreenWide" class="mobile-menu-line"><img src="./../../assets/images/mobile-menu-line.png" alt=""></div>
-      <button *ngIf="!guestLogIn" mat-menu-item (click)="openProfileDialog()">Profil</button>
-      <button (click)="logOut()" mat-menu-item>Log out</button>
+      <button *ngIf="!guestLogIn" mat-menu-item (click)="openProfileDialog()">
+        <img src="./../../assets/images/account_circle.png" alt="">
+        Profil
+      </button>
+      <button (click)="logOut()" mat-menu-item>
+        <img src="./../../assets/images/logout.png" alt="">
+        Log out
+      </button>
     </mat-menu>
   </div>
 </div>
