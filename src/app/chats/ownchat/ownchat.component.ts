@@ -109,6 +109,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.messages = [];
+    this.chatService.checkAndSetParticipants(this.chatService.testID)
     this.truncateLimitChatHeader = this.truncateService.setTruncateLimitChatHeader(window.innerWidth);
     this.emojiPickerChatReactionSubscription =
       this.chatService.emojiPickerChatReaction$.subscribe((state: boolean) => {
