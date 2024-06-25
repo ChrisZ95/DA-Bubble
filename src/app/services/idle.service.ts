@@ -1,30 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { FirebaseApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
-import {
-  fromEvent,
-  debounceTime,
-  switchMap,
-  timer,
-  Observable,
-  BehaviorSubject,
-  map,
-  from,
-} from 'rxjs';
-import {
-  Database,
-  ref as reference,
-  set,
-  get,
-  child,
-  onValue,
-  push,
-  update,
-  remove,
-  off,
-} from '@angular/fire/database';
+import { fromEvent, debounceTime, switchMap, timer, Observable, from } from 'rxjs';
+import { Database, ref as reference, set, onValue, push, off } from '@angular/fire/database';
 
 @Injectable({
   providedIn: 'root',

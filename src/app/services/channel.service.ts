@@ -2,9 +2,7 @@ import { Injectable } from '@angular/core';
 import { Firestore, collection, addDoc, DocumentReference, DocumentData, doc, updateDoc, getDoc, query, where, getDocs, Query, QuerySnapshot, QueryDocumentSnapshot, deleteDoc} from '@angular/fire/firestore';
 import { Channel } from './../../models/channel.class';
 import { FirestoreService } from '../firestore.service';
-import { EventEmitter } from '@angular/core';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { ChannelchatComponent } from '../chats/channelchat/channelchat.component';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({providedIn: 'root'})
 export class ChannelService {

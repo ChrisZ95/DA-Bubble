@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Firestore, getFirestore, onSnapshot, DocumentData,} from '@angular/fire/firestore';
-import { doc, setDoc, addDoc, collection, getDoc, getDocs, updateDoc, query, where,} from 'firebase/firestore';
+import { Firestore } from '@angular/fire/firestore';
+import { doc, addDoc, collection, getDoc } from 'firebase/firestore';
 import { GenerateIdsService } from './generate-ids.service';
 import { FirestoreService } from '../firestore.service';
 

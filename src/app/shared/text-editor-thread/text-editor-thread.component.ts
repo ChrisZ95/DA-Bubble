@@ -1,4 +1,4 @@
-import {  Component, ElementRef, Input, OnInit, ViewChild,} from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../services/chat.service';
 import { Firestore, doc, getDoc} from '@angular/fire/firestore';

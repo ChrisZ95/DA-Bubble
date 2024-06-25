@@ -9,13 +9,7 @@ import { ChannelService } from '../services/channel.service';
 })
 export class SearchService {
 
-  constructor(
-    public firestoreService: FirestoreService,
-    private chatService: ChatService,
-    private eRef: ElementRef,
-    private renderer: Renderer2,
-    public channelService: ChannelService,
-  ) { }
+  constructor( public firestoreService: FirestoreService, private chatService: ChatService, private eRef: ElementRef, private renderer: Renderer2, public channelService: ChannelService) { }
 
   @Output() userDetails = new EventEmitter<string>();
   @Output() channelDetails = new EventEmitter<string>();

@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Firestore, getFirestore, onSnapshot, DocumentData, collectionData, docData } from '@angular/fire/firestore';
-import { doc, setDoc, addDoc, collection, getDoc, getDocs, updateDoc, query, where, arrayUnion, arrayRemove } from 'firebase/firestore';
+import { Firestore, getFirestore, DocumentData } from '@angular/fire/firestore';
+import { doc, setDoc, addDoc, collection, getDoc, getDocs, query, where } from 'firebase/firestore';
 import { ChannelService } from './channel.service';
 import { FirestoreService } from '../firestore.service';
-import { BehaviorSubject, Observable, catchError, combineLatest, map, of } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class ChatService {

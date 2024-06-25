@@ -1,8 +1,6 @@
 import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FirestoreService } from '../../firestore.service';
-import { User } from '../../../models/user.class';
-import { NgForm } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 

@@ -1,25 +1,8 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import {
-  Component,
-  ElementRef,
-  EventEmitter,
-  Input,
-  OnChanges,
-  OnInit,
-  Output,
-  SimpleChanges,
-  ViewChild,
-  ViewEncapsulation,
-  inject,
-} from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild, inject } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {
-  MatAutocompleteSelectedEvent,
-  MatAutocompleteModule,
-} from '@angular/material/autocomplete';
+import { MatAutocompleteSelectedEvent, MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
-import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
 import { MatIconModule } from '@angular/material/icon';
 import { AsyncPipe } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -29,19 +12,9 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-chips',
   standalone: true,
-  imports: [
-    FormsModule,
-    MatFormFieldModule,
-    MatChipsModule,
-    MatIconModule,
-    MatAutocompleteModule,
-    ReactiveFormsModule,
-    AsyncPipe,
-    CommonModule,
-  ],
+  imports: [ FormsModule, MatFormFieldModule, MatChipsModule, MatIconModule, MatAutocompleteModule, ReactiveFormsModule, AsyncPipe, CommonModule],
   templateUrl: './chips.component.html',
   styleUrl: './chips.component.scss',
-  // encapsulation: ViewEncapsulation.None,
 })
 export class ChipsComponent implements OnInit, OnChanges {
   separatorKeysCodes: number[] = [ENTER, COMMA];

@@ -12,8 +12,6 @@ import { ChannelchatComponent } from '../../chats/channelchat/channelchat.compon
 import { IdleService } from '../../services/idle.service';
 import { TruncatePipe } from '../../shared/pipes/truncate.pipe';
 import { TruncateWordsService } from '../../services/truncate-words.service';
-import { SearchService } from '../../services/search.service';
-
 
 @Component({
   selector: 'app-workspace',

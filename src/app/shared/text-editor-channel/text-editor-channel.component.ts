@@ -1,7 +1,7 @@
 import { Component, ElementRef, Input, OnInit, ViewChild,} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../services/chat.service';
-import { Firestore, collection, onSnapshot, query,} from '@angular/fire/firestore';
+import { Firestore } from '@angular/fire/firestore';
 import { ChannelService } from '../../services/channel.service';
 import { FirestoreService } from '../../firestore.service';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';

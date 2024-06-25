@@ -13,9 +13,7 @@ import { PrivacyPoliceComponent } from './privacy-police/privacy-police.componen
 @Component({
   selector: 'app-start-page',
   standalone: true,
-  imports: [StartSideHeaderComponent, StartSideFooterComponent, LogInComponent, SignUpComponent,
-     CommonModule, RouterModule, SignUpChooseAvatarComponent, ForgetPasswordComponent,
-     ChangePasswortComponent, ImprintComponent, PrivacyPoliceComponent],
+  imports: [StartSideHeaderComponent, StartSideFooterComponent, LogInComponent, SignUpComponent,CommonModule, RouterModule, SignUpChooseAvatarComponent, ForgetPasswordComponent,ChangePasswortComponent, ImprintComponent, PrivacyPoliceComponent],
   templateUrl: './start-page.component.html',
   styleUrl: './start-page.component.scss',
 })

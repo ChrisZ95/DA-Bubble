@@ -1,6 +1,5 @@
 import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 import { FirestoreService } from '../../firestore.service';
-import { NgForm } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 

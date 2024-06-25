@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { MainComponent } from './main-content/main/main.component';
-import { CommonModule } from '@angular/common';
 import { LogInComponent } from './start-page/log-in/log-in.component';
 
 @Component({

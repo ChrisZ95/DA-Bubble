@@ -1,10 +1,9 @@
-import { Component, Output, EventEmitter, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { NgForm } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
 import { FirestoreService } from '../../firestore.service';
 import { CommonModule } from '@angular/common';
-import { GoogleAuthProvider, OAuthProvider, getAuth } from '@angular/fire/auth';
+import { GoogleAuthProvider } from '@angular/fire/auth';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({

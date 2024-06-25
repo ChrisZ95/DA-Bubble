@@ -5,7 +5,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ThreadService } from '../../services/thread.service';
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { Firestore, getFirestore, onSnapshot, DocumentData, doc, collection, getDocs, getDoc, updateDoc, setDoc, deleteDoc} from '@angular/fire/firestore';
+import { Firestore, onSnapshot, doc, collection, getDocs, getDoc, updateDoc, setDoc, deleteDoc} from '@angular/fire/firestore';
 import { TimestampPipe } from '../../shared/pipes/timestamp.pipe';
 import { TextEditorThreadComponent } from '../../shared/text-editor-thread/text-editor-thread.component';
 import { FormsModule } from '@angular/forms';
@@ -15,9 +15,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { EmojiComponent } from '@ctrl/ngx-emoji-mart/ngx-emoji';
 import { MatDialog } from '@angular/material/dialog';
-import { DialogChannelInfoComponent } from '../../dialog-channel-info/dialog-channel-info.component';
 import { DialogContactInfoComponent } from '../../dialog-contact-info/dialog-contact-info.component';
-import { DialogMembersComponent } from '../../dialog-members/dialog-members.component';
 
 @Component({
   selector: 'app-thread',
