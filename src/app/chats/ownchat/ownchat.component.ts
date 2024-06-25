@@ -78,6 +78,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   originalMessageContent = '';
   public truncateLimitChatHeader: number | any;
   delayPassed: boolean = false;
+  otherUserID: any;
 
   emoji = [
     {
@@ -109,7 +110,6 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.messages = [];
-    this.chatService.checkAndSetParticipants(this.chatService.testID)
     this.truncateLimitChatHeader = this.truncateService.setTruncateLimitChatHeader(window.innerWidth);
     this.emojiPickerChatReactionSubscription =
       this.chatService.emojiPickerChatReaction$.subscribe((state: boolean) => {
@@ -154,7 +154,9 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
       if (this.chatData?.participants?.length === 1) {
         this.loadPrivateChat();
       } else if (this.chatData?.participants?.length > 1) {
-        this.loadParticipantUserData();
+        this.loadParticipantUserData().then(() => {
+          this.processParticipantUserData();
+        });
       } else {
         console.log('Ungültige Chatdaten');
       }
@@ -170,6 +172,17 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
         this.delayPassed = true;
       }, 125);
   }
+
+  processParticipantUserData() {
+    if (this.participantUser && this.participantUser.length > 0) {
+      const otherUserID = this.participantUser[0]['uid'];
+      console.log(otherUserID);
+      this.chatService.checkAndSetParticipants(otherUserID);
+    } else {
+      console.log('Teilnehmerdaten nicht verfügbar');
+    }
+  }
+
 
   ngOnDestroy(): void {
     this.messages = [];
@@ -357,7 +370,8 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
         if (docSnap.exists()) {
           const userData = docSnap.data();
           this.participantUser = [
-            { email: userData['email'],
+            {
+              email: userData['email'],
               signUpdate: userData['signUpdate'],
               logIndate: userData['logIndate'],
               logOutDate: userData['logOutDate'],
@@ -366,6 +380,8 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
               username: userData['username'],
             },
           ];
+          console.log(this.participantUser);
+          return userData['uid']; // Return otherUserID
         } else {
           console.log('Kein Dokument des Users gefunden');
           window.location.reload();
@@ -376,7 +392,9 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     } else {
       console.log('Chat data or participants are not available yet');
     }
+    return null;
   }
+
 
   async getMessageForSpefifiedEmoji(emoji: any, currentUserID: any, messageID: any) {
     const emojiReactionID = emoji.id;
