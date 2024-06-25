@@ -153,13 +153,7 @@ export class EmptychatComponent implements OnInit {
       this.chatService.showOwnChat = true;
       this.chatService.searchChatWithUser(entity.uid);
     } else if (!entity.username) {
-      this.channelDetails.emit(entity);
-      this.channelService.showChannelChat = true;
-      this.chatService.showOwnChat = false;
-      this.channelService.getChannelName(entity.channelName);
-      this.channelService.getDescription(entity.description);
-      this.channelService.getUserName(entity.users);
-      this.channelService.getAuthor(entity.author);
+      this.openChannelChat(entity.channelId)
     }
     this.chatService.showEmptyChat = false;
     if (this.inputRef) {
@@ -167,6 +161,18 @@ export class EmptychatComponent implements OnInit {
     }
     this.filteredEntities = [];
     this.showDropdown = false;
+  }
+
+  openChannelChat(channelId: string) {
+    this.channelService.setCurrentChannelId(channelId);
+    this.channelService.showChannelChat = true;
+    this.chatService.showOwnChat = false;
+    this.channelService.showThreadWindow = false;
+    this.chatService.clearInputValue(true);
+    this.chatService.showEmptyChat = false;
+    if (window.innerWidth <= 850) {
+      this.firestoreService.displayWorkspace = false;
+    }
   }
 
   @HostListener('document:click', ['$event'])

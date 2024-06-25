@@ -10,7 +10,7 @@
   <div class="workspace-main-content">
     <div *ngIf="!firestoreService.isScreenWide && firestoreService.displayWorkspace" class="search-input">
       <input class="serach-bar" type="text" placeholder="Gehe zu..." id="" #inputRef
-        (keyup)="searchEntity(inputRef.value)">
+        (keyup)="searchEntityWorkspace(inputRef.value)">
       <button class="search-button">
         <img src="./../assets/images/search.png">
       </button>

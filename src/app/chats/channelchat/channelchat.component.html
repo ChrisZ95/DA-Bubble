@@ -1,8 +1,8 @@
 <div class="chat-container">
   <div class="header-channelchat">
-    <div class="active-channel">
+    <div (click)="openChannelInfoDialog()" class="active-channel">
       <span>#</span>
-      <div (click)="openChannelInfoDialog()">{{ channelService.channelName | truncate: truncateLimitChannelHeader }}</div>
+      <div>{{ channelService.channelName | truncate: truncateLimitChannelHeader }}</div>
       <img src="./../../../assets/images/arrow-down.png" alt="">
     </div>
     <div class="images">

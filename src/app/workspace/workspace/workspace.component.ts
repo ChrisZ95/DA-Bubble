@@ -65,15 +65,105 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
 
   truncateLimitWorkspace: number = 0;
 
-  @HostListener('window:resize', ['$event'])
-  onResize(event: Event): void {
-    const width = (event.target as Window).innerWidth;
-    this.truncateLimitWorkspace = this.truncateService.setTruncateLimitWorkspace(width)
+  searchEntityWorkspace(input: string) {
+    console.log(input)
+    const width = window.innerWidth;
+    if(width <= 850) {
+      const lowerCaseInput = input.toLowerCase().trim();
+      this.filteredEntities = [];
+      if (input === '') {
+        this.displayAllUsersAndChannels();
+      } else if (input === '@') {
+        this.displayAllUsers();
+      } else if (input === '#') {
+        this.displayAllChannels();
+      } else if (input.startsWith('@')) {
+        this.filteredEntities = this.allUsers.filter((item: any) => {
+          return (
+            item.username &&
+            item.username.toLowerCase().includes(lowerCaseInput.substring(1)) &&
+            item.uid !== this.firestoreService.currentuid
+          );
+        });
+      } else if (input.startsWith('#')) {
+        this.filteredEntities = this.allChannels.filter((channel: any) => {
+          return (
+            channel.channelName &&
+            channel.channelName
+              .toLowerCase()
+              .includes(lowerCaseInput.substring(1)) &&
+            channel.users.includes(this.firestoreService.currentuid)
+          );
+        });
+      } else {
+        const users = this.allUsers.filter((item: any) => {
+          item.isUser = true;
+          return (
+            item.username &&
+            item.username.toLowerCase().includes(lowerCaseInput) &&
+            item.uid !== this.firestoreService.currentuid
+          );
+        });
+        const channels = this.allChannels.filter((item: any) => {
+          item.isChannel = true;
+          return (
+            item.channelName &&
+            item.channelName.toLowerCase().includes(lowerCaseInput) &&
+            item.users.includes(this.firestoreService.currentuid)
+          );
+        });
+
+        this.filteredEntities = [...channels, ...users];
+      }
+      this.showDropdown = true;
+    }
+  }
+
+  displayAllUsersAndChannels() {
+    this.filteredEntities = [
+      ...this.allChannels.filter((channel: any) => {
+        channel.isChannel = true;
+        return channel.users.includes(this.firestoreService.currentuid);
+      }),
+      ...this.allUsers.filter((user: any) => {
+        user.isUser = true;
+        return user.username && user.uid !== this.firestoreService.currentuid;
+      }),
+    ];
+    this.showDropdown = true;
+  }
+
+  displayAllUsers() {
+    this.filteredEntities = this.allUsers.filter((item: any) => {
+      item.isUser = true;
+      return item.username && item.uid !== this.firestoreService.currentuid;
+    });
+
+    this.filteredEntities.sort((a: any, b: any) => {
+      const usernameA = a.username.toLowerCase();
+      const usernameB = b.username.toLowerCase();
+      if (usernameA < usernameB) {
+        return -1;
+      }
+      if (usernameA > usernameB) {
+        return 1;
+      }
+      return 0;
+    });
+    this.showDropdown = true;
+  }
+
+  displayAllChannels() {
+    this.filteredEntities = this.allChannels.filter((channel: any) => {
+      channel.isChannel = true;
+      return channel.users.includes(this.firestoreService.currentuid);
+    });
+    this.showDropdown = true;
   }
 
   @HostListener('document:click', ['$event'])
   clickOutside(event: Event) {
-    this.searchEntity(this.inputRef?.nativeElement.value);
+    this.searchEntityWorkspace(this.inputRef?.nativeElement.value);
     const clickedInsideInput =
       this.inputRef?.nativeElement.contains(event.target) || false;
     const clickedInsideDropdown =
@@ -96,32 +186,6 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  selectEntity(entity: any) {
-    if (entity.username) {
-      let currentUID = this.firestoreService.currentuid;
-      this.userDetails.emit(entity);
-      this.channelService.showChannelChat = false;
-      this.chatService.showOwnChat = true;
-      this.chatService.searchChatWithUser(entity.uid);
-    } else if (!entity.username) {
-      this.channelsDetails.emit(entity);
-      this.channelService.showChannelChat = true;
-      this.chatService.showOwnChat = false;
-      this.channelService.getChannelName(entity.channelName);
-      this.channelService.getDescription(entity.description);
-      this.channelService.getUserName(entity.users);
-      this.channelService.getAuthor(entity.author);
-    }
-    this.filteredEntities = [];
-    this.focusOnTextEditor = false;
-    this.firestoreService.displayWorkspace = false;
-    if (this.inputRef) {
-      this.inputRef.nativeElement.value = '';
-    }
-    this.filteredEntities = [];
-    this.showDropdown = false;
-  }
-
   loadAllUsersAndAllChannels() {
     this.firestoreService
       .getAllUsers()
@@ -141,6 +205,44 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
       .catch((error) => {
         console.error('Error fetching users:', error);
       });
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event): void {
+    const width = (event.target as Window).innerWidth;
+    this.truncateLimitWorkspace = this.truncateService.setTruncateLimitWorkspace(width)
+  }
+
+  openChannelChat(channelId: string) {
+    this.channelService.setCurrentChannelId(channelId);
+    this.channelService.showChannelChat = true;
+    this.chatService.showOwnChat = false;
+    this.channelService.showThreadWindow = false;
+    this.chatService.clearInputValue(true);
+    this.chatService.showEmptyChat = false;
+    if (window.innerWidth <= 850) {
+      this.firestoreService.displayWorkspace = false;
+    }
+  }
+
+  selectEntity(entity: any) {
+    if (this.inputRef) {
+      this.inputRef.nativeElement.value = '';
+    }
+    if (entity.username) {
+      let currentUID = this.firestoreService.currentuid;
+      this.userDetails.emit(entity);
+      this.channelService.showChannelChat = false;
+      this.chatService.showOwnChat = true;
+      this.chatService.searchChatWithUser(entity.uid);
+    } else if (!entity.username) {
+      this.openChannelChat(entity.channelId)
+    }
+    this.filteredEntities = [];
+    this.focusOnTextEditor = false;
+    this.firestoreService.displayWorkspace = false;
+    this.filteredEntities = [];
+    this.showDropdown = false;
   }
 
   ngOnInit(): void {
@@ -196,18 +298,6 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  openChannelChat(channelId: string) {
-    this.channelService.setCurrentChannelId(channelId);
-    this.channelService.showChannelChat = true;
-    this.chatService.showOwnChat = false;
-    this.channelService.showThreadWindow = false;
-    this.chatService.clearInputValue(true);
-    this.chatService.showEmptyChat = false;
-    if (window.innerWidth <= 850) {
-      this.firestoreService.displayWorkspace = false;
-    }
-  }
-
   openEmptyChat() {
     this.displayEmptyChat = true;
     this.chatService.showEmptyChat = true;
@@ -257,7 +347,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
       .catch((error) => {
         console.error('Error fetching users:', error);
       });
-      
+
   }
 
   stopPropagation(event: Event) {
@@ -276,97 +366,5 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
       (channel: Channel) =>
         channel.users && channel.users.includes(currentUserId)
     );
-  }
-
-  searchEntity(input: string) {    
-    const lowerCaseInput = input?.toLowerCase().trim();
-    this.filteredEntities = [];
-    if (input === '') {
-      this.displayAllUsersAndChannels();
-    } else if (input === '@') {
-      this.displayAllUsers();
-    } else if (input === '#') {
-      this.displayAllChannels();
-    } else if (input?.startsWith('@')) {
-      this.filteredEntities = this.allUsers.filter((item: any) => {
-        return (
-          item.username &&
-          item.username.toLowerCase().includes(lowerCaseInput.substring(1)) &&
-          item.uid !== this.firestoreService.currentuid
-        );
-      });
-    } else if (input?.startsWith('#')) {
-      this.filteredEntities = this.allChannels.filter((channel: any) => {
-        return (
-          channel.channelName &&
-          channel.channelName
-            .toLowerCase()
-            .includes(lowerCaseInput.substring(1)) &&
-          channel.users.includes(this.firestoreService.currentuid)
-        );
-      });
-    } else {
-      const users = this.allUsers.filter((item: any) => {
-        item.isUser = true;
-        return (
-          item.username &&
-          item.username.toLowerCase().includes(lowerCaseInput) &&
-          item.uid !== this.firestoreService.currentuid
-        );
-      });
-      const channels = this.allChannels.filter((item: any) => {
-        item.isChannel = true;
-        return (
-          item.channelName &&
-          item.channelName.toLowerCase().includes(lowerCaseInput) &&
-          item.users.includes(this.firestoreService.currentuid)
-        );
-      });
-
-      this.filteredEntities = [...channels, ...users];
-    }
-    this.showDropdown = true;
-  }
-
-  displayAllUsersAndChannels() {
-    this.filteredEntities = [
-      ...this.allChannels.map((channel: any) => {
-        channel.isChannel = true;
-        return channel;
-      }),
-      ...this.allUsers.filter((user: any) => {
-        user.isUser = true;
-        return user.username && user.uid !== this.firestoreService.currentuid;
-      }),
-    ];
-    this.showDropdown = true;
-  }
-
-  displayAllUsers() {
-    this.filteredEntities = this.allUsers.filter((item: any) => {
-      item.isUser = true;
-      return item.username && item.uid !== this.firestoreService.currentuid;
-    });
-
-    this.filteredEntities.sort((a: any, b: any) => {
-      const usernameA = a.username.toLowerCase();
-      const usernameB = b.username.toLowerCase();
-      if (usernameA < usernameB) {
-        return -1;
-      }
-      if (usernameA > usernameB) {
-        return 1;
-      }
-      return 0;
-    });
-    this.showDropdown = true;
-  }
-
-  displayAllChannels() {
-    this.filteredEntities = this.allChannels.map((channel: any) => {
-      channel.isChannel = true;
-      return channel;
-    });
-    this.showDropdown = true;
   }
 }
