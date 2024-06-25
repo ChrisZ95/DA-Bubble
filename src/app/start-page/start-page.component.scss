@@ -122,3 +122,45 @@
     right: 20px;
   }
  }
+
+
+ @media screen and (max-width: 650px) {
+  .start-page {
+
+    .start-screen {
+
+      .start-screen-content {
+
+        img {
+          height: 100px;
+          width: auto;
+        }
+
+        h1 {
+          font-size: 40px;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .start-page {
+
+    .start-screen {
+
+      .start-screen-content {
+
+        img {
+          height: 70px;
+          width: auto;
+        }
+
+        h1 {
+          font-size: 30px;
+        }
+      }
+    }
+  }
+}
+

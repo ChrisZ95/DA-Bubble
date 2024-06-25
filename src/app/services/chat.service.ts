@@ -113,7 +113,6 @@ export class ChatService {
 
     // Überprüfen, ob es für jeden Benutzer im usersArray bereits einen Chat gibt
     usersArray.forEach((userID) => {
-      debugger
       if (existingChatsSet.has(userID)) {
         // console.log(`Einzelchat zwischen ${currentUserID} und ${userID} existiert bereits.`);
       } else {
@@ -124,7 +123,6 @@ export class ChatService {
   }
 
   async createChats(currentUserID: string, otherUserID: string) {
-    debugger
     try {
       const timestamp = this.FirestoreService.createTimeStamp();
       const newDocRef = doc(collection(this.firestore, 'newchats'));
