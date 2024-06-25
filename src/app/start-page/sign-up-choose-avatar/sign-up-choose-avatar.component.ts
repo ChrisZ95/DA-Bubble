@@ -89,7 +89,7 @@ export class SignUpChooseAvatarComponent implements OnInit {
     if (index == 0) {
       this.userIconTokenURL = 'https://firebasestorage.googleapis.com/v0/b/da181-db3ce.appspot.com/o/user-icon%2F80.%20avatar%20interaction.png?alt=media&token=d1e4d7b5-7d23-4f22-b444-5af815e54cc0'
     } else if (index == 1) {
-      this.userIconTokenURL = 'https://firebasestorage.googleapis.com/v0/b/da181-db3ce.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(1).png?alt=media&token=f72fc9cd-95d7-40cc-9535-49794a547352'
+      this.userIconTokenURL = 'https://firebasestorage.googleapis.com/v0/b/dabubble-180.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(1).png?alt=media&token=d4ce52b2-3bc9-48fd-9021-912002d298ee'
     } else if (index == 2) {
       this.userIconTokenURL = 'https://firebasestorage.googleapis.com/v0/b/da181-db3ce.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(2).png?alt=media&token=5f7c9f16-eb33-4319-a3df-11e4fb515415'
     } else if (index == 3) {

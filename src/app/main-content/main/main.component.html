@@ -15,7 +15,7 @@
 
         <div *ngIf="firestoreService.displayWorkspace" class="workspace"
           [@displayWorkspaceTrigger]="firestoreService.displayWorkspace">
-          <app-workspace (userDetails)="openChat($event)" [channelDetails]="channelDetails" />
+          <app-workspace (userDetails)="openChat($event)" [channelDetails]="channelDetails" (channelsDetails)="channelInformaion($event)"/>
         </div>
 
         <div *ngIf="channelService.showChannelChat" class="chat">

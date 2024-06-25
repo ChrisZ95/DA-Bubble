@@ -14,6 +14,17 @@
       <button class="search-button">
         <img src="./../assets/images/search.png">
       </button>
+      <div #dropdownMenu class="dropdown-menu" *ngIf="showDropdown">
+        <div class="dropdown-item" *ngFor="let entity of filteredEntities" (click)="selectEntity(entity)">
+          <div *ngIf="entity.isChannel == true">#</div>
+          <div *ngIf="entity.isUser == true" class="user-photo-name">
+            <img [src]="entity.photo" alt=""
+              onerror="this.onerror=null;this.src='./../../../assets/images/Property 1=Default (8).png'"> <span
+              class="at-symbol">&commat;</span>
+          </div>
+          {{ entity.username || entity.channelName }}
+        </div>
+      </div>
     </div>
     <div class="channels-container">
       <div class="channels-overview">

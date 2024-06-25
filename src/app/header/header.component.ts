@@ -1,6 +1,6 @@
 import { ThreadService } from './../services/thread.service';
 import { FirestoreService } from './../firestore.service';
-import { Component,OnInit,OnDestroy,HostListener,ElementRef,Renderer2,Output,EventEmitter,ViewChild,ViewEncapsulation} from '@angular/core';
+import { Component,OnInit,OnDestroy,HostListener,ElementRef,Renderer2,Output,EventEmitter,ViewChild,ViewEncapsulation, ChangeDetectorRef,AfterViewChecked, NgZone,ApplicationRef,} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
@@ -22,21 +22,12 @@ import { IdleService } from '../services/idle.service';
   styleUrl: './header.component.scss',
   encapsulation: ViewEncapsulation.None,
 })
-export class HeaderComponent implements OnInit, OnDestroy {
-  constructor(
-    public dialog: MatDialog,
-    private router: Router,
-    public firestoreService: FirestoreService,
-    private chatService: ChatService,
-    private eRef: ElementRef,
-    private renderer: Renderer2,
-    public channelService: ChannelService,
-    public idleService: IdleService,
-    public threadService: ThreadService
-  ) {}
+export class HeaderComponent implements OnInit, OnDestroy, AfterViewChecked  {
+  constructor(public dialog: MatDialog, private router: Router, public firestoreService: FirestoreService, private chatService: ChatService, private eRef: ElementRef, private renderer: Renderer2, public channelService: ChannelService, public idleService: IdleService, public threadService: ThreadService, private cdRef: ChangeDetectorRef, private ngZone: NgZone, private appRef: ApplicationRef) {}
   private unsubscribe: Unsubscribe | undefined;
   @Output() userDetails = new EventEmitter<string>();
   @Output() channelDetails = new EventEmitter<string>();
+  @Output() test = new EventEmitter<boolean>();
   @ViewChild('inputRef', { static: false }) inputRef: ElementRef | undefined;
   @ViewChild('dropdownMenu', { static: false }) dropdownMenu:
     | ElementRef
@@ -66,6 +57,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   checkScreenWidth() {
     this.firestoreService.isScreenWide = window.innerWidth > 850;
+  }
+
+  ngAfterViewChecked() {
+    this.cdRef.detectChanges();
   }
 
   backToWorkspace() {
@@ -299,7 +294,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.userIsVerified =
           this.firestoreService.auth.currentUser.emailVerified;
 
-        if (this.userUid === 'qahY57hYK6a7PQfEdc7KRCfUEcQ2') {
+        if (this.userUid === '3a8KbhiqXLe3hbzLiPOn4SwE7ot2') {
           this.guestLogIn = true;
         }
       } else {

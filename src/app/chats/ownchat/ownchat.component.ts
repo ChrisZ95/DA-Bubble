@@ -251,7 +251,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
       console.error('Error deleting document:', error);
       this.menuClosed(index);
     }
-    this.chatService.checkAndSetParticipants(this.chatService.testID)
+    this.chatService.checkAndSetParticipants(this.chatService.participantID)
   }
 
   scrollToBottom(): void {

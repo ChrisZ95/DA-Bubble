@@ -253,6 +253,7 @@ export class MainComponent implements OnInit {
     this.chatService.showEmptyChat = false;
     this.chatService.showOwnChat = true;
     this.userDetails = userDetails;
+    this.cdRef.detectChanges();
   }
 
   channelInformaion(channelDetails: any) {
@@ -286,5 +287,4 @@ updateScreenWidthFlags() {
   this.firestoreService.isScreenWide = width > 850;
   this.firestoreService.isScreenWide1300px = width > 1300;
 }
-
 }
