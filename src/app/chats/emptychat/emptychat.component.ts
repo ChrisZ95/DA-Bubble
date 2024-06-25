@@ -133,6 +133,11 @@ export class EmptychatComponent implements OnInit {
       this.chatService.showOwnChat = true;
       this.chatService.searchChatWithUser(entity.uid);
     } else if (!entity.username) {
+      this.channelDetails.emit(entity);
+      this.channelService.getChannelName(entity.channelName);
+      this.channelService.getDescription(entity.description);
+      this.channelService.getUserName(entity.users);
+      this.channelService.getAuthor(entity.author);
       this.openChannelChat(entity.channelId)
     }
     this.chatService.showEmptyChat = false;

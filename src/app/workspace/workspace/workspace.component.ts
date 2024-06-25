@@ -234,6 +234,10 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
       this.chatService.showOwnChat = true;
       this.chatService.searchChatWithUser(entity.uid);
     } else if (!entity.username) {
+      this.channelService.getChannelName(entity.channelName);
+      this.channelService.getDescription(entity.description);
+      this.channelService.getUserName(entity.users);
+      this.channelService.getAuthor(entity.author);
       this.openChannelChat(entity.channelId)
     }
     this.filteredEntities = [];
