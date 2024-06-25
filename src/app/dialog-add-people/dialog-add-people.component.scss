@@ -161,6 +161,7 @@ input[type="text"]:focus {
 
     ::ng-deep.cdk-overlay-pane.mat-mdc-dialog-panel{
         --mat-dialog-container-small-max-width: 100vw !important;
+        max-width: var(--mat-dialog-container-small-max-width, 100vw) !important;
     }
 
     ::ng-deep.mat-mdc-dialog-surface {

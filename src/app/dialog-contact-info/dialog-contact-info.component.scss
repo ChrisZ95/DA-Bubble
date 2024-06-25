@@ -157,4 +157,13 @@
     width: 95vw !important;
   }
 
+  ::ng-deep.mat-mdc-dialog-surface {
+    border-radius: 30px !important;
+  }
+}
+
+@media(max-width: 480px) {
+  .profile-dialog-container {
+    width: calc(100vw - 81px);
+  }
 }
