@@ -38,3 +38,9 @@
   color: #797EF3;
   margin-left: 5px;
 }
+
+@media screen and (max-width: 400px) {
+  .no-messages-container {
+    left: 10px;
+  }
+}

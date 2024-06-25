@@ -362,21 +362,6 @@ export class ChannelchatComponent implements OnInit, OnDestroy {
     this.getMessageForSpefifiedEmoji(event.emoji, currentUserID, this.emojiReactionMessageID)
   }
 
-  // async loadMessages(): Promise<void> {
-  //   console.log('loadMessages wird aufgerufen')
-  //   try {
-  //     const messages = await this.channelService.loadMessagesForChannel(this.currentChannelId);
-  //     this.channelService.messagesWithAuthors = await Promise.all(
-  //       messages.map(async (message) => {
-  //         const authorName = await this.channelService.getAuthorName(message.uid);
-  //         return { ...message, authorName };
-  //       })
-  //     );
-  //   } catch (error) {
-  //     console.error('Error loading messages:', error);
-  //   }
-  // }
-
   initializeHoverArray(): void {
     this.isHoveredArray = new Array(this.channelService.messagesWithAuthors.length).fill(false);
   }

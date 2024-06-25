@@ -230,3 +230,9 @@ p {
 .justify-start {
   justify-content: flex-start;
 }
+
+@media screen and (max-width: 650px){
+  .emoji-picker-container {
+    left: 10px;
+  }
+}
