@@ -31,7 +31,6 @@ export class ThreadService {
   }
 
   async sendThreadMessageToDatabase(imageFile: any, message: any, currentThreadDocID: any) {
-    debugger
     const timestamp = this.FirestoreService.createTimeStamp();
     const currentuserID = localStorage.getItem('uid');
     const currentUserData = await this.loadUserDataFromDatabase(currentuserID);

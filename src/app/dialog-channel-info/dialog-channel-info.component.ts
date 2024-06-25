@@ -59,7 +59,7 @@ export class DialogChannelInfoComponent implements OnInit {
   updateMemberData(): void {
     this.memberData = this.allUsers.filter(user => this.channelService.UserName.includes(user.uid)).map(user => ({ username: user.username, photo: user.photo, uid: user.uid }));
   }
-  
+
   toggleEditing(field: string) {
     if (field === 'name') {
       this.toggleNameEditing();
@@ -67,17 +67,18 @@ export class DialogChannelInfoComponent implements OnInit {
       this.toggleDescriptionEditing();
     }
   }
-  
+
   toggleNameEditing() {
     if (!this.editingName) {
       this.editedChannelName = this.channelService.channelName;
+      console.log(this.editedChannelName)
     } else {
       this.updateName();
     }
     this.editingName = !this.editingName;
     this.updateIsEditing();
   }
-  
+
   toggleDescriptionEditing() {
     if (!this.editingDescription) {
       this.editedDescription = this.channelService.channelDescription;
@@ -87,19 +88,19 @@ export class DialogChannelInfoComponent implements OnInit {
     this.editingDescription = !this.editingDescription;
     this.updateIsEditing();
   }
-  
+
   updateIsEditing() {
     this.isEditing = this.editingName || this.editingDescription;
   }
 
   async updateName() {
     if (this.editedChannelName !== null) {
-      const fieldName = 'name';
+      const fieldName = 'channelName';
       const channelID = await this.channelService.getChannelIDByField(fieldName, this.channelService.channelName);
       if (channelID !== null) {
         const channelRef = this.channelService.getChannelDocByID(channelID);
-        await this.channelService.updateChannel(channelRef, { name: this.editedChannelName }); 
-        this.channelService.channelName = this.editedChannelName; 
+        await this.channelService.updateChannel(channelRef, { name: this.editedChannelName });
+        this.channelService.channelName = this.editedChannelName;
       } else {
         console.error('Dokument mit diesem Feldwert wurde nicht gefunden.');
       }
@@ -109,13 +110,13 @@ export class DialogChannelInfoComponent implements OnInit {
   }
 
   async updateDescription() {
-    if (this.editedDescription !== null) { 
+    if (this.editedDescription !== null) {
       const fieldName = 'description';
       const channelID = await this.channelService.getChannelIDByField(fieldName, this.channelService.channelDescription);
       if (channelID !== null) {
         const channelRef = this.channelService.getChannelDocByID(channelID);
-        await this.channelService.updateChannel(channelRef, { description: this.editedDescription }); 
-        this.channelService.channelDescription = this.editedDescription; 
+        await this.channelService.updateChannel(channelRef, { description: this.editedDescription });
+        this.channelService.channelDescription = this.editedDescription;
       } else {
         console.error('Dokument mit diesem Feldwert wurde nicht gefunden.');
       }

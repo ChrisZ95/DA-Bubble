@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, ViewChild, OnDestroy, Input, AfterViewChecked } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, OnDestroy, Input, HostListener } from '@angular/core';
 import { DialogMembersComponent } from '../../dialog-members/dialog-members.component';
 import { DialogChannelInfoComponent } from '../../dialog-channel-info/dialog-channel-info.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -22,6 +22,7 @@ import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { EmojiComponent } from '@ctrl/ngx-emoji-mart/ngx-emoji';
 import { ThreadService } from '../../services/thread.service';
 import { TruncatePipe } from '../../shared/pipes/truncate.pipe';
+import { TruncateWordsService } from '../../services/truncate-words.service';
 
 @Component({
   selector: 'app-channelchat',
@@ -31,7 +32,7 @@ import { TruncatePipe } from '../../shared/pipes/truncate.pipe';
   styleUrls: ['./channelchat.component.scss', '../chats.component.scss'],
 })
 export class ChannelchatComponent implements OnInit, OnDestroy {
-  constructor( public dialog: MatDialog, public channelService: ChannelService, private readonly firestore: Firestore, public firestoreService: FirestoreService, public chatService: ChatService, public threadService: ThreadService) {
+  constructor( public truncateService: TruncateWordsService, public dialog: MatDialog, public channelService: ChannelService, private readonly firestore: Firestore, public firestoreService: FirestoreService, public chatService: ChatService, public threadService: ThreadService) {
     this.isEditingArray.push(false);
   }
   @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
@@ -62,6 +63,7 @@ export class ChannelchatComponent implements OnInit, OnDestroy {
   emojiReactionMessageID: any;
   emojiPickerChannelReactionSubscription: Subscription | null = null;
   originalMessageContent = '';
+  public truncateLimitChannelHeader: number | any;
 
   emoji = [
     {
@@ -84,7 +86,15 @@ export class ChannelchatComponent implements OnInit, OnDestroy {
     },
   ];
 
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event): void {
+    const width = (event.target as Window).innerWidth;
+    this.truncateLimitChannelHeader = this.truncateService.setTruncateLimitChatHeader(width)
+    console.log(this.truncateLimitChannelHeader)
+  }
+
   async ngOnInit(): Promise<void> {
+    this.truncateLimitChannelHeader = this.truncateService.setTruncateLimitChatHeader(window.innerWidth);
     this.currentChannelId = this.channelService.getCurrentChannelId();
     this.currentUserID = localStorage.getItem('uid');
     console.log(this.currentUserID)
