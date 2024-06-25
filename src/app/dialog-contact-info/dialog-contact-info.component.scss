@@ -147,7 +147,7 @@
 
 @media(max-width: 850px) {
   .profile-dialog-container {
-    width: calc(100vw - 59px);
+    width: calc(100vw - 82px);
     padding: 40px 20px 40px 20px;
   }
 
@@ -162,8 +162,3 @@
   }
 }
 
-@media(max-width: 480px) {
-  .profile-dialog-container {
-    width: calc(100vw - 81px);
-  }
-}
