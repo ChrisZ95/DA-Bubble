@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output, ViewChild, OnDestroy, Input, OnChanges, SimpleChanges, ChangeDetectorRef, HostListener} from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ViewChild, OnDestroy, Input, OnChanges, SimpleChanges, ChangeDetectorRef, HostListener,ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DialogCreateChannelComponent } from '../../dialog-create-channel/dialog-create-channel.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -12,6 +12,8 @@ import { ChannelchatComponent } from '../../chats/channelchat/channelchat.compon
 import { IdleService } from '../../services/idle.service';
 import { TruncatePipe } from '../../shared/pipes/truncate.pipe';
 import { TruncateWordsService } from '../../services/truncate-words.service';
+import { SearchService } from '../../services/search.service';
+
 
 @Component({
   selector: 'app-workspace',
@@ -25,6 +27,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
   @Input() channelDetails: any;
   @Output() userDetails = new EventEmitter<string>();
   @Output() disyplayEmptyChat = new EventEmitter<boolean>();
+  @Output() channelsDetails = new EventEmitter<string>();
   private userStatusSubscription: Subscription | undefined;
 
   userStatus$: any;
@@ -46,14 +49,19 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
   showUserChannelPlaceholder: boolean = false;
   showUserPlaceholder: any;
   showDropdown: boolean = false;
+  focusOnTextEditor: boolean = false;
 
-  constructor( public truncateService: TruncateWordsService, public dialog: MatDialog, private readonly firestore: Firestore, public firestoreService: FirestoreService, public channelService: ChannelService, public chatService: ChatService, private cdRef: ChangeDetectorRef, public idleService: IdleService,
+  constructor( public truncateService: TruncateWordsService, public dialog: MatDialog, private readonly firestore: Firestore, public firestoreService: FirestoreService, public channelService: ChannelService, public chatService: ChatService, private cdRef: ChangeDetectorRef, public idleService: IdleService, private eRef: ElementRef,
   ) {
     onSnapshot(collection(this.firestore, 'channels'), (list) => {
       this.allChannels = list.docs.map((doc) => doc.data());
       this.filterChannels();
     });
   }
+  @ViewChild('inputRef', { static: false }) inputRef: ElementRef | undefined;
+  @ViewChild('dropdownMenu', { static: false }) dropdownMenu:
+    | ElementRef
+    | undefined;
 
   truncateLimitWorkspace: number = 0;
 
@@ -61,6 +69,78 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
   onResize(event: Event): void {
     const width = (event.target as Window).innerWidth;
     this.truncateLimitWorkspace = this.truncateService.setTruncateLimitWorkspace(width)
+  }
+
+  @HostListener('document:click', ['$event'])
+  clickOutside(event: Event) {
+    this.searchEntity(this.inputRef?.nativeElement.value);
+    const clickedInsideInput =
+      this.inputRef?.nativeElement.contains(event.target) || false;
+    const clickedInsideDropdown =
+      this.dropdownMenu?.nativeElement.contains(event.target) || false;
+
+    if (!clickedInsideInput && !clickedInsideDropdown) {
+      this.showDropdown = false;
+    }
+  }
+
+  @HostListener('focusin', ['$event'])
+  onFocus(event: FocusEvent) {
+    this.loadAllUsersAndAllChannels();
+    const inputValue = this.eRef.nativeElement.querySelector('input').value;
+    const isEventTargetInside = this.eRef.nativeElement.contains(event.target);
+    const isTextEditorFocused = this.focusOnTextEditor;
+    const areFilteredEntitiesEmpty = this.filteredEntities.length === 0;
+    if (isEventTargetInside && !isTextEditorFocused) {
+      this.showDropdown = true;
+    }
+  }
+
+  selectEntity(entity: any) {
+    if (entity.username) {
+      let currentUID = this.firestoreService.currentuid;
+      this.userDetails.emit(entity);
+      this.channelService.showChannelChat = false;
+      this.chatService.showOwnChat = true;
+      this.chatService.searchChatWithUser(entity.uid);
+    } else if (!entity.username) {
+      this.channelsDetails.emit(entity);
+      this.channelService.showChannelChat = true;
+      this.chatService.showOwnChat = false;
+      this.channelService.getChannelName(entity.channelName);
+      this.channelService.getDescription(entity.description);
+      this.channelService.getUserName(entity.users);
+      this.channelService.getAuthor(entity.author);
+    }
+    this.filteredEntities = [];
+    this.focusOnTextEditor = false;
+    this.firestoreService.displayWorkspace = false;
+    if (this.inputRef) {
+      this.inputRef.nativeElement.value = '';
+    }
+    this.filteredEntities = [];
+    this.showDropdown = false;
+  }
+
+  loadAllUsersAndAllChannels() {
+    this.firestoreService
+      .getAllUsers()
+      .then((users) => {
+        this.allUsers = users;
+      })
+      .catch((error) => {
+        console.error('Error fetching users:', error);
+      });
+    this.firestoreService
+      .getAllChannels()
+      .then((Channels) => {
+        this.allChannels = Channels.filter((channel) =>
+          channel.users.includes(this.firestoreService.currentuid)
+        );
+      })
+      .catch((error) => {
+        console.error('Error fetching users:', error);
+      });
   }
 
   ngOnInit(): void {
@@ -177,6 +257,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
       .catch((error) => {
         console.error('Error fetching users:', error);
       });
+      
   }
 
   stopPropagation(event: Event) {
@@ -197,22 +278,16 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
     );
   }
 
-  searchEntity(input: string) {
-    const lowerCaseInput = input.toLowerCase().trim();
+  searchEntity(input: string) {    
+    const lowerCaseInput = input?.toLowerCase().trim();
     this.filteredEntities = [];
     if (input === '') {
-      this.showUserChannelPlaceholder = true;
-      this.showUserPlaceholder = false;
-      this.showChannelPlaceholder = false;
+      this.displayAllUsersAndChannels();
     } else if (input === '@') {
-      this.showUserPlaceholder = true;
-      this.showChannelPlaceholder = false;
-      this.showUserChannelPlaceholder = false;
+      this.displayAllUsers();
     } else if (input === '#') {
-      this.showUserPlaceholder = false;
-      this.showChannelPlaceholder = true;
-      this.showUserChannelPlaceholder = false;
-    } else if (input.startsWith('@')) {
+      this.displayAllChannels();
+    } else if (input?.startsWith('@')) {
       this.filteredEntities = this.allUsers.filter((item: any) => {
         return (
           item.username &&
@@ -220,44 +295,78 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
           item.uid !== this.firestoreService.currentuid
         );
       });
-      this.showUserPlaceholder = false;
-      this.showChannelPlaceholder = false;
-      this.showUserChannelPlaceholder = false;
-    } else if (input.startsWith('#')) {
+    } else if (input?.startsWith('#')) {
       this.filteredEntities = this.allChannels.filter((channel: any) => {
         return (
           channel.channelName &&
           channel.channelName
             .toLowerCase()
-            .includes(lowerCaseInput.substring(1))
+            .includes(lowerCaseInput.substring(1)) &&
+          channel.users.includes(this.firestoreService.currentuid)
         );
       });
-      this.showUserPlaceholder = false;
-      this.showChannelPlaceholder = false;
-      this.showUserChannelPlaceholder = false;
     } else {
       const users = this.allUsers.filter((item: any) => {
+        item.isUser = true;
         return (
           item.username &&
           item.username.toLowerCase().includes(lowerCaseInput) &&
           item.uid !== this.firestoreService.currentuid
         );
       });
-
       const channels = this.allChannels.filter((item: any) => {
-        return item.name && item.name.toLowerCase().includes(lowerCaseInput);
+        item.isChannel = true;
+        return (
+          item.channelName &&
+          item.channelName.toLowerCase().includes(lowerCaseInput) &&
+          item.users.includes(this.firestoreService.currentuid)
+        );
       });
 
-      this.filteredEntities = [...users, ...channels];
-      this.showUserPlaceholder = false;
-      this.showChannelPlaceholder = false;
-      this.showUserChannelPlaceholder = false;
+      this.filteredEntities = [...channels, ...users];
     }
+    this.showDropdown = true;
+  }
 
-    this.showDropdown =
-      this.filteredEntities.length > 0 ||
-      input === '' ||
-      input === '@' ||
-      input === '#';
+  displayAllUsersAndChannels() {
+    this.filteredEntities = [
+      ...this.allChannels.map((channel: any) => {
+        channel.isChannel = true;
+        return channel;
+      }),
+      ...this.allUsers.filter((user: any) => {
+        user.isUser = true;
+        return user.username && user.uid !== this.firestoreService.currentuid;
+      }),
+    ];
+    this.showDropdown = true;
+  }
+
+  displayAllUsers() {
+    this.filteredEntities = this.allUsers.filter((item: any) => {
+      item.isUser = true;
+      return item.username && item.uid !== this.firestoreService.currentuid;
+    });
+
+    this.filteredEntities.sort((a: any, b: any) => {
+      const usernameA = a.username.toLowerCase();
+      const usernameB = b.username.toLowerCase();
+      if (usernameA < usernameB) {
+        return -1;
+      }
+      if (usernameA > usernameB) {
+        return 1;
+      }
+      return 0;
+    });
+    this.showDropdown = true;
+  }
+
+  displayAllChannels() {
+    this.filteredEntities = this.allChannels.map((channel: any) => {
+      channel.isChannel = true;
+      return channel;
+    });
+    this.showDropdown = true;
   }
 }
