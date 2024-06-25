@@ -172,8 +172,9 @@ export class ChatService {
       console.error('Error loading chats:', error);
     }
   }
-
+testID:any;
   async checkAndSetParticipants(input: any) {
+    this.testID = input
     this.currentChatParticipants = '';
     try {
       let filteredChats: any[] = [];

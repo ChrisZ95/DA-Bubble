@@ -167,7 +167,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
 
       setTimeout(() => {
         this.delayPassed = true;
-      }, 100);
+      }, 125);
   }
 
   ngOnDestroy(): void {
@@ -251,6 +251,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
       console.error('Error deleting document:', error);
       this.menuClosed(index);
     }
+    this.chatService.checkAndSetParticipants(this.chatService.testID)
   }
 
   scrollToBottom(): void {
