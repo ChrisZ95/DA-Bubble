@@ -76,7 +76,8 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   emojiReactionMessageID: any;
   isEditingArray: boolean[] = [];
   originalMessageContent = '';
-  public truncateLimitChatHeader: number | any; // Initial nicht gesetzt
+  public truncateLimitChatHeader: number | any;
+  delayPassed: boolean = false;
 
   emoji = [
     {
@@ -163,6 +164,10 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
       .then((user) => {
         this.currentUser = user;
       });
+
+      setTimeout(() => {
+        this.delayPassed = true;
+      }, 100);
   }
 
   ngOnDestroy(): void {

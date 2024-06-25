@@ -74,6 +74,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
     this.userStatus$ = this.idleService.getUserStatus(
       this.firestoreService.currentuid
     );
+    this.chatService.checkForExistingChats();
   }
 
   ngOnDestroy(): void {

@@ -13,7 +13,7 @@
 
   <div class="scrollbar" #scrollContainer>
 
-    <ng-container *ngIf="chatService?.currentChatParticipants != ''">
+    <ng-container *ngIf="chatService?.currentChatParticipants != '' && (!this.messages || this.messages.length === 0) && delayPassed">
       <div class="no-messages-container">
         <div *ngIf="chatService?.currentChatParticipants == 2" class="name-img">
           <img [src]="chatService.otherParticipant[0]?.photo" alt="">

@@ -9,11 +9,13 @@ export class TruncateWordsService {
 
   setTruncateLimitWorkspace(width: number): number {
     if (width >= 1400) {
-      return 60;
+      return 30;
     } else if (width < 400) {
       return 20;
     } else if (width < 850) {
-      return 80;
+      return 40;
+    } else if (width < 1400) {
+      return 14;
     } else {
       return 10;
     }
