@@ -200,6 +200,7 @@
     justify-content: flex-end;
     gap: 15px;
     width: 100%;
+    margin-bottom: 20px;
 }
 
 @media(max-width: 850px) {
@@ -326,6 +327,19 @@
 
     .delete-channel-button-own-channel {
         margin-right: 20px;
+    }
+}
+
+@media(min-width: 851px) and (max-width: 975px) {
+    ::ng-deep.cdk-overlay-pane.mat-mdc-dialog-panel {
+        --mat-dialog-container-small-max-width: 95vw !important;
+        max-width: var(--mat-dialog-container-small-max-width, 95vw) !important;
+        width: 95vw !important;
+    }
+
+    ::ng-deep.mat-mdc-dialog-component-host {
+        display: flex !important;
+        justify-content: center !important;
     }
 }
 
