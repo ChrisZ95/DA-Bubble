@@ -271,10 +271,10 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     const docRef = doc(this.firestore, 'newchats', docID);
     this.currentDocID = docID;
 
-    onSnapshot(docRef, async (docSnap) => {
+    this.unsubscribe = onSnapshot(docRef, async (docSnap) => {
       if (docSnap.exists()) {
         const messagesRef = collection(this.firestore, 'newchats', docID,'messages');
-        onSnapshot(messagesRef, async (messagesSnap) => {
+        this.unsubscribe = onSnapshot(messagesRef, async (messagesSnap) => {
           const messagesMap = new Map();
           const messagePromises = messagesSnap.docs.map(async (messageDoc) => {
             let messageData = messageDoc.data();

@@ -63,6 +63,7 @@ export class ChannelchatComponent implements OnInit, OnDestroy {
   originalMessageContent = '';
   public truncateLimitChannelHeader: number | any;
   unsubscribe: any;
+  showReactedBy:  any = [];
 
   emoji = [
     {
@@ -124,11 +125,11 @@ export class ChannelchatComponent implements OnInit, OnDestroy {
     const docRef = doc(this.firestore, "channels", docID);
     this.currentDocID = docID;
 
-    onSnapshot(docRef, async (docSnap) => {
+    this.unsubscribe = onSnapshot(docRef, async (docSnap) => {
       if (docSnap.exists()) {
         const messagesRef = collection(this.firestore, "channels", docID, "messages");
         const reactionsRef = collection(this.firestore, "channels", docID, "messages");
-        onSnapshot(messagesRef, async (messagesSnap) => {
+        this.unsubscribe = onSnapshot(messagesRef, async (messagesSnap) => {
         const messagesMap = new Map();
         const messagePromises = messagesSnap.docs.map(async (messageDoc) => {
           let messageData = messageDoc.data();
@@ -324,6 +325,30 @@ export class ChannelchatComponent implements OnInit, OnDestroy {
 
       await this.loadChannelMessages(this.currentDocID)
     }
+  }
+
+  async onMouseEnter(reaction: any, messageIndex: number, reactionIndex: number) {
+    if (!this.showReactedBy[messageIndex]) {
+      this.showReactedBy[messageIndex] = [];
+    }
+    this.showReactedBy[messageIndex][reactionIndex] = []
+    const reactedBy = Array.isArray(reaction.reactedBy) ? reaction.reactedBy : [reaction.reactedBy];
+    for (const userID of reactedBy) {
+      const docRef = doc(this.firestore, "users", userID);
+      try {
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const userDetails = docSnap.data();
+          console.log(userDetails['username']);
+          this.showReactedBy[messageIndex][reactionIndex].push(userDetails['username']);
+        }
+      } catch (error) {
+      }
+    }
+  }
+
+  onMouseLeave(messageIndex: number, reactionIndex: number) {
+    this.showReactedBy[messageIndex][reactionIndex] = [];
   }
 
   handleUserDocSnapshot(doc: any) {
