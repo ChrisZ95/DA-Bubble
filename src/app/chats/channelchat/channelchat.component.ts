@@ -10,7 +10,7 @@ import { CommonModule, NgFor } from '@angular/common';
 import { TimestampPipe } from '../../shared/pipes/timestamp.pipe';
 import { Channel } from './../../../models/channel.class';
 import { ChannelService } from '../../services/channel.service';
-import { Firestore, onSnapshot, Unsubscribe } from '@angular/fire/firestore';
+import { Firestore, onSnapshot } from '@angular/fire/firestore';
 import { FirestoreService } from '../../firestore.service';
 import { Subscription } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
@@ -52,9 +52,7 @@ export class ChannelchatComponent implements OnInit, OnDestroy {
   editingMessageIndex: number | null = null;
   editedMessageText: string = '';
   userForm: any;
-
   channelDocumentIDSubsrciption: Subscription | null = null;
-
   currentDocID: any;
   messages: any = [];
   currentUserID:any
@@ -64,6 +62,7 @@ export class ChannelchatComponent implements OnInit, OnDestroy {
   emojiPickerChannelReactionSubscription: Subscription | null = null;
   originalMessageContent = '';
   public truncateLimitChannelHeader: number | any;
+  unsubscribe: any;
 
   emoji = [
     {
@@ -90,20 +89,15 @@ export class ChannelchatComponent implements OnInit, OnDestroy {
   onResize(event: Event): void {
     const width = (event.target as Window).innerWidth;
     this.truncateLimitChannelHeader = this.truncateService.setTruncateLimitChatHeader(width)
-    console.log(this.truncateLimitChannelHeader)
   }
 
   async ngOnInit(): Promise<void> {
     this.truncateLimitChannelHeader = this.truncateService.setTruncateLimitChatHeader(window.innerWidth);
     this.currentChannelId = this.channelService.getCurrentChannelId();
     this.currentUserID = localStorage.getItem('uid');
-    console.log(this.currentUserID)
-    // await Promise.all([this.loadChannels(), this.loadUsers(), this.loadChannelMessages(this.currentChannelId)]);
-    // this.initializeHoverArray();
 
     this.channelDocumentIDSubsrciption = this.channelService.currentChannelId$.subscribe(
       (channelId)=> {
-        console.log(channelId)
         this.messages = []
         this.loadChannelMessages(channelId)
         this.loadUsers()
@@ -144,28 +138,41 @@ export class ChannelchatComponent implements OnInit, OnDestroy {
             if (messageData['senderID']) {
               const senderID = messageData['senderID'];
               const senderData = await this.loadSenderData(senderID);
+              await this.countThreadMessages(messageData['threadID'], messageDoc.id, docID)
               messageData['senderName'] = senderData ? senderData.username : "Unknown";
               messageData['senderPhoto'] = senderData ? senderData.photo : null;
-              console.log('nachrichten erfolgreich geladen ')
             }
             const reactionsRef = collection(this.firestore, "channels", docID, "messages", messageData['id'], "emojiReactions");
             const reactionsSnap = await getDocs(reactionsRef);
             const reactions = reactionsSnap.docs.map(doc => doc.data());
             messageData['emojiReactions'] = reactions;
             messagesMap.set(messageData['id'], messageData);
-            console.log('nachrichten reaktionen erfolgreich geladen ')
-          } else {
-            console.error("Invalid timestamp format:", messageData['createdAt']);
           }
         });
         await Promise.all(messagePromises);
         this.messages = Array.from(messagesMap.values()).sort((a: any, b: any) => a.createdAt - b.createdAt);
-        console.log(this.messages)
       });
-      } else {
-        console.log("No such document!");
       }
     });
+    this.stopListening();
+  }
+
+  async countThreadMessages(threadID: any, messageID: any, docID: any) {
+    const threadsRef = collection(this.firestore, 'threads', threadID, 'messages');
+    this.unsubscribe = onSnapshot(threadsRef, (snapshot) => {
+      const messageDocRef = doc(this.firestore, 'channels', docID, 'messages', messageID);
+      const adjustedSize = snapshot.size - 1;
+      const threadCounter = adjustedSize === 1 ? '1 Antwort' : `${adjustedSize} Antworten`;
+      updateDoc(messageDocRef, {
+        threadCounter: threadCounter
+      })
+    });
+  }
+
+   stopListening() {
+    if (this.unsubscribe) {
+      this.unsubscribe();
+    }
   }
 
   async loadSenderData(senderID: any) {
@@ -176,7 +183,6 @@ export class ChannelchatComponent implements OnInit, OnDestroy {
       const senderData = docSnap.data();
       return { username: senderData['username'], photo: senderData['photo'] };
     } else {
-      console.log("No such document!");
       return null;
     }
   }
@@ -296,7 +302,6 @@ export class ChannelchatComponent implements OnInit, OnDestroy {
           const reactedByArray = reactionData['reactedBy'] || [];
 
           if (reactedByArray.includes(currentUserID)) {
-           console.log('user hat bereits reagiert')
            this.deleteEmojireaction(emoji, currentUserID, messageID)
           } else {
             this.getMessageForSpefifiedEmoji(emoji, currentUserID, messageID)
@@ -355,7 +360,6 @@ export class ChannelchatComponent implements OnInit, OnDestroy {
     try {
       this.allChannels = await this.channelService.getChannels();
     } catch (error) {
-      console.error('Error fetching channels:', error);
     }
   }
 
@@ -363,7 +367,6 @@ export class ChannelchatComponent implements OnInit, OnDestroy {
     try {
       this.allUsers = await this.firestoreService.getAllUsers();
     } catch (error) {
-      console.error('Error fetching users:', error);
     }
   }
 
@@ -459,21 +462,14 @@ export class ChannelchatComponent implements OnInit, OnDestroy {
           }
           await deleteDoc(threadDocRef);
           this.threadService.displayThread = false;
-        } else {
-          console.log('Thread not found with ID:', messageData['threadID']);
         }
         await deleteDoc(messageDocRef);
-      } else {
-        console.log('No document found with the ID:', messageID);
       }
-
       this.menuClosed(index);
     } catch (error) {
-      console.error('Error deleting document:', error);
       this.menuClosed(index);
     }
   }
-
 
   menuOpened(index: number) {
     this.menuClicked = true;
@@ -490,11 +486,6 @@ export class ChannelchatComponent implements OnInit, OnDestroy {
     const currentDate = new Date(Number(currentMessage.createdAt));
     const previousDate = new Date(Number(previousMessage.createdAt));
     if (isNaN(currentDate.getTime()) || isNaN(previousDate.getTime())) {
-      console.error(
-        `Invalid Date - Current Message: ${JSON.stringify(
-          currentMessage
-        )}, Previous Message: ${JSON.stringify(previousMessage)}`
-      );
       return false;
     }
     const currentDateString = currentDate.toDateString();

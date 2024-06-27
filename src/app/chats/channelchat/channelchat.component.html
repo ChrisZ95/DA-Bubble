@@ -92,7 +92,9 @@
             </div>
             <div class="reaction-container">
               <div class="open-thread">
-                <a (click)="openThread(message)"><h4>Antworten</h4></a>
+                <a (click)="openThread(message)">
+                  <h4>{{ message.threadCounter }}</h4>
+                </a>
               </div>
               <div class="emoji-reaction-container" *ngFor="let reaction of message.emojiReactions.slice(0, 2)">
                 <div *ngIf="reaction.emojiCounter > 0" (click)="addOrDeleteReaction(reaction.emoji, this.currentUserID, message.id)" class="reaction-sub-container">
