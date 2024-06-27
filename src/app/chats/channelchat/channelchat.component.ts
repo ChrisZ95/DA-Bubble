@@ -339,7 +339,6 @@ export class ChannelchatComponent implements OnInit, OnDestroy {
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           const userDetails = docSnap.data();
-          console.log(userDetails['username']);
           this.showReactedBy[messageIndex][reactionIndex].push(userDetails['username']);
         }
       } catch (error) {

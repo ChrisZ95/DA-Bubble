@@ -34,7 +34,6 @@ export class ChannelService {
     const currentuserID = localStorage.getItem('uid');
     const currentUserData = await this.loadUserDataFromDatabase(currentuserID);
     if (!currentUserData) {
-      console.error('Fehler: Benutzer konnte nicht geladen werden.');
       return;
     }
 
@@ -66,7 +65,6 @@ export class ChannelService {
       await addDoc(messagesCollectionRef, newMessage);
 
     } catch (error) {
-      console.error('Fehler beim Speichern der Nachricht:', error);
     }
   }
 
@@ -87,25 +85,8 @@ export class ChannelService {
       };
       return userDetails;
     } else {
-      console.log('No such document!');
       return null;
     }
-  }
-
-  updateMessageInMessagesList(messageId: string, newComment: any): void {
-    // const messageIndex = this.messages.findIndex(
-    //   (msg) => msg.messageId === messageId
-    // );
-    // if (messageIndex > -1) {
-    //   if (!this.messages[messageIndex].comments) {
-    //     this.messages[messageIndex].comments = [];
-    //   }
-    //   this.messages[messageIndex].comments.push(newComment);
-    //   this.updateMessagesWithAuthors();
-    //   this.currentMessageCommentsChanged.emit(
-    //     this.messages[messageIndex].comments
-    //   );
-    // }
   }
 
   getChannelRef() {
@@ -122,7 +103,6 @@ export class ChannelService {
       });
       return channels;
     } catch (error) {
-      console.error('Error fetching users:', error);
       throw error;
     }
   }
@@ -166,7 +146,6 @@ export class ChannelService {
     return addDoc(collection(this.firestore, 'channels'), channelData)
       .then((result: any) => result.id)
       .catch(error => {
-        console.error('Fehler beim Erstellen des Kanals:', error);
         throw error;
       });
   }
@@ -175,7 +154,6 @@ export class ChannelService {
     const channelDocRef = doc(this.firestore, 'channels', channelId);
     return updateDoc(channelDocRef, { ...channelData, channelId })
       .catch(error => {
-        console.error('Fehler beim Aktualisieren des Kanals:', error);
         throw error;
       });
   }
@@ -207,11 +185,9 @@ export class ChannelService {
       if (userData) {
         return this.extractUsername(userData);
       } else {
-        console.error('Benutzerdaten nicht gefunden.');
         return null;
       }
     } catch (error) {
-      console.error('Fehler beim Abrufen des Benutzernamens:', error);
       throw error;
     }
   }
@@ -225,7 +201,6 @@ export class ChannelService {
     if (userSnapshot.exists()) {
       return userSnapshot.data() as DocumentData;
     } else {
-      console.error('Benutzer nicht gefunden.');
       return null;
     }
   }
@@ -234,7 +209,6 @@ export class ChannelService {
     if (userData && userData['username']) {
       return userData['username'];
     } else {
-      console.error('Benutzername nicht gefunden.');
       return null;
     }
   }
@@ -245,7 +219,6 @@ export class ChannelService {
       const channelData = await this.getChannelData(channelDocRef);
       return this.extractChannelAuthor(channelData);
     } catch (error) {
-      console.error('Fehler beim Abrufen des Autors des Kanals:', error);
       throw error;
     }
   }
@@ -259,7 +232,6 @@ export class ChannelService {
     if (channelSnapshot.exists()) {
       return channelSnapshot.data();
     } else {
-      console.error('Kanal nicht gefunden.');
       return null;
     }
   }
@@ -268,14 +240,12 @@ export class ChannelService {
     if (channelData && channelData['author']) {
       return channelData['author'];
     } else {
-      console.error('Autor des Kanals nicht gefunden.');
       return null;
     }
   }
 
   setCurrentChannelId(channelId: string) {
     this.currentChannelId = channelId;
-    console.log('Current channel ID changed to:', channelId);
     this.currentChannelIdSource.next(channelId);
   }
 
@@ -306,7 +276,6 @@ export class ChannelService {
       this.processQuerySnapshot(querySnapshot);
       return this.messages;
     } catch (error) {
-      console.error('Error loading messages for channel:', error);
       return [];
     }
   }
@@ -352,11 +321,9 @@ export class ChannelService {
       if (userSnapshot.exists()) {
         return userSnapshot.data();
       } else {
-        console.error('User document does not exist');
         return null;
       }
     } catch (error) {
-      console.error('Error fetching user:', error);
       throw error;
     }
   }
@@ -378,10 +345,8 @@ export class ChannelService {
       const querySnapshot = await this.getChatsSnapshot();
       const messageFound = this.findAndUpdateMessage(querySnapshot, messageId, newMessageText);
       if (!messageFound) {
-        console.error('No chat document found containing the specified message.');
       }
     } catch (error) {
-      console.error('Error updating message:', error);
       throw error;
     }
   }
@@ -416,10 +381,8 @@ export class ChannelService {
       const querySnapshot = await this.getChatsSnapshot();
       const commentFound = this.findAndUpdateComment(querySnapshot, messageId, commentId, newCommentText);
       if (!commentFound) {
-        console.error('No chat document found containing the specified comment.');
       }
     } catch (error) {
-      console.error('Error updating comment:', error);
       throw error;
     }
   }
@@ -467,7 +430,6 @@ export class ChannelService {
       const updatedUsers = this.filterCurrentUser(currentUsers);
       await this.updateChannelUsers(channelDocRef, updatedUsers);
     } catch (error) {
-      console.error('Error leaving the channel:', error);
     }
   }
 

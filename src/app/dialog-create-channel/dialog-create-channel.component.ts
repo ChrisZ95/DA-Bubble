@@ -43,10 +43,10 @@ export class DialogCreateChannelComponent {
     try {
       const authorUid = this.firestoreService.currentuid;
       if (!authorUid) {
-        console.error('Benutzer nicht angemeldet.');
+        console.error('Benutzer nicht angemeldet.'); //??
         return;
       }
-      
+
       const channelExists = await this.checkIfChannelExists(this.channelName);
       if (channelExists) {
         this.errorMessage = 'Ein Kanal mit diesem Namen existiert bereits!';
@@ -57,7 +57,6 @@ export class DialogCreateChannelComponent {
       this.dialogRef.close();
       this.openAddPeopleToNewChannelDialog(newChannelId);
     } catch (error) {
-      console.error('Fehler beim Erstellen des Kanals:', error);
       throw error;
     }
   }

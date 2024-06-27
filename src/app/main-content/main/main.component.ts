@@ -100,42 +100,36 @@ export class MainComponent implements OnInit {
     this.emojiPickerChatSubscription = this.chatService.emojiPickerChat$.subscribe(
       (state: boolean) => {
         this.emojiPickerChat = state;
-        console.log( this.emojiPickerChat)
       }
     );
 
     this.emojiPickerChatReactionSubscription = this.chatService.emojiPickerChatReaction$.subscribe(
       (state: boolean) => {
         this.emojiPickerChatReaction = state;
-        console.log( this.emojiPickerChatReaction)
       }
     );
 
     this.emojiPickerThreadSubscription = this.chatService.emojiPickerThread$.subscribe(
       (state: boolean) => {
         this.emojiPickerThread = state;
-        console.log( this.emojiPickerThread)
       }
     );
 
     this.emojiPickerThreadReactionSubscription = this.chatService.emojiPickerThreadRection$.subscribe(
       (state: boolean) => {
         this.emojiPickerThreadReaction = state;
-        console.log('thread reaction', this.emojiPickerThreadReaction)
       }
     );
 
     this.emojiPickerChannelSubscription = this.chatService.emojiPickerChannel$.subscribe(
       (state: boolean) => {
         this.emojiPickerChannel = state;
-        console.log( this.emojiPickerChannel)
       }
     );
 
     this.emojiPickerChannelReactionSubscription = this.chatService.emojiPickerChannelReaction$.subscribe(
       (state: boolean) => {
         this.emojiPickerChannelReaction = state;
-        console.log( this.emojiPickerChannelReaction)
       }
     );
 
@@ -194,43 +188,35 @@ export class MainComponent implements OnInit {
   }
 
   closeEmojiPickerChat() {
-    console.log('normal picker')
     this.chatService.emojiPickerChat(false);
   }
 
   closeEmojiPickerChatReaction() {
-    console.log('normal picker')
     this.chatService.emojiPickerChatReaction(false);
   }
 
   closeEmojiPickerThread() {
-    console.log('thread picker')
     this.chatService.emojiPickerThread(false);
   }
 
   closeEmojiPickerThreadReaction() {
-    console.log('thread Reaction picker')
     this.chatService.emojiPickerThreadReaction(false);
   }
 
   closeEmojiPickerChannel() {
-    console.log('thread Reaction picker')
     this.chatService.emojiPickerChannel(false);
   }
 
   closeEmojiPickerChannelReaction() {
-    console.log('thread Reaction picker')
     this.chatService.emojiPickerChannelReaction(false);
   }
 
   closeAssociatedUserChat() {
     this.chatService.associatedUserChat(false);
-    console.log('close');
   }
 
   closeAssociatedUserChatThread() {
     this.chatService.associatedUserChatThread(false);
-    console.log('close');
   }
 
   showHideWorkspace() {

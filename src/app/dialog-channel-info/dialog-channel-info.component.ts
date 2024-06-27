@@ -37,23 +37,19 @@ export class DialogChannelInfoComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     const channelId = this.channelService.getCurrentChannelId();
-    if (!channelId) return console.error('channelId ist null.');
+    if (!channelId) return console.error('channelId ist null.'); //??
     try {
       const authorUid = await this.channelService.getChannelAuthorUid(channelId);
-      if (!authorUid) return console.error('Autor ist null.');
+      if (!authorUid) return console.error('Autor ist null.');//??
       this.isChannelAuthor = this.firestoreService.currentuid === authorUid;
       const authorName = await this.channelService.getAuthorName(authorUid);
       if (authorName !== null) this.authorName = authorName;
-      else console.error('Benutzername ist null.');
     } catch (error) {
-      console.error('Fehler beim Abrufen des Autors oder des Benutzernamens:', error);
     }
     this.firestoreService.getAllUsers().then(users => {
       this.allUsers = users;
       this.updateMemberData();
-    }).catch(error => {
-      console.error('Error fetching users:', error);
-    });
+    })
   }
 
   updateMemberData(): void {
@@ -71,7 +67,6 @@ export class DialogChannelInfoComponent implements OnInit {
   toggleNameEditing() {
     if (!this.editingName) {
       this.editedChannelName = this.channelService.channelName;
-      console.log(this.editedChannelName)
     } else {
       this.updateName();
     }
@@ -101,11 +96,7 @@ export class DialogChannelInfoComponent implements OnInit {
         const channelRef = this.channelService.getChannelDocByID(channelID);
         await this.channelService.updateChannel(channelRef, { channelName: this.editedChannelName });
         this.channelService.channelName = this.editedChannelName;
-      } else {
-        console.error('Dokument mit diesem Feldwert wurde nicht gefunden.');
       }
-    } else {
-      console.error('Bearbeiteter Kanalname ist null.');
     }
   }
 
@@ -117,11 +108,7 @@ export class DialogChannelInfoComponent implements OnInit {
         const channelRef = this.channelService.getChannelDocByID(channelID);
         await this.channelService.updateChannel(channelRef, { description: this.editedDescription });
         this.channelService.channelDescription = this.editedDescription;
-      } else {
-        console.error('Dokument mit diesem Feldwert wurde nicht gefunden.');
       }
-    } else {
-      console.error('Bearbeitete Kanalbeschreibung ist null.');
     }
   }
 
@@ -139,13 +126,11 @@ export class DialogChannelInfoComponent implements OnInit {
       await this.channelService.deleteChannel(channelId);
       this.dialogRef.close();
     } catch (error) {
-      console.error('Error deleting the channel:', error);
     }
   }
 
   async openContactInfo(userid:any ) {
     let allUsers = await this.firestoreService.getAllUsers();
-    console.log(allUsers)
     let userDetails = allUsers.filter(
       (user) => user.uid == userid
     );

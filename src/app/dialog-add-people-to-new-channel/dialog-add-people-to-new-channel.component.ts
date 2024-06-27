@@ -29,6 +29,7 @@ export class DialogAddPeopleToNewChannelComponent implements OnInit {
   currentChannelId: string = '';
   showUserList: boolean = false;
   authorUid: string = '';
+  unsubscribe: any;
 
   constructor(
     private dialogRef: MatDialogRef<DialogAddPeopleToNewChannelComponent>,
@@ -37,7 +38,7 @@ export class DialogAddPeopleToNewChannelComponent implements OnInit {
     private channelService: ChannelService,
     private readonly firestore: Firestore
   ) {
-    onSnapshot(collection(this.firestore, 'channels'), (list) => {
+    this.unsubscribe = onSnapshot(collection(this.firestore, 'channels'), (list) => {
       this.allChannels = list.docs.map((doc) => doc.data());
     });
   }
@@ -51,9 +52,13 @@ export class DialogAddPeopleToNewChannelComponent implements OnInit {
     }
     this.firestoreService.getAllUsers().then(users => {
       this.allUsers = users.filter(user => user.uid !== this.authorUid); // Exclude the author from all users
-    }).catch(error => {
-      console.error('Error fetching users:', error);
-    });
+    })
+  }
+
+  ngOnDestroy(): void {
+    if (this.unsubscribe) {
+      this.unsubscribe();
+    }
   }
 
   closeAddPeopleToNewChannelDialog(): void {
@@ -82,9 +87,9 @@ export class DialogAddPeopleToNewChannelComponent implements OnInit {
 
   filterUsers(): void {
     if (this.personName.trim() !== '') {
-      this.filteredUsers = this.allUsers.filter(user => 
+      this.filteredUsers = this.allUsers.filter(user =>
         user.username.toLowerCase().includes(this.personName.toLowerCase()) &&
-        user.uid !== this.authorUid 
+        user.uid !== this.authorUid
       );
       this.showUserList = true;
     } else {
@@ -101,27 +106,26 @@ export class DialogAddPeopleToNewChannelComponent implements OnInit {
       await this.channelService.updateChannel(channelDocRef, { users: updatedUsers });
       this.resetSelections();
     } catch (error) {
-      console.error('Fehler beim Hinzufügen der Benutzer zum Kanal:', error);
     }
   }
-  
+
   getValidChannelDocRef() {
     const channelDocRef = this.channelService.getChannelDocByID(this.currentChannelId);
     if (!channelDocRef) throw new Error('Channel Document Reference is invalid.');
     return channelDocRef;
   }
-  
+
   getUsersToAdd() {
     return this.selectedOption === 'office' ? this.allUsers : this.selectedUsers;
   }
-  
+
   async getUpdatedUsers(channelDocRef: any, usersToAdd: any[]) {
     const channelSnap = await getDoc(channelDocRef);
     const currentUsers = (channelSnap.data() as { users?: string[] })?.users || [];
     const userIdsToAdd = usersToAdd.map(user => user.uid);
     return [...new Set([...currentUsers, ...userIdsToAdd])];
   }
-  
+
   resetSelections() {
     this.selectedUsers = [];
     this.updatePersonName();

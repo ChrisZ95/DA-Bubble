@@ -31,7 +31,6 @@ export class DialogProfileComponent implements OnInit{
     this.userEmail = this.userForm['email'];
     this.userPhoto = this.userForm['photo'];
     this.userSignUpDate = this.userForm['signUpdate'];
-    console.log('Komplettes form',this.userForm,'Name', this.userName, 'email', this.userEmail );
     this.convertSignUpDate(this.userSignUpDate);
   }
 

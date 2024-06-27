@@ -79,7 +79,6 @@ export class ChatService {
   async checkForExistingChats() {
     const currentUserID: string | null = localStorage.getItem('uid');
     if (!currentUserID) {
-      console.log('CurrentUserId ist undefined | null');
       return;
     }
 
@@ -88,7 +87,6 @@ export class ChatService {
 
     const [querySnapshot, existingChats] = await Promise.all([getDocs(usersCollection), getDocs(chatsCollection)]);
 
-    // Es wird ein Array erstellt in dem alle anderen User drin sind (nicht der eingeloggte Account)
     const usersArray: string[] = [];
     querySnapshot.forEach((doc) => {
       const userData = doc.data();
@@ -97,7 +95,6 @@ export class ChatService {
       }
     });
 
-    // Die Firestore sammlung newchats durchsuchen um zu prüfen ob bereits ein Chat vorhanden ist
     const existingChatsSet = new Set<string>();
     existingChats.forEach((doc) => {
       const chatData = doc.data();
@@ -111,12 +108,9 @@ export class ChatService {
       }
     });
 
-    // Überprüfen, ob es für jeden Benutzer im usersArray bereits einen Chat gibt
     usersArray.forEach((userID) => {
       if (existingChatsSet.has(userID)) {
-        // console.log(`Einzelchat zwischen ${currentUserID} und ${userID} existiert bereits.`);
       } else {
-        // console.log(`Kein Einzelchat zwischen ${currentUserID} und ${userID} gefunden.`);
         this.createChats(currentUserID, userID);
       }
     });
@@ -129,13 +123,11 @@ export class ChatService {
       const chatData = { participants: [currentUserID, otherUserID], createdAt: timestamp };
       await setDoc(newDocRef, chatData);
     } catch (error: any) {
-      console.error('Fehler beim Erstellen des Chats:', error);
     }
   }
 
   async searchPrivateChat(userDetails: any) {
     const currentUserID = localStorage.getItem('uid');
-    // this.currentChatParticipants = '1';
 
     if (userDetails.uid === currentUserID) {
       const querySnapshot = await getDocs(query(collection(this.firestore, 'newchats'), where('participants', '==', [currentUserID])));
@@ -148,7 +140,6 @@ export class ChatService {
         this.documentIDSubject.next(doc.id);
       });
     } else {
-      console.log('Die IDs sind nicht gleich');
     }
     this.checkAndSetParticipants(userDetails);
   }
@@ -169,7 +160,6 @@ export class ChatService {
 
       this.allChats = chats.filter((chat) => (chat.participants as any[]).includes(this.FirestoreService.currentuid));
     } catch (error) {
-      console.error('Error loading chats:', error);
     }
   }
 participantID:any;
@@ -199,7 +189,6 @@ participantID:any;
         }
       }
     } catch (error) {
-      console.error('Error:', error);
     }
   }
 
@@ -213,7 +202,6 @@ participantID:any;
       if (usersInChat.includes(this.currentuid) && usersInChat.includes(userDetails)) {
         chatsWithBothUsers.push({ id: doc.id, ...chatData });
         chatDocID = chatsWithBothUsers[0].id;
-        // this.currentChatParticipants = usersInChat;
         this.filteredUsersSubject.next(usersInChat);
         this.documentIDSubject.next(doc.id);
       }
@@ -238,7 +226,6 @@ participantID:any;
     const currentuserID = localStorage.getItem('uid');
     const currentUserData = await this.loadUserDataFromDatabase(currentuserID);
     if (!currentUserData) {
-      console.error('Fehler: Benutzer konnte nicht geladen werden.');
       return;
     }
 
@@ -256,7 +243,6 @@ participantID:any;
       const newMessage = { message: message, image: imageFile, createdAt: timestamp, senderName: currentUserData.username, senderID: currentUserData.uid, threadID: threadDocRef.id };
       await addDoc(messagesCollectionRef, newMessage);
     } catch (error) {
-      console.error('Fehler beim Speichern der Nachricht:', error);
     }
   }
 
@@ -269,38 +255,31 @@ participantID:any;
       const userDetails = { username: userData['username'], email: userData['email'], photo: userData['photo'], uid: userData['uid'], signUpdate: userData['signUpdate'], logIndate: userData['logIndate'], logOutDate: userData['logOutDate'] };
       return userDetails;
     } else {
-      console.log('No such document!');
       return null;
     }
   }
 
   emojiPickerChat(state: boolean) {
-    console.log('normal picker');
     this.emojiPickerSubjectChat.next(state);
   }
 
   emojiPickerChatReaction(state: boolean) {
-    console.log('normal picker');
     this.emojiPickerSubjectChatReaction.next(state);
   }
 
   emojiPickerThread(state: boolean) {
-    console.log('thread picker');
     this.emojiPickerSubjectThread.next(state);
   }
 
   emojiPickerThreadReaction(state: boolean) {
-    console.log('thread reaction picker');
     this.emojiPickerSubjectThreadReaction.next(state);
   }
 
   emojiPickerChannel(state: boolean) {
-    console.log('thread reaction picker');
     this.emojiPickerSubjectChannel.next(state);
   }
 
   emojiPickerChannelReaction(state: boolean) {
-    console.log('thread reaction picker');
     this.emojiPickerSubjectChannelReaction.next(state);
   }
 
@@ -318,7 +297,6 @@ participantID:any;
 
   async initializeService() {
     this.currentuid = await this.getCurrentUid();
-    if (!this.currentuid) { console.error('Currentuid nicht gefunden'); }
     this.loadAllChats();
   }
 

@@ -7,8 +7,6 @@ import { Database, ref as reference, set, onValue, push, off } from '@angular/fi
   providedIn: 'root',
 })
 export class IdleService {
-  // public auth: any;
-  // public firestore: any;
   constructor(private rdb: Database, public router: Router) {
     const mouseMove$ = fromEvent(document, 'mousemove');
     this.idleTimer$ = mouseMove$.pipe(
@@ -63,47 +61,10 @@ export class IdleService {
     return this.noKeyPressIdle$;
   }
 
-  // setData(path: string, data: any) {
-  //   const dbRef = reference(this.rdb, path);
-  //   return from(set(dbRef, data));
-  // }
-
   pushData(path: string, data: any) {
     const dbRef = reference(this.rdb, path);
     return from(push(dbRef, data));
   }
-
-  // getUserStatus(uid: string): Observable<any> {
-  //   const statusRef = reference(this.rdb, `users/${uid}/activeStatus`);
-  //   return new Observable((observer) => {
-  //     onValue(statusRef, (snapshot) => {
-  //       observer.next(snapshot.val());
-  //       this.currentUserStatus = snapshot.val();
-  //     });
-  //   });
-  // }
-  // setUserStatus(uid: string, status: string) {
-  //   this.updateActiveStatus(uid, status);
-  // }
-
-  // public getOtherUserStatus(uid: string): Observable<any> {
-  //   const statusRef = reference(this.rdb, `users/${uid}/activeStatus`);
-  //   return new Observable((observer) => {
-  //     onValue(statusRef, (snapshot) => {
-  //       observer.next(snapshot.val());
-  //       return snapshot.val();
-  //     });
-  //   });
-  // }
-
-  // updateActiveStatus(key: string, value: any): void {
-  //   let status = {
-  //     uid: key,
-  //     activeStatus: value,
-  //   };
-  //   this.setData(`users/${key}`, status);
-  //   this.currentUserStatus = value;
-  // }
 
   setData(path: string, data: any): Promise<void> {
     const dbRef = reference(this.rdb, path);
@@ -118,8 +79,6 @@ export class IdleService {
         this.currentUserStatus = snapshot.val();
       };
       onValue(statusRef, callback);
-
-      // Unsubscribe logic to prevent memory leaks
       return () => off(statusRef, 'value', callback);
     });
   }
@@ -136,8 +95,6 @@ export class IdleService {
           observer.next(snapshot.val());
         };
         onValue(statusRef, callback);
-
-        // Unsubscribe logic to prevent memory leaks
         return () => off(statusRef, 'value', callback);
       });
 

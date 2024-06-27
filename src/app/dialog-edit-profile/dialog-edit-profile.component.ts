@@ -46,19 +46,15 @@ export class DialogEditProfileComponent implements OnInit{
   chooseIcon = true;
 
   async ngOnInit() {
-    console.log(this.firestoreService.auth)
     const uid = localStorage.getItem('uid');
     this.logInUid = uid;
     this.userForm = await this.firestoreService.getUserData(uid);
-    console.log(this.userForm)
     this.userName = this.userForm['username'];
     this.userEmail = this.userForm['email'];
     this.userPhoto = this.userForm['photo'];
     this.userPassword = this.userForm['password'];
     this.user = this.firestoreService.auth.currentUser;
     this.emailVerified = this.firestoreService.auth.currentUser.emailVerified;
-    console.log(this.emailVerified)
-    console.log(this.user)
     this.checkEmailVerification();
   }
 
@@ -79,11 +75,9 @@ export class DialogEditProfileComponent implements OnInit{
     const userEmailFirestoreDatabase = this.userEmail.toLowerCase();
     const authEmailAuthentification = this.firestoreService.auth.currentUser.email.toLowerCase();
     if(userEmailFirestoreDatabase == authEmailAuthentification) {
-     console.log('email in databse und auth sind gleich');
      this.emailIsNotUpToDate = false;
      this.loadingScreen = false;
     } else {
-      console.log('email in databse und auth sind nicht gleich')
       this.emailIsNotUpToDate = true;
       this.loadingScreen = false;
     }
@@ -94,7 +88,6 @@ export class DialogEditProfileComponent implements OnInit{
   }
 
   safeEditData() {
-    console.log('die uid lautet', this.logInUid)
     this.loadingScreen = true;
     this.inputName = document.getElementById('userNameInput');
     this.inputEmail = document.getElementById('userEmailInput');
@@ -102,16 +95,12 @@ export class DialogEditProfileComponent implements OnInit{
     const inpuEmailValue = this.inputEmail.value;
     this.changeUserIcon();
     if (inputNameValue === this.userName) {
-     console.log('Name ist gleich')
       } else {
-        console.log('name ist nicht gleich')
         this.firestoreService.changeName(this.logInUid, inputNameValue)
       }
     if (inpuEmailValue === this.userEmail) {
-      console.log('email ist gleich')
       this.closeEditProfileDialog()
       } else {
-       console.log('email ist nicht gleich')
        this.changeEmail(inpuEmailValue)
       }
       this.loadingScreen = false;
@@ -124,13 +113,8 @@ export class DialogEditProfileComponent implements OnInit{
       const file = fileInput.files?.[0];
       if (file) {
         const icon = file;
-        console.log(icon)
-        console.log('Name des Bildes',icon.name);
-        console.log('Bild wurde erstellt am',icon.lastModified);
         const userIconTokenURL = await this.firestoreService.uploadUserIconIntoStorage(this.logInUid, icon);
         await this.firestoreService.uploadUserIconIntoDatabase(this.logInUid, userIconTokenURL);
-      } else {
-        console.log('Kein Bild ausgewählt');
       }
       this.loadingScreen = false;
     }
@@ -153,7 +137,6 @@ export class DialogEditProfileComponent implements OnInit{
           this.showInputInformationEmailInUse = true;
         }
       } catch (error) {
-        console.error('Error change email:', error);
       }
     }
 

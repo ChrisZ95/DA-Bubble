@@ -42,6 +42,7 @@ export class ThreadComponent implements OnInit, OnDestroy {
   emojiReactionThreadMessageID: any;
   currentThreadMessageIndex: number | null = null;
   originalThreadMessageContent = '';
+  unsubscribe: any;
 
   emoji = [
     {
@@ -96,10 +97,13 @@ export class ThreadComponent implements OnInit, OnDestroy {
     if(this.emojiPickerThreadReactionSubscription) {
       this.emojiPickerThreadReactionSubscription.unsubscribe();
     }
+
+    if (this.unsubscribe) {
+      this.unsubscribe();
+    }
   }
 
   async getMessageForSpefifiedEmoji(emoji: any, currentUserID:any, messageID:any) {
-    console.log(messageID)
     const emojiReactionID = emoji.id;
     const emojiReactionDocRef = doc( this.firestore, 'threads', this.currentThreadDocID, 'messages', messageID, 'emojiReactions', emojiReactionID);
 
@@ -155,7 +159,6 @@ export class ThreadComponent implements OnInit, OnDestroy {
         const reactedByArray = reactionData['reactedBy'] || [];
 
         if (reactedByArray.includes(currentUserID)) {
-         console.log('user hat bereits reagiert')
          this.deleteEmojireaction(emoji, currentUserID, messageID)
         } else {
           this.getMessageForSpefifiedEmoji(emoji, currentUserID, messageID)
@@ -183,10 +186,10 @@ async deleteEmojireaction(emoji: any, currentUserID: any, messageID: any) {
   async loadChatMessages(docID: any) {
     const docRef = doc(this.firestore, "threads", docID);
 
-    onSnapshot(docRef, async (docSnap) => {
+    this.unsubscribe = onSnapshot(docRef, async (docSnap) => {
       if (docSnap.exists()) {
         const messagesRef = collection(this.firestore, "threads", docID, "messages");
-        onSnapshot(messagesRef, async (messagesSnap) => {
+        this.unsubscribe = onSnapshot(messagesRef, async (messagesSnap) => {
         const messagesMap = new Map();
         const messagePromises = messagesSnap.docs.map(async (messageDoc) => {
           let messageData = messageDoc.data();
@@ -205,15 +208,11 @@ async deleteEmojireaction(emoji: any, currentUserID: any, messageID: any) {
             messageData['emojiReactions'] = reactions;
             messagesMap.set(messageData['id'], messageData);
 
-          } else {
-            console.error("Invalid timestamp format:", messageData['createdAt']);
           }
         });
         await Promise.all(messagePromises);
         this.threadsMessages = Array.from(messagesMap.values()).sort((a: any, b: any) => a.createdAt - b.createdAt);
       });
-      } else {
-        console.log("No such document!");
       }
     });
   }
@@ -226,7 +225,6 @@ async deleteEmojireaction(emoji: any, currentUserID: any, messageID: any) {
       const senderData = docSnap.data();
       return { username: senderData['username'], photo: senderData['photo'] };
     } else {
-      console.log("No such document!");
       return null;
     }
   }
@@ -240,11 +238,6 @@ async deleteEmojireaction(emoji: any, currentUserID: any, messageID: any) {
     const currentDate = new Date(Number(currentMessage.createdAt));
     const previousDate = new Date(Number(previousMessage.createdAt));
     if (isNaN(currentDate.getTime()) || isNaN(previousDate.getTime())) {
-      console.error(
-        `Invalid Date - Current Message: ${JSON.stringify(
-          currentMessage
-        )}, Previous Message: ${JSON.stringify(previousMessage)}`
-      );
       return false;
     }
     const currentDateString = currentDate.toDateString();
@@ -317,7 +310,6 @@ async deleteEmojireaction(emoji: any, currentUserID: any, messageID: any) {
   }
 
   async deleteMessage(index: any, messageID: any) {
-    console.log(messageID)
     try {
         if (!this.firestore) {
             throw new Error("Firestore instance is not defined.");
@@ -338,17 +330,10 @@ async deleteEmojireaction(emoji: any, currentUserID: any, messageID: any) {
 
             if (messageDocSnap.exists()) {
                 await deleteDoc(messageDocRef);
-                console.log('Message deleted with ID:', messageID);
-            } else {
-                console.log('Message not found with ID:', messageID);
             }
-        } else {
-            console.log('Thread not found with ID:', this.currentThreadDocID);
         }
-
         this.menuClosed(index);
     } catch (error: any) {
-        console.error('Error deleting document:', error);
         this.menuClosed(index);
     }
 }

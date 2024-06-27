@@ -32,14 +32,11 @@ export class DialogMembersComponent implements OnInit {
     this.firestoreService.getAllUsers().then(users => {
       this.allUsers = users;
       this.updateMemberData();
-    }).catch(error => {
-      console.error('Error fetching users:', error);
-    });
+    })
   }
 
   async openContactInfo(userid:any ) {
     let allUsers = await this.firestoreService.getAllUsers();
-    console.log(allUsers)
     let userDetails = allUsers.filter(
       (user) => user.uid == userid
     );

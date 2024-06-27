@@ -30,14 +30,15 @@ export class DialogAddPeopleComponent implements OnInit {
   currentChannelId: string = '';
   allChannels: any = [];
   channelMembers: string[] = [];
+  unsubscribe: any;
 
   constructor(
-    private dialogRef: MatDialogRef<DialogAddPeopleComponent>, 
-    private firestoreService: FirestoreService, 
-    public channelService: ChannelService, 
+    private dialogRef: MatDialogRef<DialogAddPeopleComponent>,
+    private firestoreService: FirestoreService,
+    public channelService: ChannelService,
     private readonly firestore: Firestore
   ) {
-    onSnapshot(collection(this.firestore, 'channels'), (list) => {
+    this.unsubscribe = onSnapshot(collection(this.firestore, 'channels'), (list) => {
       this.allChannels = list.docs.map((doc) => doc.data());
     });
   }
@@ -51,6 +52,12 @@ export class DialogAddPeopleComponent implements OnInit {
     this.loadChannelData();
   }
 
+  ngOnDestroy(): void {
+    if (this.unsubscribe) {
+      this.unsubscribe();
+    }
+  }
+
   async loadChannelData(): Promise<void> {
     try {
       const channelDocRef = this.getValidChannelDocRef();
@@ -62,7 +69,6 @@ export class DialogAddPeopleComponent implements OnInit {
       this.allUsers = await this.firestoreService.getAllUsers();
       this.filterAvailableUsers();
     } catch (error) {
-      console.error('Error fetching channel data:', error);
     }
   }
 
@@ -78,8 +84,8 @@ export class DialogAddPeopleComponent implements OnInit {
 
   filterUsers(): void {
     if (this.personName.trim() !== '') {
-      this.filteredUsers = this.allUsers.filter(user => 
-        user.username.toLowerCase().includes(this.personName.toLowerCase()) && 
+      this.filteredUsers = this.allUsers.filter(user =>
+        user.username.toLowerCase().includes(this.personName.toLowerCase()) &&
         !this.channelMembers.includes(user.uid)
       );
       this.showUserList = true;
@@ -96,16 +102,15 @@ export class DialogAddPeopleComponent implements OnInit {
       await this.channelService.updateChannel(channelDocRef, { users: updatedUsers });
       this.clearSelectedUsers();
     } catch (error) {
-      console.error('Fehler beim Hinzufügen der Benutzer zum Kanal:', error);
     }
   }
-  
+
   getValidChannelDocRef() {
     const channelDocRef = this.channelService.getChannelDocByID(this.currentChannelId);
     if (!channelDocRef) throw new Error('Channel Document Reference is invalid.');
     return channelDocRef;
   }
-  
+
   async getUpdatedUsers(channelDocRef: any) {
     const channelSnap = await getDoc(channelDocRef);
     if (!channelSnap.exists()) throw new Error('Channel document does not exist.');
@@ -114,7 +119,7 @@ export class DialogAddPeopleComponent implements OnInit {
     const userIdsToAdd = this.selectedUsers.map(user => user.uid);
     return [...new Set([...currentUsers, ...userIdsToAdd])];
   }
-  
+
   clearSelectedUsers() {
     this.selectedUsers = [];
     this.updatePersonName();

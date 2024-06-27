@@ -35,7 +35,6 @@ export class ThreadService {
     const currentuserID = localStorage.getItem('uid');
     const currentUserData = await this.loadUserDataFromDatabase(currentuserID);
     if (!currentUserData) {
-      console.error('Fehler: Benutzer konnte nicht geladen werden.');
       return;
     }
 
@@ -51,7 +50,6 @@ export class ThreadService {
       await addDoc(messagesCollectionRef, newMessage);
 
     } catch (error) {
-      console.error('Fehler beim Speichern der Nachricht:', error);
     }
   }
 
@@ -72,7 +70,6 @@ export class ThreadService {
       };
       return userDetails;
     } else {
-      console.log('No such document!');
       return null;
     }
   }

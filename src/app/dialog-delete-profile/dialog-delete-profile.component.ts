@@ -42,15 +42,10 @@ export class DialogDeleteProfileComponent implements OnInit{
       if (result === 'auth/correct') {
         this.closeDeleteProfileDialog();
         await this.firestoreService.logOutAfterDeleteAccount();
-        console.log('Der User wurde gelöscht');
       } else if (result === 'auth/requires-recent-login') {
         this.showInputInformationEmail = true;
-        console.log('Der User muss sich neu anmelden');
-      } else if (result === 'auth/false') {
-        console.log('Beim Löschen des Users ist etwas schiefgelaufen');
       }
     } catch (error) {
-      console.error('Error logging in:', error);
     }
     this.loadingScreen = false;
   }
@@ -60,5 +55,4 @@ export class DialogDeleteProfileComponent implements OnInit{
     this.router.navigate(['']);
     this.firestoreService.logOut()
   }
-
 }

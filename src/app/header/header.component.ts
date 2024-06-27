@@ -264,9 +264,6 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewChecked  {
       .then((users) => {
         this.allUsers = users;
       })
-      .catch((error) => {
-        console.error('Error fetching users:', error);
-      });
     this.firestoreService
       .getAllChannels()
       .then((Channels) => {
@@ -274,9 +271,6 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewChecked  {
           channel.users.includes(this.firestoreService.currentuid)
         );
       })
-      .catch((error) => {
-        console.error('Error fetching users:', error);
-      });
   }
 
   async ngOnInit() {
@@ -297,8 +291,6 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewChecked  {
         if (this.userUid === '3a8KbhiqXLe3hbzLiPOn4SwE7ot2') {
           this.guestLogIn = true;
         }
-      } else {
-        console.log('Das Benutzerdokument existiert nicht.');
       }
     });
     this.loadAllUsersAndAllChannels();

@@ -191,9 +191,6 @@ export class EmptychatComponent implements OnInit {
       .then((users) => {
         this.allUsers = users;
       })
-      .catch((error) => {
-        console.error('Error fetching users:', error);
-      });
     this.firestoreService
       .getAllChannels()
       .then((Channels) => {
@@ -201,9 +198,6 @@ export class EmptychatComponent implements OnInit {
           channel.users.includes(this.firestoreService.currentuid)
         );
       })
-      .catch((error) => {
-        console.error('Error fetching users:', error);
-      });
   }
 
   ngOnInit(): void {}

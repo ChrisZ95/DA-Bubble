@@ -38,10 +38,9 @@ export class ChipsComponent implements OnInit, OnChanges {
     event.chipInput!.clear();
     this.entityCtrl.setValue(null);
   }
-  // this.selectedItem.push(value);
+
   searchUser(value: any) {
     this.searchEntity.emit(value);
-    console.log('entityInput', value);
   }
 
   remove(entity: any): void {
@@ -71,7 +70,6 @@ export class ChipsComponent implements OnInit, OnChanges {
   ngOnInit(): void {}
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['allEntitys']) {
-      // console.log('allEntitys', this.allEntitys);
     }
   }
 }

@@ -108,22 +108,12 @@ export class TextEditorComponent implements OnInit, AfterViewInit {
       }
     }
   }
-  
+
   cursorPosition: number = 0;
   searchUserInInput(event: KeyboardEvent) {
     const input = (event.target as HTMLTextAreaElement).value;
     this.cursorPosition = (event.target as HTMLTextAreaElement).selectionStart;
     const lastWord = input.slice(0, this.cursorPosition).split(' ').pop();
-    
-    // if (lastWord?.startsWith('@')) {
-    //   const searchText = lastWord.slice(1).toLowerCase();
-    //   this.foundUsers = this.associatedUser.filter(user => user.toLowerCase().includes(searchText));
-    // } else {
-    //   this.foundUsers = [];
-    // }
-
-    console.log('input', input);
-    console.log('lastWord', lastWord);
   }
 
   openUserMention() {
@@ -156,7 +146,6 @@ export class TextEditorComponent implements OnInit, AfterViewInit {
   }
 
   submit() {
-    console.log(this.fileArray)
     if (
       this.fileArray.length === 0 &&
       (!this.message || this.message.trim().length === 0)

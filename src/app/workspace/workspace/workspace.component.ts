@@ -48,10 +48,11 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
   showUserPlaceholder: any;
   showDropdown: boolean = false;
   focusOnTextEditor: boolean = false;
+  unsubscribe: any;
 
   constructor( public truncateService: TruncateWordsService, public dialog: MatDialog, private readonly firestore: Firestore, public firestoreService: FirestoreService, public channelService: ChannelService, public chatService: ChatService, private cdRef: ChangeDetectorRef, public idleService: IdleService, private eRef: ElementRef,
   ) {
-    onSnapshot(collection(this.firestore, 'channels'), (list) => {
+    this.unsubscribe = onSnapshot(collection(this.firestore, 'channels'), (list) => {
       this.allChannels = list.docs.map((doc) => doc.data());
       this.filterChannels();
     });
@@ -63,8 +64,8 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
 
   truncateLimitWorkspace: number = 0;
 
+
   searchEntityWorkspace(input: string) {
-    console.log(input)
     const width = window.innerWidth;
     if(width <= 850) {
       const lowerCaseInput = input.toLowerCase().trim();
@@ -190,9 +191,6 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
       .then((users) => {
         this.allUsers = users;
       })
-      .catch((error) => {
-        console.error('Error fetching users:', error);
-      });
     this.firestoreService
       .getAllChannels()
       .then((Channels) => {
@@ -200,9 +198,6 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
           channel.users.includes(this.firestoreService.currentuid)
         );
       })
-      .catch((error) => {
-        console.error('Error fetching users:', error);
-      });
   }
 
   @HostListener('window:resize', ['$event'])
@@ -265,6 +260,10 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
     if (this.userStatusSubscription) {
       this.userStatusSubscription.unsubscribe();
     }
+
+    if (this.unsubscribe) {
+      this.unsubscribe();
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -315,15 +314,12 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
       this.firestoreService.displayWorkspace = false;
     }
     this.channelService.showChannelChat = false;
-    console.log(user);
     this.userDetails.emit(user);
     this.chatService.loadUserData(user);
     if (this.currentUid == user.uid) {
       this.chatService.searchPrivateChat(user);
-      console.log('privater chat wird gecheckt');
     } else {
       const chatDocID = this.chatService.searchChatWithUser(user.uid);
-      console.log('andere chats werden gecheckt');
     }
     this.chatService.clearInputValue(true);
   }
@@ -339,17 +335,9 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
             this.currentUser = user;
           } else {
             this.otherUsers.push(user);
-            console.log('this.otherUsers', this.otherUsers);
           }
         }
-        if (!this.currentUser) {
-          console.error('Current user not found');
-        }
       })
-      .catch((error) => {
-        console.error('Error fetching users:', error);
-      });
-
   }
 
   stopPropagation(event: Event) {
