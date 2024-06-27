@@ -99,7 +99,7 @@ export class DialogChannelInfoComponent implements OnInit {
       const channelID = await this.channelService.getChannelIDByField(fieldName, this.channelService.channelName);
       if (channelID !== null) {
         const channelRef = this.channelService.getChannelDocByID(channelID);
-        await this.channelService.updateChannel(channelRef, { name: this.editedChannelName });
+        await this.channelService.updateChannel(channelRef, { channelName: this.editedChannelName });
         this.channelService.channelName = this.editedChannelName;
       } else {
         console.error('Dokument mit diesem Feldwert wurde nicht gefunden.');
