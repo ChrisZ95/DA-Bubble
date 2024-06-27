@@ -7,6 +7,7 @@
     <form #channelForm="ngForm" (ngSubmit)="createChannel()" class="create-channel-form">
         <label>Channel-Name</label>
         <input type="text" name="channelName" id="channelName" [(ngModel)]="channelName" placeholder="z.B. Kooperationsprojekte" required>
+        <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
         <label>Beschreibung <span class="optional">(optional)</span></label>
         <input type="text" name="channelDescription" id="channelDescription" [(ngModel)]="channelDescription" placeholder="Dein Text hier">
         <div class="create-channel-button">
