@@ -20,6 +20,5 @@ export class StartSideHeaderComponent {
 
   backToLogIn() {
     this.backToLoginClicked.emit();
-    console.log('back to login')
   }
 }

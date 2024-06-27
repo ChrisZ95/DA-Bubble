@@ -33,7 +33,6 @@ export class ChangePasswortComponent implements OnInit {
     const continueUrl = currentUrl.substring(continueUrlStart, continueUrlEnd !== -1 ? continueUrlEnd : undefined);
     const decodedContinueUrl = decodeURIComponent(continueUrl);
     this.userId = new URL(decodedContinueUrl).searchParams.get('userId');
-    console.log(this.userId);
   }
 
   showPassword() {
@@ -43,29 +42,24 @@ export class ChangePasswortComponent implements OnInit {
       const ConfirmpasswordInput = document.getElementById('confirmPassword') as HTMLInputElement;
       passwordInput.type = 'text';
       ConfirmpasswordInput.type = 'text';
-      console.log('show password')
     } else if (this.showPasswordValue) {
       this.showPasswordValue = false;
       const passwordInput = document.getElementById('password') as HTMLInputElement;
       const ConfirmpasswordInput = document.getElementById('confirmPassword') as HTMLInputElement;
       passwordInput.type = 'password';
       ConfirmpasswordInput.type = 'password';
-      console.log('hide password')
     }
   }
 
   backToForgotPassword() {
     this.forgotPassword.emit();
-    console.log('back to login')
   }
 
   emailSended() {
     this.PasswordSuccesfullyChanged.emit();
-    console.log('back to login')
   }
 
   newPassword(formData: any) {
-      console.log('übertragende id lautet',this.userId);
       this.showInputInformationPassword = false;
       this.showInputInformationConfirmPasswordInputInvalid = false;
       this.showInputInformationConfirmPasswordInputEmpty = false;
@@ -80,7 +74,6 @@ export class ChangePasswortComponent implements OnInit {
         this.showInputInformationConfirmPasswordInputInvalid = true;
       } else {
         this.changedPassword = true;
-        console.log('button zum abschicken des neuen passworts gedrückt');
         setTimeout(() => {
           this.changedPassword = false;
           this.emailSended();

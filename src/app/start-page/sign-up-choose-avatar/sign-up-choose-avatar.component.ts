@@ -47,12 +47,10 @@ export class SignUpChooseAvatarComponent implements OnInit {
   async ngOnInit() {
     this.loadingScreen = false;
     this.uid = await this.firestoreService.getUid();
-    console.log(this.uid);
     this.userForm = await this.firestoreService.getUserData(this.uid)
     this.userName = this.userForm['username']
     this.userEmail = this.userForm['email']
     this.userPassword = this.userForm['password']
-    console.log('username header (localstorage)',this.userForm['username']);
   }
 
   async onImageSelected(event: any):Promise<void> {
@@ -64,9 +62,6 @@ export class SignUpChooseAvatarComponent implements OnInit {
         this.imageSelected = true;
         this.iconIndex = 6;
         const icon = file;
-        console.log(icon)
-        console.log('Name des Bildes',icon.name);
-        console.log('Bild wurde erstellt am',icon.lastModified);
       };
       reader.readAsDataURL(file);
       const icon = file;
@@ -77,11 +72,9 @@ export class SignUpChooseAvatarComponent implements OnInit {
 
   backToSignUp() {
     this.backToSignUpClicked.emit();
-    console.log('back to sign up button continue')
   }
 
   chooseAvatar(index: number) {
-    console.log(index)
     this.showInputInformationUserIcon = false;
     this.selectedAvatar = this.avatar[index];
     if (index == 0) {
@@ -97,7 +90,6 @@ export class SignUpChooseAvatarComponent implements OnInit {
     } else if (index == 5) {
       this.userIconTokenURL = 'https://firebasestorage.googleapis.com/v0/b/da181-db3ce.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(5).png?alt=media&token=24fc0d08-16dd-4a37-bf35-19fdf87413de'
     }
-    console.log('Avatar ausgewählt:', index ,this.userIconTokenURL);
     this.iconIndex = index;
     this.uploadUserIcon(this.uid, this.userIconTokenURL);
     this.imageSelected = false;
@@ -108,12 +100,10 @@ export class SignUpChooseAvatarComponent implements OnInit {
     this.showInputInformationUserIcon = false;
     if ([0, 1, 2, 3, 4, 5, 6].includes(this.iconIndex)) {
       this.accountCreated.emit();
-      console.log('account wurde erstellt');
       localStorage.setItem('userEmail', this.userEmail)
       localStorage.setItem('userPassword', this.userPassword)
     } else {
       this.showInputInformationUserIcon = true;
-      console.log('Bitte ein User Icon wählen');
     }
     this.loadingScreen = false;
   }

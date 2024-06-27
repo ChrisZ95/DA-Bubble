@@ -12,56 +12,51 @@
     </div>
 
     <form (ngSubmit)="userLogIn(logInForm)" #logInForm="ngForm">
-    <div class="card-input-section">
-      <div class="input-container">
-        <img src="./../../../assets/images/mail.svg">
-        <input [(ngModel)]="signUpUserEmail" ngModel id="emailInput" required name="email" #email="ngModel" autocomplete="current-email" placeholder="E-Mail-Adresse">
-      </div>
-      <div class="pseudo">
-        <span *ngIf="showInputInformationEmail" class="input-information">Diese E-Mail-Adresse ist leider ungultig.</span>
-        <span *ngIf="showEmailVerification" class="input-information">Bitte verifizieren Sie die Email. <a (click)="resendverificationEmail()"> erneut senden</a></span>
-      </div>
-      <div class="input-container">
-        <img class="show-password-button" *ngIf="!showPasswordValue" (click)="showPassword()" src="./../../../assets/images/lock.svg">
-        <img class="show-password-button" *ngIf="showPasswordValue" (click)="showPassword()" src="./../../../assets/images/lock_open_20dp_FILL0_wght400_GRAD0_opsz20.svg">
-        <input [(ngModel)]="signUpUserPassword" ngModel required id="passwordInput" type="password" name="password" #password="ngModel" autocomplete="current-password" placeholder="Passwort">
-      </div>
-      <div class="pseudo">
-        <span *ngIf="showInputInformationPassword" class="input-information">Dieses Passwort ist leider ungultig.</span>
-      </div>
-      <div class="card-link">
-        <a (click)="openForgetPasswordComponent()">Passwort vergessen ?</a>
-      </div>
-    </div>
-
-    <div class="seperation-line">
-      <div class="line"></div>
-      <span>ODER</span>
-      <div class="line"></div>
-    </div>
-
-    <div class="google-login-container">
-      <div role="button" tabindex="0" (click)="logInWithGoogle()" class="google-button">
-        <img src="./../../../assets/images/google.png">
-        Anmelden mit Google
+      <div class="card-input-section">
+        <div class="input-container">
+          <img src="./../../../assets/images/mail.svg">
+          <input [(ngModel)]="signUpUserEmail" ngModel id="emailInput" required name="email" #email="ngModel" autocomplete="current-email" placeholder="E-Mail-Adresse">
+        </div>
+        <div class="pseudo">
+          <span *ngIf="showInputInformationEmail" class="input-information">Diese E-Mail-Adresse ist leider ungultig.</span>
+          <span *ngIf="showEmailVerification" class="input-information">Bitte verifizieren Sie die Email. <a (click)="resendverificationEmail()"> erneut senden</a></span>
+        </div>
+        <div class="input-container">
+          <img class="show-password-button" *ngIf="!showPasswordValue" (click)="showPassword()" src="./../../../assets/images/lock.svg">
+          <img class="show-password-button" *ngIf="showPasswordValue" (click)="showPassword()" src="./../../../assets/images/lock_open_20dp_FILL0_wght400_GRAD0_opsz20.svg">
+          <input [(ngModel)]="signUpUserPassword" ngModel required id="passwordInput" type="password" name="password" #password="ngModel" autocomplete="current-password" placeholder="Passwort">
+        </div>
+        <div class="pseudo">
+          <span *ngIf="showInputInformationPassword" class="input-information">Dieses Passwort ist leider ungultig.</span>
+        </div>
+        <div class="card-link">
+          <a (click)="openForgetPasswordComponent()">Passwort vergessen ?</a>
+        </div>
       </div>
 
-      <!-- <div role="button" tabindex="0" (click)="logInWithApple()" class="google-button">
-        <img src="./../../../assets/images/apple-logo.png">
-        Anmelden mit Apple
-      </div> -->
-    </div>
-
-
-    <div class="login-button-container">
-     <div>
-      <button type="submit" class="user-login">Anmelden</button>
-     </div>
-      <div>
-        <button (click)="guestLogIn()" class="guest-login">Gäste-Login</button>
+      <div class="seperation-line">
+        <div class="line"></div>
+        <span>ODER</span>
+        <div class="line"></div>
       </div>
-    </div>
-  </form>
+
+      <div class="google-login-container">
+        <div role="button" tabindex="0" (click)="logInWithGoogle()" class="google-button">
+          <img src="./../../../assets/images/google.png">
+          Anmelden mit Google
+        </div>
+      </div>
+
+      <div class="login-button-container">
+        <div>
+          <button [disabled]="logInForm.invalid" type="submit" class="user-login">Anmelden</button>
+        </div>
+        <div>
+          <button (click)="guestLogIn()" class="guest-login">Gäste-Login</button>
+        </div>
+      </div>
+    </form>
+
   </div>
 
 </div>

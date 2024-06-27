@@ -23,7 +23,6 @@ export class ForgetPasswordComponent {
 
   backToLogIn() {
     this.backToLoginClicked.emit();
-    console.log('back to login')
   }
 
   sendMail(formData: any) {
@@ -44,19 +43,14 @@ export class ForgetPasswordComponent {
         if (userWithEmail) {
           const uid = userWithEmail.uid;
           this.firestoreService.sendEmailResetPasswort({ email, uid });
-          console.log(email, uid)
-          console.log('E-Mail zum Zurücksetzen des Passworts gesendet');
           this.emailSended.emit();
           localStorage.setItem('resetPasswortEmail',email)
           this.loadingScreen = false;
         } else {
           this.showInputInformationEmailInputInvalid = true;
-          console.log('E-Mail-Adresse nicht gefunden');
           this.loadingScreen = false;
         }
       }
-    }).catch(error => {
-      console.error('Fehler beim Abrufen der Benutzer:', error);
-    });
+    })
   }
 }

@@ -15,11 +15,9 @@ export class PrivacyPoliceComponent {
 
   backToLogIn() {
     this.backToLoginClicked.emit();
-    console.log('back to login')
   }
 
   backToSignUp() {
     this.backToSignUpClicked.emit();
-    console.log('back to sign up button continue')
   }
 }

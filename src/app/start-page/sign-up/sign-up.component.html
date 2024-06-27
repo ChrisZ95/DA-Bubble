@@ -53,7 +53,7 @@
 
       <div class="continue-button-container">
        <div>
-        <button type="submit" class="continue-button">Weiter</button>
+        <button [disabled]="signUpForm.invalid" type="submit" class="continue-button">Weiter</button>
        </div>
       </div>
     </form>

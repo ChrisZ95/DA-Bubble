@@ -33,10 +33,7 @@ export class LogInComponent implements OnInit {
     this.loadingScreen = false;
     this.firestoreService.createTimeStamp();
     const currentAuthStatus = this.firestoreService.currentAuth()
-    console.log('AUTH im login bereich',currentAuthStatus);
-    // this.firestoreService.observeAuthState()
     const allVariabeln = this.firestoreService.getAllVariables()
-    console.log('Alle variabeln',allVariabeln)
     setTimeout(() => {
       localStorage.removeItem('resetEmail')
     }, 10000);
@@ -56,12 +53,10 @@ export class LogInComponent implements OnInit {
       this.showPasswordValue = true;
       const passwordInput = document.getElementById('passwordInput') as HTMLInputElement;
       passwordInput.type = 'text';
-      console.log('show password')
     } else if (this.showPasswordValue) {
       this.showPasswordValue = false;
       const passwordInput = document.getElementById('passwordInput') as HTMLInputElement;
       passwordInput.type = 'password';
-      console.log('hide password')
     }
   }
 
@@ -81,16 +76,11 @@ export class LogInComponent implements OnInit {
     const auth = this.firestoreService.auth;
     const provider = new GoogleAuthProvider();
     const logInDate = await this.firestoreService.createTimeStamp();
-      // console.log(logInDate);
     this.firestoreService
       .signInWithGoogle(auth, provider, logInDate)
       .then((result) => {
         this.loadingScreen = false;
-        // console.log('Google-Anmeldung erfolgreich:', result);
       })
-      .catch((error) => {
-        // console.error('Fehler bei der Google-Anmeldung:', error);
-      });
   }
 
   async userLogIn(formData: any) {
@@ -101,33 +91,35 @@ export class LogInComponent implements OnInit {
     const { email, password } = formData.value;
     if (!formData.valid) {
       if (formData.controls['email'].invalid) {
-        this.showInputInformationEmail = true;
+        setTimeout(() => {
+          this.showInputInformationEmail = true;
+        }, 1000);
         this.loadingScreen = false;
       } else if (formData.controls['password'].invalid) {
-        this.showInputInformationPassword = true;
+        setTimeout(() => {
+          this.showInputInformationPassword = true;
+        }, 1000);
         this.loadingScreen = false;
       }
     } else {
       const logInDate = await this.firestoreService.createTimeStamp();
-      // console.log(logInDate);
       this.firestoreService.logInUser(email, password, logInDate)
         .then((result) => {
           if(result === 'auth/email-not-verified') {
-            this.showEmailVerification = true;
+            setTimeout(() => {
+              this.showInputInformationEmail = true;
+            }, 1000);
             this.loadingScreen = false;
           }
           if (result === 'auth/invalid-credential') {
-            this.showInputInformationPassword = true;
+            setTimeout(() => {
+              this.showInputInformationPassword = true;
+            }, 1000);
             this.loadingScreen = false;
-            // console.log('Invalid credentials error occurred.');
           } else {
             this.loadingScreen = false;
-            // console.log('User logged in successfully');
           }
         })
-        .catch((error) => {
-          console.error('Error logging in:', error);
-        });
     }
 }
 

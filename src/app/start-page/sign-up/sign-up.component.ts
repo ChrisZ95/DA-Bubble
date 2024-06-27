@@ -31,7 +31,6 @@ export class SignUpComponent implements  OnInit{
   ngOnInit(): void {
     this.loadingScreen = false;
     const allVariabels = this.firestoreService.getAllVariables()
-    console.log('Alle Variabeln',allVariabels)
   }
 
   showPassword() {
@@ -39,12 +38,10 @@ export class SignUpComponent implements  OnInit{
       this.showPasswordValue = true;
       const passwordInput = document.getElementById('password') as HTMLInputElement;
       passwordInput.type = 'text';
-      console.log('show password')
     } else if (this.showPasswordValue) {
       this.showPasswordValue = false;
       const passwordInput = document.getElementById('password') as HTMLInputElement;
       passwordInput.type = 'password';
-      console.log('hide password')
     }
   }
 
@@ -57,7 +54,6 @@ export class SignUpComponent implements  OnInit{
     this.showInputInformationEmailforgive = false;
     this.showInputInformationPassword = false;
     this.showInputInformationPrivacyPolice = false;
-    console.log('Formulardaten:', formData.value);
     const { email, password, username, privacyPolice } = formData.value;
 
     if (!formData.valid) {
@@ -76,10 +72,8 @@ export class SignUpComponent implements  OnInit{
       }
       } else {
         const signUpDate = await this.firestoreService.createTimeStamp();
-        console.log(signUpDate);
         const registrationSuccess = await this.firestoreService.signUpUser(email, password, username, privacyPolice, signUpDate);
         if(registrationSuccess === 'auth') {
-          console.log('userSignUp wurde aufgerufen');
           this.toChooseAvatar();
           this.loadingScreen = false;
         }
@@ -103,13 +97,11 @@ export class SignUpComponent implements  OnInit{
 
   backToLogIn() {
     this.backToLoginClicked.emit();
-    console.log('back to login')
   }
 
   toChooseAvatar() {
     this.loadingScreen = true;
     this.continueToChooseAvatar.emit();
-    console.log('button continue')
   }
 
   openPrivacyPoliceComponent() {

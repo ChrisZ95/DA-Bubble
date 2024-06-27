@@ -12,7 +12,6 @@ export class ImprintComponent {
 
   backToLogIn() {
     this.backToLoginClicked.emit();
-    console.log('back to login')
   }
 
 }

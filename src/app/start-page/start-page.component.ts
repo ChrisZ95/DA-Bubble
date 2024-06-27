@@ -43,7 +43,6 @@ export class StartPageComponent implements OnInit {
     this.startScreen = true;
     this.informationAfterEmailChanged();
     this.informationAfterDeleteAccount();
-    console.log('1', this.showLoginComponent, '2', this.showSignUpComponent, '3', this.showChooseAvatarComponent)
   }
 
   informationAfterEmailChanged() {
@@ -77,7 +76,6 @@ export class StartPageComponent implements OnInit {
   }
 
   signUpClicked() {
-    console.log("Sign-up clicked!");
     this.showSignUpComponent = true;
     this.backToSignUpFromPrivacyPolice = true;
     this.showLoginComponent = false;
@@ -89,7 +87,6 @@ export class StartPageComponent implements OnInit {
   }
 
   backToLoginClicked() {
-    console.log("Back to login clicked!");
     this.showLoginComponent = true;
     this.showChooseAvatarComponent = false;
     this.showSignUpComponent = false;
@@ -101,7 +98,6 @@ export class StartPageComponent implements OnInit {
   }
 
   continueToChooseAvatar() {
-    console.log('Choose avatar open')
     this.showChooseAvatarComponent = true;
     this.showLoginComponent = false;
     this.showSignUpComponent = false;
@@ -109,11 +105,9 @@ export class StartPageComponent implements OnInit {
     this.showChangePasswordComponent = false;
     this.showImpressumComponent = false;
     this.showPrivacyPoliceComponent = false;
-    console.log('1', this.showLoginComponent, '2', this.showSignUpComponent, '3', this.showChooseAvatarComponent)
   }
 
   backToSignUpClicked() {
-    console.log("Back to signUp clicked!");
     this.showSignUpComponent = true;
     this.showLoginComponent = false;
     this.showChooseAvatarComponent = false;
@@ -149,21 +143,6 @@ export class StartPageComponent implements OnInit {
       this.showPrivacyPoliceComponent = false;
     }, 2000);
   }
-
-  // PasswordSuccesfullyChanged() {
-  //   this.changedPassword = true;
-  //   console.log("Passwort zurückgesetzt");
-  //  setTimeout(() => {
-  //   this.showLoginComponent = true;
-  //   this.showChooseAvatarComponent = false;
-  //   this.showSignUpComponent = false;
-  //   this.showForgetPasswordComponent = false;
-  //   this.showChangePasswordComponent = false;
-  //   this.changedPassword = false;
-  //   this.showImpressumComponent = false;
-  //   this.showPrivacyPoliceComponent = false;
-  //  }, 2000);
-  // }
 
   forgotPassword() {
     this.showForgetPasswordComponent = true;
@@ -203,6 +182,5 @@ export class StartPageComponent implements OnInit {
     this.showSignUpComponent = false;
     this.showChooseAvatarComponent = false;
     this.showChangePasswordComponent = true;
-    console.log('is running')
   }
 }
