@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnInit, ViewChild, AfterViewInit} from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild, AfterViewInit,Renderer2} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../services/chat.service';
 import { Firestore } from '@angular/fire/firestore';
@@ -19,6 +19,7 @@ export class TextEditorChannelComponent implements OnInit, AfterViewInit {
   @ViewChild('fileInput', { static: true })
   fileInput!: ElementRef<HTMLInputElement>;
   @Input() componentName!: string;
+  @ViewChild('textArea') textArea!: ElementRef;
   message: string = '';
   comment: string = '';
   fileArray: any[] = [];
@@ -33,8 +34,14 @@ export class TextEditorChannelComponent implements OnInit, AfterViewInit {
   associatedUser: any;
   currentDocID: any;
   channelDocumentIDSubsrciption: Subscription | null = null;
+  foundUsers: any;
+  cursorPosition: number = 0;
+  associatedUser2:string[] = [];
+  dropdownStyle: any = {};
+  dropdownSingleStyle: any = {};
+  memberFullData:any;
 
-  constructor(private elementRef: ElementRef,private chatService: ChatService, private firestore: Firestore, public channelService: ChannelService, private firestoreService: FirestoreService) {}
+  constructor(private elementRef: ElementRef,private chatService: ChatService, private firestore: Firestore, public channelService: ChannelService, private firestoreService: FirestoreService,private renderer: Renderer2) {}
 
   ngAfterViewInit(): void {
     this.elementRef.nativeElement.querySelector('textarea').focus();
@@ -182,6 +189,45 @@ export class TextEditorChannelComponent implements OnInit, AfterViewInit {
 
   deleteFile(index: number): void {
     this.fileArray.splice(index, 1);
+  }
+
+  searchUserInInput(event: KeyboardEvent): void {
+    this.memberFullData = this.allUsers.filter(user => this.channelService.UserName.includes(user.uid)).map(user => (user));
+    
+    const input: string = (event.target as HTMLTextAreaElement).value;
+    this.cursorPosition = (event.target as HTMLTextAreaElement).selectionStart;
+    const lastWord: string | undefined = input.slice(0, this.cursorPosition).split(' ').pop();
+
+    if (lastWord?.startsWith('@')) {
+      const searchText: string = lastWord.slice(1).toLowerCase();
+      this.foundUsers = this.memberFullData.filter((user:any) => user.username.toLowerCase().includes(searchText));    
+    } else {
+      this.foundUsers = [];
+    }
+  }
+
+  selectUser(user: string): void {
+    const textBeforeCursor: string = this.message.slice(0, this.cursorPosition);
+    const textAfterCursor: string = this.message.slice(this.cursorPosition);
+    const lastWordIndex: number = textBeforeCursor.lastIndexOf('@');
+    const newTextBeforeCursor: string = textBeforeCursor.slice(0, lastWordIndex + 1) + user;
+
+    this.message = newTextBeforeCursor + ' ' + textAfterCursor;
+    this.foundUsers = [];
+  }
+  
+  onMouseEnter(index: number) {
+    this.dropdownSingleStyle[index] = {
+      ...this.dropdownSingleStyle[index],
+      backgroundColor: '#ffffff' // Change to the hover background color
+    };
+  }
+
+  onMouseLeave(index: number) {
+    this.dropdownSingleStyle[index] = {
+      ...this.dropdownSingleStyle[index],
+      backgroundColor: '#eceefe' // Change back to the original background color
+    };
   }
 }
 

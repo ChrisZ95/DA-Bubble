@@ -1,12 +1,12 @@
-@import '@ctrl/ngx-emoji-mart/picker';
+@import "@ctrl/ngx-emoji-mart/picker";
 
-.emoji-picker-container{
+.emoji-picker-container {
   position: absolute;
   z-index: 1000;
   bottom: 50px;
 }
 
-.show-associated-user{
+.show-associated-user {
   position: absolute;
   z-index: 1000;
   bottom: 50px;
@@ -35,13 +35,14 @@
 
     &:hover {
       cursor: pointer;
-      background-color: #ADB0D9;
+      background-color: #adb0d9;
       color: black;
     }
   }
 }
 
 .text-editor-container {
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -52,7 +53,7 @@
 
   .input-section {
     width: 100%;
-    border: 1px solid #ADB0D9;
+    border: 1px solid #adb0d9;
     border-radius: 25px;
     height: auto;
     z-index: 100;
@@ -89,7 +90,7 @@
         padding: 0px 0px;
         width: 80px;
         border-radius: 15px;
-        background-color: #ADB0D9;
+        background-color: #adb0d9;
         font-family: "nunito";
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 
@@ -104,7 +105,8 @@
 
           &:hover {
             cursor: pointer;
-            filter: brightness(0) saturate(100%) invert(26%) sepia(95%) saturate(2195%) hue-rotate(217deg) brightness(95%) contrast(89%);
+            filter: brightness(0) saturate(100%) invert(26%) sepia(95%)
+              saturate(2195%) hue-rotate(217deg) brightness(95%) contrast(89%);
           }
         }
 
@@ -119,7 +121,6 @@
         }
 
         &:hover {
-
           .file-link {
             text-decoration: underline;
             color: #565bf4;
@@ -146,7 +147,8 @@
 
           &:hover {
             cursor: pointer;
-            filter: brightness(0) saturate(100%) invert(26%) sepia(95%) saturate(2195%) hue-rotate(217deg) brightness(95%) contrast(89%);
+            filter: brightness(0) saturate(100%) invert(26%) sepia(95%)
+              saturate(2195%) hue-rotate(217deg) brightness(95%) contrast(89%);
           }
         }
 
@@ -154,12 +156,11 @@
           margin: 5px;
           height: 25px;
           width: 2px;
-          background-color: #ADB0D9;
+          background-color: #adb0d9;
         }
       }
 
       .right-buttons {
-
         .send-message-button {
           border: none;
           background-color: transparent;
@@ -167,7 +168,8 @@
 
           &:hover {
             cursor: pointer;
-            filter: brightness(0) saturate(100%) invert(26%) sepia(95%) saturate(2195%) hue-rotate(217deg) brightness(95%) contrast(89%);
+            filter: brightness(0) saturate(100%) invert(26%) sepia(95%)
+              saturate(2195%) hue-rotate(217deg) brightness(95%) contrast(89%);
           }
         }
       }
@@ -175,7 +177,27 @@
   }
 }
 
-@media(max-width: 850px) {
+.dropdown {
+  position: absolute;
+  background-color: white;
+  border: 1px solid #ccc;
+  z-index: 1000;
+}
+
+// .dropdown ul {
+//   list-style: none;
+//   margin: 0;
+//   padding: 0;
+// }
+// .dropdown li {
+//   padding: 8px;
+//   cursor: pointer;
+// }
+// .dropdown li:hover {
+//   background-color: #eee;
+// }
+
+@media (max-width: 850px) {
   // .imageDisplay{
   //   display: none !important;
   // }
@@ -198,6 +220,6 @@
 
 @media screen and (max-width: 400px) {
   textarea {
-   width: 80% !important;
+    width: 80% !important;
   }
 }
