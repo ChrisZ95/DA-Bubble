@@ -76,19 +76,19 @@
       display: flex;
       flex-direction: row;
       gap: 20px;
-      height: 80px;
-      width: 90%;
+      height: 50px;
+      width: 100px;
       margin-left: 24px;
       margin-right: 24px;
 
       .file-link-container {
         display: flex;
-        justify-content: center;
+        justify-content: flex-start;
         flex-direction: row;
         align-items: center;
-        padding: 0px 20px;
-        width: auto;
-        border-radius: 25px;
+        padding: 0px 0px;
+        width: 80px;
+        border-radius: 15px;
         background-color: #ADB0D9;
         font-family: "nunito";
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -111,6 +111,11 @@
         .file-link {
           text-decoration: none;
           color: black;
+
+          .file-img {
+            height: 30px;
+            width: 30px;
+          }
         }
 
         &:hover {
@@ -171,9 +176,9 @@
 }
 
 @media(max-width: 850px) {
-  .imageDisplay{
-    display: none !important;
-  }
+  // .imageDisplay{
+  //   display: none !important;
+  // }
 
   .emoji-picker {
     display: none;

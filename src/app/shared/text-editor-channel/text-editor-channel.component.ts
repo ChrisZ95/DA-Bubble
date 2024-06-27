@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnInit, ViewChild,} from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild, AfterViewInit} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../services/chat.service';
 import { Firestore } from '@angular/fire/firestore';
@@ -15,7 +15,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './text-editor-channel.component.html',
   styleUrl: './text-editor-channel.component.scss'
 })
-export class TextEditorChannelComponent implements OnInit {
+export class TextEditorChannelComponent implements OnInit, AfterViewInit {
   @ViewChild('fileInput', { static: true })
   fileInput!: ElementRef<HTMLInputElement>;
   @Input() componentName!: string;
@@ -34,7 +34,11 @@ export class TextEditorChannelComponent implements OnInit {
   currentDocID: any;
   channelDocumentIDSubsrciption: Subscription | null = null;
 
-  constructor(private chatService: ChatService, private firestore: Firestore, public channelService: ChannelService, private firestoreService: FirestoreService) {}
+  constructor(private elementRef: ElementRef,private chatService: ChatService, private firestore: Firestore, public channelService: ChannelService, private firestoreService: FirestoreService) {}
+
+  ngAfterViewInit(): void {
+    this.elementRef.nativeElement.querySelector('textarea').focus();
+  }
 
   ngOnInit(): void {
     this.emojiPickerChannelSubscription = this.chatService.emojiPickerChannel$.subscribe(
@@ -56,14 +60,11 @@ export class TextEditorChannelComponent implements OnInit {
     this.firestoreService.getAllUsers().then(users => {
       this.allUsers = users;
       this.updateMemberData();
-    }).catch(error => {
-      console.error('Error fetching users:', error);
-    });
+    })
 
     this.channelDocumentIDSubsrciption = this.channelService.currentChannelId$.subscribe(
       (docID)=> {
         this.currentDocID = docID;
-        console.log('Channel id im text-editor', this.currentDocID)
       },
     );
   }
@@ -92,20 +93,17 @@ export class TextEditorChannelComponent implements OnInit {
     this.filteredUsersSubscription = this.chatService.filteredUsers$.subscribe(
       (users) => {
         this.associatedUser = users;
-        console.log('geöffnet')
       }
     );
     this.openUserMention();
   }
 
   openUserMention() {
-    console.log(this.allUsers, this.memberData)
     this.openAssociatedUser = true;
     this.chatService.associatedUserChat(true);
   }
 
   closeuserMention() {
-    console.log(this.allUsers, this.memberData)
     this.openAssociatedUser = false;
     this.chatService.associatedUserChat(false);
   }
@@ -129,7 +127,6 @@ export class TextEditorChannelComponent implements OnInit {
       this.fileArray.length === 0 &&
       (!this.message || this.message.trim().length === 0)
     ) {
-      console.log('wähle ein bild oder nachricht');
     } else {
       if (this.componentName === 'channel') {
         this.channelService.sendMessageToDatabase(this.fileArray, this.message, this.currentDocID)
@@ -148,7 +145,6 @@ export class TextEditorChannelComponent implements OnInit {
   }
 
   addEmoji(event: any) {
-    console.log('Emoji selected', event);
     const emoji = event.emoji.native;
     this.message = `${this.message}${emoji}`;
   }
@@ -172,7 +168,6 @@ export class TextEditorChannelComponent implements OnInit {
         await this.firestoreService.uploadDataIntoStorage(file);
         this.insertImage(file?.type, this.chatService.dataURL, file?.name);
       } catch (error) {
-        console.error('Error uploading file:', error);
       }
     }
   }
