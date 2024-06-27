@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild, AfterViewInit} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../services/chat.service';
 import { Firestore, doc, getDoc} from '@angular/fire/firestore';
@@ -16,7 +16,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './text-editor-thread.component.html',
   styleUrl: './text-editor-thread.component.scss'
 })
-export class TextEditorThreadComponent implements OnInit{
+export class TextEditorThreadComponent implements OnInit, AfterViewInit {
   @ViewChild('fileInput', { static: true })
   fileInput!: ElementRef<HTMLInputElement>;
   @Input() componentName!: string;
@@ -36,7 +36,11 @@ export class TextEditorThreadComponent implements OnInit{
   documentIDSubsrciption: Subscription | null = null;
   clearTextEditorValueSubcription: Subscription | null = null;
 
-  constructor( private chatService: ChatService, private threadService: ThreadService, private firestore: Firestore, public channelService: ChannelService, private firestoreService: FirestoreService) {}
+  constructor(private elementRef: ElementRef, private chatService: ChatService, private threadService: ThreadService, private firestore: Firestore, public channelService: ChannelService, private firestoreService: FirestoreService) {}
+
+  ngAfterViewInit(): void {
+    this.elementRef.nativeElement.querySelector('textarea').focus();
+  }
 
   ngOnInit(): void {
     this.emojiPickerThreadSubscription = this.chatService.emojiPickerThread$.subscribe(
@@ -101,8 +105,6 @@ export class TextEditorThreadComponent implements OnInit{
       if (docSnap.exists()) {
          const user = docSnap.data()
          this.associatedUser.push(user['username']);
-      } else {
-        console.log("No such document!");
       }
     }
   }
@@ -122,7 +124,6 @@ export class TextEditorThreadComponent implements OnInit{
   }
 
   addEmoji(event: any) {
-    console.log('Emoji selected', event);
     const emoji = event.emoji.native;
     this.message = `${this.message}${emoji}`;
   }
@@ -142,7 +143,6 @@ export class TextEditorThreadComponent implements OnInit{
       this.fileArray.length === 0 &&
       (!this.message || this.message.trim().length === 0)
     ) {
-      console.log('wähle ein bild oder nachricht');
     } else {
       if (this.componentName === 'thread') {
         this.threadService.sendThreadMessageToDatabase(this.fileArray, this.message, this.threadDocID)
@@ -174,7 +174,6 @@ export class TextEditorThreadComponent implements OnInit{
           await this.firestoreService.uploadDataIntoStorage(file);
         this.insertImage(file?.type, this.chatService.dataURL, file?.name);
       } catch (error) {
-        console.error('Error uploading file:', error);
       }
     }
   }
