@@ -78,6 +78,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   delayPassed: boolean = false;
   otherUserID: any;
   unsubscribe: any;
+  showReactedBy:  any = [];
 
   emoji = [
     {
@@ -493,6 +494,30 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     this.dialog.open(DialogContactInfoComponent, {
       data: userDetails,
     });
+  }
+
+  async onMouseEnter(reaction: any, messageIndex: number, reactionIndex: number) {
+    if (!this.showReactedBy[messageIndex]) {
+      this.showReactedBy[messageIndex] = [];
+    }
+    this.showReactedBy[messageIndex][reactionIndex] = []
+    const reactedBy = Array.isArray(reaction.reactedBy) ? reaction.reactedBy : [reaction.reactedBy];
+    for (const userID of reactedBy) {
+      const docRef = doc(this.firestore, "users", userID);
+      try {
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const userDetails = docSnap.data();
+          console.log(userDetails['username']);
+          this.showReactedBy[messageIndex][reactionIndex].push(userDetails['username']);
+        }
+      } catch (error) {
+      }
+    }
+  }
+
+  onMouseLeave(messageIndex: number, reactionIndex: number) {
+    this.showReactedBy[messageIndex][reactionIndex] = [];
   }
 
   async openContactInfoDialog(uid: any) {

@@ -109,12 +109,17 @@
                   <h4>{{ message.threadCounter }}</h4>
                 </a>
               </div>
-              <div class="emoji-reaction-container" *ngFor="let reaction of message.emojiReactions.slice(0, 2)">
+              <div class="emoji-reaction-container" *ngFor="let reaction of message.emojiReactions.slice(0, 2); let a = index">
                 <div *ngIf="reaction.emojiCounter > 0"
-                  (click)="addOrDeleteReaction(reaction.emoji, this.currentUserID, message.id)"
-                  class="reaction-sub-container">
-                  {{ reaction.emojiCounter }}
-                  {{ reaction.emojiIcon }}
+                     (click)="addOrDeleteReaction(reaction.emoji, this.currentUserID, message.id)"
+                     (mouseenter)="onMouseEnter(reaction, i, a)"
+                     (mouseleave)="onMouseLeave(i, a)"
+                     class="reaction-sub-container">
+                     {{ reaction.emojiCounter }}
+                     {{ reaction.emojiIcon }}
+                  <div *ngIf="showReactedBy[i]?.[a]?.length > 0" class="reaction-hover">
+                    <div *ngFor="let user of showReactedBy[i][a]">{{ user }}</div>
+                  </div>
                 </div>
               </div>
               <div>
@@ -123,6 +128,8 @@
                 </button>
               </div>
             </div>
+
+
           </div>
         </div>
         <div class="popup-window" *ngIf="isHoveredArray[i] && message.senderID !== this.currentUserID">

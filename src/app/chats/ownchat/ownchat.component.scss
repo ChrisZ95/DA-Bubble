@@ -1,3 +1,16 @@
+.reaction-hover {
+  position: absolute;
+  bottom: 35px;
+  background-color: black;
+  color: white;
+  height: auto;
+  width: 100px;
+  padding: 5px;
+  border-radius: 10px;
+  box-shadow: 0 4px 2px rgba(225, 225, 225, 0.5);
+  font-size: 12px;
+}
+
 .emoji-picker-container {
   position: absolute;
   bottom: 50px;
