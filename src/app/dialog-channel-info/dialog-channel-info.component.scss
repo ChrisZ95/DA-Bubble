@@ -122,6 +122,34 @@
     }
 }
 
+.leave-channel-button-own-channel{
+    button{
+        width: 204px;
+        height: 49px;
+        border: none;
+        background-color: #444DF2;
+        color: white;
+        font-size: 18px;
+        font-weight: 700;
+        border-radius: 25px;
+        cursor: pointer;
+    }
+}
+
+.delete-channel-button-own-channel{
+    button{
+        width: 204px;
+        height: 49px;
+        border: none;
+        background-color: #ED1E79;
+        color: white;
+        font-size: 18px;
+        font-weight: 700;
+        border-radius: 25px;
+        cursor: pointer;
+    }
+}
+
 .channel-name {
     position: relative;
 
@@ -165,6 +193,13 @@
 
 ::ng-deep.mat-mdc-dialog-container{
     --mdc-dialog-container-shape: 0px 30px 30px 30px !important;
+}
+
+.channel-info-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    width: 100%;
 }
 
 @media(max-width: 850px) {

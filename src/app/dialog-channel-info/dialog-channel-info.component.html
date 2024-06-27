@@ -55,8 +55,13 @@
             </div>
         </div>
     </div>
-    <div *ngIf="isChannelAuthor" (click)="deleteChannel()" class="leave-channel-button">
-        <button>Channel löschen</button>
+    <div *ngIf="isChannelAuthor" class="channel-info-buttons">
+        <div (click)="leaveChannel()" class="leave-channel-button-own-channel">
+            <button>Channel verlassen</button>
+        </div>
+        <div (click)="deleteChannel()" class="delete-channel-button-own-channel">
+            <button>Channel löschen</button>
+        </div>
     </div>
     <div *ngIf="!isChannelAuthor" (click)="leaveChannel()" class="leave-channel-button">
         <button>Channel verlassen</button>
