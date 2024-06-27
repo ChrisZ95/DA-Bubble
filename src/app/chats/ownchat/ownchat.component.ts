@@ -1,7 +1,7 @@
 import { FirestoreService } from './../../firestore.service';
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, Input, OnChanges, OnInit, SimpleChanges, OnDestroy, ViewChild, ElementRef, HostListener } from '@angular/core';
-import { collection, doc, getDoc, getDocs, query, where, onSnapshot, deleteDoc, setDoc, addDoc, updateDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, onSnapshot, deleteDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { ChatService } from '../../services/chat.service';
 import { TimestampPipe } from '../../shared/pipes/timestamp.pipe';
 import { TextEditorComponent } from '../../shared/text-editor/text-editor.component';
@@ -9,7 +9,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { DialogChannelInfoComponent } from '../../dialog-channel-info/dialog-channel-info.component';
 import { DialogContactInfoComponent } from '../../dialog-contact-info/dialog-contact-info.component';
 import { DialogMembersComponent } from '../../dialog-members/dialog-members.component';
-import { ChannelService } from '../../services/channel.service';
 import { ThreadService } from '../../services/thread.service';
 import { Subscription } from 'rxjs';
 import { FormsModule } from '@angular/forms';
@@ -57,7 +56,6 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   emojiMessageId: any;
   foundMessage: any;
   userInformation: any;
-
   chatData: any;
   participantUser: any = [];
   currentChatID: any;
@@ -79,6 +77,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   public truncateLimitChatHeader: number | any;
   delayPassed: boolean = false;
   otherUserID: any;
+  unsubscribe: any;
 
   emoji = [
     {
@@ -105,8 +104,8 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   onResize(event: Event): void {
     const width = (event.target as Window).innerWidth;
     this.truncateLimitChatHeader = this.truncateService.setTruncateLimitChatHeader(width)
-    console.log(this.truncateLimitChatHeader)
   }
+
 
   ngOnInit(): void {
     this.messages = [];
@@ -157,8 +156,6 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
         this.loadParticipantUserData().then(() => {
           this.processParticipantUserData();
         });
-      } else {
-        console.log('Ungültige Chatdaten');
       }
     });
 
@@ -176,10 +173,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   processParticipantUserData() {
     if (this.participantUser && this.participantUser.length > 0) {
       const otherUserID = this.participantUser[0]['uid'];
-      console.log(otherUserID);
       this.chatService.checkAndSetParticipants(otherUserID);
-    } else {
-      console.log('Teilnehmerdaten nicht verfügbar');
     }
   }
 
@@ -252,17 +246,12 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
           for (const doc of threadMessagesSnap.docs) {await deleteDoc(doc.ref); }
           await deleteDoc(threadDocRef);
           this.threadService.displayThread = false;
-        } else {
-          console.log('Thread not found with ID:', messageData['threadID']);
         }
         await deleteDoc(messageDocRef);
-      } else {
-        console.log('No document found with the ID:', messageID);
       }
 
       this.menuClosed(index);
     } catch (error) {
-      console.error('Error deleting document:', error);
       this.menuClosed(index);
     }
     this.chatService.checkAndSetParticipants(this.chatService.participantID)
@@ -274,7 +263,6 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
         this.scrollContainer.nativeElement.scrollTop = this.scrollContainer.nativeElement.scrollHeight;
       }
     } catch (err) {
-      console.error(err);
     }
   }
 
@@ -285,13 +273,12 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     onSnapshot(docRef, async (docSnap) => {
       if (docSnap.exists()) {
         const messagesRef = collection(this.firestore, 'newchats', docID,'messages');
-        const reactionsRef = collection(this.firestore, 'newchats', docID, 'messages');
         onSnapshot(messagesRef, async (messagesSnap) => {
           const messagesMap = new Map();
           const messagePromises = messagesSnap.docs.map(async (messageDoc) => {
             let messageData = messageDoc.data();
+            await this.countThreadMessages(messageData['threadID'], messageDoc.id, docID)
             messageData['id'] = messageDoc.id;
-
             if (messageData['createdAt']) {
               if (messageData['senderID']) {
                 const senderID = messageData['senderID'];
@@ -304,10 +291,6 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
               const reactions = reactionsSnap.docs.map((doc) => doc.data());
               messageData['emojiReactions'] = reactions;
               messagesMap.set(messageData['id'], messageData);
-            } else {
-              console.error(
-                'Invalid timestamp format:', messageData['createdAt']
-              );
             }
           });
           await Promise.all(messagePromises);
@@ -315,11 +298,30 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
             (a: any, b: any) => a.createdAt - b.createdAt
           );
         });
-      } else {
-        console.log('No such document!');
       }
     });
+    this.stopListening();
   }
+
+
+  async countThreadMessages(threadID: any, messageID: any, docID: any) {
+    const threadsRef = collection(this.firestore, 'threads', threadID, 'messages');
+    this.unsubscribe = onSnapshot(threadsRef, (snapshot) => {
+      const messageDocRef = doc(this.firestore, 'newchats', docID, 'messages', messageID);
+      const adjustedSize = snapshot.size - 1;
+      const threadCounter = adjustedSize === 1 ? '1 Antwort' : `${adjustedSize} Antworten`;
+      updateDoc(messageDocRef, {
+        threadCounter: threadCounter
+      })
+    });
+  }
+
+   stopListening() {
+    if (this.unsubscribe) {
+      this.unsubscribe();
+    }
+  }
+
 
   async loadSenderData(senderID: any) {
     const docRef = doc(this.firestore, 'users', senderID);
@@ -329,7 +331,6 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
       const senderData = docSnap.data();
       return { username: senderData['username'], photo: senderData['photo'] };
     } else {
-      console.log('No such document!');
       return null;
     }
   }
@@ -352,7 +353,6 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
           },
         ];
       } else {
-        console.log('Kein Dokument des Users gefunden');
         window.location.reload();
       }
     }
@@ -380,17 +380,11 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
               username: userData['username'],
             },
           ];
-          console.log(this.participantUser);
-          return userData['uid']; // Return otherUserID
+          return userData['uid'];
         } else {
-          console.log('Kein Dokument des Users gefunden');
           window.location.reload();
         }
-      } else {
-        console.log('Kein anderer Teilnehmer gefunden');
       }
-    } else {
-      console.log('Chat data or participants are not available yet');
     }
     return null;
   }
@@ -449,7 +443,6 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
       const reactedByArray = reactionData['reactedBy'] || [];
 
       if (reactedByArray.includes(currentUserID)) {
-        console.log('user hat bereits reagiert');
         this.deleteEmojireaction(emoji, currentUserID, messageID);
       } else {
         this.getMessageForSpefifiedEmoji(emoji, currentUserID, messageID);
@@ -515,9 +508,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     this.chatService.lastOpenedChat = true;
     if(!this.firestoreService.isScreenWide) {
       this.chatService.showOwnChat = false;
-      console.log('850px')
     } else if(!this.firestoreService.isScreenWide1300px) {
-      console.log('1300px')
       this.chatService.showOwnChat = false;
     }
   }
@@ -544,11 +535,6 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     const currentDate = new Date(Number(currentMessage.createdAt));
     const previousDate = new Date(Number(previousMessage.createdAt));
     if (isNaN(currentDate.getTime()) || isNaN(previousDate.getTime())) {
-      console.error(
-        `Invalid Date - Current Message: ${JSON.stringify(
-          currentMessage
-        )}, Previous Message: ${JSON.stringify(previousMessage)}`
-      );
       return false;
     }
     const currentDateString = currentDate.toDateString();
