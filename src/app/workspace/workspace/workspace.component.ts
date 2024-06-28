@@ -12,6 +12,7 @@ import { ChannelchatComponent } from '../../chats/channelchat/channelchat.compon
 import { IdleService } from '../../services/idle.service';
 import { TruncatePipe } from '../../shared/pipes/truncate.pipe';
 import { TruncateWordsService } from '../../services/truncate-words.service';
+import { ThreadService } from '../../services/thread.service';
 
 @Component({
   selector: 'app-workspace',
@@ -50,7 +51,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
   focusOnTextEditor: boolean = false;
   unsubscribe: any;
 
-  constructor( public truncateService: TruncateWordsService, public dialog: MatDialog, private readonly firestore: Firestore, public firestoreService: FirestoreService, public channelService: ChannelService, public chatService: ChatService, private cdRef: ChangeDetectorRef, public idleService: IdleService, private eRef: ElementRef,
+  constructor(private threadService: ThreadService, public truncateService: TruncateWordsService, public dialog: MatDialog, private readonly firestore: Firestore, public firestoreService: FirestoreService, public channelService: ChannelService, public chatService: ChatService, private cdRef: ChangeDetectorRef, public idleService: IdleService, private eRef: ElementRef,
   ) {
     this.unsubscribe = onSnapshot(collection(this.firestore, 'channels'), (list) => {
       this.allChannels = list.docs.map((doc) => doc.data());
@@ -213,6 +214,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
     this.channelService.showThreadWindow = false;
     this.chatService.clearInputValue(true);
     this.chatService.showEmptyChat = false;
+    this.threadService.displayThread = false;
     if (window.innerWidth <= 850) {
       this.firestoreService.displayWorkspace = false;
     }
@@ -304,6 +306,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
     this.chatService.showEmptyChat = true;
     this.chatService.showOwnChat = false;
     this.channelService.showChannelChat = false;
+    this.threadService.displayThread = false;
   }
 
   async openChat(event: Event, user: any) {
@@ -322,6 +325,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
       const chatDocID = this.chatService.searchChatWithUser(user.uid);
     }
     this.chatService.clearInputValue(true);
+    this.threadService.displayThread = false;
   }
 
   getallUsers() {
