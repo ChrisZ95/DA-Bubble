@@ -208,6 +208,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
     if (this.clearMessagesSubscription) {
       this.clearMessagesSubscription.unsubscribe();
     }
+    this.stopListening();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -301,7 +302,6 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
         });
       }
     });
-    this.stopListening();
   }
 
 

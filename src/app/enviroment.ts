@@ -7,8 +7,7 @@ export const environment = {
     apiKey: 'AIzaSyD1QIosifbrMmf2Cis-tPblgDMk1JJmgGE',
     authDomain: 'dabubble-180.firebaseapp.com',
     messagingSenderId: '1063885758156',
-    databaseURL:
-      'https://dabubble-180-default-rtdb.europe-west1.firebasedatabase.app',
+    databaseURL:'https://dabubble-180-default-rtdb.europe-west1.firebasedatabase.app',
     // apiKey: 'AIzaSyAZuqach9UwtPiJAt3hrD8SczbPUPTLC7k',
     // authDomain: 'da181-db3ce.firebaseapp.com',
     // databaseURL:

@@ -119,6 +119,7 @@ export class ChannelchatComponent implements OnInit, OnDestroy {
     if (this.emojiPickerChannelReactionSubscription) {
       this.emojiPickerChannelReactionSubscription.unsubscribe();
     }
+    this.stopListening();
   }
 
   async loadChannelMessages(docID: any) {
@@ -155,7 +156,6 @@ export class ChannelchatComponent implements OnInit, OnDestroy {
       });
       }
     });
-    this.stopListening();
   }
 
   async countThreadMessages(threadID: any, messageID: any, docID: any) {

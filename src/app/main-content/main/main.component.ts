@@ -272,5 +272,17 @@ updateScreenWidthFlags() {
   const width = window.innerWidth;
   this.firestoreService.isScreenWide = width > 850;
   this.firestoreService.isScreenWide1300px = width > 1300;
+  if(!this.firestoreService.isScreenWide) {
+    this.chatService.showEmptyChat = false;
+    this.channelService.showChannelChat = false;
+    this.chatService.showOwnChat = false;
+    this.threadService.displayThread = false;
+    this.firestoreService.displayWorkspace = true
+  } else if (!this.firestoreService.isScreenWide1300px) {
+    this.chatService.showEmptyChat = true;
+    this.channelService.showChannelChat = false;
+    this.chatService.showOwnChat = false;
+    this.threadService.displayThread = false;
+  }
 }
 }

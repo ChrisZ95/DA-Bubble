@@ -271,9 +271,11 @@ export class ChannelService {
   }
 
   async loadMessagesForChannel(channelId: string): Promise<any[]> {
+    debugger
     try {
       const querySnapshot = await this.queryChannelMessages(channelId);
       this.processQuerySnapshot(querySnapshot);
+      console.log(this.messages)
       return this.messages;
     } catch (error) {
       return [];
