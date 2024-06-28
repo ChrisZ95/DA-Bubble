@@ -7,14 +7,14 @@
     <div class="choose-user-parcel" (click)="userInserted(member.username)">{{ member.username }}</div>
   </div>
 </div>
-<div *ngIf="foundUsers?.length" 
-     [ngStyle]="dropdownStyle" 
-     class="dropdown" 
+<div *ngIf="foundUsers?.length"
+     [ngStyle]="dropdownStyle"
+     class="dropdown"
      style="background-color: #eceefe; width: 88%; margin: auto; gap: 2.5%; padding: 1%; border-radius: 12px">
 
   <div *ngFor="let user of foundUsers, let i = index" (click)="selectUser(user.username)">
-  <div [ngStyle]="dropdownSingleStyle[i]" style="display: flex; justify-content: flex-start; align-items: center;; cursor: pointer;" 
-  (mouseenter)="onMouseEnter(i)" 
+  <div [ngStyle]="dropdownSingleStyle[i]" style="display: flex; justify-content: flex-start; align-items: center;; cursor: pointer;"
+  (mouseenter)="onMouseEnter(i)"
   (mouseleave)="onMouseLeave(i)">
     <img [src]="user.photo" alt="" height="30px" width="30px" style="border-radius: 100%;">
      {{ user.username }}

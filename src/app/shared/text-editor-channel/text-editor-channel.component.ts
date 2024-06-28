@@ -96,13 +96,9 @@ export class TextEditorChannelComponent implements OnInit, AfterViewInit {
   }
 
   userMention() {
-    this.updateMemberData();
-    this.filteredUsersSubscription = this.chatService.filteredUsers$.subscribe(
-      (users) => {
-        this.associatedUser = users;
-      }
-    );
-    this.openUserMention();
+    this.memberFullData = this.allUsers.filter(user => this.channelService.UserName.includes(user.uid)).map(user => (user));
+    this.foundUsers = this.memberFullData.filter((user:any) => user.username.toLowerCase());
+    this.message += '@';
   }
 
   openUserMention() {
@@ -192,41 +188,38 @@ export class TextEditorChannelComponent implements OnInit, AfterViewInit {
   }
 
   searchUserInInput(event: KeyboardEvent): void {
+    console.log(event)
     this.memberFullData = this.allUsers.filter(user => this.channelService.UserName.includes(user.uid)).map(user => (user));
-    
+
     const input: string = (event.target as HTMLTextAreaElement).value;
     this.cursorPosition = (event.target as HTMLTextAreaElement).selectionStart;
     const lastWord: string | undefined = input.slice(0, this.cursorPosition).split(' ').pop();
 
     if (lastWord?.startsWith('@')) {
       const searchText: string = lastWord.slice(1).toLowerCase();
-      this.foundUsers = this.memberFullData.filter((user:any) => user.username.toLowerCase().includes(searchText));    
+      this.foundUsers = this.memberFullData.filter((user:any) => user.username.toLowerCase().includes(searchText));
     } else {
       this.foundUsers = [];
     }
   }
 
   selectUser(user: string): void {
-    const textBeforeCursor: string = this.message.slice(0, this.cursorPosition);
-    const textAfterCursor: string = this.message.slice(this.cursorPosition);
-    const lastWordIndex: number = textBeforeCursor.lastIndexOf('@');
-    const newTextBeforeCursor: string = textBeforeCursor.slice(0, lastWordIndex + 1) + user;
-
-    this.message = newTextBeforeCursor + ' ' + textAfterCursor;
+    this.message += `${user} `
     this.foundUsers = [];
+    this.elementRef.nativeElement.querySelector('textarea').focus();
   }
-  
+
   onMouseEnter(index: number) {
     this.dropdownSingleStyle[index] = {
       ...this.dropdownSingleStyle[index],
-      backgroundColor: '#ffffff' // Change to the hover background color
+      backgroundColor: '#ffffff'
     };
   }
 
   onMouseLeave(index: number) {
     this.dropdownSingleStyle[index] = {
       ...this.dropdownSingleStyle[index],
-      backgroundColor: '#eceefe' // Change back to the original background color
+      backgroundColor: '#eceefe'
     };
   }
 }

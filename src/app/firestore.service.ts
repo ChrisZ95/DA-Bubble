@@ -520,7 +520,7 @@ export class FirestoreService {
   async changePassword(userId: any, newPassword: string): Promise<void> {
     try {
       await updatePassword(this.auth.currentUser, newPassword);
-      this.router.navigate(['']);
+      this.router.navigate(['https://dabubble.lars-thoennes.de/#/']);
     } catch (error) {
       throw error;
     }
