@@ -28,6 +28,7 @@ export class SignUpChooseAvatarComponent implements OnInit {
   imageSelected: boolean = false;
   imageSrc:any;
   loadingScreen = false;
+  continueButton: boolean = false;
 
 
   @Output() backToSignUpClicked: EventEmitter<any> = new EventEmitter();
@@ -115,6 +116,7 @@ export class SignUpChooseAvatarComponent implements OnInit {
     this.img = document.getElementById('userIcon');
     this.img.setAttribute('src', this.downloadedUserIcon);
     this.loadingScreen = false;
+    this.continueButton = true;
   }
 
   async uploadUserIconCustom(uid: string, userIconTokenURL: any) {

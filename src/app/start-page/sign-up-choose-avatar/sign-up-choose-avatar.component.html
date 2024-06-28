@@ -19,34 +19,36 @@
       <h1>{{ userName }}</h1>
     </div>
 
-    <div class="choose-avatar-list">
-      <span>Aus der Liste wählen</span>
-      <div class="pseudo">
-        <span class="input-information" *ngIf="showInputInformationUserIcon">Bitte wähle ein Icon.</span>
-      </div>
-      <div class="avatar-list" >
-        <div class="avatar-list">
-          <div *ngFor="let img of avatar; let i = index" class="avatar-item" [id]="'avatar-' + i" (click)="chooseAvatar(i)">
-            <img [src]="img">
+    <form (ngSubmit)="createAccount()" #avatarForm="ngForm">
+      <div class="choose-avatar-list">
+        <span>Aus der Liste wählen</span>
+        <div class="pseudo">
+          <span class="input-information" *ngIf="showInputInformationUserIcon">Bitte wähle ein Icon.</span>
+        </div>
+        <div class="avatar-list" >
+          <div class="avatar-list">
+            <div *ngFor="let img of avatar; let i = index" class="avatar-item" [id]="'avatar-' + i" (click)="chooseAvatar(i)">
+              <img [src]="img">
+            </div>
           </div>
         </div>
+
+        <div class="upload-custom-image">
+          <span> Eigenes Bild verwenden</span>
+          <label class="choose-image-label" for="profile-picture-input">
+            Datei hochladen
+            <input class="choose-image-input" type="file" name="profile-picture" accept="image/*" id="profile-picture-input" (change)="onImageSelected($event)" required>
+          </label>
+        </div>
+
       </div>
 
-      <div class="upload-custom-image">
-        <span> Eigenes Bild verwenden</span>
-        <label class="choose-image-label" for="profile-picture-input">
-          Datei hochladen
-          <input class="choose-image-input" type="file" name="profile-picture" accept="image/*" id="profile-picture-input" (change)="onImageSelected($event)">
-        </label>
+      <div class="continue-button-container">
+       <div>
+        <button [disabled]="!continueButton" type="submit" class="continue-button">Weiter</button>
+       </div>
       </div>
-
-    </div>
-
-    <div class="continue-button-container">
-     <div>
-      <button (click)="createAccount()" class="continue-button">Weiter</button>
-     </div>
-    </div>
+    </form>
 
   </div>
 
