@@ -98,13 +98,17 @@ export class TextEditorThreadComponent implements OnInit, AfterViewInit {
     //     this.filterChatParticipantName(users)
     //   },
     // );
-    // this.openUserMention();
     this.allUsers = this.firestoreService.allUsers;
-    let otherUser = this.chatService.otherParticipant[0].uid;
-    otherUser = [otherUser]
-      this.memberFullData = this.allUsers.filter(user => otherUser.includes(user.uid)).map(user => (user));
-      this.foundUsers = this.memberFullData.filter((user:any) => user.username.toLowerCase());
-      this.message += '@';
+    if(this.firestoreService.threadType == 'channel'){
+      this.memberFullData = this.allUsers.filter(user => this.channelService.UserName.includes(user.uid)).map(user => user);
+    } else if (this.firestoreService.threadType == 'chat'){
+      let otherUser = this.chatService.otherParticipant[0].uid;
+      otherUser = [otherUser]
+      this.memberFullData = this.allUsers.filter(user =>  otherUser.includes(user.uid)).map(user => user);   
+    }
+    this.foundUsers = this.memberFullData.filter((user:any) => user.username.toLowerCase());
+    this.message += '@';
+    // this.openUserMention();
   }
 
   async filterChatParticipantName(users: any) {
