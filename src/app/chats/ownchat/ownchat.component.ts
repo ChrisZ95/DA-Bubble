@@ -528,6 +528,7 @@ export class OwnchatComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   openThread(message: any) {
+    this.firestoreService.threadType ='chat';
     this.threadService.getMessage(message, this.currentChatID);
     this.chatService.lastOpenedChat = true;
     if(!this.firestoreService.isScreenWide) {

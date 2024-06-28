@@ -23,7 +23,7 @@
 </div>
 <form (submit)="submit()" class="text-editor-container">
   <div class="input-section">
-    <textarea cols="30" rows="10" id="textArea" placeholder="Nachricht schreiben" [(ngModel)]="message" [(ngModel)]="comment" name="message" (keyup)="searchUserInInput($event)" #textArea></textarea>
+    <textarea  cols="30" rows="10" id="textArea" placeholder="Nachricht schreiben" [(ngModel)]="message" [(ngModel)]="comment" name="message" (keyup)="searchUserInInput($event)" #textArea></textarea>
     <div class="imageDisplay" id="imageDisplay">
       <div *ngFor="let file of fileArray let i = index"  class="file-link-container">
         <button class="delete-file-button" (click)="deleteFile(i)">

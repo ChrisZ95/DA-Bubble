@@ -36,7 +36,6 @@ export class TextEditorChannelComponent implements OnInit, AfterViewInit {
   channelDocumentIDSubsrciption: Subscription | null = null;
   foundUsers: any;
   cursorPosition: number = 0;
-  associatedUser2:string[] = [];
   dropdownStyle: any = {};
   dropdownSingleStyle: any = {};
   memberFullData:any;
@@ -96,6 +95,7 @@ export class TextEditorChannelComponent implements OnInit, AfterViewInit {
   }
 
   userMention() {
+    this.allUsers = this.firestoreService.allUsers;
     this.memberFullData = this.allUsers.filter(user => this.channelService.UserName.includes(user.uid)).map(user => (user));
     this.foundUsers = this.memberFullData.filter((user:any) => user.username.toLowerCase());
     this.message += '@';
@@ -188,25 +188,31 @@ export class TextEditorChannelComponent implements OnInit, AfterViewInit {
   }
 
   searchUserInInput(event: KeyboardEvent): void {
-    console.log(event)
-    this.memberFullData = this.allUsers.filter(user => this.channelService.UserName.includes(user.uid)).map(user => (user));
-
+    this.memberFullData = this.allUsers.filter(user => this.channelService.UserName.includes(user.uid)).map(user => user);
+    
     const input: string = (event.target as HTMLTextAreaElement).value;
     this.cursorPosition = (event.target as HTMLTextAreaElement).selectionStart;
     const lastWord: string | undefined = input.slice(0, this.cursorPosition).split(' ').pop();
 
     if (lastWord?.startsWith('@')) {
       const searchText: string = lastWord.slice(1).toLowerCase();
-      this.foundUsers = this.memberFullData.filter((user:any) => user.username.toLowerCase().includes(searchText));
+      this.foundUsers = this.memberFullData.filter((user: any) => user.username.toLowerCase().includes(searchText));
     } else {
       this.foundUsers = [];
     }
   }
 
   selectUser(user: string): void {
-    this.message += `${user} `
-    this.foundUsers = [];
-    this.elementRef.nativeElement.querySelector('textarea').focus();
+    const textarea = this.elementRef.nativeElement.querySelector('textarea');
+    const input: string = textarea.value;
+    const atIndex = input.lastIndexOf('@');
+    if (atIndex !== -1) {
+      this.message = this.message.slice(0, atIndex) + `@${user} `;
+      textarea.value = input.slice(0, atIndex) + `${user} `;
+      this.cursorPosition = textarea.selectionEnd = textarea.value.length;
+      this.foundUsers = [];
+      textarea.focus();
+    }
   }
 
   onMouseEnter(index: number) {

@@ -35,6 +35,7 @@ export class FirestoreService {
   displayWorkspace: boolean = true;
   isScreenWide: boolean = false;
   isScreenWide1300px: boolean = false;
+  threadType:string = '';
 
   constructor( private myFirebaseApp: FirebaseApp, public router: Router, private rdb: Database, private idleService: IdleService) {
     this.auth = getAuth(myFirebaseApp);

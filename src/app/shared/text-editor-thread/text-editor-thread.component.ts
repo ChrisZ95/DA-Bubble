@@ -35,6 +35,11 @@ export class TextEditorThreadComponent implements OnInit, AfterViewInit {
   filteredUsersSubscription: Subscription | null = null;
   documentIDSubsrciption: Subscription | null = null;
   clearTextEditorValueSubcription: Subscription | null = null;
+  foundUsers: any;
+  cursorPosition: number = 0;
+  dropdownStyle: any = {};
+  dropdownSingleStyle: any = {};
+  memberFullData:any;
 
   constructor(private elementRef: ElementRef, private chatService: ChatService, private threadService: ThreadService, private firestore: Firestore, public channelService: ChannelService, private firestoreService: FirestoreService) {}
 
@@ -88,12 +93,18 @@ export class TextEditorThreadComponent implements OnInit, AfterViewInit {
   }
 
   async userMention() {
-    this.filteredUsersSubscription = this.chatService.filteredUsers$.subscribe(
-      (users) => {
-        this.filterChatParticipantName(users)
-      },
-    );
-    this.openUserMention();
+    // this.filteredUsersSubscription = this.chatService.filteredUsers$.subscribe(
+    //   (users) => {
+    //     this.filterChatParticipantName(users)
+    //   },
+    // );
+    // this.openUserMention();
+    this.allUsers = this.firestoreService.allUsers;
+    let otherUser = this.chatService.otherParticipant[0].uid;
+    otherUser = [otherUser]
+      this.memberFullData = this.allUsers.filter(user => otherUser.includes(user.uid)).map(user => (user));
+      this.foundUsers = this.memberFullData.filter((user:any) => user.username.toLowerCase());
+      this.message += '@';
   }
 
   async filterChatParticipantName(users: any) {
@@ -188,5 +199,54 @@ export class TextEditorThreadComponent implements OnInit, AfterViewInit {
 
   deleteFile(index: number): void {
     this.fileArray.splice(index, 1);
+  }
+
+  searchUserInInput(event: KeyboardEvent): void {
+    this.allUsers = this.firestoreService.allUsers;
+    if(this.firestoreService.threadType == 'channel'){
+      this.memberFullData = this.allUsers.filter(user => this.channelService.UserName.includes(user.uid)).map(user => user);
+    } else if (this.firestoreService.threadType == 'chat'){
+      let otherUser = this.chatService.otherParticipant[0].uid;
+      otherUser = [otherUser]
+      this.memberFullData = this.allUsers.filter(user =>  otherUser.includes(user.uid)).map(user => user);   
+    }
+
+    const input: string = (event.target as HTMLTextAreaElement).value;
+    this.cursorPosition = (event.target as HTMLTextAreaElement).selectionStart;
+    const lastWord: string | undefined = input.slice(0, this.cursorPosition).split(' ').pop();
+
+    if (lastWord?.startsWith('@')) {
+      const searchText: string = lastWord.slice(1).toLowerCase();
+      this.foundUsers = this.memberFullData.filter((user: any) => user.username.toLowerCase().includes(searchText));
+    } else {
+      this.foundUsers = [];
+    }
+  }
+
+  selectUser(user: string): void {
+    const textarea = this.elementRef.nativeElement.querySelector('textarea');
+    const input: string = textarea.value;
+    const atIndex = input.lastIndexOf('@');
+    if (atIndex !== -1) {
+      this.message = this.message.slice(0, atIndex) + `@${user} `;
+      textarea.value = input.slice(0, atIndex) + `${user} `;
+      this.cursorPosition = textarea.selectionEnd = textarea.value.length;
+      this.foundUsers = [];
+      textarea.focus();
+    }
+  }
+
+  onMouseEnter(index: number) {
+    this.dropdownSingleStyle[index] = {
+      ...this.dropdownSingleStyle[index],
+      backgroundColor: '#ffffff'
+    };
+  }
+
+  onMouseLeave(index: number) {
+    this.dropdownSingleStyle[index] = {
+      ...this.dropdownSingleStyle[index],
+      backgroundColor: '#eceefe'
+    };
   }
 }

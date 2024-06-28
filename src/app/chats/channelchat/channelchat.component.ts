@@ -261,6 +261,7 @@ export class ChannelchatComponent implements OnInit, OnDestroy {
     }
 
     openThread(message: any) {
+      this.firestoreService.threadType = 'channel';
       this.threadService.getMessage(message, this.currentDocID);
       this.channelService.lastOpenedChannel = true;
       if(!this.firestoreService.isScreenWide) {
