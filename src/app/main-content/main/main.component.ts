@@ -278,7 +278,22 @@ updateScreenWidthFlags() {
     this.chatService.showOwnChat = false;
     this.threadService.displayThread = false;
     this.firestoreService.displayWorkspace = true
+  } else if (!this.firestoreService.isScreenWide1300px &&  this.channelService.showChannelChat) {
+    this.chatService.showEmptyChat = false;
+    this.channelService.showChannelChat = true;
+    this.chatService.showOwnChat = false;
+    this.threadService.displayThread = false;
+  } else if (!this.firestoreService.isScreenWide1300px &&  this.chatService.showOwnChat) {
+    this.chatService.showEmptyChat = false;
+    this.channelService.showChannelChat = false;
+    this.chatService.showOwnChat = true;
+    this.threadService.displayThread = false;
   } else if (!this.firestoreService.isScreenWide1300px) {
+    this.chatService.showEmptyChat = true;
+    this.channelService.showChannelChat = false;
+    this.chatService.showOwnChat = false;
+    this.threadService.displayThread = false;
+  } else if (this.firestoreService.isScreenWide1300px) {
     this.chatService.showEmptyChat = true;
     this.channelService.showChannelChat = false;
     this.chatService.showOwnChat = false;
