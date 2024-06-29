@@ -18,9 +18,9 @@
     <span>{{ lastOnlineMessage }}</span>
   </div>
   <div class="email">
-    <img src="./../../assets/images/mail.png" alt="">
-    <a href="mailto:{{ data?.email }}">{{ data?.email }}</a>
-  </div>
+    <img src="./../../assets/images/mail.png" alt="Email Icon">
+    <a [href]="'mailto:' + data?.email" [innerHTML]="getFormattedEmail(data?.email)" class="formatted-email"></a>
+  </div> 
   <div *ngIf="!myAccount" class="message-button">
     <button>
       <img src="./../../assets/images/message-icon.png" alt="">

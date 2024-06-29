@@ -4,6 +4,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DialogEditProfileComponent } from '../dialog-edit-profile/dialog-edit-profile.component';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-dialog-contact-info',
@@ -17,6 +18,7 @@ export class DialogContactInfoComponent implements OnInit{
     private dialogRef: MatDialogRef<DialogContactInfoComponent>,
     private firestore: FirestoreService,
     public dialog: MatDialog,
+    private sanitizer: DomSanitizer,
     @Inject(MAT_DIALOG_DATA) public data: any) {}
 
     onlineStatus: Date = new Date();
@@ -91,5 +93,10 @@ export class DialogContactInfoComponent implements OnInit{
     const timestamp = parseInt(unixTimestamp.toString(), 10);
     const timestampInMilliseconds = unixTimestamp.toString().length === 13 ? timestamp : timestamp * millisecondsInSecond;
     return new Date(timestampInMilliseconds);
+  }
+
+  getFormattedEmail(email: string): SafeHtml {
+    const formattedEmail = email.replace('@', '\u200B@');
+    return this.sanitizer.bypassSecurityTrustHtml(formattedEmail);
   }
 }

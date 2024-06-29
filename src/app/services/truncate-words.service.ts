@@ -22,7 +22,6 @@ export class TruncateWordsService {
   }
 
   setTruncateLimitChatHeader(width: number): number {
-    console.log(width)
     if (width >= 1400) {
       return 80;
     } else if(width < 360) {

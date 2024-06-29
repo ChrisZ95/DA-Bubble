@@ -275,7 +275,6 @@ export class ChannelService {
     try {
       const querySnapshot = await this.queryChannelMessages(channelId);
       this.processQuerySnapshot(querySnapshot);
-      console.log(this.messages)
       return this.messages;
     } catch (error) {
       return [];
