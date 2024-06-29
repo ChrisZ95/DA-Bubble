@@ -56,11 +56,11 @@ export class SignUpChooseAvatarComponent implements OnInit {
 
   async onImageSelected(event: any):Promise<void> {
     const file = event.target.files[0];
+    this.continueButton = true;
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
         this.imageSrc = e.target?.result;
-        this.imageSelected = true;
         this.iconIndex = 6;
         const icon = file;
       };
@@ -79,17 +79,17 @@ export class SignUpChooseAvatarComponent implements OnInit {
     this.showInputInformationUserIcon = false;
     this.selectedAvatar = this.avatar[index];
     if (index == 0) {
-      this.userIconTokenURL = 'https://firebasestorage.googleapis.com/v0/b/da181-db3ce.appspot.com/o/user-icon%2F80.%20avatar%20interaction.png?alt=media&token=d1e4d7b5-7d23-4f22-b444-5af815e54cc0'
+      this.userIconTokenURL = 'https://firebasestorage.googleapis.com/v0/b/dabubble-portfolio-4f135.appspot.com/o/user-icon%2F80.%20avatar%20interaction.png?alt=media&token=15281f63-f332-4fde-b3d7-af260f34c611'
     } else if (index == 1) {
-      this.userIconTokenURL = 'https://firebasestorage.googleapis.com/v0/b/dabubble-180.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(1).png?alt=media&token=d4ce52b2-3bc9-48fd-9021-912002d298ee'
+      this.userIconTokenURL = 'https://firebasestorage.googleapis.com/v0/b/dabubble-portfolio-4f135.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(1).png?alt=media&token=05fb66ad-aa95-4bd5-baa7-f2a63ace6e5c'
     } else if (index == 2) {
-      this.userIconTokenURL = 'https://firebasestorage.googleapis.com/v0/b/da181-db3ce.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(2).png?alt=media&token=5f7c9f16-eb33-4319-a3df-11e4fb515415'
+      this.userIconTokenURL = 'https://firebasestorage.googleapis.com/v0/b/dabubble-portfolio-4f135.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(2).png?alt=media&token=6816d63a-e6db-4e31-8142-7edde6a42ceb'
     } else if (index == 3) {
-      this.userIconTokenURL = 'https://firebasestorage.googleapis.com/v0/b/da181-db3ce.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(3).png?alt=media&token=1cbd3b9d-18dc-4476-815a-30c1def0c0ba'
+      this.userIconTokenURL = 'https://firebasestorage.googleapis.com/v0/b/dabubble-portfolio-4f135.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(3).png?alt=media&token=c6f3eeb7-a8dc-49a6-89a9-68dde65a89f2'
     } else if (index == 4) {
-      this.userIconTokenURL = 'https://firebasestorage.googleapis.com/v0/b/da181-db3ce.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(4).png?alt=media&token=49f19eed-8e39-4e4e-8562-9653036a6d21'
+      this.userIconTokenURL = 'https://firebasestorage.googleapis.com/v0/b/dabubble-portfolio-4f135.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(4).png?alt=media&token=ced9d8d1-4997-4bd2-bf92-26f62d54d71f'
     } else if (index == 5) {
-      this.userIconTokenURL = 'https://firebasestorage.googleapis.com/v0/b/da181-db3ce.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(5).png?alt=media&token=24fc0d08-16dd-4a37-bf35-19fdf87413de'
+      this.userIconTokenURL = 'https://firebasestorage.googleapis.com/v0/b/dabubble-portfolio-4f135.appspot.com/o/user-icon%2F80.%20avatar%20interaction%20(5).png?alt=media&token=67be52fb-634d-4110-8ce3-a9c3a6e6563d'
     }
     this.iconIndex = index;
     this.uploadUserIcon(this.uid, this.userIconTokenURL);
