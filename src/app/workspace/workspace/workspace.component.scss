@@ -1,6 +1,4 @@
 .scrollbar {
-  max-height: 50vh;
-  min-height: 40vh;
   overflow-y: scroll;
   overflow-x: hidden;
   scrollbar-color: #535af1 #f1f1f1;
@@ -55,7 +53,6 @@
     display: flex;
     align-items: center;
     flex-direction: column;
-    justify-content: center;
     gap: 30px;
 
     .channels-container {
@@ -582,8 +579,14 @@
     }
   }
 
+  .direct-messages-container {
+    height: calc(100vh - 400px);
+  }
+
   .workspace-main-content {
     margin-top: 0px !important;
+    height: calc(100vh - 112px);
+
   }
 
   .search-input {
@@ -597,7 +600,7 @@
   }
 
   .serach-bar {
-    height: 46px !important;
+    height: 40px !important;
   }
 
   .search-button {

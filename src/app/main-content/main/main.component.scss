@@ -119,7 +119,8 @@
 @media (max-width: 850px) {
   .workspace {
     width: 90vw;
-    height: calc(100vh - 190px);
+    height: calc(100vh - 144px);
+    border-radius: 0px;
   }
 
   .chat {
@@ -136,14 +137,14 @@
     margin-left: 0px;
     margin-right: 0px;
     width: 90vw;
-    height: calc(100vh - 100px);
+    height: calc(100vh - 80px);
   }
 }
 
 @media (max-width: 650px) {
   .workspace {
     width: 100vw;
-    height: 100vh;
+    height: calc(100vh - 144px);
   }
 
   .chat {
@@ -158,6 +159,6 @@
 
   .workspace-chat-thread {
     width: 100vw;
-    height: 100vh;
+    height: calc(100vh - 80px);
   }
 }
