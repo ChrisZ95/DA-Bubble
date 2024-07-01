@@ -37,8 +37,8 @@ export class WorkspaceComponent implements OnInit, OnDestroy, OnChanges {
   allUsers: any[] = [];
   otherUsers: any = [];
   userStatus: any = 'active';
-  displayUsers: boolean = false;
-  showChannel = false;
+  displayUsers: boolean = true;
+  showChannel = true;
   channel = new Channel();
   selectedChannelName: string | null = null;
   currentChannelId: string = '';

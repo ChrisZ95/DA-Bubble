@@ -1311,3 +1311,13 @@
     }
   }
 }
+
+@media(max-width: 500px) {
+  .log-in-card-container[_ngcontent-ng-c218338786] .log-in-card[_ngcontent-ng-c218338786] .login-button-container[_ngcontent-ng-c218338786] .guest-login[_ngcontent-ng-c218338786] {
+    font-size: 16px !important;
+  }
+
+  .log-in-card-container[_ngcontent-ng-c218338786] .log-in-card[_ngcontent-ng-c218338786] .login-button-container[_ngcontent-ng-c218338786] .user-login[_ngcontent-ng-c218338786] {
+    font-size: 16px !important;
+  }
+}

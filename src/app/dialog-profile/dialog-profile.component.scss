@@ -124,4 +124,8 @@
     ::ng-deep.mat-mdc-dialog-surface{
         border-radius: 30px !important;
     }
+
+    ::ng-deep.mat-mdc-dialog-panel{
+        margin-top: 40px !important;
+    }
 }
