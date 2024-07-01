@@ -1,12 +1,12 @@
 export const environment = {
   production: false,
   firebase: {
-    projectId: 'da-bubble-ab311',
-    appId: '1:402912861096:web:a65571bad7f35945b59b9d',
-    storageBucket: 'da-bubble-ab311.appspot.com',
-    apiKey: 'AIzaSyCQ122T9_3f4ipLWnPrjgAo9wAO9RMqKk4',
-    authDomain: 'da-bubble-ab311.firebaseapp.com',
-    messagingSenderId: '402912861096',
-    databaseURL:'https://da-bubble-ab311-default-rtdb.europe-west1.firebasedatabase.app',
+    apiKey: "AIzaSyCtVwflUwF_RO2ffTcHHsKKnm5YGBm_kiY",
+    authDomain: "da-bubble-30236.firebaseapp.com",
+    projectId: "da-bubble-30236",
+    storageBucket: "da-bubble-30236.appspot.com",
+    messagingSenderId: "909383864444",
+    appId: "1:909383864444:web:0c540569d00507a18379f9",
+    databaseURL: "https://da-bubble-30236-default-rtdb.europe-west1.firebasedatabase.app"
   },
 };
