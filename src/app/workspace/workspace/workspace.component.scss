@@ -1,4 +1,6 @@
 .scrollbar {
+  min-height: 40vh;
+  max-height: 60vh;
   overflow-y: scroll;
   overflow-x: hidden;
   scrollbar-color: #535af1 #f1f1f1;
@@ -585,8 +587,6 @@
 
   .workspace-main-content {
     margin-top: 0px !important;
-    height: calc(100vh - 112px);
-
   }
 
   .search-input {
@@ -600,7 +600,7 @@
   }
 
   .serach-bar {
-    height: 40px !important;
+    height: 35px !important;
   }
 
   .search-button {

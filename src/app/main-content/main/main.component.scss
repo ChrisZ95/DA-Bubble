@@ -16,6 +16,7 @@
 }
 .main {
   position: relative;
+  height: 100vh;
 }
 .container {
   position: relative;
@@ -125,12 +126,12 @@
 
   .chat {
     width: 90vw;
-    height: calc(100vh - 100px);
+    height: calc(100vh - 80px);
   }
 
   .thread {
     width: 90vw;
-    height: calc(100vh - 100px);
+    height: calc(100vh - 80px);
   }
 
   .workspace-chat-thread {
@@ -149,12 +150,12 @@
 
   .chat {
     width: 100vw;
-    height: 100vh;
+    height: calc(100vh - 80px);
   }
 
   .thread {
     width: 100vw;
-    height: 100vh;
+    height: calc(100vh - 80px);
   }
 
   .workspace-chat-thread {

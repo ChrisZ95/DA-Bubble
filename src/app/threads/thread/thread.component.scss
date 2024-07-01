@@ -41,19 +41,13 @@
         font-size: 14px;
         font-weight: 400;
         color: #797EF3;
-        width: 130px;
+        width: 150px;
       }
     }
   }
 }
 
-
-
-
-// ---------
 .test {
-  height: 430px;
-
   .separator {
     display: flex;
     justify-content: center;
@@ -528,5 +522,11 @@
 
   .own-message-bubble {
     max-width: 200px;
+  }
+}
+
+@media(max-width: 850px) {
+  .main {
+    height: calc(100vh - 80px);
   }
 }
