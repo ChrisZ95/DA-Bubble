@@ -118,7 +118,9 @@
                      {{ reaction.emojiCounter }}
                      {{ reaction.emojiIcon }}
                   <div *ngIf="showReactedBy[i]?.[a]?.length > 0" class="reaction-hover">
+                    <div>{{ reaction.emojiIcon }}</div>
                     <div *ngFor="let user of showReactedBy[i][a]">{{ user }}</div>
+                    <span>hat reagiert</span>
                   </div>
                 </div>
               </div>

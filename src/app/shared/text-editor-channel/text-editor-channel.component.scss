@@ -47,7 +47,6 @@
   align-items: center;
   width: 90%;
   padding-left: 5%;
-  background-color: white;
   margin-bottom: 20px;
 
   .input-section {
@@ -184,7 +183,11 @@
   // }
 
   .text-editor-container {
-    margin-bottom: 5vw;
+    margin-bottom: 25vw;
+  }
+
+  .button-container {
+    margin: 10px !important;
   }
 }
 

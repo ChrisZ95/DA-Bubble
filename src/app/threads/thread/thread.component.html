@@ -79,10 +79,19 @@
 
             </div>
             <div  [ngClass]="{'justify-end': message.senderID === this.currentUserID, 'justify-start': message.senderID !== this.currentUserID}" class="reaction-container">
-              <div class="emoji-reaction-container" *ngFor="let reaction of message.emojiReactions.slice(0, 2)">
-                <div *ngIf="reaction.emojiCounter > 0" (click)="addOrDeleteReaction(reaction.emoji, this.currentUserID, message.id)" class="reaction-sub-container">
+              <div class="emoji-reaction-container" *ngFor="let reaction of message.emojiReactions.slice(0, 2) let a = index">
+                <div *ngIf="reaction.emojiCounter > 0" 
+                  (click)="addOrDeleteReaction(reaction.emoji, this.currentUserID, message.id)"
+                  (mouseenter)="onMouseEnter(reaction, i, a)"
+                  (mouseleave)="onMouseLeave(i, a)"
+                  class="reaction-sub-container">
                   {{ reaction.emojiCounter }}
                   {{ reaction.emojiIcon }}
+                  <div *ngIf="showReactedBy[i]?.[a]?.length > 0" class="reaction-hover">
+                    <div>{{ reaction.emojiIcon }}</div>
+                    <div *ngFor="let user of showReactedBy[i][a]">{{ user }}</div>
+                    <span>hat reagiert</span>
+                  </div>
                 </div>
               </div>
               <div>

@@ -43,6 +43,7 @@ export class ThreadComponent implements OnInit, OnDestroy {
   currentThreadMessageIndex: number | null = null;
   originalThreadMessageContent = '';
   unsubscribe: any;
+  showReactedBy:  any = [];
 
   emoji = [
     {
@@ -356,5 +357,28 @@ async saveEdit(index: number, editMessage: any, messageID: any) {
     this.menuClosed(index)
     await this.loadChatMessages(this.currentThreadDocID)
   }
+}
+
+async onMouseEnter(reaction: any, messageIndex: number, reactionIndex: number) {
+  if (!this.showReactedBy[messageIndex]) {
+    this.showReactedBy[messageIndex] = [];
+  }
+  this.showReactedBy[messageIndex][reactionIndex] = []
+  const reactedBy = Array.isArray(reaction.reactedBy) ? reaction.reactedBy : [reaction.reactedBy];
+  for (const userID of reactedBy) {
+    const docRef = doc(this.firestore, "users", userID);
+    try {
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const userDetails = docSnap.data();
+        this.showReactedBy[messageIndex][reactionIndex].push(userDetails['username']);
+      }
+    } catch (error) {
+    }
+  }
+}
+
+onMouseLeave(messageIndex: number, reactionIndex: number) {
+  this.showReactedBy[messageIndex][reactionIndex] = [];
 }
 }

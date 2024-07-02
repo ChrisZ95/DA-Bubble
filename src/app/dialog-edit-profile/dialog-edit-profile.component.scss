@@ -291,4 +291,22 @@
   ::ng-deep.mat-mdc-dialog-surface{
     border-radius: 30px !important;
   }
+
+  .button-area {
+    margin-top: 0;
+  }
+
+  .avatar-big {
+    margin-top: 0;
+  }
+
+  .avatar-big[_ngcontent-ng-c2084700554] .user-icon[_ngcontent-ng-c2084700554] {
+    height: 150px;
+    width: 150px;
+    border-radius: 500px;
+  }
+
+  .avatar-big[_ngcontent-ng-c2084700554] .choose-image-container[_ngcontent-ng-c2084700554] {
+    top: 190px;
+  }
 }

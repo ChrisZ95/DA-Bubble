@@ -200,7 +200,18 @@
     justify-content: flex-end;
     gap: 15px;
     width: 100%;
-    margin-bottom: 20px;
+}
+
+.delete-channel-button-own-channel {
+    button{
+        margin-bottom: 20px;
+    }
+}
+
+.leave-channel-button-own-channel {
+    button{
+        margin-bottom: 20px;
+    }
 }
 
 @media(max-width: 850px) {
@@ -236,7 +247,7 @@
     .leave-channel-button {
         >button {
             margin-right: 16px;
-            margin-bottom: 20px;
+            margin-bottom: 100px;
         }
     }
 
@@ -327,6 +338,18 @@
 
     .delete-channel-button-own-channel {
         margin-right: 20px;
+    }
+
+    .delete-channel-button-own-channel {
+        button{
+            margin-bottom: 100px;
+        }
+    }
+
+    .leave-channel-button-own-channel {
+        button{
+            margin-bottom: 100px;
+        }
     }
 }
 
